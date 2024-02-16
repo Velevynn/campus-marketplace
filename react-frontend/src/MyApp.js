@@ -37,7 +37,7 @@ function MyApp() {
   async function fetchAll() {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_BACKEND_URL}:${process.env.REACT_APP_BACKEND_PORT}/users`
+        `http://localhost:8000/users`
       );
       return response.data.users_list;
     } catch (error) {
@@ -50,7 +50,7 @@ function MyApp() {
   async function makePostCall(person) {
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}:${process.env.REACT_APP_BACKEND_PORT}/users`,
+        `http://localhost:8000/users`,
         person
       );
       return response;
@@ -63,7 +63,7 @@ function MyApp() {
   async function makeDeleteCall(id) {
     try {
       const response = await axios.delete(
-        `${process.env.REACT_APP_BACKEND_URL}:${process.env.REACT_APP_BACKEND_PORT}/users/${id}`
+        `http://localhost:8000/users/${id}`
       );
       return response;
     } catch (error) {
