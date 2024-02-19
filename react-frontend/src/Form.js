@@ -5,42 +5,53 @@ import React, { useState } from "react";
 // unused = fred;
 
 function Form(props) {
-  const [person, setPerson] = useState({
-    name: "",
-    job: "",
-    address: "",
+  const [listing, setListing] = useState({
+    title: "",
+    description: "",
+    price: "",
   });
 
   function handleChange(event) {
     const { name, value } = event.target;
-    if (name === "job") setPerson({ name: person["name"], job: value });
-    else setPerson({ name: value, job: person["job"] });
+    setListing(prevListing => ({
+      ...prevListing,
+      [name]: value
+    }));
   }
 
   function submitForm() {
-    props.handleSubmit(person);
-    setPerson({ name: "", job: "" });
+    props.handleSubmit(listing);
+    setListing({ title: "", description: "", price: "" });
   }
 
   return (
     <form>
-      <label htmlFor="name">Name</label>
+      <label htmlFor="title">Title</label>
       <input
         type="text"
-        name="name"
-        id="name"
-        value={person.name}
+        name="title"
+        id="title"
+        value={listing.title}
         onChange={handleChange}
       />
-      <label htmlFor="job">Job</label>
+      <label htmlFor="description">Description</label>
       <input
         type="text"
-        name="job"
-        id="job"
-        value={person.job}
+        name="description"
+        id="description"
+        value={listing.description}
         onChange={handleChange}
       />
-      <input type="button" value="Submit" onClick={submitForm} />
+      <label htmlFor="price">Price</label>
+      <input
+        type="text"
+        name="price"
+        id="price"
+        value={listing.price}
+        onChange={handleChange}
+      />
+
+      <input type="button" value="Post" onClick={submitForm} />
     </form>
   );
 }

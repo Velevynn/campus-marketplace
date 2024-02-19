@@ -5,32 +5,40 @@ import Form from "./Form";
 import axios from "axios";
 
 function MyApp() {
-  const [characters, setCharacters] = useState([]);
+  const [listings, setListings] = useState([]);
 
-  function removeOneCharacter(index) {
-    const person = characters[index].id;
-    makeDeleteCall(person).then((result) => {
+  function removeOneListing(index) {
+    const listing = listings[index].id;
+
+    const updated = listings.filter((listing, i) => {
+      return i !== index;
+    });
+    setListings(updated);
+
+    /*
+    makeDeleteCall(listing).then((result) => {
       if (result.status === 204) {
-        const updated = characters.filter((character, i) => {
+        const updated = listings.filter((listing, i) => {
           return i !== index;
         });
-        setCharacters(updated);
+        setListings(updated);
       }
-    });
+    }); */
   }
 
-  function updateList(person) {
-    makePostCall(person).then((result) => {
-      if (result && result.status === 201)
-        setCharacters([...characters, result.data]);
+  function updateList(listing) {
+    makePostCall(listing).then((result) => {
+      //if (result && result.status === 201)
+      // Change listing to result of post call once database is set up
+      setListings([...listings, listing]);
       console.log(result);
     });
   }
 
   useEffect(() => {
     fetchAll().then((result) => {
-      if (result) setCharacters(result);
-      console.log(characters);
+      if (result) setListings(result);
+      console.log(listings);
     });
   }, []);
 
@@ -89,7 +97,7 @@ function MyApp() {
               <Link to="/users-table">List all</Link>
             </li>
             <li>
-              <Link to="/form">Insert one</Link>
+              <Link to="/form">Create a listing</Link>
             </li>
           </ul>
         </nav>
@@ -99,8 +107,8 @@ function MyApp() {
             path="/users-table"
             element={
               <Table
-                characterData={characters}
-                removeCharacter={removeOneCharacter}
+                characterData={listings}
+                removeCharacter={removeOneListing}
               />
             }
           />
