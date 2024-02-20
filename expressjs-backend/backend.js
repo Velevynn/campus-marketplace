@@ -1,3 +1,5 @@
+const express = require('express');
+const app = express();
 const mysql = require('mysql2/promise');
 
 // Database configuration
@@ -27,8 +29,10 @@ async function setupDatabase() {
         username VARCHAR(255) NOT NULL UNIQUE, -- Ensure username is unique
         full_name VARCHAR(255) NOT NULL,
         password VARCHAR(255) NOT NULL, -- Consider hashing passwords for security
+        email VARCHAR(255) NOT NULL UNIQUE, -- Ensure email is unique and not null
+        phoneNumber VARCHAR(20) NOT NULL UNIQUE, -- Ensure phoneNumber is unique and not null
         joinedDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
+    );
     `);
     console.log("Table 'users' created or already exists.");
 
@@ -98,73 +102,63 @@ async function setupDatabase() {
   }
 }
 
-// Function to create new user in the users table
-async function createNewUser(username, full_name, password) {
-  try {
-    const connection = await mysql.createConnection(dbConfig);
-    const sql = "INSERT INTO users (username, full_name, password) VALUES (?, ?, ?)";
-    const values = [username, full_name, password];
-    const [rows, fields] = await connection.query(sql, values);
-    console.log("User inserted successfully:", rows);
-    await connection.end();
-  } catch (error) {
-    console.error("An error occurred while inserting user:", error.message);
-  }
-}
-
-// Function to edit user information in the users table based on username
-async function editUserByUsername(username, newUsername, newFullName, newPassword) {
-  try {
-    const connection = await mysql.createConnection(dbConfig);
-    const sql = "UPDATE users SET username = ?, full_name = ?, password = ? WHERE username = ?";
-    const values = [newUsername, newFullName, newPassword, username];
-    const [rows, fields] = await connection.query(sql, values);
-    if (rows.affectedRows === 0) {
-      console.log("User with username", username, "not found.");
-    } else {
-      console.log("User with username", username, "updated successfully.");
-    }
-    await connection.end();
-  } catch (error) {
-    console.error("An error occurred while editing user:", error.message);
-  }
-}
-
-// Function to delete a user from the users table based on username
-async function deleteUserByUsername(username) {
-  try {
-    const connection = await mysql.createConnection(dbConfig);
-    const sql = "DELETE FROM users WHERE username = ?";
-    const values = [username];
-    const [rows, fields] = await connection.query(sql, values);
-    if (rows.affectedRows === 0) {
-      console.log("User with username", username, "not found.");
-    } else {
-      console.log("User with username", username, "deleted successfully.");
-    }
-    await connection.end();
-  } catch (error) {
-    console.error("An error occurred while deleting user:", error.message);
-  }
-}
-
-// Run the setup
 setupDatabase();
 
-// Example to user 'createNewUser'
-const username = "john_doe";
-const full_name = "John Doe";
-const password = "password123";
-insertUser(username, full_name, password);
+// Async function to check if a user already exists
+async function checkIfUserExists(username, email, phoneNumber) {
+  try {
+    const connection = await mysql.createConnection(dbConfig);
 
-// Example usage: edit user with username 'jane_doe'
-const currUsername = 'john_doe'
-const currFullName = 'John Doe'
-const currPassword = 'oldpassword123'
-const newUsername = "janedoe";
-const newFullName = "Jane Doe";
-const newPassword = "newpassword123";
-editUserByUsername(currentUsername, newUsername, newFullName, newPassword);
+    // Check if the provided username, email, or phone number already exists
+    const [rows] = await connection.execute('SELECT * FROM users WHERE username = ? OR email = ? OR phoneNumber = ?', [username, email, phoneNumber]);
 
-// Example usage: delete a user with username 'john_doe'
-deleteUserByUsername('john_doe');
+    // Close the connection
+    await connection.end();
+
+    // Return true if any user with the provided username, email, or phone number exists
+    return rows.length > 0;
+  } catch (error) {
+    console.error("An error occurred while checking if the user exists:", error);
+    throw error;
+  }
+}
+
+// Async function to register a new user
+async function registerUser(user) {
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+
+    // Check if the user already exists
+    const userExists = await checkIfUserExists(user.username, user.email, user.phoneNumber);
+
+    if (userExists) {
+      throw new Error('User with provided username, email, or phone number already exists');
+    }
+
+    // Insert the new user into the users table
+    await connection.execute('INSERT INTO users (username, full_name, password, email, phoneNumber) VALUES (?, ?, ?, ?, ?)', [user.username, user.full_name, user.password, user.email, user.phoneNumber]);
+
+    // Close the connection
+    await connection.end();
+
+    // Return success message or any other data if needed
+    return { success: true, message: 'User registered successfully' };
+  } catch (error) {
+    console.error("An error occurred while registering the user:", error);
+    throw error;
+  }
+}
+
+app.post('/users/register', async (req, res) => {
+  try {
+    const { username, full_name, password, email, phoneNum } = req.body;
+    // Call the registerUser function passing user data
+    const result = await registerUser({ username, full_name, password, email, phoneNumber: phoneNum });
+    res.status(201).json(result); // Send success response
+  } catch (error) {
+    console.error('Error registering user:', error);
+    res.status(500).json({ error: 'Failed to register user' }); // Send error response
+  }
+});
+
+module.exports = app;
