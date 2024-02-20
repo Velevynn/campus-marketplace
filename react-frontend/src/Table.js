@@ -4,9 +4,9 @@ function TableHeader() {
   return (
     <thead>
       <tr>
-        <th>title</th>
-        <th>description</th>
-        <th>price</th>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Price</th>
       </tr>
     </thead>
   );
@@ -18,7 +18,7 @@ function TableBody(props) {
       <tr key={index}>
         <td>{row.title}</td>
         <td>{row.description}</td>
-        <td>{row.price}</td>
+        <td>${row.price}</td>
         <td>
           <button onClick={() => props.removeCharacter(index)}>Delete</button>
         </td>
@@ -29,14 +29,19 @@ function TableBody(props) {
 }
 
 function Table(props) {
+  console.log(props.characterData);
+
   return (
-    <table>
-      <TableHeader />
-      <TableBody
-        characterData={props.characterData}
-        removeCharacter={props.removeCharacter}
-      />
-    </table>
+    <div>
+      <h2>Listings</h2>
+      <table>
+        <TableHeader />
+        <TableBody
+          characterData={props.characterData}
+          removeCharacter={props.removeCharacter}
+        />
+      </table>
+    </div>
   );
 }
 

@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import axios from "axios";
 
-function Form() {
-  const [listings, setListings] = useState([]);
+function Form(props) {
+
   const [listing, setListing] = useState({
     title: "",
     description: "",
@@ -11,36 +10,25 @@ function Form() {
 
   function handleChange(event) {
     const { name, value } = event.target;
-    setListing(prevListing => ({
-      ...prevListing,
-      [name]: value
-    }));
-  }
 
-  function updateList(listing) {
-    makePostCall(listing).then((result) => {
-      //if (result && result.status === 201)
-      // Change listing to result of post call once database is set up
-      setListings([...listings, listing]);
-      console.log(result);
-    });
-  }
-
-  async function makePostCall(person) {
-    try {
-      const response = await axios.post(
-        `http://localhost:8000/users`,
-        person
-      );
-      return response;
-    } catch (error) {
-      console.log(error);
-      return false;
+    if (name === "price") {
+      if (!isNaN(value)) {
+        // Update the state only if the value is a valid number
+        setListing(prevListing => ({
+          ...prevListing,
+          [name]: value // Update "price" with the parsed number value
+        }));
+      }
+    } else {
+      setListing(prevListing => ({
+        ...prevListing,
+        [name]: value
+      }));
     }
   }
 
   function submitForm() {
-    updateList(listing);
+    props.handleSubmit(listing);
     setListing({ title: "", description: "", price: "" });
   }
 
