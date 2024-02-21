@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./Form.css";
 
 function Form(props) {
 
@@ -33,7 +34,7 @@ function Form(props) {
   }
 
   return (
-    <div>
+    <div className="form-container">
       <h2>Post Listing</h2>
       <form>
         <label htmlFor="title">Title</label>
