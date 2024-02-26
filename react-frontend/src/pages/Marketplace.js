@@ -15,7 +15,10 @@ function Marketplace() {
     async function fetchEntries() {
       try {
         const response = await axios.get('http://localhost:8000/listings');
-        setEntries(response.data.entry_list);
+        if (response !== "") {
+          console.log(response.data);
+          setEntries(response.data);
+        }
       } catch (error) {
         console.log("Error fetching entries:", error);
       }
@@ -27,7 +30,7 @@ function Marketplace() {
       <div className="divider" />
     {entries.map(entry => (
       <Entry
-          title={entry.title}
+          title={entry.name}
           price={entry.price}
         />
       ))}

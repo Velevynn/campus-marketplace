@@ -7,9 +7,12 @@ import "./form.css";
 function Form() {
 
   const [listing, setListing] = useState({
+    userID: 1,
     title: "",
     description: "",
     price: "",
+    expirationDate: null,
+    quantity: 1,
   });
 
   function handleChange(event) {
@@ -31,9 +34,9 @@ function Form() {
   }
 
   function submitForm() {
-    if (listing.price !== "" && listing.description !== "" && listing.price !== "") {
+    if (listing.title !== "" && listing.price !== "") {
         handleSubmit(listing);
-        window.location.href = '/marketplace';
+        //window.location.href = '/marketplace';
     }
   }
 
@@ -72,12 +75,9 @@ function Form() {
   );
 }
 
-async function handleSubmit(person) {
+async function handleSubmit(listing) {
     try {
-      const response = await axios.post(
-        `http://localhost:8000/listings`,
-        person
-      );
+      const response = await axios.post(`http://localhost:8000/listings`,listing);
       return response;
     } catch (error) {
       console.log(error);
