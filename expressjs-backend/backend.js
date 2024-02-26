@@ -12,6 +12,7 @@ const dbConfig = {
   host: 'localhost',
   user: 'root', // Use your MySQL username
   password: '', // Use your MySQL password
+  database: 'haggle_db' // Specify the database name
 };
 
 // Async function to establish database connection, create a database, and add tables

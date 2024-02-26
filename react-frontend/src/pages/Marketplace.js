@@ -32,6 +32,7 @@ function Marketplace() {
       <Entry
           title={entry.name}
           price={entry.price}
+          listingID = {entry.listingID}
         />
       ))}
     </div>
