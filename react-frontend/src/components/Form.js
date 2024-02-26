@@ -36,7 +36,7 @@ function Form() {
   function submitForm() {
     if (listing.title !== "" && listing.price !== "") {
         handleSubmit(listing);
-        //window.location.href = '/marketplace';
+        window.location.href = '/marketplace';
     }
   }
 
