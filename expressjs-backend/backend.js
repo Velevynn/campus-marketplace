@@ -112,6 +112,8 @@ async function checkIfUserExists(username, email, phoneNumber) {
   try {
     const connection = await mysql.createConnection(dbConfig);
 
+    await connection.query("USE haggle_db");
+
     // Check if the provided username, email, or phone number already exists
     const [rows] = await connection.execute('SELECT * FROM users WHERE username = ? OR email = ? OR phoneNumber = ?', [username, email, phoneNumber]);
 
@@ -130,6 +132,8 @@ async function checkIfUserExists(username, email, phoneNumber) {
 async function registerUser(user) {
   try {
     const connection = await mysql.createConnection(dbConfig);
+
+    await connection.query("USE haggle_db");
 
     // Check if the user already exists
     const userExists = await checkIfUserExists(user.username, user.email, user.phoneNumber);
@@ -181,6 +185,8 @@ app.get("/listings", async (req, res) => {
   try {
     const connection = await mysql.createConnection(dbConfig);
 
+    await connection.query("USE haggle_db");
+
     const [results, fields] = await connection.execute('SELECT * FROM listings');
     
     res.send(results);
@@ -198,6 +204,10 @@ app.get("/listings", async (req, res) => {
 async function addListing(listing) {
   try{
     const connection = await mysql.createConnection(dbConfig);
+
+    await connection.query("USE haggle_db");
+
+    
 
     if (listing.expirationDate === '') {
       listing.expirationDate = null;
