@@ -1,0 +1,75 @@
+/* NavBar.css */
+
+.navbar {
+    background-color: white;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    padding-bottom: 20px;
+  }
+  
+  .logo {
+    flex-grow: 1;
+  }
+  
+  .logo img {
+    height: 60px;
+    margin-top: 10px;
+    margin-right: 20px;
+  }
+  
+  .nav-links {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    font-family: 'inter', sans-serif;
+  }
+  
+  .nav-links li {
+    margin: 0 10px;
+  }
+  
+  .post-listing-button {
+    padding: 10px 10px;
+    background-color: green;
+    color: white;
+    border-radius: 7px;
+  }
+
+  .logo {
+    /* Your logo styles */
+    width: 100px;
+    height: 50px;
+  }
+  
+  /* Define the transition for the logo */
+  .logo img {
+    transition: transform 0.3s ease-in-out; /* Adjust timing and easing as needed */
+  }
+  
+  /* Apply hover effect on the logo */
+  .logo:hover img {
+    transform: scale(1.06); /* Adjust scale factor as needed */
+  }
+
+  .nav-links a {
+    text-decoration: none;
+  }
+
+  .nav-links a:hover {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .nav-links a:active {
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  .nav-links a:visited {
+    text-decoration: none;
+  }
+
+
