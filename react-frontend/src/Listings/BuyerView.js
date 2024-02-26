@@ -2,15 +2,15 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './BuyerView.css';
 
-const BuyerListingView = ({ listingId }) => {
+const BuyerListingView = ({ listingID }) => {
     const [listing, setListing] = useState(null);
   
     /* hook to fetch data when listingID changes */
     useEffect(() => {
       const fetchData = async () => {
         try {
-            /* get data of listing by its ID */
-          const response = await axios.get(`http://localhost:8000/listings/{listingID}`);
+          /* get data of listing by its ID */
+          const response = await axios.get(`http://localhost:8000/listings/${listingID}`);
           /* set fetched data to state */
           setListing(response.data);
         } catch (error) {
@@ -19,7 +19,7 @@ const BuyerListingView = ({ listingId }) => {
       };
   
       fetchData();
-    }, [listingId]);
+    }, [listingID]);
 
     const handleBuyNow = () => {
         /* Add logic for handling "Buy Now" action */
@@ -53,7 +53,7 @@ const BuyerListingView = ({ listingId }) => {
             <button onClick={handleStartChat}>Start a Chat</button>
           </div>
         ) : (
-          <p>Loading...</p>
+          <p>LISTING IS NULL</p>
         )}
       </div>
     );

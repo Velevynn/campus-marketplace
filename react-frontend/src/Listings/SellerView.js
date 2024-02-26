@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './SellerView.css';
 
-const SellerListingView = ({ listingId }) => {
+const SellerListingView = ({ listingID }) => {
     const [listing, setListing] = useState(null);
   
     /* hook to fetch data when listingID changes */
@@ -10,7 +10,7 @@ const SellerListingView = ({ listingId }) => {
       const fetchData = async () => {
         try {
             /* get data of listing by its ID */
-          const response = await axios.get(`http://localhost:8000/listings/{listingID}`);
+          const response = await axios.get(`http://localhost:8000/mylisting/${listingID}`);
           /* set fetched data to state */
           setListing(response.data);
         } catch (error) {
@@ -19,7 +19,7 @@ const SellerListingView = ({ listingId }) => {
       };
   
       fetchData();
-    }, [listingId]);
+    }, [listingID]);
 
     const handleEditListing = () => {
         /* Add logic for handling "Edit Listing" action */
@@ -48,7 +48,7 @@ const SellerListingView = ({ listingId }) => {
 
           </div>
         ) : (
-          <p>Listing is NULL</p>
+          <p>LISTING IS NULL</p>
         )}
       </div>
     );

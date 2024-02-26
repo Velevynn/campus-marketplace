@@ -5,7 +5,7 @@ import './marketplace-entry.css';
 import missing from '../assets/missing.jpg';
 
 
-function Entry({title, price }) {
+function Entry({title, price, listingID}) {
   const renderPrice = () => {
     if (price === "0") {
       return <p style={{ color: 'green', fontWeight: 'bold', margin: 0 }}>FREE</p>;

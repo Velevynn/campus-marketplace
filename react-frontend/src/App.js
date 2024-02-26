@@ -7,6 +7,8 @@ import NavBar from './components/NavBar';
 import About from './pages/About';
 import Footer from './components/Footer';
 import TOS from './pages/TOS';
+import BuyerListingView from "./Listings/BuyerView";
+import SellerListingView from "./Listings/SellerView";
 
 function App() {
   return (
@@ -37,6 +39,14 @@ function App() {
           <Route 
             path = "/terms-of-service"
             element = {<TOS />}
+          />
+          <Route
+            path = "/listings/:listingID"
+            element = {<BuyerListingView />}
+          />
+          <Route
+            path = "/mylisting/:listingID"
+            element = {<SellerListingView />}
           />
         </Routes>
         {/*<Footer >*/}
