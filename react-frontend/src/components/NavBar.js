@@ -8,8 +8,10 @@ import './navbar.css'; // Import CSS file for styling
 function NavBar() {
   return (
     <nav className="navbar">
-      <div className="logo">
+      <div className="logo-container">
+        <div className="logo">
           <Link to="/"><img src={logo} alt="Logo" /></Link>
+        </div>
       </div>
 
       <ul className="nav-links">
