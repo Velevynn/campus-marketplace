@@ -12,7 +12,6 @@ const dbConfig = {
   host: 'localhost',
   user: 'root', // Use your MySQL username
   password: '', // Use your MySQL password
-  database: 'haggle_db' // Specify the database name
 };
 
 // Async function to establish database connection, create a database, and add tables
@@ -114,6 +113,8 @@ async function checkIfUserExists(username, email, phoneNumber) {
     const connection = await mysql.createConnection(dbConfig);
 
     // Check if the provided username, email, or phone number already exists
+
+    await connection.query('USE haggle_db');
     const [rows] = await connection.execute('SELECT * FROM users WHERE username = ? OR email = ? OR phoneNumber = ?', [username, email, phoneNumber]);
 
     // Close the connection
@@ -131,6 +132,8 @@ async function checkIfUserExists(username, email, phoneNumber) {
 async function registerUser(user) {
   try {
     const connection = await mysql.createConnection(dbConfig);
+
+    await connection.query('USE haggle_db');
 
     // Check if the user already exists
     const userExists = await checkIfUserExists(user.username, user.email, user.phoneNumber);
@@ -182,6 +185,8 @@ app.get("/listings", async (req, res) => {
   try {
     const connection = await mysql.createConnection(dbConfig);
 
+    await connection.query('USE haggle_db');
+
     const [results, fields] = await connection.execute('SELECT * FROM listings');
     
     res.send(results);
@@ -200,9 +205,9 @@ async function addListing(listing) {
   try{
     const connection = await mysql.createConnection(dbConfig);
 
-    if (listing.expirationDate === '') {
-      listing.expirationDate = null;
-    }
+    await connection.query('USE haggle_db');
+
+
     //Insert the listing into the listing table
     await connection.execute('INSERT INTO listings (userID, name, price, description, expirationDate, quantity) VALUES (?, ?, ?, ?, ?, ?)', [listing.userID, listing.title, listing.price, listing.description, listing.expirationDate, listing.quantity]);
   
