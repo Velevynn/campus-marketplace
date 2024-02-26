@@ -1,28 +1,30 @@
-// NavBar.js (Josh)
-
+// NavBar.js
 import React from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../assets/logo.png';
+import './navbar.css'; // Import CSS file for styling
 
 function NavBar() {
   return (
-    <nav style={{ backgroundColor: 'white', padding: '10px', display: 'flex', alignItems: 'center' }}>
-      <div style={{ flexGrow: 1 }}>
-        <img src={logo} alt="Logo" style={{ height: '60px', marginTop: '10px', marginRight: '20px' }} />
+    <nav className="navbar">
+      <div className="logo-container">
+        <div className="logo">
+          <Link to="/"><img src={logo} alt="Logo" /></Link>
+        </div>
       </div>
 
-      <ul style={{ listStyleType: 'none', margin: 0, padding: 0, display: 'flex', alignItems: 'center', fontFamily: 'inter, sans-serif'}}>
-        <li style={{ margin: '0 10px' }}>
+      <ul className="nav-links">
+        <li>
           <Link to="/about">About</Link>
         </li>
-        <li style={{ margin: '0 10px' }}>
+        <li>
           <Link to="/marketplace">Marketplace</Link>
         </li>
-        <li style={{ margin: '0 10px' }}>
+        <li>
           <Link to="/sign-up">My Profile</Link>
         </li>
-        <li style={{ margin: '0 10px' }}>
-          <Link to="/new-listing" style = {{padding: '10px 10px', backgroundColor: 'green', color: 'white', borderRadius: '7px'}}>Post a Listing</Link>
+        <li>
+          <Link to="/new-listing" className="post-listing-button">Post a Listing</Link>
         </li>
       </ul>
     </nav>
