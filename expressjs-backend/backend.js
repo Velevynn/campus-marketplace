@@ -1,6 +1,11 @@
 const express = require('express');
 const app = express();
+const port = 8000;
 const mysql = require('mysql2/promise');
+const cors = require("cors");
+
+app.use(cors());
+app.use(express.json());
 
 // Database configuration
 const dbConfig = {
@@ -102,7 +107,6 @@ async function setupDatabase() {
   }
 }
 
-setupDatabase();
 
 // Async function to check if a user already exists
 async function checkIfUserExists(username, email, phoneNumber) {
@@ -160,5 +164,65 @@ app.post('/users/register', async (req, res) => {
     res.status(500).json({ error: 'Failed to register user' }); // Send error response
   }
 });
+
+app.post("/listings", async (req, res) => {
+  try {
+    console.log(req.body);
+    const listingToAdd = req.body;
+    await addListing(listingToAdd); // Add await here
+    res.status(201).send(listingToAdd);
+  } catch (error) {
+    console.error("Error adding listing:", error);
+    res.status(500).json({ error: 'Failed to add listing' });
+  }
+});
+
+
+app.get("/listings", async (req, res) => {
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+
+    const [results, fields] = await connection.execute('SELECT * FROM listings');
+    
+    res.send(results);
+
+    await connection.end();
+
+  } catch (error) {
+    console.error("An error occurred while fetching listings:", error);
+    res.status(500).send("An error occurred while fetching listings");
+  }
+
+});
+
+
+async function addListing(listing) {
+  try{
+    const connection = await mysql.createConnection(dbConfig);
+
+    if (listing.expirationDate === '') {
+      listing.expirationDate = null;
+    }
+    //Insert the listing into the listing table
+    await connection.execute('INSERT INTO listings (userID, name, price, description, expirationDate, quantity) VALUES (?, ?, ?, ?, ?, ?)', [listing.userID, listing.title, listing.price, listing.description, listing.expirationDate, listing.quantity]);
+  
+    //Close the connection to database
+    await connection.end();
+
+    //return success
+    return { success: true, message: 'Listing posted successfully' };
+  } catch (error) {
+    console.error("An error occured while posting this listing:", error);
+    throw error;
+  }
+}
+
+
+setupDatabase();
+
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
+
 
 module.exports = app;
