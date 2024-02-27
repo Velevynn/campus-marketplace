@@ -40,14 +40,17 @@ const SellerListingView = () => {
       <div>
         {listing ? (
           <div>
-            <h1>Title: {listing?.name || 'N/A'}</h1>
-            <p>Description: {listing?.description || 'No description available'}</p>
-            <p>Price: ${parseFloat(listing.price).toFixed(2) || 'N/A'}</p>
-            <p>Contact: {listing?.userID || 'N/A'}</p>
-
-            <button onClick={handleEditListing}>Edit Listing</button>
-            <button onClick={handleDeleteListing}>Delete Listing</button>
-
+            <h1>{listing.name}</h1>
+            <div className="image-container">
+              {/* Placeholder for the image */}
+              <div className="image-placeholder"></div>
+            </div>
+            <p className="price">${listing.price}</p>
+            <p>Description: {listing.description}</p>
+            <div className="buttons">
+              <button onClick={handleEditListing}>Edit Listing</button>
+              <button onClick={handleDeleteListing}>Delete Listing</button>
+            </div>
           </div>
         ) : (
           <p>LISTING IS NULL</p>
