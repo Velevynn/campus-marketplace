@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import './pages.css';
 import axios from 'axios';
 import Entry from "../components/MarketplaceEntry";
+import SearchBar from "../components/SearchBar";
 
 function Marketplace() {
     const [entries, setEntries] = useState([]);
@@ -27,6 +28,7 @@ function Marketplace() {
   return (
     <div style={{margin: '25px'}}>
       <h1 style={{ fontFamily: 'Newsreader, serif', fontSize: '3rem'}}>Marketplace</h1>
+      <SearchBar/>
       <div className="divider" />
     {entries.map(entry => (
       <Entry
