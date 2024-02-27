@@ -26,10 +26,11 @@ function Marketplace() {
     
   return (
     <div style={{margin: '25px'}}>
-      <h style={{ fontFamily: 'Newsreader, serif', fontSize: '3rem'}}>Marketplace</h>
+      <h1 style={{ fontFamily: 'Newsreader, serif', fontSize: '3rem'}}>Marketplace</h1>
       <div className="divider" />
     {entries.map(entry => (
       <Entry
+          key={entry.listingID}
           title={entry.name}
           price={entry.price}
           listingID = {entry.listingID}

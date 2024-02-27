@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import './SellerView.css';
 
-const SellerListingView = ({ listingID }) => {
+const SellerListingView = () => {
+    const { listingID } = useParams();
     const [listing, setListing] = useState(null);
-  
+
     /* hook to fetch data when listingID changes */
     useEffect(() => {
       const fetchData = async () => {
@@ -12,7 +14,9 @@ const SellerListingView = ({ listingID }) => {
             /* get data of listing by its ID */
           const response = await axios.get(`http://localhost:8000/mylisting/${listingID}`);
           /* set fetched data to state */
-          setListing(response.data);
+          if(response.data.length > 0){
+            setListing(response.data[0]);
+          }
         } catch (error) {
           console.error('Error fetching listing:', error);
         }
@@ -36,12 +40,10 @@ const SellerListingView = ({ listingID }) => {
       <div>
         {listing ? (
           <div>
-            <h2>{listing.title}</h2>
-            <p>{listing.description}</p>
-            <p>Price: ${listing.price}</p>
-            <p>Categories: {listing.categories.join(', ')}</p>
-            <p>{listing.contact}</p>
-            <p>{listing.photo}</p>
+            <h1>Title: {listing?.name || 'N/A'}</h1>
+            <p>Description: {listing?.description || 'No description available'}</p>
+            <p>Price: ${parseFloat(listing.price).toFixed(2) || 'N/A'}</p>
+            <p>Contact: {listing?.userID || 'N/A'}</p>
 
             <button onClick={handleEditListing}>Edit Listing</button>
             <button onClick={handleDeleteListing}>Delete Listing</button>
