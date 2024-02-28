@@ -16,6 +16,12 @@ function Search() {
         window.location.href = `/marketplace?q=${searchQuery}`
     }
 
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            window.location.href = `/marketplace?q=${searchQuery}`
+        }
+    }
+
     return ( 
         <div className = "search-container">
             <input 
@@ -23,6 +29,7 @@ function Search() {
                 placeholder="Search for products..." 
                 value = {searchQuery} 
                 onChange = {handleInputChange}
+                onKeyDown = {handleKeyPress}
                 className = "search-input"
             />
             <button type = "submit" onClick = {handleSearch} className = "search-button"><img src = {search} alt = "search-icon" className = "search-img"/></button>
