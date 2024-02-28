@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import './pages.css';
 import axios from 'axios';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import Entry from "../components/MarketplaceEntry";
 import SearchBar from "../components/SearchBar";
 

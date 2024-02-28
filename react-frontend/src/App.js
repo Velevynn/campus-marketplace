@@ -33,10 +33,6 @@ function App() {
             element = {<Marketplace />}
           />
           <Route 
-            path = "/marketplace/:q"
-            element = {<Marketplace />}
-          />
-          <Route 
             path = "/new-listing"
             element = {<AddListing />}
           />
