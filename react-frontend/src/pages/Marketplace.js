@@ -9,13 +9,17 @@ import SearchBar from "../components/SearchBar";
 
 function Marketplace() {
     const [searchParams] = useSearchParams();
-    const q = searchParams.get('q');
+    let q = searchParams.get('q');
     const [entries, setEntries] = useState([]);
     console.log("Query parameter:", q); 
+    if (q === null) {
+      q = "";
+    }
+
     useEffect(() => {
       fetchEntries();
     }, [q]);
-  
+
     async function fetchEntries() {
       try {
         const response = await axios.get(`http://localhost:8000/listings?q=${q}`);
@@ -27,16 +31,11 @@ function Marketplace() {
         console.log("Error fetching entries:", error);
       }
     }
-
-    // Function to handle search
-    function handleSearch(query) {
-      window.location.href = `/marketplace?q=${query}`; // Redirect to the marketplace page with the search query
-    }
     
   return (
     <div style={{margin: '25px'}}>
       <h1 style={{ fontFamily: 'Newsreader, serif', fontSize: '3rem'}}>Marketplace</h1>
-      <SearchBar onSearch={handleSearch}/> {/* Pass handleSearch function as a prop */}
+      <SearchBar/>
       <div className="divider" />
     {entries.map(entry => (
       <Entry

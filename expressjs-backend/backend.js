@@ -204,6 +204,23 @@ app.get("/listings", async (req, res) => {
 
 });
 
+app.get("/listings/:listingID", async (req, res) => {
+  try {
+    const { listingID } = req.params; // Extract the listingID from request parameters
+    const connection = await mysql.createConnection(dbConfig);
+    // Construct SQL query to fetch the listing by its ID
+    const query = 'SELECT * FROM listings WHERE listingID = ?';
+    const [results, fields] = await connection.execute(query, [listingID]);
+    
+    res.send(results);
+
+    await connection.end();
+
+  } catch (error) {
+    console.error("An error occurred while fetching the listing:", error);
+    res.status(500).send("An error occurred while fetching the listing");
+  }
+});
 
 async function addListing(listing) {
   try{
