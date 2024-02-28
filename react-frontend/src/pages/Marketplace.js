@@ -3,10 +3,12 @@
 import React, { useState, useEffect } from "react";
 import './pages.css';
 import axios from 'axios';
+import { useParams } from 'react-router-dom';
 import Entry from "../components/MarketplaceEntry";
 import SearchBar from "../components/SearchBar";
 
 function Marketplace() {
+    const query = useParams();
     const [entries, setEntries] = useState([]);
 
     useEffect(() => {

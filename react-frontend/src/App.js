@@ -33,6 +33,10 @@ function App() {
             element = {<Marketplace />}
           />
           <Route 
+            path = "/marketplace/:query"
+            element = {<Marketplace />}
+          />
+          <Route 
             path = "/new-listing"
             element = {<AddListing />}
           />
