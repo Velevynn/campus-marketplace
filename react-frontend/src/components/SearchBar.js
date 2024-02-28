@@ -27,7 +27,7 @@ function Search() {
     const handleKeyPress = (event) => {
         if (event.key === 'Enter' && searchQuery !== "") {
             window.location.href = `/marketplace?q=${searchQuery}`
-        } else {
+        } else if (event.key === 'Enter') {
             setShowNotification(true);
             setTimeout(() => {
                 setShowNotification(false); // Hide notification after 3 seconds
