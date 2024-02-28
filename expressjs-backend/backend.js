@@ -114,6 +114,7 @@ async function setupDatabase() {
 async function checkIfUserExists(username, email, phoneNumber) {
   try {
     const connection = await mysql.createConnection(dbConfig);
+
     // Check if the provided username, email, or phone number already exists
     const [rows] = await connection.execute('SELECT * FROM users WHERE username = ? OR email = ? OR phoneNumber = ?', [username, email, phoneNumber]);
 
@@ -182,6 +183,7 @@ app.post("/listings", async (req, res) => {
 app.get("/listings", async (req, res) => {
   try {
     const connection = await mysql.createConnection(dbConfig);
+
     const [results, fields] = await connection.execute('SELECT * FROM listings');
     
     res.send(results);
@@ -212,6 +214,9 @@ async function addListing(listing) {
   try{
     const connection = await mysql.createConnection(dbConfig);
 
+    if (listing.expirationDate === '') {
+      listing.expirationDate = null;
+    }
     //Insert the listing into the listing table
     await connection.execute('INSERT INTO listings (userID, name, price, description, expirationDate, quantity) VALUES (?, ?, ?, ?, ?, ?)', [listing.userID, listing.title, listing.price, listing.description, listing.expirationDate, listing.quantity]);
   
