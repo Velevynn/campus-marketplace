@@ -1,6 +1,5 @@
 // NavBar.js
 import React, { useState } from 'react';
-//import { Link } from 'react-router-dom';
 import search from '../assets/search.png'
 import './searchbar.css'; // Import CSS file for styling
 
@@ -13,11 +12,13 @@ function Search() {
 
     const handleSearch = () => {
         console.log("Searching for", searchQuery)
-        window.location.href = `/marketplace?q=${searchQuery}`
+        if (searchQuery !== "") {
+            window.location.href = `/marketplace?q=${searchQuery}`
+        }
     }
 
     const handleKeyPress = (event) => {
-        if (event.key === 'Enter') {
+        if (event.key === 'Enter' && searchQuery !== "") {
             window.location.href = `/marketplace?q=${searchQuery}`
         }
     }
