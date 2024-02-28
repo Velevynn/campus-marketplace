@@ -18,8 +18,9 @@
   }
 
   .search-bar-div {
-    flex-grow: 1;
+    flex-grow: 2;
     height: 24px;
+    margin-left: 65px;
   }
   
   .nav-links {
@@ -34,6 +35,10 @@
   .nav-links li {
     margin: 0 10px;
   }
+
+  .nav-links {
+    flex-grow: 2;
+  }
   
   .post-listing-button {
     padding: 10px 10px;
@@ -46,7 +51,7 @@
     /* Your logo styles */
     width: 100px;
     height: 50px;
-    flex-grow: 0.5;
+    flex-grow: 1;
   }
   
   /* Define the transition for the logo */
@@ -57,6 +62,10 @@
   /* Apply hover effect on the logo */
   .logo:hover img {
     transform: scale(1.06); /* Adjust scale factor as needed */
+  }
+
+  .nav-links {
+    margin: 33px 0px 0px 230px;
   }
 
   .nav-links a {
