@@ -29,11 +29,11 @@ function App() {
             element = {<Marketplace />}
           />
           <Route 
-            path = "/marketplace"
+            path = "/marketplace/"
             element = {<Marketplace />}
           />
           <Route 
-            path = "/marketplace/:query"
+            path = "/marketplace/:q"
             element = {<Marketplace />}
           />
           <Route 

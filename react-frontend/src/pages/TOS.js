@@ -6,8 +6,6 @@ function Tos() {
   return (
         <div>
         <title>Terms of Service</title>
-
-
         <body>
         <h1>Terms of Service</h1>
         <p>Last updated: February 12, 2024</p>
