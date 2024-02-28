@@ -16,6 +16,11 @@
     margin-top: 10px;
     margin-right: 20px;
   }
+
+  .search-bar-div {
+    flex-grow: 1;
+    height: 24px;
+  }
   
   .nav-links {
     list-style-type: none;
@@ -41,6 +46,7 @@
     /* Your logo styles */
     width: 100px;
     height: 50px;
+    flex-grow: 0.5;
   }
   
   /* Define the transition for the logo */

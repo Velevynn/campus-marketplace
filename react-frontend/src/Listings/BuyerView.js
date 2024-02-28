@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import SearchBar from '../components/SearchBar';
 import axios from 'axios';
 import './BuyerView.css';
 
