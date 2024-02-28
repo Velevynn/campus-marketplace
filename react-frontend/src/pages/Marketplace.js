@@ -34,7 +34,7 @@ function Marketplace() {
     
   return (
     <div style={{margin: '25px'}}>
-      <h1 style={{ fontFamily: 'Newsreader, serif', fontSize: '3rem'}}>Marketplace</h1>
+      <h style={{ fontFamily: 'Newsreader, serif', fontSize: '3rem'}}>Marketplace</h>
       <SearchBar/>
       <div className="divider" />
     {entries.map(entry => (
