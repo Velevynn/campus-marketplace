@@ -4,6 +4,7 @@
   border-radius: 8px;
   margin: 20px;
   max-width: 600px;
+  font-family: Inter;
 }
 
 /* Image container styles */
@@ -30,9 +31,9 @@
   margin-bottom: 10px;
 }
 
-.container .price {
+.container .price-buyerview {
   font-size: 24px; /* Adjust the font size as needed */
-  color: green; /* Change the color to make it stand out */
+  color: green;
   font-weight: bold; /* Make the text bold */
 }
 

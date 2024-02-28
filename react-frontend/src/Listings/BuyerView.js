@@ -52,7 +52,7 @@ const BuyerListingView = () => {
             {/* Placeholder for the image */}
             <div className="image-placeholder"></div>
           </div>
-          <p className="price">${listing.price}</p>
+          <p className="price-buyerview">${listing.price}</p>
           <p>Description: {listing.description}</p>
           <div className="buttons">
             <button onClick={handleBuyNow}>Buy Now</button>
