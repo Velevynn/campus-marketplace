@@ -1,0 +1,22 @@
+.notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #c89898;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 10px;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+  }
+  
+  .notification.visible {
+    opacity: 1;
+  }
+
+  .notif-text {
+    height: 15px;
+    color: black;
+    opacity: 100;
+  }
+  

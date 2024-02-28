@@ -29,7 +29,7 @@ function App() {
             element = {<Marketplace />}
           />
           <Route 
-            path = "/marketplace"
+            path = "/marketplace/"
             element = {<Marketplace />}
           />
           <Route 

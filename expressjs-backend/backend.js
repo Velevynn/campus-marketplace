@@ -12,7 +12,7 @@ const dbConfig = {
   host: 'localhost',
   user: 'root', // Use your MySQL username
   password: '', // Use your MySQL password
-  database: ''
+  database: 'haggle_db' // Specify the database name
 };
 
 // Async function to establish database connection, create a database, and add tables
@@ -26,8 +26,6 @@ async function setupDatabase() {
 
     // Use the newly created database
     await connection.query("USE haggle_db");
-
-    dbConfig.database = "haggle_db";
 
     // Create users table
     await connection.query(`
@@ -115,6 +113,7 @@ async function checkIfUserExists(username, email, phoneNumber) {
   try {
     const connection = await mysql.createConnection(dbConfig);
 
+
     // Check if the provided username, email, or phone number already exists
     const [rows] = await connection.execute('SELECT * FROM users WHERE username = ? OR email = ? OR phoneNumber = ?', [username, email, phoneNumber]);
 
@@ -182,9 +181,18 @@ app.post("/listings", async (req, res) => {
 
 app.get("/listings", async (req, res) => {
   try {
+    const { q } = req.query; // Extract the search query parameter
+
     const connection = await mysql.createConnection(dbConfig);
 
-    const [results, fields] = await connection.execute('SELECT * FROM listings');
+    let query = 'SELECT * FROM listings';
+
+    // If there is a search query, modify the SQL query to include a WHERE clause
+    if (q) {
+      query += ` WHERE name LIKE '%${q}%' OR description LIKE '%${q}%'`;
+    }
+
+    const [results, fields] = await connection.execute(query);
     
     res.send(results);
 
@@ -198,22 +206,30 @@ app.get("/listings", async (req, res) => {
 });
 
 app.get("/listings/:listingID", async (req, res) => {
-  const id = req.params.listingID;
   try {
+    const { listingID } = req.params; // Extract the listingID from request parameters
     const connection = await mysql.createConnection(dbConfig);
-    const [results, fields] = await connection.execute(`SELECT * FROM listings WHERE listingID = ${id}`);
-    res.status(200).send(results);
-  } catch (error) {
-    console.log(error);
-    res.status(404).send('unable to find listing');
-  }
-})
+    // Construct SQL query to fetch the listing by its ID
+    const query = 'SELECT * FROM listings WHERE listingID = ?';
+    const [results, fields] = await connection.execute(query, [listingID]);
+    
+    res.send(results);
 
+    await connection.end();
+
+  } catch (error) {
+    console.error("An error occurred while fetching the listing:", error);
+    res.status(500).send("An error occurred while fetching the listing");
+  }
+});
 
 async function addListing(listing) {
   try{
     const connection = await mysql.createConnection(dbConfig);
 
+    if (listing.expirationDate === '') {
+      listing.expirationDate = null;
+    }
     if (listing.expirationDate === '') {
       listing.expirationDate = null;
     }
