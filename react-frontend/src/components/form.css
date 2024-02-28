@@ -1,4 +1,5 @@
 .form-container {
+    text-align: center;
     width: 400px; /* Adjust width as needed */
     margin: 0 auto; /* Center the container horizontally */
     padding: 20px;
@@ -8,6 +9,7 @@
   }
   
   .form-container label {
+    text-align: left;
     display: block;
     margin-bottom: 5px;
     font-size: 16px; /* Normal size for title */
