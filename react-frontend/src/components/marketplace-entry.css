@@ -14,7 +14,7 @@
 
 .image-container {
   width: 100%;
-  height: 60%; /* Adjust the height as needed */
+  height: 60%;
 }
 
 .entry-image {
@@ -30,20 +30,16 @@
 .price {
   color: green !important;
   font-weight: bold;
-  margin: 0;
+  margin: -25px 0px 0px 0px; /* Adjust margin top and bottom to move the price closer to the title */
 }
 
 .title {
-  font-size: 25px;
+  font-family: Inter;
+  font-size: 25px; /* Default font size */
   font-weight: 600;
   margin: 10px 0;
   white-space: nowrap; /* Prevent title from wrapping to the next line */
   overflow: hidden; /* Hide any overflow */
   text-overflow: ellipsis; /* Display ellipsis (...) for overflow */
-}
-
-@media screen and (max-width: 600px) {
-  .title {
-    font-size: 14px; /* Set a smaller font size for smaller screens */
-  }
+  height: 50px;
 }
