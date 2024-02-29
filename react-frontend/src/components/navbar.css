@@ -20,7 +20,8 @@
   .search-bar-div {
     flex-grow: 2;
     height: 24px;
-    margin-left: 65px;
+    margin-left: 80px;
+    width: 27vw;
   }
   
   .nav-links {
@@ -65,7 +66,8 @@
   }
 
   .nav-links {
-    margin: 33px 0px 0px 230px;
+    margin: 33px 0px 0px 15.839vh;
+    font-size: 1.032vw;
   }
 
   .nav-links a {
