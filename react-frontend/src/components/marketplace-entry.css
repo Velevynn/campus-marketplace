@@ -35,7 +35,6 @@
 
 .title {
   font-family: Inter;
-  font-size: 25px; /* Default font size */
   font-weight: 600;
   margin: 10px 0;
   white-space: nowrap; /* Prevent title from wrapping to the next line */
