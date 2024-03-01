@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import "./error.css"; // Import CSS file for styling
 
 function Notification({ message }) {
@@ -22,5 +23,9 @@ function Notification({ message }) {
     </div>
   );
 }
+
+Notification.propTypes = {
+  message: PropTypes.string.isRequired,
+};
 
 export default Notification;

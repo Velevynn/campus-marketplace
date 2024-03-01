@@ -5,7 +5,6 @@ import "./pages.css";
 import axios from "axios";
 import { useSearchParams } from "react-router-dom";
 import Entry from "../components/MarketplaceEntry";
-import SearchBar from "../components/SearchBar";
 
 function Marketplace() {
   const [searchParams] = useSearchParams();

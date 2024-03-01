@@ -1,11 +1,10 @@
-import React, { useState } from "react";
-import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
+import React from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import SignUpPage from "./pages/SignUpPage";
 import Marketplace from "./pages/Marketplace";
 import AddListing from "./pages/AddListing";
 import NavBar from "./components/NavBar";
 import About from "./pages/About";
-import Footer from "./components/Footer";
 import TOS from "./pages/TOS";
 import BuyerListingView from "./Listings/BuyerView";
 import SellerListingView from "./Listings/SellerView";

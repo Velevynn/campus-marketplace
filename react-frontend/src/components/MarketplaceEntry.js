@@ -1,5 +1,6 @@
 import React from "react";
 import "./marketplace-entry.css";
+import PropTypes from "prop-types";
 import missing from "../assets/missing.jpg";
 import { Link } from "react-router-dom";
 
@@ -31,5 +32,11 @@ function Entry({ title, price, listingID }) {
     </Link>
   );
 }
+
+Entry.propTypes = {
+  title: PropTypes.string.isRequired,
+  price: PropTypes.string.isRequired,
+  listingID: PropTypes.string.isRequired,
+};
 
 export default Entry;
