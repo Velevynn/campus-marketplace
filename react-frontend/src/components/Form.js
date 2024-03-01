@@ -1,15 +1,17 @@
 // Form.js (Karan)
 
 import React, { useState } from "react";
-import axios from 'axios';
+import axios from "axios";
 import "./form.css";
 
 function Form() {
-
   const [listing, setListing] = useState({
+    userID: 1,
     title: "",
     description: "",
     price: "",
+    expirationDate: null,
+    quantity: 1,
   });
 
   function handleChange(event) {
@@ -17,28 +19,28 @@ function Form() {
     if (name === "price") {
       if (!isNaN(value)) {
         // Update the state only if the value is a valid number
-        setListing(prevListing => ({
+        setListing((prevListing) => ({
           ...prevListing,
-          [name]: value // Update "price" with the parsed number value
+          [name]: value, // Update "price" with the parsed number value
         }));
       }
     } else {
-      setListing(prevListing => ({
+      setListing((prevListing) => ({
         ...prevListing,
-        [name]: value
+        [name]: value,
       }));
     }
   }
 
   function submitForm() {
-    if (listing.price !== "" && listing.description !== "" && listing.price !== "") {
-        handleSubmit(listing);
-        window.location.href = '/marketplace';
+    if (listing.title !== "" && listing.price !== "") {
+      handleSubmit(listing);
+      window.location.href = "/marketplace";
     }
   }
 
   return (
-    <div className="form-container" style = {{fontFamily: "Inter"}}>
+    <div className="form-container" style={{ fontFamily: "Inter" }}>
       <h2>Post Listing</h2>
       <form>
         <label htmlFor="title">Title</label>
@@ -66,23 +68,28 @@ function Form() {
           onChange={handleChange}
         />
 
-        <input type="button" value="Post Listing" onClick={submitForm} style = {{backgroundColor: "#426B1F"}} />
+        <input
+          type="button"
+          value="Post Listing"
+          onClick={submitForm}
+          style={{ backgroundColor: "#426B1F" }}
+        />
       </form>
     </div>
   );
 }
 
-async function handleSubmit(person) {
-    try {
-      const response = await axios.post(
-        `http://localhost:8000/listings`,
-        person
-      );
-      return response;
-    } catch (error) {
-      console.log(error);
-      return false;
-    }
+async function handleSubmit(listing) {
+  try {
+    const response = await axios.post(
+      `http://localhost:8000/listings`,
+      listing,
+    );
+    return response;
+  } catch (error) {
+    console.log(error);
+    return false;
   }
+}
 
 export default Form;
