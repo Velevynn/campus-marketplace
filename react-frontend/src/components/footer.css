@@ -1,18 +1,18 @@
 .footer {
-    display: flex;
-    padding-top: 100px;
-    align-items: center;
+  display: flex;
+  padding-top: 100px;
+  align-items: center;
 }
 
 .logo {
-    flex-grow: 1;
+  flex-grow: 1;
 }
 
 .information {
-    padding: 0px 0px 10px;
-    font-family: Inter;
+  padding: 0px 0px 10px;
+  font-family: Inter;
 }
 
 .team-logo {
-    width: 20%;
+  width: 20%;
 }

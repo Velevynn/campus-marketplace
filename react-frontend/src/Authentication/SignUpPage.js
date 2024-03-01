@@ -1,22 +1,25 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState } from "react";
+import axios from "axios";
 
 function SignupForm() {
   const [user, setUser] = useState({
-    username: '',
-    full_name: '',
-    password: '',
-    email: '',
-    phoneNum: ''
+    username: "",
+    full_name: "",
+    password: "",
+    email: "",
+    phoneNum: "",
   });
 
   function handleChange(event) {
     const { name, value } = event.target;
-    
-    if (name === 'phoneNum') {
-      const numbers = value.replace(/\D/g, '');
-      const formattedNumber = numbers.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
-    
+
+    if (name === "phoneNum") {
+      const numbers = value.replace(/\D/g, "");
+      const formattedNumber = numbers.replace(
+        /(\d{3})(\d{3})(\d{4})/,
+        "($1) $2-$3",
+      );
+
       setUser({
         ...user,
         [name]: formattedNumber,
@@ -28,21 +31,27 @@ function SignupForm() {
   async function handleSubmit(event) {
     event.preventDefault();
     try {
-      const response = await axios.post('http://localhost:8000/users/register', user);
+      const response = await axios.post(
+        "http://localhost:8000/users/register",
+        user,
+      );
       if (response.status === 201) {
-        alert('User successfully registered!');
+        alert("User successfully registered!");
         setUser({
-          username: '',
-          full_name: '',
-          password: '',
-          email: '',
-          phoneNum: '',
+          username: "",
+          full_name: "",
+          password: "",
+          email: "",
+          phoneNum: "",
         });
       } else {
-        alert('Failed to register user.');
+        alert("Failed to register user.");
       }
     } catch (error) {
-      console.error('There was an error during the registration process:', error);
+      console.error(
+        "There was an error during the registration process:",
+        error,
+      );
     }
   }
 
@@ -58,7 +67,8 @@ function SignupForm() {
             id="email"
             value={user.email}
             onChange={handleChange}
-            required />
+            required
+          />
         </div>
         <div>
           <label htmlFor="phoneNum">Phone Number</label>
@@ -69,18 +79,20 @@ function SignupForm() {
             value={user.phoneNum}
             onChange={handleChange}
             maxLength="10"
-            required />
+            required
+          />
         </div>
         <div>
           <label htmlFor="username">Username</label>
-            <input
+          <input
             type="text"
             name="username"
             id="username"
             value={user.username}
             onChange={handleChange}
             maxLength="20"
-            required />
+            required
+          />
         </div>
         <div>
           <label htmlFor="full_name">Full Name</label>
@@ -90,20 +102,22 @@ function SignupForm() {
             id="full_name"
             value={user.full_name}
             onChange={handleChange}
-            maxLength = "50"
-            required />
+            maxLength="50"
+            required
+          />
         </div>
         <div>
-            <label htmlFor="password">Password</label>
-            <input
-                type="password"
-                name="password"
-                id="password"
-                value={user.password}
-                onChange={handleChange}
-                maxLength="12"
-                minLength="8"
-                required />
+          <label htmlFor="password">Password</label>
+          <input
+            type="password"
+            name="password"
+            id="password"
+            value={user.password}
+            onChange={handleChange}
+            maxLength="12"
+            minLength="8"
+            required
+          />
         </div>
         <button type="submit">Register</button>
       </form>

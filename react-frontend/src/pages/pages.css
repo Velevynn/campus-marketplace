@@ -1,18 +1,19 @@
 @font-face {
-    font-family: 'Newsreader';
-    src: url('../assets/newsreader/Newsreader_24pt-Regular.ttf') format('truetype');  /* Specify the path to the TrueType font file */
+  font-family: "Newsreader";
+  src: url("../assets/newsreader/Newsreader_24pt-Regular.ttf")
+    format("truetype"); /* Specify the path to the TrueType font file */
 }
 
 body {
-    font-family: 'Newsreader', serif; /* Use the NewsReader font */
+  font-family: "Newsreader", serif; /* Use the NewsReader font */
 }
 
 .divider {
-    border-top: 2px solid lightgrey;
-    margin: 2px; 
-  }
+  border-top: 2px solid lightgrey;
+  margin: 2px;
+}
 
 .team-container {
-    display: flex;
-    gap: 25px;
+  display: flex;
+  gap: 25px;
 }

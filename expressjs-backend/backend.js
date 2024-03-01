@@ -1,7 +1,7 @@
-const express = require('express');
+const express = require("express");
 const app = express();
 const port = 8000;
-const mysql = require('mysql2/promise');
+const mysql = require("mysql2/promise");
 const cors = require("cors");
 
 app.use(cors());
@@ -9,10 +9,10 @@ app.use(express.json());
 
 // Database configuration
 const dbConfig = {
-  host: 'localhost',
-  user: 'root', // Use your MySQL username
-  password: '', // Use your MySQL password
-  database: 'haggle_db' // Specify the database name
+  host: "localhost",
+  user: "root", // Use your MySQL username
+  password: "", // Use your MySQL password
+  database: "haggle_db", // Specify the database name
 };
 
 // Async function to establish database connection, create a database, and add tables
@@ -107,15 +107,16 @@ async function setupDatabase() {
   }
 }
 
-
 // Async function to check if a user already exists
 async function checkIfUserExists(username, email, phoneNumber) {
   try {
     const connection = await mysql.createConnection(dbConfig);
 
-
     // Check if the provided username, email, or phone number already exists
-    const [rows] = await connection.execute('SELECT * FROM users WHERE username = ? OR email = ? OR phoneNumber = ?', [username, email, phoneNumber]);
+    const [rows] = await connection.execute(
+      "SELECT * FROM users WHERE username = ? OR email = ? OR phoneNumber = ?",
+      [username, email, phoneNumber],
+    );
 
     // Close the connection
     await connection.end();
@@ -123,7 +124,10 @@ async function checkIfUserExists(username, email, phoneNumber) {
     // Return true if any user with the provided username, email, or phone number exists
     return rows.length > 0;
   } catch (error) {
-    console.error("An error occurred while checking if the user exists:", error);
+    console.error(
+      "An error occurred while checking if the user exists:",
+      error,
+    );
     throw error;
   }
 }
@@ -134,35 +138,56 @@ async function registerUser(user) {
     const connection = await mysql.createConnection(dbConfig);
 
     // Check if the user already exists
-    const userExists = await checkIfUserExists(user.username, user.email, user.phoneNumber);
+    const userExists = await checkIfUserExists(
+      user.username,
+      user.email,
+      user.phoneNumber,
+    );
 
     if (userExists) {
-      throw new Error('User with provided username, email, or phone number already exists');
+      throw new Error(
+        "User with provided username, email, or phone number already exists",
+      );
     }
 
     // Insert the new user into the users table
-    await connection.execute('INSERT INTO users (username, full_name, password, email, phoneNumber) VALUES (?, ?, ?, ?, ?)', [user.username, user.full_name, user.password, user.email, user.phoneNumber]);
+    await connection.execute(
+      "INSERT INTO users (username, full_name, password, email, phoneNumber) VALUES (?, ?, ?, ?, ?)",
+      [
+        user.username,
+        user.full_name,
+        user.password,
+        user.email,
+        user.phoneNumber,
+      ],
+    );
 
     // Close the connection
     await connection.end();
 
     // Return success message or any other data if needed
-    return { success: true, message: 'User registered successfully' };
+    return { success: true, message: "User registered successfully" };
   } catch (error) {
     console.error("An error occurred while registering the user:", error);
     throw error;
   }
 }
 
-app.post('/users/register', async (req, res) => {
+app.post("/users/register", async (req, res) => {
   try {
     const { username, full_name, password, email, phoneNum } = req.body;
     // Call the registerUser function passing user data
-    const result = await registerUser({ username, full_name, password, email, phoneNumber: phoneNum });
+    const result = await registerUser({
+      username,
+      full_name,
+      password,
+      email,
+      phoneNumber: phoneNum,
+    });
     res.status(201).json(result); // Send success response
   } catch (error) {
-    console.error('Error registering user:', error);
-    res.status(500).json({ error: 'Failed to register user' }); // Send error response
+    console.error("Error registering user:", error);
+    res.status(500).json({ error: "Failed to register user" }); // Send error response
   }
 });
 
@@ -174,10 +199,9 @@ app.post("/listings", async (req, res) => {
     res.status(201).send(listingToAdd);
   } catch (error) {
     console.error("Error adding listing:", error);
-    res.status(500).json({ error: 'Failed to add listing' });
+    res.status(500).json({ error: "Failed to add listing" });
   }
 });
-
 
 app.get("/listings", async (req, res) => {
   try {
@@ -185,7 +209,7 @@ app.get("/listings", async (req, res) => {
 
     const connection = await mysql.createConnection(dbConfig);
 
-    let query = 'SELECT * FROM listings';
+    let query = "SELECT * FROM listings";
 
     // If there is a search query, modify the SQL query to include a WHERE clause
     if (q) {
@@ -193,16 +217,14 @@ app.get("/listings", async (req, res) => {
     }
 
     const [results, fields] = await connection.execute(query);
-    
+
     res.send(results);
 
     await connection.end();
-
   } catch (error) {
     console.error("An error occurred while fetching listings:", error);
     res.status(500).send("An error occurred while fetching listings");
   }
-
 });
 
 app.get("/listings/:listingID", async (req, res) => {
@@ -210,13 +232,12 @@ app.get("/listings/:listingID", async (req, res) => {
     const { listingID } = req.params; // Extract the listingID from request parameters
     const connection = await mysql.createConnection(dbConfig);
     // Construct SQL query to fetch the listing by its ID
-    const query = 'SELECT * FROM listings WHERE listingID = ?';
+    const query = "SELECT * FROM listings WHERE listingID = ?";
     const [results, fields] = await connection.execute(query, [listingID]);
-    
+
     res.send(results);
 
     await connection.end();
-
   } catch (error) {
     console.error("An error occurred while fetching the listing:", error);
     res.status(500).send("An error occurred while fetching the listing");
@@ -224,35 +245,43 @@ app.get("/listings/:listingID", async (req, res) => {
 });
 
 async function addListing(listing) {
-  try{
+  try {
     const connection = await mysql.createConnection(dbConfig);
 
-    if (listing.expirationDate === '') {
+    if (listing.expirationDate === "") {
       listing.expirationDate = null;
     }
-    if (listing.expirationDate === '') {
+    if (listing.expirationDate === "") {
       listing.expirationDate = null;
     }
     //Insert the listing into the listing table
-    await connection.execute('INSERT INTO listings (userID, name, price, description, expirationDate, quantity) VALUES (?, ?, ?, ?, ?, ?)', [listing.userID, listing.title, listing.price, listing.description, listing.expirationDate, listing.quantity]);
-  
+    await connection.execute(
+      "INSERT INTO listings (userID, name, price, description, expirationDate, quantity) VALUES (?, ?, ?, ?, ?, ?)",
+      [
+        listing.userID,
+        listing.title,
+        listing.price,
+        listing.description,
+        listing.expirationDate,
+        listing.quantity,
+      ],
+    );
+
     //Close the connection to database
     await connection.end();
 
     //return success
-    return { success: true, message: 'Listing posted successfully' };
+    return { success: true, message: "Listing posted successfully" };
   } catch (error) {
     console.error("An error occured while posting this listing:", error);
     throw error;
   }
 }
 
-
 setupDatabase();
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
-
 
 module.exports = app;
