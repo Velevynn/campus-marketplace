@@ -123,11 +123,11 @@ const Button = styled.button`
   }
 `;
 
-const SuccessMessage = styled.div`
+/*const SuccessMessage = styled.div`
   color: green;
   margin-top: 5px;
   font-size: 12px;
-`;
+`;*/
 
 const PasswordRules = styled.div`
   background-color: #f7f7f7;
@@ -244,10 +244,14 @@ function SignUpPage() {
           const registerResponse = await axios.post('http://localhost:8000/users/register', user);
           if (registerResponse.status === 201) {
             setRegistrationSuccess(true);
+            if (registrationSuccess) {
+              navigate('/profile');
+            }
             navigate('/profile');
           }
         }
       } catch (error) {
+        console.log(error);
         if (error.response) {
           // Backend should provide specific error message in response
           const message = error.response.data.error || error.response.data.message;

@@ -5,16 +5,20 @@ import { Link } from "react-router-dom";
 
 function Entry({ title, price, listingID }) {
   const getTitleFontSize = () => {
-    if (title.length > 21) {
-      return "15px";
-    } else if (title.length > 14) {
-      return "20px";
+    if (title != undefined) {
+      if (title.length > 21) {
+        return "15px";
+      } else if (title.length > 14) {
+        return "20px";
+      } else {
+        return "25px";
+      }
     } else {
-      return "25px";
+      return "10px";
     }
   };
 
-  let source = `https://haggle-images.s3.amazonaws.com/${listingID}/image0`;
+  let source = `https://haggleimgs.s3.amazonaws.com/${listingID}/image0`;
 
 
   return (
