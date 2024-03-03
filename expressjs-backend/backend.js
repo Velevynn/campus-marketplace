@@ -1,33 +1,48 @@
-const express = require("express");
+const express = require('express');
+const mysql = require('mysql2/promise');
+const jwt = require('jsonwebtoken');
+const cors = require('cors');
+const bcrypt = require('bcrypt');
+
+const AWS = require('aws-sdk');
+
+const multer = require('multer');
+const upload = multer(); // Set the destination folder for uploaded files
+const fs = require('fs'); // Node.js file system module
+
 const app = express();
-const port = 8000;
-const mysql = require("mysql2/promise");
-const cors = require("cors");
+const PORT = 8000;
+const secretKey = 'YourSecretKey';
 
 app.use(cors());
 app.use(express.json());
 
-// Database configuration
+AWS.config.update({
+  accessKeyId: 'AKIAYS2NQRDTUW6UD4LX',
+  secretAccessKey: 'ybDU+i3pBZFf3OUbjEwCR7VDxFJnh1obV29lvwJn',
+  region: 'us-east-1'
+});
+
+const s3 = new AWS.S3();
+
 const dbConfig = {
-  host: "localhost",
-  user: "root", // Use your MySQL username
-  password: "", // Use your MySQL password
-  database: "haggle_db", // Specify the database name
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: ''
 };
 
-// Async function to establish database connection, create a database, and add tables
 async function setupDatabase() {
   try {
     const connection = await mysql.createConnection(dbConfig);
 
-    // Create a new database
     await connection.query("CREATE DATABASE IF NOT EXISTS haggle_db");
     console.log("Database created or already exists.");
 
-    // Use the newly created database
     await connection.query("USE haggle_db");
 
-    // Create users table
+    dbConfig.database = "haggle_db";
+
     await connection.query(`
       CREATE TABLE IF NOT EXISTS users (
         userID INT AUTO_INCREMENT PRIMARY KEY,
@@ -41,12 +56,11 @@ async function setupDatabase() {
     `);
     console.log("Table 'users' created or already exists.");
 
-    // Create the "Listing" table
     await connection.query(`
       CREATE TABLE IF NOT EXISTS listings (
         listingID INT AUTO_INCREMENT PRIMARY KEY,
         userID INT NOT NULL, -- Link to users table
-        name VARCHAR(255) NOT NULL,
+        title VARCHAR(255) NOT NULL,
         price DECIMAL(10, 2) NOT NULL,
         description TEXT,
         postDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -107,95 +121,170 @@ async function setupDatabase() {
   }
 }
 
-// Async function to check if a user already exists
-async function checkIfUserExists(username, email, phoneNumber) {
+const verifyToken = (req, res, next) => {
+  const bearerHeader = req.headers['authorization'];
+  if (!bearerHeader) return res.status(403).send({ message: "Token is required" });
+
+  const token = bearerHeader.split(' ')[1];
+  jwt.verify(token, secretKey, (err, decoded) => {
+    if (err) return res.status(401).send({ message: "Invalid Token" });
+    req.user = decoded;
+    next();
+  });
+};
+
+app.post('/users/check', async (req, res) => {
+  const { username, email, phoneNum } = req.body;
+  
   try {
     const connection = await mysql.createConnection(dbConfig);
+    await connection.query("USE haggle_db");
+    
+    let conflict = null;
 
-    // Check if the provided username, email, or phone number already exists
-    const [rows] = await connection.execute(
-      "SELECT * FROM users WHERE username = ? OR email = ? OR phoneNumber = ?",
-      [username, email, phoneNumber],
+    // Check if username exists
+    const [usernameResult] = await connection.execute(
+      'SELECT 1 FROM users WHERE username = ? LIMIT 1',
+      [username]
     );
+    if (usernameResult.length > 0) conflict = 'Username';
 
-    // Close the connection
-    await connection.end();
-
-    // Return true if any user with the provided username, email, or phone number exists
-    return rows.length > 0;
-  } catch (error) {
-    console.error(
-      "An error occurred while checking if the user exists:",
-      error,
+    // Check if email exists
+    const [emailResult] = await connection.execute(
+      'SELECT 1 FROM users WHERE email = ? LIMIT 1',
+      [email]
     );
-    throw error;
-  }
-}
+    if (emailResult.length > 0) conflict = 'Email';
 
-// Async function to register a new user
-async function registerUser(user) {
-  try {
-    const connection = await mysql.createConnection(dbConfig);
-
-    // Check if the user already exists
-    const userExists = await checkIfUserExists(
-      user.username,
-      user.email,
-      user.phoneNumber,
+    // Check if phone number exists
+    const [phoneResult] = await connection.execute(
+      'SELECT 1 FROM users WHERE phoneNumber = ? LIMIT 1',
+      [phoneNum]
     );
+    if (phoneResult.length > 0) conflict = 'Phone Number';
 
-    if (userExists) {
-      throw new Error(
-        "User with provided username, email, or phone number already exists",
-      );
+    if (conflict) {
+      res.status(409).json({
+        exists: true,
+        message: `${conflict} already exists.`,
+        conflict
+      });
+    } else {
+      res.status(200).json({
+        exists: false,
+        message: 'No conflicts with username, email, or phone number.'
+      });
     }
-
-    // Insert the new user into the users table
-    await connection.execute(
-      "INSERT INTO users (username, full_name, password, email, phoneNumber) VALUES (?, ?, ?, ?, ?)",
-      [
-        user.username,
-        user.full_name,
-        user.password,
-        user.email,
-        user.phoneNumber,
-      ],
-    );
-
-    // Close the connection
-    await connection.end();
-
-    // Return success message or any other data if needed
-    return { success: true, message: "User registered successfully" };
   } catch (error) {
-    console.error("An error occurred while registering the user:", error);
-    throw error;
-  }
-}
-
-app.post("/users/register", async (req, res) => {
-  try {
-    const { username, full_name, password, email, phoneNum } = req.body;
-    // Call the registerUser function passing user data
-    const result = await registerUser({
-      username,
-      full_name,
-      password,
-      email,
-      phoneNumber: phoneNum,
-    });
-    res.status(201).json(result); // Send success response
-  } catch (error) {
-    console.error("Error registering user:", error);
-    res.status(500).json({ error: "Failed to register user" }); // Send error response
+    console.error('Error checking user details:', error);
+    res.status(500).json({ error: 'Failed to check user details' });
   }
 });
 
-app.post("/listings", async (req, res) => {
+
+app.post('/users/register', async (req, res) => {
+  const { username, full_name, password, email, phoneNum: phoneNumber } = req.body;
+  
+  // It appears bcrypt was intended to be used but not imported. Ensure bcrypt is imported.
+  const bcrypt = require('bcrypt');
+  const hashedPassword = await bcrypt.hash(password, 10);
+
   try {
-    console.log(req.body);
+    const connection = await mysql.createConnection(dbConfig);
+    await connection.query("USE haggle_db");
+
+    const [result] = await connection.execute(
+      'INSERT INTO users (username, full_name, password, email, phoneNumber) VALUES (?, ?, ?, ?, ?)',
+      [username, full_name, hashedPassword, email, phoneNumber]
+    );
+
+    const token = jwt.sign({ username: username }, secretKey, { expiresIn: '24h' });
+    await connection.end();
+    res.status(201).json({ message: 'User registered successfully', token });
+  } catch (error) {
+    console.error('Error registering user:', error);
+    if (error.code === 'ER_DUP_ENTRY') {
+      // Handle duplicate entry error
+      res.status(409).json({ error: 'Username or email already exists' });
+    } else {
+      res.status(500).json({ error: 'Failed to register user' });
+    }
+  }
+});
+
+app.post('/users/login', async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+    await connection.query("USE haggle_db");
+    
+    const [users] = await connection.execute(
+      'SELECT * FROM users WHERE username = ?',
+      [username]
+    );
+
+    if (users.length > 0) {
+      const user = users[0];
+      const validPassword = await bcrypt.compare(password, user.password);
+      if (validPassword) {
+        const token = jwt.sign({ username: username }, secretKey, { expiresIn: '24h' });
+        await connection.end();
+        res.status(200).json({ message: 'User logged in successfully', token });
+      } else {
+        res.status(401).json({ error: 'Invalid password' });
+      }
+    } else {
+      res.status(404).json({ error: 'User not found' });
+    }
+  } catch (error) {
+    console.error('Error logging in:', error);
+    res.status(500).json({ error: 'Failed to log in' });
+  }
+});
+
+app.get('/users/profile', verifyToken, async (req, res) => {
+  const username = req.user.username; // Extracted from token
+
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+    await connection.query("USE haggle_db");
+
+    const [user] = await connection.execute(
+      'SELECT username, full_name, email, phoneNumber FROM users WHERE username = ?',
+      [username]
+    );
+
+    if (user.length > 0) {
+      res.status(200).json(user[0]);
+    } else {
+      res.status(404).json({ error: 'User not found' });
+    }
+  } catch (error) {
+    console.error('Error fetching user profile:', error);
+    res.status(500).json({ error: 'Failed to fetch user profile' });
+  }
+});
+
+app.post("/listings", upload.array('image'), async (req, res) => {
+  try {
+    console.log(req.body); // This will log information about other form fields
+    console.log(req.files); // This will log information about uploaded files
+
     const listingToAdd = req.body;
-    await addListing(listingToAdd); // Add await here
+    const images = req.files; // Get the uploaded images
+
+    const listingID = await addListing(listingToAdd);
+
+
+    for (const image of images) {
+      let i = 0;
+      const imageData = image.buffer;
+      console.log(imageData);
+      await uploadImageToS3(`${listingID}/image${i}`, image.buffer);
+      i++;
+    }
+
     res.status(201).send(listingToAdd);
   } catch (error) {
     console.error("Error adding listing:", error);
@@ -248,15 +337,13 @@ async function addListing(listing) {
   try {
     const connection = await mysql.createConnection(dbConfig);
 
-    if (listing.expirationDate === "") {
+    if(listing.expirationDate === 'null') {
       listing.expirationDate = null;
     }
-    if (listing.expirationDate === "") {
-      listing.expirationDate = null;
-    }
+
     //Insert the listing into the listing table
-    await connection.execute(
-      "INSERT INTO listings (userID, name, price, description, expirationDate, quantity) VALUES (?, ?, ?, ?, ?, ?)",
+    const [result] = await connection.execute(
+      "INSERT INTO listings (userID, title, price, description, expirationDate, quantity) VALUES (?, ?, ?, ?, ?, ?)",
       [
         listing.userID,
         listing.title,
@@ -267,21 +354,41 @@ async function addListing(listing) {
       ],
     );
 
+    const listingID = result.insertId;
+
     //Close the connection to database
     await connection.end();
 
     //return success
-    return { success: true, message: "Listing posted successfully" };
+    return listingID;
   } catch (error) {
     console.error("An error occured while posting this listing:", error);
     throw error;
   }
 }
 
+const uploadImageToS3 = async (imageName, imageData) => {
+  const params = {
+    Bucket: 'haggle-images',
+    Key: imageName,
+    Body: imageData
+  };
+
+  try {
+    const data = await s3.upload(params).promise();
+    console.log('Image uploaded successfully:', data.Location);
+    return data.Location; // Return the URL of the uploaded image
+  } catch (error) {
+    console.error('Error uploading image:', error);
+    throw error;
+  }
+};
+
+
 setupDatabase();
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
 
 module.exports = app;

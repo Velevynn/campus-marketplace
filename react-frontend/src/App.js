@@ -1,6 +1,8 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import SignUpPage from "./pages/SignUpPage";
+import LoginPage from './Authentication/LoginPage';
+import ProfilePage from './Profile/ProfilePage.js';
 import Marketplace from "./pages/Marketplace";
 import AddListing from "./pages/AddListing";
 import NavBar from "./components/NavBar";
@@ -15,7 +17,9 @@ function App() {
       <BrowserRouter basename="/">
         <NavBar />
         <Routes>
-          <Route path="/sign-up" element={<SignUpPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path="/about" element={<About />} />
           <Route path="/" element={<Marketplace />} />
           <Route path="/marketplace/" element={<Marketplace />} />
@@ -23,6 +27,7 @@ function App() {
           <Route path="/terms-of-service" element={<TOS />} />
           <Route path="/listings/:listingID" element={<BuyerListingView />} />
           <Route path="/mylisting/:listingID" element={<SellerListingView />} />
+          <Route path="/*" element={<SignUpPage />} />
         </Routes>
         {/*<Footer >*/}
       </BrowserRouter>

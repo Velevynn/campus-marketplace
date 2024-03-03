@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import "./form.css";
 
+
 function Form() {
   const [listing, setListing] = useState({
     userID: 1,
@@ -12,6 +13,7 @@ function Form() {
     price: "",
     expirationDate: null,
     quantity: 1,
+    images: []
   });
 
   function handleChange(event) {
@@ -32,10 +34,38 @@ function Form() {
     }
   }
 
-  function submitForm() {
+  function handleImageChange(event) {
+    const files = Array.from(event.target.files);
+    setListing(prevListing => ({
+      ...prevListing,
+      images: files
+    }));
+  }
+
+  async function submitForm() {
     if (listing.title !== "" && listing.price !== "") {
-      handleSubmit(listing);
-      window.location.href = "/marketplace";
+      const formData = new FormData();
+      formData.append('userID', listing.userID);
+      formData.append('title', listing.title);
+      formData.append('description', listing.description);
+      formData.append('price', listing.price);
+      formData.append('expirationDate', listing.expirationDate);
+      formData.append('quantity', listing.quantity);
+      listing.images.forEach((image) => {
+        formData.append(`image`, image);
+      });
+      
+      try {
+        //Add response = await...etc. and return code
+        await axios.post(`http://localhost:8000/listings`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+        window.location.href = '/marketplace';
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
 
@@ -67,6 +97,15 @@ function Form() {
           value={listing.price}
           onChange={handleChange}
         />
+        <label htmlFor="images">Images</label>
+        <input
+          type="file"
+          name="images"
+          id="images"
+          accept="image/*"
+          multiple
+          onChange={handleImageChange}
+        />
 
         <input
           type="button"
@@ -77,19 +116,6 @@ function Form() {
       </form>
     </div>
   );
-}
-
-async function handleSubmit(listing) {
-  try {
-    const response = await axios.post(
-      `http://localhost:8000/listings`,
-      listing,
-    );
-    return response;
-  } catch (error) {
-    console.log(error);
-    return false;
-  }
 }
 
 export default Form;
