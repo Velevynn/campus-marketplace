@@ -18,8 +18,8 @@ app.use(cors());
 app.use(express.json());
 
 AWS.config.update({
-  accessKeyId: 'AKIAYS2NQRDTUW6UD4LX',
-  secretAccessKey: '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',
+  accessKeyId: 'AKIAYS2NQRDT7Z6MINKF',
+  secretAccessKey: '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',
   region: 'us-east-1'
 });
 
@@ -302,7 +302,7 @@ app.get("/listings", async (req, res) => {
 
     // If there is a search query, modify the SQL query to include a WHERE clause
     if (q) {
-      query += ` WHERE name LIKE '%${q}%' OR description LIKE '%${q}%'`;
+      query += ` WHERE title LIKE '%${q}%' OR description LIKE '%${q}%'`;
     }
 
     const [results, fields] = await connection.execute(query);
@@ -369,7 +369,7 @@ async function addListing(listing) {
 
 const uploadImageToS3 = async (imageName, imageData) => {
   const params = {
-    Bucket: 'haggle-images',
+    Bucket: 'haggleimgs',
     Key: imageName,
     Body: imageData
   };
