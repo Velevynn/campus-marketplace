@@ -42,7 +42,7 @@ function Entry({ title, price, listingID }) {
 Entry.propTypes = {
   title: PropTypes.string.isRequired,
   price: PropTypes.string.isRequired,
-  listingID: PropTypes.string.isRequired,
+  listingID: PropTypes.number.isRequired,
 };
 
 export default Entry;

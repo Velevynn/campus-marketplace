@@ -28,7 +28,7 @@ function NavBar() {
           <Link to="/marketplace">Marketplace</Link>
         </li>
         <li>
-          <Link to="/login">My Profile</Link>
+          <Link to="/profile">My Profile</Link>
         </li>
         <li>
           <Link to="/new-listing" className="post-listing-button">
