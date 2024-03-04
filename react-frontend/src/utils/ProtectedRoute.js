@@ -1,13 +1,14 @@
 // ProtectedRoute.js
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Navigate } from 'react-router-dom';
+import {Navigate} from 'react-router-dom';
 
 const ProtectedRoute = ({children}) => {
     const isAuthenticated = localStorage.getItem('token') !== null;
-    if (!isAuthenticated) {
+    if (isAuthenticated == false) {
         return <Navigate to = "/login"/>;
     } 
+    console.log(children);
     return children;
 }
 
