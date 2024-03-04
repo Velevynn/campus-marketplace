@@ -3,11 +3,11 @@
 import React, { useState } from "react";
 import axios from "axios";
 import "./form.css";
-
+import {jwtDecode} from "jwt-decode";
 
 function Form() {
   const [listing, setListing] = useState({
-    userID: 1,
+    userID: null,
     title: "",
     description: "",
     price: "",
@@ -44,30 +44,49 @@ function Form() {
 
   async function submitForm() {
     if (listing.title !== "" && listing.price !== "") {
-      const formData = new FormData();
-      formData.append('userID', listing.userID);
-      formData.append('title', listing.title);
-      formData.append('description', listing.description);
-      formData.append('price', listing.price);
-      formData.append('expirationDate', listing.expirationDate);
-      formData.append('quantity', listing.quantity);
-      listing.images.forEach((image) => {
-        formData.append(`image`, image);
-      });
-      
+      const token = localStorage.getItem("token"); // Retrieve the JWT token from localStorage
+      const decodedToken = jwtDecode(token); // Decode the token
+      const username = decodedToken.username; // Extract the username from the token
+  
       try {
-        //Add response = await...etc. and return code
-        await axios.post(`http://localhost:8000/listings`, formData, {
+        // Make a request to the backend to fetch the userID based on the username
+        const response = await axios.post(`http://localhost:8000/users/userID`, { username }, {
           headers: {
-            'Content-Type': 'multipart/form-data'
+            'Authorization': `Bearer ${token}`
           }
         });
-        window.location.href = '/marketplace';
+  
+        const userID = response.data.userID;
+  
+        const formData = new FormData();
+        formData.append('userID', userID); // Include the userID in the form data
+        formData.append('title', listing.title);
+        formData.append('description', listing.description);
+        formData.append('price', listing.price);
+        formData.append('expirationDate', listing.expirationDate);
+        formData.append('quantity', listing.quantity);
+        listing.images.forEach((image) => {
+          formData.append(`image`, image);
+        });
+        
+        try {
+          await axios.post(`http://localhost:8000/listings`, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          });
+          window.location.href = '/marketplace';
+        } catch (error) {
+          console.log(error);
+        }
       } catch (error) {
         console.log(error);
       }
     }
   }
+  
+  
+  
 
   return (
     <div className="form-container" style={{ fontFamily: "Inter" }}>

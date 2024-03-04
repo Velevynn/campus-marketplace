@@ -18,8 +18,8 @@ app.use(cors());
 app.use(express.json());
 
 AWS.config.update({
-  accessKeyId: 'AKIAYS2NQRDT7Z6MINKF',
-  secretAccessKey: '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',
+  accessKeyId: 'AKIAYS2NQRDTUW6UD4LX',
+  secretAccessKey: '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',
   region: 'us-east-1'
 });
 
@@ -302,7 +302,7 @@ app.get("/listings", async (req, res) => {
 
     // If there is a search query, modify the SQL query to include a WHERE clause
     if (q) {
-      query += ` WHERE title LIKE '%${q}%' OR description LIKE '%${q}%'`;
+      query += ` WHERE name LIKE '%${q}%' OR description LIKE '%${q}%'`;
     }
 
     const [results, fields] = await connection.execute(query);
@@ -369,7 +369,7 @@ async function addListing(listing) {
 
 const uploadImageToS3 = async (imageName, imageData) => {
   const params = {
-    Bucket: 'haggleimgs',
+    Bucket: 'haggle-images',
     Key: imageName,
     Body: imageData
   };
@@ -383,6 +383,30 @@ const uploadImageToS3 = async (imageName, imageData) => {
     throw error;
   }
 };
+
+
+app.post('/users/userID', verifyToken, async (req, res) => {
+  const { username } = req.body;
+
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+    await connection.query("USE haggle_db");
+
+    const [user] = await connection.execute(
+      'SELECT userID FROM users WHERE username = ?',
+      [username]
+    );
+
+    if (user.length > 0) {
+      res.status(200).json({ userID: user[0].userID });
+    } else {
+      res.status(404).json({ error: 'User not found' });
+    }
+  } catch (error) {
+    console.error('Error fetching user ID:', error);
+    res.status(500).json({ error: 'Failed to fetch user ID' });
+  }
+});
 
 
 setupDatabase();
