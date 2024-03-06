@@ -55,14 +55,14 @@ function ProfilePage() {
 
   const handleSignOut = () => {
     localStorage.removeItem('token'); // Remove the token from localStorage
-    navigate('/login'); // Navigate to the login page
+    window.location.href = '/login'; // navigate to profile page (refresh to update nav bar for profile)
   };
 
   useEffect(() => {
     const fetchUserProfile = async () => {
       const token = localStorage.getItem('token');
       if (!token) {
-        navigate('/login'); // Redirect to login if there's no token
+        navigate('/profile'); // Redirect to login if there's no token
         return;
       }
 

@@ -4,6 +4,19 @@ import { Link } from "react-router-dom";
 import logo from "../assets/logo.png";
 import "./navbar.css"; // Import CSS file for styling
 import SearchBar from "./SearchBar";
+import {jwtDecode} from "jwt-decode";
+
+function getProfileName() {
+  const token = localStorage.getItem("token");
+  if (token !== null) {
+    const decodedToken = jwtDecode(token);
+    const username = decodedToken.username;
+    console.log(username);
+    return username;
+  } else {
+    return "My Profile";
+  }
+}
 
 function NavBar() {
   return (
@@ -28,7 +41,7 @@ function NavBar() {
           <Link to="/marketplace">Marketplace</Link>
         </li>
         <li>
-          <Link to="/profile">My Profile</Link>
+          <Link to="/profile">{getProfileName()}</Link>
         </li>
         <li>
           <Link to="/new-listing" className="post-listing-button">
@@ -39,5 +52,7 @@ function NavBar() {
     </nav>
   );
 }
+
+
 
 export default NavBar;
