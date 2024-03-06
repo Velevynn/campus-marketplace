@@ -1,5 +1,4 @@
 // middleware.js
-
 const jwt = require('jsonwebtoken');
 
 const secretKey = 'YourSecretKey';
