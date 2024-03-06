@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styled, { css } from 'styled-components';
 import logoImage from '../assets/haggle-horizontal.png';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 // Styled components
 const Container = styled.div`
@@ -121,7 +121,6 @@ function LoginPage() {
   const [credentials, setCredentials] = useState({ username: '', password: '' });
   const [isFormValid, setIsFormValid] = useState(false); // Define isFormValid state
   const [errorMessage, setErrorMessage] = useState(''); // Use this if you want to display error messages (commented out due to ES)
-  const navigate = useNavigate(); // make sure to import useNavigate from 'react-router-dom'
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -133,7 +132,7 @@ function LoginPage() {
     try {
       const response = await axios.post('http://localhost:8000/users/login', credentials);
       localStorage.setItem('token', response.data.token); // Store the token
-      navigate('/profile'); // Navigate to profile page
+      window.location.href = '/profile';  // navigate to profile page (refresh to update nav bar for profile)
     } catch (error) {
       if (error.response) {
         setErrorMessage(error.response.data.error);
