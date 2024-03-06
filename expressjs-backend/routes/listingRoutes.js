@@ -18,9 +18,8 @@ router.post("/", upload.array('image'), async (req, res) => {
     
         const listingID = await addListing(listingToAdd);
     
-    
+        let i = 0;
         for (const image of images) {
-          let i = 0;
           const imageData = image.buffer;
           console.log(imageData);
           await uploadImageToS3(`${listingID}/image${i}`, image.buffer);
