@@ -50,8 +50,7 @@ const BuyerListingView = () => {
         <div>
           <h1>{listing.name}</h1>
           <div className="image-container">
-            {/* Placeholder for the image */}
-            <div className="image-placeholder"></div>
+            <img src={`https://haggleimgs.s3.amazonaws.com/${listingID}/image0`} alt="Listing" className="listing-image" />
           </div>
           <p className="price-buyerview">${listing.price}</p>
           <p>Description: {listing.description}</p>

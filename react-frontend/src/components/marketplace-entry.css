@@ -1,12 +1,12 @@
 .entry-container {
-  width: 240px;
-  height: 290px;
+  width: 249px;
+  height: 305px;
   background-color: white;
-  padding: 20px 30px;
+  padding: 0px 0px;
   margin-top: 20px;
   margin-bottom: 20px;
   margin-right: 30px;
-  border-radius: 5px;
+  border-radius: 15px;
   box-shadow: 3px 3px 7px rgba(0, 0, 0, 0.1);
   display: inline-block;
   font-family: Inter, sans-serif;
@@ -14,31 +14,41 @@
 
 .image-container {
   width: 100%;
-  height: 60%;
+  height: 70%;
 }
 
 .entry-image {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto;
+  object-fit: contain;
 }
 
 .text-container {
-  padding-top: 10px;
+  margin-top: -10px;
+  margin-left: 10px;
 }
 
 .price {
   color: green !important;
   font-weight: bold;
+  font-size: 10px;
   margin: -25px 0px 0px 0px; /* Adjust margin top and bottom to move the price closer to the title */
 }
 
 .title {
   font-family: Inter;
   font-weight: 600;
-  margin: 10px 0;
+  margin: 2px 0;
   white-space: nowrap; /* Prevent title from wrapping to the next line */
   overflow: hidden; /* Hide any overflow */
   text-overflow: ellipsis; /* Display ellipsis (...) for overflow */
   height: 50px;
+}
+
+.entry-image {
+  transition: transform 0.3s ease;
+}
+
+.image-container:hover .entry-image {
+  transform: scale(1.05); /* Scale the image by 20% on hover (adjust as needed) */
 }

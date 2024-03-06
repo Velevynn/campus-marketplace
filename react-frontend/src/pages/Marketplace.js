@@ -30,7 +30,7 @@ function Marketplace() {
       console.log("Error fetching entries:", error);
     }
   }
-
+  
   return (
     <div style={{ margin: "25px" }}>
       <h style={{ fontFamily: "Newsreader, serif", fontSize: "3rem" }}>
@@ -40,7 +40,7 @@ function Marketplace() {
       {entries.map((entry) => (
         <Entry
           key={entry.listingID}
-          title={entry.name}
+          title={entry.title}
           price={entry.price}
           listingID={entry.listingID}
         />
