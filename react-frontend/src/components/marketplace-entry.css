@@ -1,3 +1,8 @@
+@font-face {
+  font-family: 'inter';
+  src: url('../assets/inter/Inter-Regular.ttf');
+}
+
 .entry-container {
   width: 249px;
   height: 305px;
@@ -9,7 +14,7 @@
   border-radius: 15px;
   box-shadow: 3px 3px 7px rgba(0, 0, 0, 0.1);
   display: inline-block;
-  font-family: Inter, sans-serif;
+  font-family: inter, sans-serif;
 }
 
 .image-container {
@@ -29,6 +34,7 @@
 }
 
 .price {
+  font-family: inter;
   color: green !important;
   font-weight: bold;
   font-size: 10px;
@@ -36,7 +42,7 @@
 }
 
 .title {
-  font-family: Inter;
+  font-family: inter;
   font-weight: 600;
   margin: 2px 0;
   white-space: nowrap; /* Prevent title from wrapping to the next line */
