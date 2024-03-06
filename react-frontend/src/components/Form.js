@@ -1,17 +1,19 @@
 // Form.js (Karan)
 
-import React, { useState } from "react";
+import React, { useState, useNavigate } from "react";
 import axios from "axios";
 import "./form.css";
+import { jwtDecode } from "jwt-decode";
 
 function Form() {
   const [listing, setListing] = useState({
-    userID: 1,
+    userID: null,
     title: "",
     description: "",
     price: "",
     expirationDate: null,
     quantity: 1,
+    images: []
   });
 
   function handleChange(event) {
@@ -32,12 +34,60 @@ function Form() {
     }
   }
 
-  function submitForm() {
+  function handleImageChange(event) {
+    const files = Array.from(event.target.files);
+    setListing(prevListing => ({
+      ...prevListing,
+      images: files
+    }));
+  }
+
+  async function submitForm() {
     if (listing.title !== "" && listing.price !== "") {
-      handleSubmit(listing);
-      window.location.href = "/marketplace";
+      const token = localStorage.getItem("token"); // Retrieve the JWT token from localStorage
+      const decodedToken = jwtDecode(token); // Decode the token
+      const username = decodedToken.username; // Extract the username from the token
+      const navigate = useNavigate(); // make sure to import useNavigate from 'react-router-dom'
+  
+      try {
+        // Make a request to the backend to fetch the userID based on the username
+        const response = await axios.post(`http://localhost:8000/users/userID`, { username }, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+  
+        const userID = response.data.userID;
+  
+        const formData = new FormData();
+        formData.append('userID', userID); // Include the userID in the form data
+        formData.append('title', listing.title);
+        formData.append('description', listing.description);
+        formData.append('price', listing.price);
+        formData.append('expirationDate', listing.expirationDate);
+        formData.append('quantity', listing.quantity);
+        listing.images.forEach((image) => {
+          formData.append(`image`, image);
+        });
+        
+        try {
+          await axios.post(`http://localhost:8000/listings`, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          });
+          navigate('/marketplace');
+        } catch (error) {
+          console.log(error);
+        }
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
+  
+  
+  
 
   return (
     <div className="form-container" style={{ fontFamily: "Inter" }}>
@@ -52,7 +102,7 @@ function Form() {
           onChange={handleChange}
         />
         <label htmlFor="description">Description</label>
-        <input
+        <textarea
           type="text"
           name="description"
           id="description"
@@ -67,6 +117,15 @@ function Form() {
           value={listing.price}
           onChange={handleChange}
         />
+        <label htmlFor="images">Images</label>
+        <input
+          type="file"
+          name="images"
+          id="images"
+          accept="image/*"
+          multiple
+          onChange={handleImageChange}
+        />
 
         <input
           type="button"
@@ -77,19 +136,6 @@ function Form() {
       </form>
     </div>
   );
-}
-
-async function handleSubmit(listing) {
-  try {
-    const response = await axios.post(
-      `http://localhost:8000/listings`,
-      listing,
-    );
-    return response;
-  } catch (error) {
-    console.log(error);
-    return false;
-  }
 }
 
 export default Form;

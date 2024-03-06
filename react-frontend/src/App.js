@@ -1,13 +1,16 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import SignUpPage from "./pages/SignUpPage";
+import SignUpPage from "./authentication/SignUpPage.js";
+import LoginPage from './authentication/LoginPage.js';
+import ProfilePage from './profile/ProfilePage.js';
 import Marketplace from "./pages/Marketplace";
 import AddListing from "./pages/AddListing";
 import NavBar from "./components/NavBar";
 import About from "./pages/About";
 import TOS from "./pages/TOS";
-import BuyerListingView from "./Listings/BuyerView";
-import SellerListingView from "./Listings/SellerView";
+import BuyerListingView from "./listings/BuyerView.js";
+import SellerListingView from "./listings/SellerView.js";
+import ProtectedRoute from "./utils/ProtectedRoute"; // Importing ProtectedRoute
 
 function App() {
   return (
@@ -15,16 +18,28 @@ function App() {
       <BrowserRouter basename="/">
         <NavBar />
         <Routes>
-          <Route path="/sign-up" element={<SignUpPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/profile" 
+                element={
+                <ProtectedRoute>
+                  <ProfilePage/>
+                </ProtectedRoute>
+                } />
           <Route path="/about" element={<About />} />
           <Route path="/" element={<Marketplace />} />
           <Route path="/marketplace/" element={<Marketplace />} />
-          <Route path="/new-listing" element={<AddListing />} />
+          <Route path="/new-listing" 
+                element={
+                  <ProtectedRoute> 
+                    <AddListing/>
+                  </ProtectedRoute>
+                  } />
           <Route path="/terms-of-service" element={<TOS />} />
           <Route path="/listings/:listingID" element={<BuyerListingView />} />
           <Route path="/mylisting/:listingID" element={<SellerListingView />} />
+          <Route path="/*" element={<SignUpPage />} />
         </Routes>
-        {/*<Footer >*/}
       </BrowserRouter>
     </div>
   );

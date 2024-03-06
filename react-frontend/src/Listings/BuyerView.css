@@ -9,7 +9,22 @@
 
 /* Image container styles */
 .image-container {
-  margin-bottom: 20px; /* Add margin to the bottom of the image container */
+  max-width: 400px;
+  max-height: 400px;
+  overflow: hidden;
+}
+
+.listing-image {
+  width: auto;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  transform-origin: center;
+  transition: transform 0.3s ease; /* Add a smooth transition effect */
+}
+
+.image-container:hover .listing-image {
+  transform: scale(1.5); /* Scale the image by 20% on hover (adjust as needed) */
 }
 
 /* Placeholder for the image styles */
