@@ -5,10 +5,10 @@ const mysql = require('mysql2/promise');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-const {verifyToken} = require('../util/middleware');
 const secretKey = 'YourSecretKey';
 
 const { dbConfig } = require('../util/database');
+const { verifyToken } = require('../util/middleware');
 
 router.post('/check', async (req, res) => {
     const { username, email, phoneNum } = req.body;

@@ -1,9 +1,9 @@
 // app.js
 const express = require('express');
 const cors = require('cors');
-const { setupDatabase } = require('./util/database');
 const userRoutes = require('./routes/userRoutes');
 const listingRoutes = require('./routes/listingRoutes');
+const { setupDatabase } = require('./util/database');
 
 const app = express();
 const PORT = 8000;

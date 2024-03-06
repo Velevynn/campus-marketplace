@@ -97,4 +97,4 @@ async function setupDatabase() {
     }
 }
 
-module.exports = { setupDatabase, dbConfig };
+module.exports = { dbConfig, setupDatabase };

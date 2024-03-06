@@ -1,12 +1,12 @@
 // listingRoutes.js
 const express = require('express');
-const router = express.Router();
 const mysql = require('mysql2/promise');
 const multer = require('multer');
 const upload = multer();
+const router = express.Router();
 
-const {uploadImageToS3} = require('../util/s3');
 const { dbConfig } = require('../util/database');
+const { uploadImageToS3 } = require('../util/s3');
 
 router.post("/", upload.array('image'), async (req, res) => {
     try {
