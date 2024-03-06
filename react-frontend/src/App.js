@@ -1,15 +1,15 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import SignUpPage from "./authentication/SignUpPage.js";
-import LoginPage from './authentication/LoginPage.js';
-import ProfilePage from './profile/ProfilePage.js';
+import SignUpPage from "./Authentication/SignUpPage.js";
+import LoginPage from './Authentication/LoginPage.js';
+import ProfilePage from './Profile/ProfilePage.js';
 import Marketplace from "./pages/Marketplace";
 import AddListing from "./pages/AddListing";
 import NavBar from "./components/NavBar";
 import About from "./pages/About";
 import TOS from "./pages/TOS";
-import BuyerListingView from "./listings/BuyerView.js";
-import SellerListingView from "./listings/SellerView.js";
+import BuyerListingView from "./Listings/BuyerView.js";
+import SellerListingView from "./Listings/SellerView.js";
 import ProtectedRoute from "./utils/ProtectedRoute"; // Importing ProtectedRoute
 
 function App() {
