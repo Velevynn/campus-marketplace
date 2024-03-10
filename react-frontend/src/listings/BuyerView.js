@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import "./BuyerView.css";
+import ImageCarousel from "../components/ImageCarousel";
 
 const BuyerListingView = () => {
   const { listingID } = useParams();
   const [listing, setListing] = useState(null);
+  const [images, setImages] = useState([]);
 
   /* hook to fetch data when listingID changes */
   useEffect(() => {
@@ -26,6 +28,26 @@ const BuyerListingView = () => {
     };
 
     fetchData();
+  }, [listingID]);
+
+    /* Hook to fetch images when listingID changes */
+  useEffect(() => {
+    const fetchImages = async () => {
+      try {
+        /* Fetch images for the listing from the backend */
+        const response = await axios.get(
+          `http://localhost:8000/listings/images/${listingID}`,
+        );
+        if (response.data.length > 0) {
+          setImages(response.data);
+          console.log(response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching images:", error);
+      }
+    };
+
+    fetchImages();
   }, [listingID]);
 
   const handleBuyNow = () => {
@@ -49,8 +71,8 @@ const BuyerListingView = () => {
       {listing ? (
         <div>
           <h1>{listing.name}</h1>
-          <div className="image-container">
-            <img src={`https://haggleimgs.s3.amazonaws.com/${listingID}/image0`} alt="Listing" className="listing-image" />
+          <div className="images">
+            <ImageCarousel images={images} />
           </div>
           <p className="price-buyerview">${listing.price}</p>
           <p>Description: {listing.description}</p>

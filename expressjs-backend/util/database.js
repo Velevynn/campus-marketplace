@@ -47,7 +47,17 @@ async function setupDatabase() {
           );
         `);
         console.log("Table 'listings' created or already exists.");
-    
+        
+        await connection.query(`
+        CREATE TABLE IF NOT EXISTS images (
+          imageID INT AUTO_INCREMENT PRIMARY KEY,
+          listingID INT,
+          imageURL VARCHAR(255),
+          FOREIGN KEY (listingID) REFERENCES listings(listingID)
+        );
+      `);
+      console.log("Table 'images' created or already exists.");
+
         await connection.query(`
           CREATE TABLE IF NOT EXISTS transactions (
             transactionID INT AUTO_INCREMENT PRIMARY KEY,
