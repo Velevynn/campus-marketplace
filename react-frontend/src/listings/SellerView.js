@@ -12,8 +12,9 @@ const SellerListingView = () => {
     const fetchData = async () => {
       try {
         /* get data of listing by its ID */
+        const randomNum = (Math.random(1000)).toString();
         const response = await axios.get(
-          `http://localhost:8000/mylisting/${listingID}`,
+          `http://localhost:8000/mylisting/${listingID}?cc=${randomNum}`,
         );
         /* set fetched data to state */
         if (response.data.length > 0) {
