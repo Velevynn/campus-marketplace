@@ -37,10 +37,13 @@ const BuyerListingView = () => {
         /* Fetch images for the listing from the backend */
         const randomNum = (Math.random(1,1000)).toString();
         const response = await axios.get(
-          `http://localhost:8000/listings/images/${listingID}?=cc${randomNum}`,
+          `http://localhost:8000/listings/images/${listingID}`,
         );
         if (response.data.length > 0) {
           setImages(response.data);
+          for (let i = 0; i < images.length(); i++) {
+            images[i] += `?=cc${randomNum}`;
+          }
           console.log(response.data);
         }
       } catch (error) {

@@ -97,7 +97,7 @@ router.get("/images/:listingID", async (req, res) => {
 async function addImages(listingID, numImages) {
   try {
     const connection = await mysql.createConnection(dbConfig);
-    for (i = 0; i < numImages; i++) {
+    for (let i = 0; i < numImages; i++) {
       await connection.execute(
         "INSERT INTO images (listingID, imageURL) VALUES (?, ?)",
         [
