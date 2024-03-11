@@ -14,14 +14,17 @@ function ImageCarousel({ images }) {
   };
 
   return (
-    <div className="image-carousel"> {/* Add this class */}
-      <Slider {...settings}>
-        {images.map((imageNum, index) => (
-          <div key={index}>
-            <img src={imageNum.imageURL} alt={`Image ${index}`} />
-          </div>
-        ))}
-      </Slider>
+    <div className = "image-carousel-container"> {}
+
+        <div className="image-carousel"> {/* Add this class */}
+        <Slider {...settings}>
+            {images.map((imageNum, index) => (
+            <div key={index}>
+                <img src={imageNum.imageURL} alt={`Image ${index}`} />
+            </div>
+            ))}
+        </Slider>
+        </div>
     </div>
   );
 }

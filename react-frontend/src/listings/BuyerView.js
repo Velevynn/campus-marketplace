@@ -67,21 +67,24 @@ const BuyerListingView = () => {
 
   /* first check if listing data is available, then render */
   return (
-    <div className="container">
+    <div className="listing-container">
       {listing ? (
-        <div>
-          <h1>{listing.name}</h1>
-          <div className="images">
-            <ImageCarousel images={images} />
-          </div>
-          <p className="price-buyerview">${listing.price}</p>
-          <p>Description: {listing.description}</p>
-          <div className="buttons">
-            <button onClick={handleBuyNow}>Buy Now</button>
-            <div>
+        <div className="listing-content">
+          <div>
+            <h1>{listing.name}</h1>
+            <div className="images">
+              <ImageCarousel images={images} />
+            </div>
+            <p className="price-buyerview">${listing.price}</p>
+            <div className="buttons">
+              <button onClick={handleBuyNow}>Buy Now</button>
               <button onClick={handleMakeOffer}>Make Offer</button>
               <button onClick={handleStartChat}>Start a Chat</button>
             </div>
+          </div>
+          <div className="description">
+            <h3>Description</h3>
+            <p>{listing.description}</p>
           </div>
         </div>
       ) : (
