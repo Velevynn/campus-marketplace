@@ -14,9 +14,8 @@ const BuyerListingView = () => {
     const fetchData = async () => {
       try {
         /* get data of listing by its ID */
-        const randomNum = (Math.random(1000)).toString();
         const response = await axios.get(
-          `http://localhost:8000/listings/${listingID}?cc=${randomNum}`,
+          `http://localhost:8000/listings/${listingID}`,
         );
         /* set fetched data to state */
         if (response.data.length > 0) {
@@ -36,8 +35,9 @@ const BuyerListingView = () => {
     const fetchImages = async () => {
       try {
         /* Fetch images for the listing from the backend */
+        const randomNum = (Math.random(1,1000)).toString();
         const response = await axios.get(
-          `http://localhost:8000/listings/images/${listingID}`,
+          `http://localhost:8000/listings/images/${listingID}?=cc${randomNum}`,
         );
         if (response.data.length > 0) {
           setImages(response.data);

@@ -19,7 +19,7 @@ function Entry({ title, price, listingID }) {
   };
 
   const randomNum = (Math.random(2000)).toString();  // generate random num
-  let source = `https://haggleimgs.s3.amazonaws.com/${listingID}/image0?clearCache=${randomNum}`;  
+  let source = `https://haggleimgs.s3.amazonaws.com/${listingID}/image0?cc=${randomNum}`;  
   // request img from AWS, add random query to circumvent browser caching
 
   return (
