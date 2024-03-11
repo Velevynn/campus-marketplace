@@ -12,6 +12,12 @@ function ImageCarousel({ images }) {
     slidesToShow: 1,
     slidesToScroll: 1,
   };
+  
+  const randomNum = (Math.random(1000)).toString();
+  for (let i = 0; i < images.length; i++) {
+    images[i].imageURL += `?=${randomNum}`;
+    console.log(images[i].imageURL);
+  }
 
   return (
     <div className = "image-carousel-container"> {}
@@ -32,7 +38,7 @@ function ImageCarousel({ images }) {
 ImageCarousel.propTypes = {
     images: PropTypes.arrayOf(
       PropTypes.shape({
-        url: PropTypes.string.isRequired
+        imageURL: PropTypes.string.isRequired
       })
     ).isRequired
   };

@@ -51,7 +51,7 @@ router.get("/", async (req, res) => {
     
         const [results, fields] = await connection.execute(query);
     
-        res.status(200).send(results);
+        res.send(results);
 
         await connection.end();
       } catch (error) {
@@ -68,7 +68,7 @@ router.get("/:listingID", async (req, res) => {
         const query = "SELECT * FROM listings WHERE listingID = ?";
         const [results, fields] = await connection.execute(query, [listingID]);
     
-        res.status(200).send(results);
+        res.send(results);
     
         await connection.end();
       } catch (error) {
@@ -85,7 +85,7 @@ router.get("/images/:listingID", async (req, res) => {
       const query = "SELECT * FROM images WHERE listingID = ?";
       const [results, fields] = await connection.execute(query, [listingID]);
   
-      res.status(200).send(results);
+      res.send(results);
   
       await connection.end();
     } catch (error) {
@@ -97,7 +97,7 @@ router.get("/images/:listingID", async (req, res) => {
 async function addImages(listingID, numImages) {
   try {
     const connection = await mysql.createConnection(dbConfig);
-    for (let i = 0; i < numImages; i++) {
+    for (i = 0; i < numImages; i++) {
       await connection.execute(
         "INSERT INTO images (listingID, imageURL) VALUES (?, ?)",
         [
