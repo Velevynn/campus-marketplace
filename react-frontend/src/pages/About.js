@@ -28,7 +28,7 @@ function About() {
         />
 
         <Bio
-          name="Jimmy Cromeenes"
+          name="Jimmy"
           bio="
           Hi there, I'm Jimmy, a third-year computer science major at Cal Poly. I thrive on the challenges 
           of coding and problem-solving, both in and out of the classroom. Beyond my studies, I'm always 
