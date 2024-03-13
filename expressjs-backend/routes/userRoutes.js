@@ -4,41 +4,52 @@ const router = express.Router();
 const mysql = require('mysql2/promise');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+require('../util/database');
 
 const secretKey = 'YourSecretKey';
 
-const { dbConfig } = require('../util/database');
 const { verifyToken } = require('../util/middleware');
 
+const { Pool } = require('pg');
+require('dotenv').config();
+const connectionString = process.env.DB_CONNECTION_STRING;
+
+function createConnection() {
+  const pool = new Pool({
+    connectionString: connectionString,
+  });
+  return pool
+}
+
 router.post('/check', async (req, res) => {
-    const { username, email, phoneNum } = req.body;
-  
+    const { username, email, phoneNumber } = req.body;
+    console.log(username, email)
+    //TODO: let phoneNumber = 1234567890
+    let conflict = false;
+
     try {
-      const connection = await mysql.createConnection(dbConfig);
-      await connection.query("USE haggle_db");
-      
-      let conflict = null;
+      const connection = createConnection();
   
       // Check if username exists
-      const [usernameResult] = await connection.execute(
-        'SELECT 1 FROM users WHERE username = ? LIMIT 1',
+      const { usernameResult } = await connection.query(
+        'SELECT * FROM users WHERE username = $1 LIMIT 1',
         [username]
       );
-      if (usernameResult.length > 0) conflict = 'Username';
+      if (usernameResult != undefined) {let conflict = 'Username';}
   
       // Check if email exists
-      const [emailResult] = await connection.execute(
-        'SELECT 1 FROM users WHERE email = ? LIMIT 1',
+      const { emailResult } = await connection.query(
+        'SELECT * FROM users WHERE email = $1 LIMIT 1',
         [email]
       );
-      if (emailResult.length > 0) conflict = 'Email';
+      if (emailResult != undefined) {let conflict = 'Email';}
   
       // Check if phone number exists
-      const [phoneResult] = await connection.execute(
-        'SELECT 1 FROM users WHERE phoneNumber = ? LIMIT 1',
-        [phoneNum]
+      const { phoneResult } = await connection.query(
+        'SELECT * FROM users WHERE "phoneNumber" = $1 LIMIT 1',
+        [phoneNumber]
       );
-      if (phoneResult.length > 0) conflict = 'Phone Number';
+      if (phoneResult != undefined) {let conflict = 'Phone Number';}
   
       if (conflict) {
         res.status(409).json({
@@ -59,19 +70,18 @@ router.post('/check', async (req, res) => {
 });
 
 router.post('/register', async (req, res) => {
-    const { username, full_name, password, email, phoneNum: phoneNumber } = req.body;
-  
+    const { username, fullName, password, email, phoneNum: phoneNumber } = req.body;
+    //TODO:
+    //const fullName = 'testUser';
     // It appears bcrypt was intended to be used but not imported. Ensure bcrypt is imported.
     const bcrypt = require('bcrypt');
     const hashedPassword = await bcrypt.hash(password, 10);
   
     try {
-      const connection = await mysql.createConnection(dbConfig);
-      await connection.query("USE haggle_db");
-  
-      const [result] = await connection.execute(
-        'INSERT INTO users (username, full_name, password, email, phoneNumber) VALUES (?, ?, ?, ?, ?)',
-        [username, full_name, hashedPassword, email, phoneNumber]
+      const connection = createConnection();
+      const  { result } = await connection.query(
+        'INSERT INTO users (username, "fullName", password, email, "phoneNumber") VALUES ($1, $2, $3, $4, $5)',
+        [username, fullName, hashedPassword, email, phoneNumber]
       );
   
       const token = jwt.sign({ username: username }, secretKey, { expiresIn: '24h' });
@@ -92,11 +102,9 @@ router.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
     try {
-      const connection = await mysql.createConnection(dbConfig);
-      await connection.query("USE haggle_db");
-      
-      const [users] = await connection.execute(
-        'SELECT * FROM users WHERE username = ?',
+      const connection = createConnection();
+      const { users } = await connection.query(
+        'SELECT username, password FROM users WHERE username = ?',
         [username]
       );
   
@@ -123,10 +131,8 @@ router.get('/profile', verifyToken, async (req, res) => {
     const username = req.user.username; // Extracted from token
 
     try {
-      const connection = await mysql.createConnection(dbConfig);
-      await connection.query("USE haggle_db");
-  
-      const [user] = await connection.execute(
+      const connection = createConnection();
+      const { user } = await connection.query(
         'SELECT username, full_name, email, phoneNumber FROM users WHERE username = ?',
         [username]
       );
@@ -146,10 +152,8 @@ router.post('/userID', async (req, res) => {
     const { username } = req.body;
 
     try {
-      const connection = await mysql.createConnection(dbConfig);
-      await connection.query("USE haggle_db");
-  
-      const [user] = await connection.execute(
+      const connection = createConnection();
+      const { user } = await connection.query(
         'SELECT userID FROM users WHERE username = ?',
         [username]
       );

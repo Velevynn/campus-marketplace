@@ -1,11 +1,22 @@
 // listingRoutes.js
 const express = require('express');
-const mysql = require('mysql2/promise');
 const multer = require('multer');
 const upload = multer();
 const router = express.Router();
 
-const { dbConfig } = require('../util/database');
+const { Pool } = require('pg');
+require('dotenv').config();
+
+// Replace the following with your actual connection URI
+const connectionString = process.env.DB_CONNECTION_STRING;
+
+function createConnection() {
+  const pool = new Pool({
+    connectionString: connectionString,
+  });
+  return pool
+}
+
 const { uploadImageToS3 } = require('../util/s3');
 
 router.post("/", upload.array('image'), async (req, res) => {
@@ -38,7 +49,6 @@ router.get("/", async (req, res) => {
     try {
         const { q } = req.query; // Extract the search query parameter
 
-        const connection = await mysql.createConnection(dbConfig);
 
         let query = "SELECT * FROM listings";
     
@@ -46,12 +56,11 @@ router.get("/", async (req, res) => {
         if (q) {
           query += ` WHERE title LIKE '%${q}%' OR description LIKE '%${q}%'`;
         }
+        const connection = createConnection();
+        const { rows } = await connection.query(query);
     
-        const [results, fields] = await connection.execute(query);
-    
-        res.send(results);
+        res.send(rows);
 
-        await connection.end();
       } catch (error) {
         console.error("An error occurred while fetching listings:", error);
         res.status(500).send("An error occurred while fetching listings");
@@ -61,14 +70,11 @@ router.get("/", async (req, res) => {
 router.get("/:listingID", async (req, res) => {
     try {
         const { listingID } = req.params; // Extract the listingID from request parameters
-        const connection = await mysql.createConnection(dbConfig);
         // Construct SQL query to fetch the listing by its ID
         const query = "SELECT * FROM listings WHERE listingID = ?";
-        const [results, fields] = await connection.execute(query, [listingID]);
-    
-        res.send(results);
-    
-        await connection.end();
+        const connection = createConnection();
+        const { rows } = await connection.query(query, [listingID]);
+        res.send(rows);
       } catch (error) {
         console.error("An error occurred while fetching the listing:", error);
         res.status(500).send("An error occurred while fetching the listing");
@@ -77,14 +83,13 @@ router.get("/:listingID", async (req, res) => {
 
 async function addListing(listing) {
     try {
-      const connection = await mysql.createConnection(dbConfig);
-  
       if(listing.expirationDate === 'null') {
         listing.expirationDate = null;
       }
   
       //Insert the listing into the listing table
-      const [result] = await connection.execute(
+      const connection = createConnection();
+      const { rows } = await connection.query(
         "INSERT INTO listings (userID, title, price, description, expirationDate, quantity) VALUES (?, ?, ?, ?, ?, ?)",
         [
           listing.userID,
@@ -93,6 +98,7 @@ async function addListing(listing) {
           listing.description,
           listing.expirationDate,
           listing.quantity,
+          listing.location
         ],
       );
   
@@ -100,7 +106,6 @@ async function addListing(listing) {
   
       //Close the connection to database
       await connection.end();
-  
       //return success
       return listingID;
     } catch (error) {
