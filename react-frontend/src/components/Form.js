@@ -1,6 +1,6 @@
 // Form.js (Karan)
 
-import React, { useState, useNavigate } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import "./form.css";
 import { jwtDecode } from "jwt-decode";
@@ -47,7 +47,6 @@ function Form() {
       const token = localStorage.getItem("token"); // Retrieve the JWT token from localStorage
       const decodedToken = jwtDecode(token); // Decode the token
       const username = decodedToken.username; // Extract the username from the token
-      const navigate = useNavigate(); // make sure to import useNavigate from 'react-router-dom'
   
       try {
         // Make a request to the backend to fetch the userID based on the username
@@ -76,7 +75,7 @@ function Form() {
               'Content-Type': 'multipart/form-data'
             }
           });
-          navigate('/marketplace');
+          window.location.href = '/marketplace';
         } catch (error) {
           console.log(error);
         }

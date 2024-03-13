@@ -11,6 +11,7 @@ const Container = styled.div`
   margin-top: 100px;
   padding: 40px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  font-family: Inter;
 `;
 
 const Form = styled.form`
@@ -115,6 +116,7 @@ const SignUpLabel = styled.label`
   text-align: center;
   margin: 25px;
   font-weight: normal;
+  font-family: Inter;
 `;
 
 function LoginPage() {

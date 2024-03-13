@@ -1,3 +1,8 @@
+@font-face {
+  font-family: 'inter';
+  src: url('../assets/inter/Inter-Regular.ttf');
+}
+
 .entry-container {
   width: 249px;
   height: 305px;
@@ -9,7 +14,8 @@
   border-radius: 15px;
   box-shadow: 3px 3px 7px rgba(0, 0, 0, 0.1);
   display: inline-block;
-  font-family: Inter, sans-serif;
+  font-family: inter, sans-serif;
+  transition: transform 0.3s ease;
 }
 
 .image-container {
@@ -19,24 +25,25 @@
 
 .entry-image {
   width: 100%;
-  height: auto;
+  height: 100%;
   object-fit: contain;
 }
 
 .text-container {
-  margin-top: -10px;
-  margin-left: 10px;
+  margin-top: 5px;
+  margin-left: 5px;
 }
 
 .price {
+  font-family: inter;
   color: green !important;
   font-weight: bold;
-  font-size: 10px;
+  font-size: 20px;
   margin: -25px 0px 0px 0px; /* Adjust margin top and bottom to move the price closer to the title */
 }
 
 .title {
-  font-family: Inter;
+  font-family: inter;
   font-weight: 600;
   margin: 2px 0;
   white-space: nowrap; /* Prevent title from wrapping to the next line */
@@ -45,10 +52,7 @@
   height: 50px;
 }
 
-.entry-image {
-  transition: transform 0.3s ease;
-}
 
-.image-container:hover .entry-image {
+.entry-container:hover {
   transform: scale(1.05); /* Scale the image by 20% on hover (adjust as needed) */
 }

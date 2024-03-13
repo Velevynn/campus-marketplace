@@ -28,10 +28,12 @@ router.post("/", upload.array('image'), async (req, res) => {
         const images = req.files; // Get the uploaded images
     
         const listingID = await addListing(listingToAdd);
+        await addImages(listingID, images.length);
     
-    
+        let i = 0;
         for (const image of images) {
-          let i = 0;
+          // Upload all images to s3 under folder named listingID
+          // Images are labeled image0, image1, etc.
           const imageData = image.buffer;
           console.log(imageData);
           await uploadImageToS3(`${listingID}/image${i}`, image.buffer);
@@ -80,6 +82,45 @@ router.get("/:listingID", async (req, res) => {
         res.status(500).send("An error occurred while fetching the listing");
       }
 });
+
+router.get("/images/:listingID", async (req, res) => {
+  try {
+      const { listingID } = req.params; // Extract the listingID from request parameters
+      // Construct SQL query to fetch the listing by its ID
+      const query = "SELECT * FROM images WHERE listingID = ?";
+      const connection = createConnection();
+      const { rows } = await connection.query(query, [listingID]);
+  
+      res.send(results);
+  
+      await connection.end();
+    } catch (error) {
+      console.error("An error occurred while fetching the images:", error);
+      res.status(500).send("An error occurred while fetching the images");
+    }
+});
+
+async function addImages(listingID, numImages) {
+  try {
+    const connection = createConnection();
+    for (i = 0; i < numImages; i++) {
+      await connection.query(
+        'INSERT INTO images ("listingID", "imageURL") VALUES (?, ?)',
+        [
+          listingID,
+          `https://haggleimgs.s3.amazonaws.com/${listingID}/image${i}`,
+        ],
+      );
+    }
+    //close connection to database;
+    await connection.end();
+  } catch (error) {
+    console.error("An error occured while inserting images", error);
+      throw error;
+  }
+
+
+}
 
 async function addListing(listing) {
     try {

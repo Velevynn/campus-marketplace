@@ -12,6 +12,7 @@ const Container = styled.div`
   margin-top: 35px;
   padding: 40px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  font-family: Inter;
 `;
 
 const LoginContainer = styled.div`

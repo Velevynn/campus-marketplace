@@ -30,12 +30,13 @@ function Marketplace() {
       console.log("Error fetching entries:", error);
     }
   }
+
   
   return (
     <div style={{ margin: "25px" }}>
-      <h style={{ fontFamily: "Newsreader, serif", fontSize: "3rem" }}>
+      <h2 style={{ fontFamily: "Newsreader, serif", fontSize: "3rem" }}>
         Marketplace
-      </h>
+      </h2>
       <div className="divider" />
       {entries.map((entry) => (
         <Entry

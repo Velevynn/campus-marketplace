@@ -5,6 +5,7 @@ import LoginPage from './authentication/LoginPage.js';
 import ProfilePage from './profile/ProfilePage.js';
 import Marketplace from "./pages/Marketplace";
 import AddListing from "./pages/AddListing";
+import PageNotFound from "./pages/PageNotFound";
 import NavBar from "./components/NavBar";
 import About from "./pages/About";
 import TOS from "./pages/TOS";
@@ -38,7 +39,10 @@ function App() {
           <Route path="/terms-of-service" element={<TOS />} />
           <Route path="/listings/:listingID" element={<BuyerListingView />} />
           <Route path="/mylisting/:listingID" element={<SellerListingView />} />
-          <Route path="/*" element={<SignUpPage />} />
+          <Route
+              path = "*"
+              element = {<PageNotFound/>}
+              />
         </Routes>
       </BrowserRouter>
     </div>
