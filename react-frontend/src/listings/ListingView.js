@@ -3,14 +3,14 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import "./ListingView.css";
 import ImageCarousel from "../components/ImageCarousel.js";
-import { jwtDecode } from "jwt-decode";
+//import { jwtDecode } from "jwt-decode";
 
 const ListingView = () => {
   const { listingID } = useParams();
   const [listing, setListing] = useState(null);
   const [images, setImages] = useState([]);
   const [isOwner, setIsOwner] = useState(false);
-
+  console.log(setIsOwner);
   /* hook to fetch data when listingID changes */
   useEffect(() => {
     const fetchData = async () => {

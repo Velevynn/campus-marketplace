@@ -133,7 +133,7 @@ async function addListing(listing) {
       //Insert the listing into the listing table
       const connection = createConnection();
       
-      const { rows } = await connection.query(
+      const { result } = await connection.query(
         'INSERT INTO listings ("userID", title, price, description, "expirationDate", quantity) VALUES ($1, $2, $3, $4, $5, $6)',
         [
           listing.userID,
@@ -142,11 +142,10 @@ async function addListing(listing) {
           listing.description,
           listing.expirationDate,
           listing.quantity,
-          listing.location
         ],
       );
-  
-      const listingID = result.insertId;
+      console.log(result);
+      const listingID = result.listingID;
   
       //Close the connection to database
       await connection.end();

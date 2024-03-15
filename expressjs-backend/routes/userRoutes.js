@@ -150,7 +150,7 @@ router.post('/userID', async (req, res) => {
 
     try {
       const connection = createConnection();
-      const { user } = await connection.query(
+      const { rows : user } = await connection.query(
         'SELECT "userID" FROM users WHERE username = $1',
         [username]
       );
@@ -161,8 +161,8 @@ router.post('/userID', async (req, res) => {
         res.status(404).json({ error: 'User not found' });
       }
     } catch (error) {
-      console.error('Error fetching user ID:', error);
-      res.status(500).json({ error: 'Failed to fetch user ID' });
+      console.error('Error fetching userID:', error);
+      res.status(500).json({ error: 'Failed to fetch userID' });
     }
 });
 
