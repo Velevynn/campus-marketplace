@@ -56,7 +56,7 @@ router.get("/", async (req, res) => {
     
         // If there is a search query, modify the SQL query to include a WHERE clause
         if (q) {
-          query += ` WHERE title LIKE '%${q}%' OR description LIKE '%${q}%'`;
+          query += ` WHERE "title" LIKE '%${q}%' OR "description" LIKE '%${q}%'`;
         }
         const connection = createConnection();
         const { rows } = await connection.query(query);
