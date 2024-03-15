@@ -100,11 +100,11 @@ router.post('/login', async (req, res) => {
 
     try {
       const connection = createConnection();
-      const { users } = await connection.query(
-        'SELECT username, password FROM users WHERE username = ?',
+      const { rows: users } = await connection.query(
+        'SELECT username, password FROM users WHERE username = $1',
         [username]
       );
-  
+      console.log(users.length);
       if (users.length > 0) {
         const user = users[0];
         const validPassword = await bcrypt.compare(password, user.password);
@@ -129,8 +129,8 @@ router.get('/profile', verifyToken, async (req, res) => {
 
     try {
       const connection = createConnection();
-      const { user } = await connection.query(
-        'SELECT username, full_name, email, phoneNumber FROM users WHERE username = ?',
+      const { rows: user } = await connection.query(
+        'SELECT username, "fullName", email, "phoneNumber" FROM users WHERE username = $1',
         [username]
       );
   
