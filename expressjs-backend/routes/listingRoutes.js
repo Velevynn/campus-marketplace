@@ -8,7 +8,7 @@ const { Pool } = require('pg');
 require('dotenv').config();
 
 // Replace the following with your actual connection URI
-const connectionString = 'postgres://postgres.wcdpnuyjxwuthkofeadu:JZQZTX0ODcOX3XMj@aws-0-us-west-1.pooler.supabase.com:5432/postgres';
+const connectionString = process.env.DB_CONNECTION_STRING;
 
 function createConnection() {
   const pool = new Pool({
