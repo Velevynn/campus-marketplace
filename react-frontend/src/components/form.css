@@ -1,10 +1,11 @@
 .form-container {
   text-align: center;
   width: 400px; /* Adjust width as needed */
-  margin: 0 auto; /* Center the container horizontally */
+  margin: 0 auto;
+  margin-top: 100px;
+  border-radius: 4px;
   padding: 20px;
   background-color: #fff;
-  border-radius: 10px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Add drop shadow */
 }
 
@@ -52,7 +53,25 @@
   background-color: green;
   color: white; /* Optionally, set text color to white for better contrast */
   border: none; /* Optionally, remove border for a cleaner look */
-  padding: 10px 20px; /* Adjust padding as needed */
   border-radius: 5px; /* Optionally, add border-radius for rounded corners */
   cursor: pointer; /* Show pointer cursor on hover */
 }
+
+.custom-file-upload {
+  background-color: #426B1F;
+  color: rgb(255, 255, 255);
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+
+}
+
+.custom-file-upload:hover {
+  background-color: #5ca729;
+}
+
+.custom-file-input {
+  display: none;
+}
+
+

@@ -116,15 +116,18 @@ function Form() {
           value={listing.price}
           onChange={handleChange}
         />
-        <label htmlFor="images">Images</label>
-        <input
-          type="file"
-          name="images"
-          id="images"
-          accept="image/*"
-          multiple
-          onChange={handleImageChange}
-        />
+        <label htmlFor="images" className="custom-file-upload">
+          <span>Select Images</span>
+          <input
+            type="file"
+            name="images"
+            id="images"
+            accept="image/*"
+            multiple
+            className="custom-file-input"
+            onChange={handleImageChange}
+          />
+        </label>
 
         <input
           type="button"
