@@ -89,10 +89,11 @@ router.get("/images/:listingID", async (req, res) => {
   try {
       const { listingID } = req.params; // Extract the listingID from request parameters
       // Construct SQL query to fetch the listing by its ID
-      const query = "SELECT * FROM images WHERE listingID = ?";
       const connection = createConnection();
-      const { rows } = await connection.query(query, [listingID]);
-  
+      const { rows } = await connection.query('SELECT * FROM images WHERE "listingID" = $1', 
+        [listingID]
+      );
+    
       res.send(results);
   
       await connection.end();
@@ -107,7 +108,7 @@ async function addImages(listingID, numImages) {
     const connection = createConnection();
     for (i = 0; i < numImages; i++) {
       await connection.query(
-        'INSERT INTO images ("listingID", "imageURL") VALUES (?, ?)',
+        'INSERT INTO images ("listingID", "imageURL") VALUES ($1, $2)',
         [
           listingID,
           `https://haggleimgs.s3.amazonaws.com/${listingID}/image${i}`,
@@ -129,11 +130,11 @@ async function addListing(listing) {
       if(listing.expirationDate === 'null') {
         listing.expirationDate = null;
       }
-  
       //Insert the listing into the listing table
       const connection = createConnection();
+      
       const { rows } = await connection.query(
-        "INSERT INTO listings (userID, title, price, description, expirationDate, quantity) VALUES (?, ?, ?, ?, ?, ?)",
+        'INSERT INTO listings ("userID", title, price, description, "expirationDate", quantity) VALUES ($1, $2, $3, $4, $5, $6)',
         [
           listing.userID,
           listing.title,

@@ -43,7 +43,7 @@ router.post('/check', async (req, res) => {
 
       // Check if phone number exists
       const { rows: phoneResult } = await connection.query(
-        'SELECT 1 FROM users WHERE "phoneNumber" = $1 LIMIT 1',
+        `SELECT 1 FROM users WHERE 'phoneNumber' = $1 LIMIT 1`,
         [phoneNumber]
       );
       if (phoneResult.length > 0) { conflict = 'Phone Number'; }
@@ -151,7 +151,7 @@ router.post('/userID', async (req, res) => {
     try {
       const connection = createConnection();
       const { user } = await connection.query(
-        'SELECT userID FROM users WHERE username = ?',
+        'SELECT "userID" FROM users WHERE username = $1',
         [username]
       );
   
