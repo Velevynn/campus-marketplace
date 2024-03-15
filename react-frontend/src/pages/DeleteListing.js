@@ -6,6 +6,6 @@ function DeleteListing(){
             <h3> DELETE LISTING </h3>
         </div>
     );
-};
+}
 
 export default DeleteListing;

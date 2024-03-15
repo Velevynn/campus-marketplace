@@ -6,6 +6,6 @@ function MakeOffer(){
             <h3> MAKE OFFER </h3>
         </div>
     );
-};
+}
 
 export default MakeOffer;

@@ -6,6 +6,6 @@ function StartChat(){
             <h3> START CHAT </h3>
         </div>
     );
-};
+}
 
 export default StartChat;

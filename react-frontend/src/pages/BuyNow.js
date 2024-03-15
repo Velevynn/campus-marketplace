@@ -6,6 +6,6 @@ function BuyNow(){
             <h3> BUY NOW </h3>
         </div>
     );
-};
+}
 
 export default BuyNow;

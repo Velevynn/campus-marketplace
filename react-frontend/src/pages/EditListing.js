@@ -6,6 +6,6 @@ function EditListing(){
             <h3> EDIT LISTING </h3>
         </div>
     );
-};
+}
 
 export default EditListing;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import "./BuyerView.css";
+import "./ListingView.css";
 import ImageCarousel from "../components/ImageCarousel.js";
 import { jwtDecode } from "jwt-decode";
 
@@ -20,7 +20,7 @@ const ListingView = () => {
           `http://localhost:8000/listings/${listingID}`,
         );
         /* check currently logged-in userID */
-        const loggedInUserID = fetchUserProfile();
+        //const loggedInUserID = fetchUserProfile(); need to fix this once cloud database set up
         /* set fetched data to state */
         if (response.data.length > 0) {
           setListing(response.data[0]);
