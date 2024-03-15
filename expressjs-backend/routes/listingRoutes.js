@@ -73,9 +73,11 @@ router.get("/:listingID", async (req, res) => {
     try {
         const { listingID } = req.params; // Extract the listingID from request parameters
         // Construct SQL query to fetch the listing by its ID
-        const query = "SELECT * FROM listings WHERE listingID = ?";
         const connection = createConnection();
-        const { rows } = await connection.query(query, [listingID]);
+        const { rows } = await connection.query(
+          'SELECT * FROM listings WHERE "listingID" =  $1 LIMIT 1',
+          [listingID]
+        );
         res.send(rows);
       } catch (error) {
         console.error("An error occurred while fetching the listing:", error);
