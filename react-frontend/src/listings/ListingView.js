@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import "./BuyerView.css";
-import ImageCarousel from "../components/ImageCarousel";
+import "./ListingView.css";
+import ImageCarousel from "../components/ImageCarousel.js";
+//import { jwtDecode } from "jwt-decode";
 
-const BuyerListingView = () => {
+const ListingView = () => {
   const { listingID } = useParams();
   const [listing, setListing] = useState(null);
   const [images, setImages] = useState([]);
-
+  const [isOwner, setIsOwner] = useState(false);
+  console.log(setIsOwner);
   /* hook to fetch data when listingID changes */
   useEffect(() => {
     const fetchData = async () => {
@@ -17,9 +19,12 @@ const BuyerListingView = () => {
         const response = await axios.get(
           `http://localhost:8000/listings/${listingID}`,
         );
+        /* check currently logged-in userID */
+        //const loggedInUserID = fetchUserProfile(); need to fix this once cloud database set up
         /* set fetched data to state */
         if (response.data.length > 0) {
           setListing(response.data[0]);
+          //setIsOwner(response.data[0].userID === loggedInUserID.data[0].userID); need to fix this once cloud database set up
           console.log(response.data);
         }
       } catch (error) {
@@ -65,6 +70,16 @@ const BuyerListingView = () => {
     console.log("Start a Chat clicked for listing:", listing);
   };
 
+  const handleEditListing = () => {
+    /* Add logic for handling "Edit Listing" action */
+    console.log("Edit Listing clicked for listing:", listing);
+  };
+
+  const handleDeleteListing = () => {
+    /* Add logic for handling "Delete Listing" action */
+    console.log("Delete Listing clicked for listing:", listing);
+  };
+
   /* first check if listing data is available, then render */
   return (
     <div className="listing-container">
@@ -80,6 +95,12 @@ const BuyerListingView = () => {
               <button onClick={handleBuyNow}>Buy Now</button>
               <button onClick={handleMakeOffer}>Make Offer</button>
               <button onClick={handleStartChat}>Start a Chat</button>
+              {isOwner && (
+                <>
+                  <button onClick={handleEditListing}>Edit Listing</button>
+                  <button onClick={handleDeleteListing}>Delete Listing</button>
+                </>
+              )}
             </div>
           </div>
           <div className="description">
@@ -94,4 +115,4 @@ const BuyerListingView = () => {
   );
 };
 
-export default BuyerListingView;
+export default ListingView;

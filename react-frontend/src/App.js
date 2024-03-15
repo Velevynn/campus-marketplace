@@ -9,9 +9,13 @@ import PageNotFound from "./pages/PageNotFound";
 import NavBar from "./components/NavBar";
 import About from "./pages/About";
 import TOS from "./pages/TOS";
-import BuyerListingView from "./listings/BuyerView.js";
-import SellerListingView from "./listings/SellerView.js";
+import ListingView from "./listings/ListingView.js";
 import ProtectedRoute from "./utils/ProtectedRoute"; // Importing ProtectedRoute
+import BuyNow from "./pages/BuyNow.js";
+import MakeOffer from "./pages/MakeOffer.js";
+import StartChat from "./pages/Chat.js";
+import DeleteListing from "./pages/DeleteListing.js";
+import EditListing from "./pages/EditListing.js";
 
 function App() {
   return (
@@ -37,8 +41,12 @@ function App() {
                   </ProtectedRoute>
                   } />
           <Route path="/terms-of-service" element={<TOS />} />
-          <Route path="/listings/:listingID" element={<BuyerListingView />} />
-          <Route path="/mylisting/:listingID" element={<SellerListingView />} />
+          <Route path="/listings/:listingID" element={<ListingView />} />
+          <Route path="/listings/:listingID/buy" element={<BuyNow />} />
+          <Route path="/listings/:listingID/offer" element={<MakeOffer />} />
+          <Route path="/listings/:listingID/chat" element={<StartChat />} />
+          <Route path="/listings/:listingID/delete" element={<DeleteListing />} />
+          <Route path="/listings/:listingID/edit" element={<EditListing />} />
           <Route
               path = "*"
               element = {<PageNotFound/>}
