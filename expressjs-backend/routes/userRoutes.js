@@ -23,33 +23,30 @@ function createConnection() {
 
 router.post('/check', async (req, res) => {
     const { username, email, phoneNumber } = req.body;
-    console.log(username, email)
     //TODO: let phoneNumber = 1234567890
     let conflict = false;
 
     try {
       const connection = createConnection();
-  
       // Check if username exists
-      const { usernameResult } = await connection.query(
-        'SELECT * FROM users WHERE username = $1 LIMIT 1',
+      const { rows: usernameResult } = await connection.query(
+        'SELECT 1 FROM users WHERE username = $1 LIMIT 1',
         [username]
       );
-      if (usernameResult != undefined) {let conflict = 'Username';}
-  
+      if (usernameResult.length > 0) { conflict = 'Username'; }
       // Check if email exists
-      const { emailResult } = await connection.query(
-        'SELECT * FROM users WHERE email = $1 LIMIT 1',
+      const { rows: emailResult } = await connection.query(
+        'SELECT 1 FROM users WHERE email = $1 LIMIT 1',
         [email]
       );
-      if (emailResult != undefined) {let conflict = 'Email';}
-  
+      if (emailResult.length > 0) { conflict = 'Email'; }
+
       // Check if phone number exists
-      const { phoneResult } = await connection.query(
-        'SELECT * FROM users WHERE "phoneNumber" = $1 LIMIT 1',
+      const { rows: phoneResult } = await connection.query(
+        'SELECT 1 FROM users WHERE "phoneNumber" = $1 LIMIT 1',
         [phoneNumber]
       );
-      if (phoneResult != undefined) {let conflict = 'Phone Number';}
+      if (phoneResult.length > 0) { conflict = 'Phone Number'; }
   
       if (conflict) {
         res.status(409).json({
@@ -70,7 +67,7 @@ router.post('/check', async (req, res) => {
 });
 
 router.post('/register', async (req, res) => {
-    const { username, fullName, password, email, phoneNum: phoneNumber } = req.body;
+    const { username, full_name, password, email, phoneNum: phoneNumber } = req.body;
     //TODO:
     //const fullName = 'testUser';
     // It appears bcrypt was intended to be used but not imported. Ensure bcrypt is imported.
@@ -81,7 +78,7 @@ router.post('/register', async (req, res) => {
       const connection = createConnection();
       const  { result } = await connection.query(
         'INSERT INTO users (username, "fullName", password, email, "phoneNumber") VALUES ($1, $2, $3, $4, $5)',
-        [username, fullName, hashedPassword, email, phoneNumber]
+        [username, full_name, hashedPassword, email, phoneNumber]
       );
   
       const token = jwt.sign({ username: username }, secretKey, { expiresIn: '24h' });
