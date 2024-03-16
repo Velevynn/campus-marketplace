@@ -10,18 +10,20 @@ function Marketplace() {
   const [searchParams] = useSearchParams();
   let q = searchParams.get("q");
   const [entries, setEntries] = useState([]);
-  console.log("Query parameter:", q);
+  const [page, setPage] = useState(1);
+  // console.log("Query parameter:", q);
+
   if (q === null) {
     q = "";
-  }
+  }  // if no such query, set to "" for route purposes
 
   useEffect(() => {
     fetchEntries();
-  }, [q]);
+  }, [q, page]);  // use q for 'query' and 'page' for fetching entries from backend
 
   async function fetchEntries() {
     try {
-      const response = await axios.get(`http://localhost:8000/listings?q=${q}`);
+      const response = await axios.get(`http://localhost:8000/listings?q=${q}&page=${page}`);
       if (response !== "") {
         console.log(response.data);
         setEntries(response.data);
@@ -31,6 +33,24 @@ function Marketplace() {
     }
   }
 
+  // add function to handle loading more entries upon scrolling past the bottom of the page
+  const handleScroll = () => {
+    const windowHeight = "innerHeight" in window ? window.innerHeight : document.documentElement.offsetHeight;
+    const body = document.body;
+    const html = document.documentElement;
+    const docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
+    const windowBottom = windowHeight + window.scrollY;
+
+    if (windowBottom >= docHeight) {
+      setPage(prevPage => prevPage + 1);
+      console.log("new page detected");
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
   
   return (
     <div style={{ margin: "25px" }}>
