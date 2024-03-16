@@ -8,6 +8,7 @@ const app = express();
 const PORT = process.env.PORT || 8000;
 const corsOptions = {
     origin: '*',
+    credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     optionsSuccessStatus: 200 // Set the status code for successful OPTIONS requests
