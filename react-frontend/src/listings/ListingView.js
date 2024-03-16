@@ -18,7 +18,7 @@ const ListingView = () => {
       try {
         /* get data of listing by its ID */
         const response = await axios.get(
-          `http://haggle.onrender.com/listings/${listingID}`,
+          `https://haggle.onrender.com/listings/${listingID}`,
         );
         /* check currently logged-in userID */
         //const loggedInUserID = fetchUserProfile();
@@ -42,7 +42,7 @@ const ListingView = () => {
       try {
         /* Fetch images for the listing from the backend */
         const response = await axios.get(
-          `http://haggle.onrender.com/listings/images/${listingID}`,
+          `https://haggle.onrender.com/listings/images/${listingID}`,
         );
         if (response.data.length > 0) {
           setImages(response.data);

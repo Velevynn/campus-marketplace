@@ -21,7 +21,7 @@ function createConnection() {
   return pool
 }
 
-router.post('/check/', async (req, res) => {
+router.post('/check', async (req, res) => {
     const { username, email, phoneNumber } = req.body;
     //TODO: let phoneNumber = 1234567890
     let conflict = false;
@@ -66,7 +66,7 @@ router.post('/check/', async (req, res) => {
     }
 });
 
-router.post('/register/', async (req, res) => {
+router.post('/register', async (req, res) => {
     const { username, full_name, password, email, phoneNum: phoneNumber } = req.body;
     //TODO:
     //const fullName = 'testUser';
@@ -95,7 +95,7 @@ router.post('/register/', async (req, res) => {
     }
 });
 
-router.post('/login/', async (req, res) => {
+router.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
     try {
@@ -124,7 +124,7 @@ router.post('/login/', async (req, res) => {
     }
 });
 
-router.get('/profile/', verifyToken, async (req, res) => {
+router.get('/profile', verifyToken, async (req, res) => {
     const username = req.user.username; // Extracted from token
 
     try {
@@ -145,7 +145,7 @@ router.get('/profile/', verifyToken, async (req, res) => {
     }
 });
 
-router.post('/userID/', async (req, res) => {
+router.post('/userID', async (req, res) => {
     const { username } = req.body;
 
     try {
