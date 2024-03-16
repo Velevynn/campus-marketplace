@@ -91,17 +91,15 @@ const ListingView = () => {
               <ImageCarousel images={images} />
             </div>
             <p className="price-buyerview">${listing.price}</p>
-            <div className="buttons">
-              <button onClick={handleBuyNow}>Buy Now</button>
-              <button onClick={handleMakeOffer}>Make Offer</button>
-              <button onClick={handleStartChat}>Start a Chat</button>
+              <button className="btn" onClick={handleBuyNow}>Buy Now</button>
+              <button className="btn" onClick={handleMakeOffer}>Make Offer</button>
+              <button className="btn" onClick={handleStartChat}>Start a Chat</button>
               {isOwner && (
                 <>
                   <button onClick={handleEditListing}>Edit Listing</button>
                   <button onClick={handleDeleteListing}>Delete Listing</button>
                 </>
               )}
-            </div>
           </div>
           <div className="description">
             <h3>Description</h3>

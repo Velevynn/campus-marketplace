@@ -21,7 +21,6 @@
   padding-left: 20px;
 }
 
-
 /* Title styles */
 .listing-container h1 {
   color: #131313;
@@ -40,9 +39,8 @@
   font-weight: bold; /* Make the text bold */
 }
 
-
-.buttons button:hover {
-  background-color: rgb(0, 104, 0);
+.btn {
+  margin-right: 0.5rem;
 }
 
 /* Make offer and start a chat styles */
