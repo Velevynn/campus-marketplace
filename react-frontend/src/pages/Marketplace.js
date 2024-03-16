@@ -34,18 +34,17 @@ function Marketplace() {
   
   return (
     <div style={{ margin: "25px" }}>
-      <h2 style={{ fontFamily: "Newsreader, serif", fontSize: "3rem" }}>
-        Marketplace
-      </h2>
       <div className="divider" />
+      <div className="entries-container">
       {entries.map((entry) => (
-        <Entry
+        <Entry 
           key={entry.listingID}
           title={entry.title}
           price={entry.price}
           listingID={entry.listingID}
         />
       ))}
+      </div>
     </div>
   );
 }

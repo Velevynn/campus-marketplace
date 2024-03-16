@@ -8,14 +8,13 @@ body {
   font-family: "Newsreader", serif; /* Use the NewsReader font */
 }
 
-.divider {
-  border-top: 2px solid lightgrey;
-  margin: 2px;
-  margin-top: 20px;
+
+.entries-container {
+  text-align: center;
 }
 
 .team-container {
-  display: flex;
+  display: inline-flex;
   gap: 25px;
 }
 

@@ -1,12 +1,13 @@
 /* NavBar.css */
 .navbar {
-  background-color: white;
-  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.885);
   display: flex;
   width: 100%;
   align-items: center;
-  padding-bottom: 30px;
+  padding: 0px 10px 30px 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); /* Add drop shadow */
 }
+
 
 .logo-container {
   flex-grow: 1;
@@ -21,8 +22,9 @@
 .search-bar-div {
   flex-grow: 2;
   height: 24px;
-  margin-left: 80px;
+  margin-left: 0px;
   width: 27vw;
+
 }
 
 .nav-links {
@@ -32,6 +34,7 @@
   align-items: center;
   font-family: 'inter', sans-serif;
   white-space: nowrap;
+  justify-content: right;
 }
 
 .nav-links li {
