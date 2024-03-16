@@ -146,12 +146,12 @@ router.get('/profile', verifyToken, async (req, res) => {
 });
 
 router.get('/userID', async (req, res) => {
+    console.log("Request: ", req)
     const { username } = req.query.username;
     console.log(username);
 
     try {
       const connection = createConnection();
-      console.log(connection);
       const { rows: user } = await connection.query(
         'SELECT "userID" FROM users WHERE username = $1',
         [username]
