@@ -490,7 +490,7 @@ a:hover,
 a:active,
 a:focus {
   color: green;
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 mark {

@@ -98,3 +98,8 @@
   background-color: #244c00;
   color: white;
 }
+
+.post-listing-button:visited {
+  color: white;
+  text-decoration: none;
+}
