@@ -150,14 +150,14 @@ router.get('/userID', async (req, res) => {
 
     try {
       const connection = createConnection();
-      const { rows: user } = await connection.query(
-        'SELECT "userID" FROM users WHERE username = $1',
-        [retrievedUsername]
+      const { rows: users } = await connection.query(
+        'SELECT "userID" FROM users WHERE username = testuser',
+        //[retrievedUsername]
       );
-      console.log(user);
+      console.log(users);
   
-      if (user.length > 0) {
-        res.status(200).json({ userID: user[0].userID });
+      if (users.length > 0) {
+        res.status(200).json({ userID: users[0].userID });
       } else {
         res.status(404).json({ error: 'User not found' });
       }
