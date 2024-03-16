@@ -34,7 +34,6 @@ function Marketplace() {
   
   return (
     <div style={{ margin: "25px" }}>
-      <div className="divider" />
       <div className="entries-container">
       {entries.map((entry) => (
         <Entry 

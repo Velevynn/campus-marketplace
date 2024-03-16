@@ -8,10 +8,10 @@ body {
   font-family: "Newsreader", serif; /* Use the NewsReader font */
 }
 
-
 .entries-container {
   text-align: center;
 }
+
 
 .team-container {
   display: inline-flex;
