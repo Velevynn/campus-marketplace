@@ -13,11 +13,6 @@ function ImageCarousel({ images }) {
     slidesToScroll: 1,
   };
   
-  const randomNum = (Math.random(1000)).toString();
-  for (let i = 0; i < images.length; i++) {
-    images[i].imageURL += `?=${randomNum}`;
-    console.log(images[i].imageURL);
-  }
 
   return (
     <div className = "image-carousel-container"> {}
