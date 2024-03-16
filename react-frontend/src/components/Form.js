@@ -129,6 +129,12 @@ function Form() {
           />
         </label>
 
+        //For displaying how many images have been selected
+        {listing.images.length > 0 && (
+          <p>{listing.images.length} image(s) selected</p>
+        )}
+
+
         <input
           type="button"
           value="Post Listing"
