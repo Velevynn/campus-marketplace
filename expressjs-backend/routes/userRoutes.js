@@ -146,12 +146,7 @@ router.get('/profile', verifyToken, async (req, res) => {
 });
 
 router.get('/userID', async (req, res) => {
-    console.log("Query: ", req.query, "Length: ", req.query.length);
-    const { retrievedUsername } = req.query.username;
-    for (i = 0; i < req.query.length; i++) {
-      console.log(req.query[i]);
-    }
-    console.log("Username from query: ", retrievedUsername);
+    const { retrievedUsername } = req.query[0];
 
     try {
       const connection = createConnection();
