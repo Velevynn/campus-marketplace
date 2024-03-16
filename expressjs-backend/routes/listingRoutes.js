@@ -89,11 +89,11 @@ router.get("/images/:listingID", async (req, res) => {
   try {
       const { listingID } = req.params; // Extract the listingID from request parameters
       // Construct SQL query to fetch the listing by its ID
-      const query = "SELECT * FROM images WHERE listingID = ?";
+      const query = 'SELECT * FROM images WHERE "listingID" = $1 LIMIT 1'
       const connection = createConnection();
       const { rows } = await connection.query(query, [listingID]);
   
-      res.send(results);
+      res.send(rows);
   
       await connection.end();
     } catch (error) {
@@ -133,7 +133,7 @@ async function addListing(listing) {
       //Insert the listing into the listing table
       const connection = createConnection();
       const { rows } = await connection.query(
-        "INSERT INTO listings (userID, title, price, description, expirationDate, quantity) VALUES (?, ?, ?, ?, ?, ?)",
+        'INSERT INTO listings ("userID", title, price, description, "expirationDate", quantity) VALUES (?, ?, ?, ?, ?, ?) RETURNING "listingID"',
         [
           listing.userID,
           listing.title,

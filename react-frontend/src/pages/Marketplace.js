@@ -21,7 +21,7 @@ function Marketplace() {
 
   async function fetchEntries() {
     try {
-      const response = await axios.get(`http://localhost:8000/listings?q=${q}`);
+      const response = await axios.get(`https://haggle.onrender.com/listings?q=${q}`);
       if (response !== "") {
         console.log(response.data);
         setEntries(response.data);
