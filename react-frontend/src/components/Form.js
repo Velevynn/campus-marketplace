@@ -116,7 +116,7 @@ function Form() {
           value={listing.price}
           onChange={handleChange}
         />
-        <label htmlFor="images" className="custom-file-upload">
+        <label htmlFor="images" className="button">
           <span>Select Images</span>
           <input
             type="file"
@@ -139,7 +139,6 @@ function Form() {
           type="button"
           value="Post Listing"
           onClick={submitForm}
-          style={{ backgroundColor: "#426B1F" }}
         />
       </form>
     </div>

@@ -78,14 +78,17 @@
 
 .nav-links a:hover {
   text-decoration: none;
-  color: inherit;
 }
 
 .nav-links a:active {
   text-decoration: none;
-  color: inherit;
 }
 
 .nav-links a:visited {
   text-decoration: none;
+}
+
+.post-listing-button:hover {
+  background-color: #244c00;
+  color: white;
 }
