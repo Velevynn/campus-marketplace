@@ -69,7 +69,7 @@ router.get("/", async (req, res) => {
       }
 });
 
-router.get("/:listingID", async (req, res) => {
+router.get("/:listingID/", async (req, res) => {
     try {
         const { listingID } = req.params; // Extract the listingID from request parameters
         // Construct SQL query to fetch the listing by its ID
@@ -85,7 +85,7 @@ router.get("/:listingID", async (req, res) => {
       }
 });
 
-router.get("/images/:listingID", async (req, res) => {
+router.get("/images/:listingID/", async (req, res) => {
   try {
       const { listingID } = req.params; // Extract the listingID from request parameters
       // Construct SQL query to fetch the listing by its ID
@@ -132,7 +132,7 @@ async function addListing(listing) {
   
       //Insert the listing into the listing table
       const connection = createConnection();
-      const { rows } = await connection.query(
+      const { returnedID } = await connection.query(
         'INSERT INTO listings ("userID", title, price, description, "expirationDate", quantity) VALUES (?, ?, ?, ?, ?, ?) RETURNING "listingID"',
         [
           listing.userID,
@@ -145,7 +145,7 @@ async function addListing(listing) {
         ],
       );
   
-      const listingID = result.insertId;
+      const listingID = returnedID;
   
       //Close the connection to database
       await connection.end();
