@@ -147,12 +147,13 @@ router.get('/profile', verifyToken, async (req, res) => {
 
 router.get('/userID', async (req, res) => {
     const { retrievedUsername } = String(req.query.username);
+    console.log("Stringified username: ", retrievedUsername)
 
     try {
       const connection = createConnection();
       const { rows: users } = await connection.query(
-        'SELECT "userID" FROM users WHERE username = "testuser"',
-        //[retrievedUsername]
+        'SELECT "userID", username FROM users WHERE username = $1',
+        [retrievedUsername]
       );
       console.log(users);
   
