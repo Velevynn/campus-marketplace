@@ -1,16 +1,15 @@
 const express = require('express');
-const cors = require('cors');
+
 const userRoutes = require('./routes/userRoutes');
 const listingRoutes = require('./routes/listingRoutes');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 8000;
+var cors = require('cors');
 const corsOptions = {
-    origin: '*',
+    origin: 'http://localhost:3000',
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
     optionsSuccessStatus: 200 // Set the status code for successful OPTIONS requests
   };
 
