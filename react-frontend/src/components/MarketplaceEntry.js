@@ -42,9 +42,12 @@ function Entry({ title, price, listingID }) {
   }, [listingID]);
 
   let source = missing;
+  // const randomNum = (Math.random(2000)).toString();  // generate random num
+  // let source = `https://haggleimgs.s3.amazonaws.com/${listingID}/image0?cc=${randomNum}`;  
 
   if (images.length > 0) {
     source = `https://haggleimgs.s3.amazonaws.com/${listingID}/image0`;  
+    // in future, add check to see if the image is in the server, set source as missing if that is the case
   }
   // request img from AWS, add random query to circumvent browser caching
 
