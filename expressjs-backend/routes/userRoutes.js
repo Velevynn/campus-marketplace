@@ -145,15 +145,17 @@ router.get('/profile', verifyToken, async (req, res) => {
     }
 });
 
-router.post('/userID', async (req, res) => {
+router.get('/userID', async (req, res) => {
     const { username } = req.body;
 
     try {
       const connection = createConnection();
+      console.log(connection);
       const { user } = await connection.query(
         'SELECT userID FROM users WHERE username = ?',
         [username]
       );
+      console.log(user);
   
       if (user.length > 0) {
         res.status(200).json({ userID: user[0].userID });
