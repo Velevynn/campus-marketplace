@@ -93,8 +93,8 @@ router.get("/images/:listingID", async (req, res) => {
       const { rows } = await connection.query('SELECT * FROM images WHERE "listingID" = $1', 
         [listingID]
       );
-    
-      res.send(results);
+      console.log(rows);
+      res.send(rows);
   
       await connection.end();
     } catch (error) {

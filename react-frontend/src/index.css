@@ -482,14 +482,14 @@ h5 {
 }
 
 a {
-  color: #0366ee;
+  color: #000000;
   text-decoration: none;
 }
 
 a:hover,
 a:active,
 a:focus {
-  color: #0246a2;
+  color: green;
   text-decoration: underline;
 }
 
