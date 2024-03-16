@@ -146,7 +146,7 @@ router.get('/profile', verifyToken, async (req, res) => {
 });
 
 router.get('/userID', async (req, res) => {
-    const { retrievedUsername } = req.query[0];
+    const { retrievedUsername } = req.query;
 
     try {
       const connection = createConnection();
