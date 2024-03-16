@@ -146,19 +146,24 @@ router.get('/profile', verifyToken, async (req, res) => {
 });
 
 router.get('/userID', async (req, res) => {
-    const { retrievedUsername } = String(req.query.username);
-    console.log("Stringified username: ", retrievedUsername)
+    const { retrievedUsername } = req.query.username;
+    console.log("Query: ", req.query);
+    console.log("Query.user", req.query.user);
+    console.log("Query.username", req.query.username);
+    console.log("Retrieved Username: ", retrievedUsername)
+    console.log("Indexed retrieval: ", req.query[0])
+
 
     try {
       const connection = createConnection();
-      const { rows: users } = await connection.query(
-        'SELECT "userID", username FROM users WHERE username = $1',
+      const { rows: user } = await connection.query(
+        'SELECT "userID" FROM users WHERE username = $1',
         [retrievedUsername]
       );
-      console.log(users);
+      console.log(user);
   
-      if (users.length > 0) {
-        res.status(200).json({ userID: users[0].userID });
+      if (user.length > 0) {
+        res.status(200).json({ userID: user[0].userID });
       } else {
         res.status(404).json({ error: 'User not found' });
       }
