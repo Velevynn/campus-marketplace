@@ -147,11 +147,17 @@ router.get('/profile', verifyToken, async (req, res) => {
 
 router.get('/userID', async (req, res) => {
     const { retrievedUsername } = req.query;
+    console.log("Query: ", req.query);
+    console.log("Query.user", req.query.user);
+    console.log("Query.username", req.query.username);
+    console.log("Retrieved Username: ", retrievedUsername)
+    console.log("Indexed retrieval: ", req.query[0])
+
 
     try {
       const connection = createConnection();
       const { rows: user } = await connection.query(
-        'SELECT "userID" FROM users WHERE username = "$1"',
+        'SELECT "userID" FROM users WHERE username = $1',
         [retrievedUsername]
       );
       console.log(rows)
