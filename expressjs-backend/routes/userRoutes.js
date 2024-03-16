@@ -152,7 +152,7 @@ router.get('/userID', async (req, res) => {
       const connection = createConnection();
       console.log(connection);
       const { user } = await connection.query(
-        'SELECT userID FROM users WHERE username = $1',
+        'SELECT "userID" FROM users WHERE username = $1',
         [username]
       );
       console.log(user);
