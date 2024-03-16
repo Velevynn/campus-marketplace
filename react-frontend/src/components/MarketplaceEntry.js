@@ -3,6 +3,7 @@ import axios from "axios";
 import "./marketplace-entry.css";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
+import missing from "../assets/missing.jpg"
 
 function Entry({ title, price, listingID }) {
   const [images, setImages] = useState([]);
@@ -41,7 +42,7 @@ function Entry({ title, price, listingID }) {
   }, [listingID]);
 
   const randomNum = (Math.random(2000)).toString();  // generate random num
-  let source = "";
+  let source = missing;
 
   if (images.length > 0) {
     source = `https://haggleimgs.s3.amazonaws.com/${listingID}/image0?cc=${randomNum}`;  
