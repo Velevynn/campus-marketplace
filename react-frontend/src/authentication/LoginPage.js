@@ -132,7 +132,7 @@ function LoginPage() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post('http://localhost:8000/users/login', credentials);
+      const response = await axios.post('http://haggle.onrender.com/users/login/', credentials);
       localStorage.setItem('token', response.data.token); // Store the token
       window.location.href = '/profile';  // navigate to profile page (refresh to update nav bar for profile)
     } catch (error) {
