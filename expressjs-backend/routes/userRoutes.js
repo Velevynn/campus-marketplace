@@ -158,7 +158,7 @@ router.get('/userID', async (req, res) => {
       const connection = createConnection();
       const { rows: user } = await connection.query(
         'SELECT "userID" FROM users WHERE username = $1',
-        [retrievedUsername]
+        [req.query.username]
       );
       console.log(user);
   
