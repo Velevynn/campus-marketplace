@@ -50,7 +50,11 @@ function Form() {
   
       try {
         // Make a request to the backend to fetch the userID based on the username
-        const response = await axios.get(`https://haggle.onrender.com/users/userID`, { username }, {
+        const response = await axios.get(`https://haggle.onrender.com/users/userID`, { 
+          params: {
+            'username': username
+          }
+        }, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
