@@ -16,7 +16,7 @@ function Search() {
     console.log("Searching for", searchQuery);
     if (searchQuery !== "") {
       window.location.href = `/marketplace?q=${searchQuery}`;
-    } else if (showNotification === false){
+    } else if (showNotification === false){  // check to prevent spamming the notification
       setShowNotification(true);
       setTimeout(() => {
         setShowNotification(false); // Hide notification after 3 seconds
