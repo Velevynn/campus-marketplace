@@ -61,7 +61,7 @@ router.get("/", async (req, res) => {
         const connection = createConnection();
         const { rows } = await connection.query(query);
     
-        res.send(rows);
+        res.status(200).send(rows);
 
       } catch (error) {
         console.error("An error occurred while fetching listings:", error);
@@ -78,7 +78,7 @@ router.get("/:listingID", async (req, res) => {
           'SELECT * FROM listings WHERE "listingID" =  $1 LIMIT 1',
           [listingID]
         );
-        res.send(rows);
+        res.status(200).send(rows);
       } catch (error) {
         console.error("An error occurred while fetching the listing:", error);
         res.status(500).send("An error occurred while fetching the listing");
@@ -94,7 +94,7 @@ router.get("/images/:listingID", async (req, res) => {
         [listingID]
       );
       
-      res.send(rows);
+      res.status(200).send(rows);
   
       await connection.end();
     } catch (error) {
