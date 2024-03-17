@@ -42,7 +42,7 @@ router.post("/", upload.array('image'), async (req, res) => {
           i++;
         }
     
-        res.status(201).send(listingToAdd);
+        res.status(201).send(req.body);
       } catch (error) {
         console.error("Error adding listing:", error);
         res.status(500).json({ error: "Failed to add listing" });
