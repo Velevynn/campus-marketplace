@@ -24,11 +24,11 @@ router.post("/", upload.array('image'), async (req, res) => {
         console.log(req.body); // This will log information about other form fields
         console.log(req.files); // This will log information about uploaded files
     
-        // const listingToAdd = req.body;
+        //const listingToAdd = req.body;
         const images = req.files; // Get the uploaded images
     
-        const listingID = await addListing(listingToAdd);
-        await addImages(req.body, images.length);
+        const listingID = await addListing(req.body);
+        await addImages(listingID, images.length);
     
         let i = 0;
         for (const image of images) {
