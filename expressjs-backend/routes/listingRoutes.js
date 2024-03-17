@@ -32,10 +32,10 @@ router.post("/", upload.array('image'), async (req, res) => {
         for (const image of images) {
           // Upload all images to s3 under folder named listingID
           // Images are labeled image0, image1, etc.
-          const imageData = image.buffer;
           await uploadImageToS3(`${listingID}/image${i}`, image.buffer);
           i++;
         }
+
     
         res.status(201).send(listingToAdd);
       } catch (error) {
@@ -59,6 +59,8 @@ router.get("/", async (req, res) => {
         const { rows } = await connection.query(query);
         res.status(200).send(rows);
 
+        await connection.end();
+
       } catch (error) {
         console.error("An error occurred while fetching listings:", error);
         res.status(500).send("An error occurred while fetching listings");
@@ -74,6 +76,8 @@ router.get("/:listingID", async (req, res) => {
           'SELECT * FROM listings WHERE "listingID" =  $1 LIMIT 1',
           [listingID]
         );
+
+        await connection.end();
         res.status(200).send(rows);
       } catch (error) {
         console.error("An error occurred while fetching the listing:", error);
