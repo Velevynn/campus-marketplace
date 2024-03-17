@@ -136,7 +136,7 @@ async function addListing(listing) {
   
       //Insert the listing into the listing table
       const connection = createConnection();
-      const { returnedID } = await connection.query(
+      const { rows } = await connection.query(
         'INSERT INTO listings ("userID", title, price, description, "expirationDate", quantity) VALUES ($1, $2, $3, $4, $5, $6) RETURNING "listingID"',
         [
           listing.userID,
@@ -148,11 +148,12 @@ async function addListing(listing) {
           // listing.location; NOT YET
         ],
       );
-      console.log("ReturnedID in AddRoutes: ", returnedID);  
+      const listingID = rows[0].listingID;
+      console.log(listingID);
       //Close the connection to database
       await connection.end();
       //return success
-      return returnedID;
+      return listingID;
     } catch (error) {
       console.error("An error occured while posting this listing:", error);
       throw error;
