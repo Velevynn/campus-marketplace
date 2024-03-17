@@ -36,6 +36,7 @@ const mockRequestBody = {
   quantity: '1'
 };
 
+// Mock response for get requests
 const mockGetQueryResponse = {rows:
     [{
     listingID: '825',
@@ -51,6 +52,7 @@ const mockGetQueryResponse = {rows:
     }]
 };
 
+// Mock image files
 const mockFiles = [
     {
       fieldname: 'image',

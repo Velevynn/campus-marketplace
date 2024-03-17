@@ -33,7 +33,6 @@ router.post("/", upload.array('image'), async (req, res) => {
           // Upload all images to s3 under folder named listingID
           // Images are labeled image0, image1, etc.
           const imageData = image.buffer;
-          console.log(imageData);
           await uploadImageToS3(`${listingID}/image${i}`, image.buffer);
           i++;
         }
@@ -58,7 +57,6 @@ router.get("/", async (req, res) => {
         }
         const connection = createConnection();
         const { rows } = await connection.query(query);
-        console.log(rows);
         res.status(200).send(rows);
 
       } catch (error) {
