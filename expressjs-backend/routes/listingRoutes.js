@@ -21,8 +21,6 @@ const { uploadImageToS3 } = require('../util/s3');
 
 router.post("/", upload.array('image'), async (req, res) => {
     try {
-        console.log(req.body); // This will log information about other form fields
-        console.log(req.files); // This will log information about uploaded files
     
         const listingToAdd = req.body;
         const images = req.files; // Get the uploaded images
@@ -60,7 +58,7 @@ router.get("/", async (req, res) => {
         }
         const connection = createConnection();
         const { rows } = await connection.query(query);
-    
+        console.log(rows);
         res.status(200).send(rows);
 
       } catch (error) {
@@ -144,9 +142,7 @@ async function addListing(listing) {
           listing.quantity,
         ],
       );
-      //console.log(result);
       const listingID = rows[0].listingID;
-      console.log(listingID);
       //Close the connection to database
       await connection.end();
       //return success
