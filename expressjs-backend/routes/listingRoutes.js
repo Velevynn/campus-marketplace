@@ -20,6 +20,8 @@ function createConnection() {
 const { uploadImageToS3 } = require('../util/s3');
 
 router.post("/", upload.array('image'), async (req, res) => {
+    console.log("Body: ", req.body);
+    console.log("Files: ", req.files);
     try {
         console.log(req.body); // This will log information about other form fields
         console.log(req.files); // This will log information about uploaded files
