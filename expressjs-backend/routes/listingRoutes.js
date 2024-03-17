@@ -107,7 +107,7 @@ async function addImages(listingID, numImages) {
     const connection = createConnection();
     for (i = 0; i < numImages; i++) {
       await connection.query(
-        'INSERT INTO images ("listingID", "imageURL") VALUES (?, ?)',
+        'INSERT INTO images ("listingID", "imageURL") VALUES ($1, $2)',
         [
           listingID,
           `https://haggleimgs.s3.amazonaws.com/${listingID}/image${i}`,
