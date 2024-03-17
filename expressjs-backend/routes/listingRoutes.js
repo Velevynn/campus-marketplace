@@ -20,14 +20,16 @@ function createConnection() {
 const { uploadImageToS3 } = require('../util/s3');
 
 router.post("/", upload.array('image'), async (req, res) => {
+    console.log("Body: ", req.body);
+    console.log("Files: ", req.files);
     try {
         console.log(req.body); // This will log information about other form fields
         console.log(req.files); // This will log information about uploaded files
     
-        const listingToAdd = req.body;
+        //const listingToAdd = req.body;
         const images = req.files; // Get the uploaded images
     
-        const listingID = await addListing(listingToAdd);
+        const listingID = await addListing(req.body);
         await addImages(listingID, images.length);
     
         let i = 0;
@@ -69,7 +71,7 @@ router.get("/", async (req, res) => {
       }
 });
 
-router.get("/:listingID", async (req, res) => {
+router.get("/:listingID/", async (req, res) => {
     try {
         const { listingID } = req.params; // Extract the listingID from request parameters
         // Construct SQL query to fetch the listing by its ID
@@ -85,7 +87,7 @@ router.get("/:listingID", async (req, res) => {
       }
 });
 
-router.get("/images/:listingID", async (req, res) => {
+router.get("/images/:listingID/", async (req, res) => {
   try {
       const { listingID } = req.params; // Extract the listingID from request parameters
       // Construct SQL query to fetch the listing by its ID
@@ -105,6 +107,8 @@ router.get("/images/:listingID", async (req, res) => {
 
 async function addImages(listingID, numImages) {
   try {
+    console.log("ListingID: ", listingID);
+    console.log("numImages: ", numImages);
     const connection = createConnection();
     for (i = 0; i < numImages; i++) {
       await connection.query(

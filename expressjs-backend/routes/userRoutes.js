@@ -145,8 +145,14 @@ router.get('/profile', verifyToken, async (req, res) => {
     }
 });
 
-router.post('/userID', async (req, res) => {
-    const { username } = req.body;
+router.get('/userID', async (req, res) => {
+    const { retrievedUsername } = req.query.username;
+    console.log("Query: ", req.query);
+    console.log("Query.user", req.query.user);
+    console.log("Query.username", req.query.username);
+    console.log("Retrieved Username: ", retrievedUsername)
+    console.log("Indexed retrieval: ", req.query[0])
+
 
     try {
       const connection = createConnection();
@@ -154,6 +160,7 @@ router.post('/userID', async (req, res) => {
         'SELECT "userID" FROM users WHERE username = $1',
         [username]
       );
+      console.log(user);
   
       if (user.length > 0) {
         res.status(200).json({ userID: user[0].userID });

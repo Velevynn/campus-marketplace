@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import "./ListingView.css";
 import ImageCarousel from "../components/ImageCarousel.js";
-//import { jwtDecode } from "jwt-decode";
+////import { jwtDecode } from "jwt-decode";
 
 const ListingView = () => {
   const { listingID } = useParams();
@@ -17,14 +17,14 @@ const ListingView = () => {
       try {
         /* get data of listing by its ID */
         const response = await axios.get(
-          `http://localhost:8000/listings/${listingID}`,
+          `https://haggle.onrender.com/listings/${listingID}`,
         );
         /* check currently logged-in userID */
-        //const loggedInUserID = fetchUserProfile(); need to fix this once cloud database set up
+        //const loggedInUserID = fetchUserProfile();
         /* set fetched data to state */
         if (response.data.length > 0) {
           setListing(response.data[0]);
-          //setIsOwner(response.data[0].userID === loggedInUserID.data[0].userID); need to fix this once cloud database set up
+          //setIsOwner(response.data[0].userID === loggedInUserID.data[0].userID);
           console.log(response.data);
         }
       } catch (error) {
@@ -41,7 +41,7 @@ const ListingView = () => {
       try {
         /* Fetch images for the listing from the backend */
         const response = await axios.get(
-          `http://localhost:8000/listings/images/${listingID}`,
+          `https://haggle.onrender.com/listings/images/${listingID}`,
         );
         if (response.data.length > 0) {
           setImages(response.data);
