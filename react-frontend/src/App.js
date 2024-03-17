@@ -42,11 +42,11 @@ function App() {
                   } />
           <Route path="/terms-of-service" element={<TOS />} />
           <Route path="/listings/:listingID" element={<ListingView />} />
-          <Route path="/listings/:listingID/buy" element={<BuyNow />} />
-          <Route path="/listings/:listingID/offer" element={<MakeOffer />} />
-          <Route path="/listings/:listingID/chat" element={<StartChat />} />
-          <Route path="/listings/:listingID/delete" element={<DeleteListing />} />
-          <Route path="/listings/:listingID/edit" element={<EditListing />} />
+          <Route path="/listings/:listingID/buy" element={<ProtectedRoute> <BuyNow /></ProtectedRoute> } />
+          <Route path="/listings/:listingID/offer" element={<ProtectedRoute> <MakeOffer /></ProtectedRoute> } />
+          <Route path="/listings/:listingID/chat" element={<ProtectedRoute> <StartChat /></ProtectedRoute> } />
+          <Route path="/listings/:listingID/delete" element={<ProtectedRoute> <DeleteListing /></ProtectedRoute> } />
+          <Route path="/listings/:listingID/edit" element={<ProtectedRoute> <EditListing /></ProtectedRoute> } />
           <Route
               path = "*"
               element = {<PageNotFound/>}

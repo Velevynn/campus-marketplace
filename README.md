@@ -13,3 +13,7 @@
   -- ESLint Instructions --  
     run manually on files with this syntax:  
     npx eslint yourfile.js  
+
+--- Product Spec ---
+
+https://docs.google.com/document/d/1q0nC7W3DTViva0hseFEp7Kv1w5NV9NboWGGN5qR_MrE/edit?usp=sharing

@@ -4,7 +4,6 @@ const router = express.Router();
 const mysql = require('mysql2/promise');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-require('../util/database');
 
 const secretKey = 'YourSecretKey';
 

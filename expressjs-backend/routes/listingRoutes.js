@@ -23,8 +23,6 @@ router.post("/", upload.array('image'), async (req, res) => {
     console.log("Body: ", req.body);
     console.log("Files: ", req.files);
     try {
-        console.log(req.body); // This will log information about other form fields
-        console.log(req.files); // This will log information about uploaded files
     
         //const listingToAdd = req.body;
         const images = req.files; // Get the uploaded images
@@ -37,7 +35,6 @@ router.post("/", upload.array('image'), async (req, res) => {
           // Upload all images to s3 under folder named listingID
           // Images are labeled image0, image1, etc.
           const imageData = image.buffer;
-          console.log(imageData);
           await uploadImageToS3(`${listingID}/image${i}`, image.buffer);
           i++;
         }
@@ -62,8 +59,7 @@ router.get("/", async (req, res) => {
         }
         const connection = createConnection();
         const { rows } = await connection.query(query);
-    
-        res.send(rows);
+        res.status(200).send(rows);
 
       } catch (error) {
         console.error("An error occurred while fetching listings:", error);
@@ -80,7 +76,7 @@ router.get("/:listingID/", async (req, res) => {
           'SELECT * FROM listings WHERE "listingID" =  $1 LIMIT 1',
           [listingID]
         );
-        res.send(rows);
+        res.status(200).send(rows);
       } catch (error) {
         console.error("An error occurred while fetching the listing:", error);
         res.status(500).send("An error occurred while fetching the listing");
@@ -96,7 +92,7 @@ router.get("/images/:listingID/", async (req, res) => {
         [listingID]
       );
       
-      res.send(rows);
+      res.status(200).send(rows);
   
       await connection.end();
     } catch (error) {
@@ -148,9 +144,7 @@ async function addListing(listing) {
           listing.quantity,
         ],
       );
-      //console.log(result);
       const listingID = rows[0].listingID;
-      console.log(listingID);
       //Close the connection to database
       await connection.end();
       //return success
