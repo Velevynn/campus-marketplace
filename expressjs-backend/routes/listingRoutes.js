@@ -148,13 +148,11 @@ async function addListing(listing) {
           // listing.location; NOT YET
         ],
       );
-  
-      const listingID = returnedID;
-  
+      console.log("ReturnedID in AddRoutes: ", returnedID);  
       //Close the connection to database
       await connection.end();
       //return success
-      return listingID;
+      return returnedID;
     } catch (error) {
       console.error("An error occured while posting this listing:", error);
       throw error;
