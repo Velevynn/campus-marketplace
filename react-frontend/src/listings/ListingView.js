@@ -3,15 +3,14 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import "./ListingView.css";
 import ImageCarousel from "../components/ImageCarousel.js";
-//import { jwtDecode } from "jwt-decode";
+////import { jwtDecode } from "jwt-decode";
 
 const ListingView = () => {
   const { listingID } = useParams();
   const [listing, setListing] = useState(null);
   const [images, setImages] = useState([]);
-  //const [isOwner, setIsOwner] = useState(false);
-  const isOwner = useState(true);
-
+  const [isOwner, setIsOwner] = useState(false);
+  console.log(setIsOwner);
   /* hook to fetch data when listingID changes */
   useEffect(() => {
     const fetchData = async () => {
@@ -92,17 +91,15 @@ const ListingView = () => {
               <ImageCarousel images={images} />
             </div>
             <p className="price-buyerview">${listing.price}</p>
-            <div className="buttons">
-              <button onClick={handleBuyNow}>Buy Now</button>
-              <button onClick={handleMakeOffer}>Make Offer</button>
-              <button onClick={handleStartChat}>Start a Chat</button>
+              <button className="btn" onClick={handleBuyNow}>Buy Now</button>
+              <button className="btn" onClick={handleMakeOffer}>Make Offer</button>
+              <button className="btn" onClick={handleStartChat}>Start a Chat</button>
               {isOwner && (
                 <>
                   <button onClick={handleEditListing}>Edit Listing</button>
                   <button onClick={handleDeleteListing}>Delete Listing</button>
                 </>
               )}
-            </div>
           </div>
           <div className="description">
             <h3>Description</h3>

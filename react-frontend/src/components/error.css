@@ -2,9 +2,9 @@
   position: fixed;
   bottom: 20px;
   right: 20px;
-  background-color: #c89898;
+  background-color: rgba(200, 152, 152, 1);
   color: #fff;
-  padding: 10px 20px;
+  padding: 10px 10px;
   border-radius: 10px;
   opacity: 0;
   transition: opacity 0.3s ease-in-out;
@@ -15,7 +15,7 @@
 }
 
 .notif-text {
-  height: 15px;
+  height: 5px;
   color: black;
   opacity: 100;
 }

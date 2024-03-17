@@ -6,8 +6,7 @@ import Bio from "../components/Bio";
 function About() {
   return (
     <div style={{ margin: "25px", textAlign: "center" }}>
-      <h style={{ fontFamily: "Newsreader, serif", fontSize: "3rem" }}>About</h>
-      <div className="divider" />
+      <h1 style={{ fontFamily: "Newsreader, serif", fontSize: "3rem" }}>About</h1>
       <div className="team-container">
         <Bio
           name="Alex"

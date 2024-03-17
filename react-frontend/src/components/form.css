@@ -1,10 +1,11 @@
 .form-container {
   text-align: center;
   width: 400px; /* Adjust width as needed */
-  margin: 0 auto; /* Center the container horizontally */
+  margin: 0 auto;
+  margin-top: 100px;
+  border-radius: 7px;
   padding: 20px;
   background-color: #fff;
-  border-radius: 10px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Add drop shadow */
 }
 
@@ -21,7 +22,7 @@
   padding: 10px;
   margin-bottom: 15px;
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 7px;
   box-sizing: border-box;
 }
 
@@ -31,7 +32,7 @@
   padding: 10px;
   margin-bottom: 15px;
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 7px;
   box-sizing: border-box;
   line-height: normal; /* Ensure text starts at the top */
   text-align: left; /* Align text to the left */
@@ -39,20 +40,22 @@
 }
 
 
-.form-container textarea {
-  height: 150px; /* Larger description box */
-}
-
 .form-container .price-input {
   width: calc(50% - 5px); /* Smaller price box */
   display: inline-block;
 }
 
-.form-container #submit-button {
+.form-container .submit-button {
   background-color: green;
   color: white; /* Optionally, set text color to white for better contrast */
   border: none; /* Optionally, remove border for a cleaner look */
-  padding: 10px 20px; /* Adjust padding as needed */
   border-radius: 5px; /* Optionally, add border-radius for rounded corners */
   cursor: pointer; /* Show pointer cursor on hover */
 }
+
+.custom-file-input {
+  /* Hides file input button */
+  display: none;
+}
+
+

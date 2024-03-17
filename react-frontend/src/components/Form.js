@@ -120,21 +120,29 @@ function Form() {
           value={listing.price}
           onChange={handleChange}
         />
-        <label htmlFor="images">Images</label>
-        <input
-          type="file"
-          name="images"
-          id="images"
-          accept="image/*"
-          multiple
-          onChange={handleImageChange}
-        />
+        <label htmlFor="images" className="button">
+          <span>Select Images</span>
+          <input
+            type="file"
+            name="images"
+            id="images"
+            accept="image/*"
+            multiple
+            className="custom-file-input"
+            onChange={handleImageChange}
+          />
+        </label>
+
+        {/*For displaying how many images have been selected*/}
+        {listing.images.length > 0 && (
+          <p>{listing.images.length} image(s) selected</p>
+        )}
+
 
         <input
           type="button"
           value="Post Listing"
           onClick={submitForm}
-          style={{ backgroundColor: "#426B1F" }}
         />
       </form>
     </div>

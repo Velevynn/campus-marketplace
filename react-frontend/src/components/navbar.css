@@ -1,11 +1,16 @@
 /* NavBar.css */
 .navbar {
-  background-color: white;
-  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.885);
   display: flex;
+  width: 100%;
   align-items: center;
-  padding-bottom: 20px;
+  padding: 0px 10px 30px 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); /* Add drop shadow */
+  position: sticky !important;
+  top: 0;
+  z-index: 100;
 }
+
 
 .logo-container {
   flex-grow: 1;
@@ -20,8 +25,9 @@
 .search-bar-div {
   flex-grow: 2;
   height: 24px;
-  margin-left: 80px;
+  margin-left: 0px;
   width: 27vw;
+
 }
 
 .nav-links {
@@ -31,6 +37,7 @@
   align-items: center;
   font-family: 'inter', sans-serif;
   white-space: nowrap;
+  justify-content: right;
 }
 
 .nav-links li {
@@ -77,14 +84,22 @@
 
 .nav-links a:hover {
   text-decoration: none;
-  color: inherit;
 }
 
 .nav-links a:active {
   text-decoration: none;
-  color: inherit;
 }
 
 .nav-links a:visited {
+  text-decoration: none;
+}
+
+.post-listing-button:hover {
+  background-color: #244c00;
+  color: white;
+}
+
+.post-listing-button:visited {
+  color: white;
   text-decoration: none;
 }

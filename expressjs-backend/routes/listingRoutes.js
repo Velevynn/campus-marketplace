@@ -91,10 +91,11 @@ router.get("/images/:listingID/", async (req, res) => {
   try {
       const { listingID } = req.params; // Extract the listingID from request parameters
       // Construct SQL query to fetch the listing by its ID
-      const query = 'SELECT * FROM images WHERE "listingID" = $1 LIMIT 1'
       const connection = createConnection();
-      const { rows } = await connection.query(query, [listingID]);
-  
+      const { rows } = await connection.query('SELECT * FROM images WHERE "listingID" = $1', 
+        [listingID]
+      );
+      
       res.send(rows);
   
       await connection.end();
@@ -133,9 +134,9 @@ async function addListing(listing) {
       if(listing.expirationDate === 'null') {
         listing.expirationDate = null;
       }
-  
       //Insert the listing into the listing table
       const connection = createConnection();
+      
       const { rows } = await connection.query(
         'INSERT INTO listings ("userID", title, price, description, "expirationDate", quantity) VALUES ($1, $2, $3, $4, $5, $6) RETURNING "listingID"',
         [
@@ -145,9 +146,9 @@ async function addListing(listing) {
           listing.description,
           listing.expirationDate,
           listing.quantity,
-          // listing.location; NOT YET
         ],
       );
+      //console.log(result);
       const listingID = rows[0].listingID;
       console.log(listingID);
       //Close the connection to database

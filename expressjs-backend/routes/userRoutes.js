@@ -43,7 +43,7 @@ router.post('/check', async (req, res) => {
 
       // Check if phone number exists
       const { rows: phoneResult } = await connection.query(
-        'SELECT 1 FROM users WHERE "phoneNumber" = $1 LIMIT 1',
+        `SELECT 1 FROM users WHERE 'phoneNumber' = $1 LIMIT 1`,
         [phoneNumber]
       );
       if (phoneResult.length > 0) { conflict = 'Phone Number'; }
@@ -156,9 +156,9 @@ router.get('/userID', async (req, res) => {
 
     try {
       const connection = createConnection();
-      const { rows: user } = await connection.query(
+      const { rows : user } = await connection.query(
         'SELECT "userID" FROM users WHERE username = $1',
-        [req.query.username]
+        [username]
       );
       console.log(user);
   
@@ -168,8 +168,8 @@ router.get('/userID', async (req, res) => {
         res.status(404).json({ error: 'User not found' });
       }
     } catch (error) {
-      console.error('Error fetching user ID:', error);
-      res.status(500).json({ error: 'Failed to fetch user ID' });
+      console.error('Error fetching userID:', error);
+      res.status(500).json({ error: 'Failed to fetch userID' });
     }
 });
 
