@@ -104,6 +104,8 @@ router.get("/images/:listingID/", async (req, res) => {
 
 async function addImages(listingID, numImages) {
   try {
+    console.log("ListingID: ", listingID);
+    console.log("numImages: ", numImages);
     const connection = createConnection();
     for (i = 0; i < numImages; i++) {
       await connection.query(
