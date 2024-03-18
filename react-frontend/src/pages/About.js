@@ -10,28 +10,28 @@ function About() {
       <div className="team-container">
         <Bio
           name="Alex"
-          bio="Karan likes miget"
+          bio="4th Year CS Major (miget)"
         />
 
         <Bio
           name="Alexander"
-          bio="lets dance"
+          bio="3rd Year CS Major. I am a dancer in United Movement is a non-audition dance club at Cal Poly in San Luis Obispo. Let's dance."
         />
 
         <Bio
           name="Joshua"
-          bio="fucc"
+          bio="3rd Year SE Major"
         />
 
         <Bio
           name="Jimmy"
           bio="
-          pro valorant didnt shwer"
+          3rd Year CS Major. I'm pro valorant"
         />
 
         <Bio
           name="Karan"
-          bio="yo (im cooked)"
+          bio="2nd Year SE Major (im cooked)"
         />
       </div>
     </div>
