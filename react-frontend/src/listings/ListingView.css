@@ -60,8 +60,8 @@
   height: auto;
   width: 400px;
   height: 400px;
-  border-radius: 0px;
-  overflow: hidden; /* Ensure the border is not hidden by overflow */
+  border-radius: 0px !important;
+ /* Ensure the border is not hidden by overflow */
   background-color: rgb(0,0,0);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
