@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import logoImage from '../assets/haggle-horizontal.png';
 import { Link } from 'react-router-dom';
-import { Container, Form, InputGroup, Input, InputLabel, Button, BottomContainer, BottomLabel } from './AuthenticationStyling';
+import { Container, Description, HeaderLabel, Form, InputGroup, Input, InputLabel, Button, BottomContainer, BottomLabel } from './AuthenticationStyling';
 
 const ForgotPasswordPage = () => {
   const [email, setEmail] = useState('');
@@ -28,6 +28,14 @@ const ForgotPasswordPage = () => {
     <>
       <Container>
         <img src={logoImage} alt="Logo" style={{ display: 'block', margin: '0 auto 20px', maxWidth: '200px', height: 'auto' }} />
+        <HeaderLabel style={{ marginTop: '0px'}}>
+            Forgot Password?
+        </HeaderLabel>
+        <Description style={{ marginTop: '0px'}}>
+            Enter your email and we will send you a link to reset your password.
+        </Description>
+
+
         <Form onSubmit={handleSubmit}>
         {message && (
             <div style={{ color: 'green', marginTop: '20px', fontSize: '12px' }}>
@@ -45,7 +53,7 @@ const ForgotPasswordPage = () => {
               required />
             <InputLabel htmlFor="email" hasContent={email.length > 0}>Email Address</InputLabel>
           </InputGroup>
-          <Button type="submit">
+          <Button type="submit" style={{ marginTop: '20px'}}>
             Send Reset Link
           </Button>
         </Form>
@@ -54,7 +62,7 @@ const ForgotPasswordPage = () => {
       <BottomContainer>
         <BottomLabel>
           Return to {}
-          <Link to="/login" style={{ display: 'inline', color: '#0056b3', fontWeight: 'bold' }}>
+          <Link to="/login" style={{ display: 'inline', color: '#0056b3', fontWeight: 'bold'}}>
             Log in
           </Link>
         </BottomLabel>
