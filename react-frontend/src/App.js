@@ -16,6 +16,9 @@ import MakeOffer from "./pages/MakeOffer.js";
 import StartChat from "./pages/Chat.js";
 import DeleteListing from "./pages/DeleteListing.js";
 import EditListing from "./pages/EditListing.js";
+import ForgotPasswordPage from './authentication/ForgotPasswordPage';
+import ResetPasswordPage from './authentication/ResetPasswordPage';
+import ChangePasswordPage from './authentication/ChangePasswordPage';
 
 function App() {
   return (
@@ -47,6 +50,9 @@ function App() {
           <Route path="/listings/:listingID/chat" element={<ProtectedRoute> <StartChat /></ProtectedRoute> } />
           <Route path="/listings/:listingID/delete" element={<ProtectedRoute> <DeleteListing /></ProtectedRoute> } />
           <Route path="/listings/:listingID/edit" element={<ProtectedRoute> <EditListing /></ProtectedRoute> } />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
+          <Route path="/change-password" element={<ChangePasswordPage />} />
           <Route
               path = "*"
               element = {<PageNotFound/>}
