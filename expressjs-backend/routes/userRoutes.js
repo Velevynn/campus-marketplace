@@ -4,6 +4,7 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const secretKey = 'YourSecretKey';
+const crypto = require('crypto');
 const { verifyToken } = require('../util/middleware');
 const { Pool } = require('pg');
 require('dotenv').config();
@@ -75,15 +76,18 @@ router.post('/check', async (req, res) => {
 // Insert user info into database upon signup.
 router.post('/register', async (req, res) => {
     const { username, full_name, password, email, phoneNum: phoneNumber } = req.body;
+    console.log(username, full_name, password, email, phoneNum);
     //TODO:
     //const fullName = 'testUser';
     // It appears bcrypt was intended to be used but not imported. Ensure bcrypt is imported.
     try {
+      console.log("Making Null Checks");
       if (username === null || full_name === null || password === null || email === null || phoneNumber === null) {throw Error;}
       const bcrypt = require('bcrypt');
       const hashedPassword = await bcrypt.hash(password, 10);
       const connection = createConnection();
 
+      console.log("Inserting into users table");
       // Insert user details into the users table.
       const  { result } = await connection.query(
         'INSERT INTO users (username, "fullName", password, email, "phoneNumber") VALUES ($1, $2, $3, $4, $5)',
@@ -225,7 +229,7 @@ router.delete('/delete', async (req, res) => {
 });
 
 
-router.post('/users/forgot-password', async (req, res) => {
+router.post('/forgot-password', async (req, res) => {
   const { email } = req.body;
   console.log("hello");
   if (!email) {
@@ -245,7 +249,7 @@ router.post('/users/forgot-password', async (req, res) => {
     const resetExpires = new Date(Date.now() + 3600000); // 1 hour from now
 
     // Save the resetToken and expiration time to the user's record in the database
-    await connection.query('UPDATE users SET reset_password_token = $1, reset_password_expires = $2 WHERE email = $3', [resetToken, resetExpires, email]);
+    await connection.query('UPDATE users SET "resetPasswordToken" = $1, "resetPasswordExpires" = $2 WHERE email = $3', [resetToken, resetExpires, email]);
 
     const resetUrl = `http://localhost:3000/reset-password?token=${resetToken}`;
 
@@ -283,20 +287,20 @@ router.post('/users/forgot-password', async (req, res) => {
   }
 });
 
-router.post('/users/reset-password', async (req, res) => {
+router.post('/reset-password', async (req, res) => {
   const { token, password } = req.body;
 
   try {
     const connection = createConnection();
 
     // Verify token and its expiration
-    const { rows: users } = await connection.query('SELECT * FROM users WHERE reset_password_token = $1 AND reset_password_expires > NOW()', [token]);
+    const { rows: users } = await connection.query('SELECT * FROM users WHERE "resetPasswordToken" = $1 AND "resetPasswordExpires" > NOW()', [token]);
     if (users.length === 0) {
       return res.status(400).json({ error: 'Invalid or expired token' });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    await connection.query('UPDATE users SET password = $1, reset_password_token = NULL, reset_password_expires = NULL WHERE user_id = $2', [hashedPassword, users[0].user_id]);
+    await connection.query('UPDATE users SET password = $1, "resetPasswordToken" = NULL, "resetPasswordExpires" = NULL WHERE "userId" = $2', [hashedPassword, users[0].user_id]);
 
     res.json({ message: 'Password has been reset successfully' });
     
