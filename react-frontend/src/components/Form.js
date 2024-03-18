@@ -74,7 +74,7 @@ function Form() {
         });
         
         try {
-          await axios.post(`https://haggle.onrender.com/listings`, formData, {
+          await axios.post('http://localhost:8000/listings', formData, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }
