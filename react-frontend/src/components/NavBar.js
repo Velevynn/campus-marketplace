@@ -23,7 +23,7 @@ function NavBar() {
     <nav className="navbar">
       <div className="logo-container">
         <div className="logo">
-          <Link to="/">
+          <Link to="/marketplace">
             <img src={logo} alt="Logo" />
           </Link>
         </div>
