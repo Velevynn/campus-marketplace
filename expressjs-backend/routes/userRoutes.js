@@ -85,6 +85,7 @@ router.post('/register', async (req, res) => {
       if (username === null || full_name === null || password === null || email === null || phoneNumber === null) {throw Error;}
       const bcrypt = require('bcrypt');
       const hashedPassword = await bcrypt.hash(password, 10);
+      console.log("Hashed Password: ", hashedPassword);
       const connection = createConnection();
 
       console.log("Inserting into users table");
@@ -94,6 +95,7 @@ router.post('/register', async (req, res) => {
         [username, full_name, hashedPassword, email, phoneNumber]
       );
       
+      console.log("Creating jwt");
       // Create json web token to maintain sign-in throughout pages.
       const token = jwt.sign({ username: username }, secretKey, { expiresIn: '24h' });
 
