@@ -7,6 +7,18 @@ const app = express();
 app.use(bodyParser.json());
 app.use('/api/users', userRoutes);
 
+let server; // Declare server variable to store the reference to the Express server
+
+beforeAll(() => {
+  app.use(bodyParser.json());
+  app.use('/api/users', userRoutes);
+  server = app.listen(3000); // Start the Express server
+});
+
+afterAll((done) => {
+  server.close(done); // Close the Express server after all tests are done
+});
+
 describe('POST /api/users/check', () => {
   test('should return 200 and no conflicts', async () => {
     const userData = {
@@ -192,19 +204,19 @@ describe('POST /api/users/login', () => {
   // You can write more test cases to cover other scenarios such as unauthorized access, server errors, etc.
 });
 
-describe('POST /api/users/userID', () => {
+describe('GET /api/users/userID', () => {
     test('should return userID for existing user', async () => {
       // Assuming you have an existing user in your database
       const userData = {
-        username: 'testuser'
+        username: 'admin'
       };
   
       await request(app)
-        .post('/api/users/userID')
-        .send(userData)
+        .get('/api/users/userID')
+        .query(userData)
         .expect(200)
         .then((response) => {
-          expect(response.body.userID).toBeDefined();
+          expect(response.body.userID).toBe('1055');
           // Adjust expectations based on the structure of your response
         });
     });
@@ -216,8 +228,8 @@ describe('POST /api/users/userID', () => {
       };
   
       await request(app)
-        .post('/api/users/userID')
-        .send(userData)
+        .get('/api/users/userID')
+        .query(userData)
         .expect(404)
         .then((response) => {
           expect(response.body.error).toBe('User not found');
@@ -230,7 +242,7 @@ describe('POST /api/users/userID', () => {
         };
     
         await request(app)
-          .post('/api/users/userID')
+          .get('/api/users/userID')
           .send(userData)
           .expect(500)
           .then((response) => {
