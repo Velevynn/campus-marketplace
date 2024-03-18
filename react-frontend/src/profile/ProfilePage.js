@@ -16,7 +16,7 @@ function ProfilePage() {
 
   const handleSignOut = () => {
     localStorage.removeItem('token');
-    window.location.href('/login');
+    window.location.href = '/login';
   };
 /*
   const handleDeleteProfile = async () => {
