@@ -4,7 +4,7 @@
   "description": "expressjs-backend",
   "main": "backend.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --coverage --detectOpenHandles",
     "dev": "nodemon backend.js",
     "start": "node backend.js"
   },

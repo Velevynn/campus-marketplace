@@ -50,7 +50,11 @@ function Form() {
   
       try {
         // Make a request to the backend to fetch the userID based on the username
-        const response = await axios.post(`http://localhost:8000/users/userID`, { username }, {
+        const response = await axios.get(`http://localhost:8000/users/userID`, { 
+          params: {
+            'username': username
+          }
+        }, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -70,7 +74,7 @@ function Form() {
         });
         
         try {
-          await axios.post(`http://localhost:8000/listings`, formData, {
+          await axios.post('http://localhost:8000/listings', formData, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }
