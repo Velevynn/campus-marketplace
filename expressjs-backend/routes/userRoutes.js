@@ -4,6 +4,7 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const secretKey = 'YourSecretKey';
+const crypto = require('crypto');
 const { verifyToken } = require('../util/middleware');
 const { Pool } = require('pg');
 require('dotenv').config();
@@ -225,7 +226,7 @@ router.delete('/delete', async (req, res) => {
 });
 
 
-router.post('/users/forgot-password', async (req, res) => {
+router.post('/forgot-password', async (req, res) => {
   const { email } = req.body;
   console.log("hello");
   if (!email) {
@@ -245,7 +246,7 @@ router.post('/users/forgot-password', async (req, res) => {
     const resetExpires = new Date(Date.now() + 3600000); // 1 hour from now
 
     // Save the resetToken and expiration time to the user's record in the database
-    await connection.query('UPDATE users SET reset_password_token = $1, reset_password_expires = $2 WHERE email = $3', [resetToken, resetExpires, email]);
+    await connection.query('UPDATE users SET "resetPasswordToken" = $1, "resetPasswordExpires" = $2 WHERE email = $3', [resetToken, resetExpires, email]);
 
     const resetUrl = `http://localhost:3000/reset-password?token=${resetToken}`;
 
@@ -283,20 +284,22 @@ router.post('/users/forgot-password', async (req, res) => {
   }
 });
 
-router.post('/users/reset-password', async (req, res) => {
+router.post('/reset-password', async (req, res) => {
   const { token, password } = req.body;
 
   try {
     const connection = createConnection();
 
     // Verify token and its expiration
-    const { rows: users } = await connection.query('SELECT * FROM users WHERE reset_password_token = $1 AND reset_password_expires > NOW()', [token]);
+    const { rows: users } = await connection.query('SELECT * FROM users WHERE "resetPasswordToken" = $1 AND "resetPasswordExpires" > NOW()', [token]);
+    console.log(users);
     if (users.length === 0) {
+      console.log("invalid");
       return res.status(400).json({ error: 'Invalid or expired token' });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    await connection.query('UPDATE users SET password = $1, reset_password_token = NULL, reset_password_expires = NULL WHERE user_id = $2', [hashedPassword, users[0].user_id]);
+    await connection.query('UPDATE users SET password = $1, "resetPasswordToken" = NULL, "resetPasswordExpires" = NULL WHERE "userID" = $2', [hashedPassword, users[0].userID]);
 
     res.json({ message: 'Password has been reset successfully' });
     

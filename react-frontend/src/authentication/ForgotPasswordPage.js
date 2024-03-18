@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import logoImage from '../assets/haggle-horizontal.png';
-import { Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Container, Form, InputGroup, Input, InputLabel, Button, BottomContainer, BottomLabel } from './AuthenticationStyling';
 
 const ForgotPasswordPage = () => {
