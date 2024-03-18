@@ -104,37 +104,69 @@ router.post('/register', async (req, res) => {
 
 // Sign in user after verifying account details.
 router.post('/login', async (req, res) => {
-    const { username, password } = req.body;
-    try {
-      if (username === null || password === null) throw Error;
-      const connection = createConnection();
-      // Attempt to retrieve user's information from database.
-      const { rows: users } = await connection.query(
-        'SELECT username, password FROM users WHERE username = $1',
-        [username]
-      );
-      //console.log(users.length);
-      if (users.length > 0) {
-        const user = users[0];
-        const validPassword = await bcrypt.compare(password, user.password);
-        // Check the input password against the actual password and...
-        if (validPassword) {
-          // Create json web token if successful.
-          const token = jwt.sign({ username: username }, secretKey, { expiresIn: '24h' });
-          await connection.end();
-          res.status(200).json({ message: 'User logged in successfully', token });
-        }
-        else {
-          res.status(401).json({ error: 'Invalid password' });
-        }
-      } else {
-        res.status(404).json({ error: 'User not found' });
-      }
-    } catch (error) {
-      console.error('Error logging in:', error);
-      res.status(500).json({ error: 'Failed to log in' });
+  const { identifier, password } = req.body;
+  console.log('Received login request with:', { identifier, password });
+
+  if (typeof identifier !== 'string' || typeof password !== 'string') {
+    console.log('Validation error: Identifier or password is not a string.');
+    return res.status(400).json({ error: 'Identifier and password are required and must be strings.' });
+  }
+  
+
+  try {
+    console.log('Attempting to connect to DB...');
+    connection = createConnection();
+    console.log('Successfully connected to DB.');
+
+    let query = 'SELECT * FROM users WHERE ';
+    let queryParams = [];
+
+    if (identifier.includes('@')) {
+      query += 'email = $1';
+      queryParams.push(identifier);
+      console.log('Attempting to find user by email...');
+    } else if (/\d/.test(identifier)) {
+      query += '"phoneNumber" = $1';
+      queryParams.push(identifier);
+      console.log('Attempting to find user by phone number...');
+    } else {
+      query += 'username = $1';
+      queryParams.push(identifier);
+      console.log('Attempting to find user by username...');
     }
+
+    console.log(`Constructed query: ${query}`);
+    console.log(`Query parameters:`, queryParams);
+
+    const { rows: users } = await connection.query(query, queryParams);
+    console.log('Query executed. Number of users found:', users.length);
+
+    if (users.length > 0) {
+      const user = users[0];
+      console.log('User found:', user);
+      const validPassword = await bcrypt.compare(password, user.password);
+      console.log('Password verification result:', validPassword);
+
+      if (validPassword) {
+        const token = jwt.sign({ username: user.username }, secretKey, { expiresIn: '24h' });
+        console.log('JWT token generated:', token);
+        await connection.end();
+        console.log('Database connection released.');
+        res.status(200).json({ message: 'User logged in successfully', token });
+      } else {
+        console.log('Password verification failed.');
+        res.status(401).json({ error: 'Invalid password' });
+      }
+    } else {
+      console.log('No user found matching the criteria.');
+      res.status(404).json({ error: 'User not found' });
+    }
+  } catch (error) {
+    console.error('Error during login process:', error);
+    res.status(500).json({ error: 'Failed to log in' });
+  }
 });
+
 
 // Retrieve profile information from token.
 router.get('/profile', verifyToken, async (req, res) => {
