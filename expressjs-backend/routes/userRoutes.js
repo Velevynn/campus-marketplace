@@ -125,7 +125,7 @@ router.post('/login', async (req, res) => {
       query += 'email = $1';
       queryParams.push(identifier);
       console.log('Attempting to find user by email...');
-    } else if (/\d/.test(identifier)) {
+    } else if (/^\d+$/.test(identifier) && identifier.length === 10) {
       query += '"phoneNumber" = $1';
       queryParams.push(identifier);
       console.log('Attempting to find user by phone number...');
