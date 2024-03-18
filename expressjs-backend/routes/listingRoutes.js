@@ -33,10 +33,10 @@ router.post("/", upload.array('image'), async (req, res) => {
         let i = 0;
         for (const image of images) {
           // Images are labeled image0, image1, etc.
-          const imageData = image.buffer;
           await uploadImageToS3(`${listingID}/image${i}`, image.buffer);
           i++;
         }
+
     
         res.status(201).send(listingToAdd);
       } 
@@ -82,6 +82,8 @@ router.get("/:listingID/", async (req, res) => {
           'SELECT * FROM listings WHERE "listingID" =  $1 LIMIT 1',
           [listingID]
         );
+
+        await connection.end();
         res.status(200).send(rows);
         await connection.end();
       }

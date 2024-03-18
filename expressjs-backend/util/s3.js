@@ -18,6 +18,7 @@ const uploadImageToS3 = async (imageName, imageData) => {
     
       try {
         const data = await s3.upload(params).promise();
+        console.log(data);
         console.log('Image uploaded successfully:', data.Location);
         return data.Location; // Return the URL of the uploaded image
       } catch (error) {
