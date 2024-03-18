@@ -56,16 +56,26 @@ const ListingView = () => {
 
     fetchImages();
   }, [listingID]);
-/*
+
   const TimeAgo = (timestamp) => {
-    let currentDate = Date();
-    let postDate = new Date('1/26/2024');
-    timestamp = timestamp.toString();
+    
+    const string = timestamp.toString().slice(5,7) + '/' + timestamp.toString().slice(8,10) + '/' + timestamp.toString().slice(0,4);
+    //timestamp = string;
+    console.log(string);
+    let currentDate = new Date();
+    let postDate = new Date(string);
     const difference = currentDate.getTime() - postDate.getTime();
+    const differenceInDays = Math.round(difference / (1000 * 3600 * 24));
     console.log(difference);
-    return timestamp;
+    let message = "";
+    if (differenceInDays >= 1) {
+      message = differenceInDays.toString() + " day ago";
+    } else {
+      message = differenceInDays.toString() + " days ago";
+    }
+
+    return message;
   }
-  */
 
   const handleBuyNow = () => {
     /* Add logic for handling "Buy Now" action */
@@ -115,7 +125,7 @@ const ListingView = () => {
               </div>
             )}
             <p className="price-buyerview">${listing.price}</p>
-            <p className="post-date">Posted</p>
+            <p className="post-date">Posted {TimeAgo(listing.postDate)}</p>
             <button className="btn" onClick={handleBuyNow}>Buy Now</button>
             <button className="btn" onClick={handleMakeOffer}>Make Offer</button>
             <button className="btn" onClick={handleStartChat}>Start a Chat</button>
