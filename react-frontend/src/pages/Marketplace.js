@@ -40,7 +40,7 @@ function Marketplace() {
     const html = document.documentElement;
     const docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
     const windowBottom = windowHeight + window.scrollY;
-
+  
     if (windowBottom >= docHeight) {
       setPage(prevPage => prevPage + 1);
       console.log("new page detected");

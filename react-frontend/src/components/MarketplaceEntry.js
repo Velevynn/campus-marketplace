@@ -31,7 +31,7 @@ function Entry({ title, price, listingID }) {
         );
         if (response.data.length > 0) {
           setImages(response.data);
-          console.log(response.data);
+          // console.log(response.data);
         }
       } catch (error) {
         console.error("Error fetching images:", error);
