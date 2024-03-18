@@ -48,7 +48,7 @@ function Search() {
       <button type="submit" onClick={handleSearch} className="search-button">
         <img src={search} alt="search-icon" className="search-img" />
       </button>
-      {showNotification && <Notify message="Search field is Empty" />}
+      {showNotification && <Notify message="Search field empty" />}
     </div>
   );
 }
