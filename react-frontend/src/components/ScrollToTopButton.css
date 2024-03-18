@@ -1,0 +1,30 @@
+.scrollToTopButton {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 99;
+  width: 50px; /* Container size */
+  height: 50px; /* Container size */
+  background-color: #008000;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  overflow: hidden; /* Hide overflow content */
+}
+
+.scrollToTopButton img {
+  position: absolute; /* Position image absolutely within the container */
+  top: 50%; /* Center the image vertically */
+  left: 50%; /* Center the image horizontally */
+  transform: translate(-50%, -50%); /* Adjust position to center */
+  max-width: 100%; /* Ensure image doesn't exceed container width */
+  max-height: 100%; /* Ensure image doesn't exceed container height */
+}
+
+.scrollToTopButton.show {
+  opacity: 1;
+}
+
+
