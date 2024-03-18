@@ -124,8 +124,8 @@ const ListingView = () => {
                 <ImageCarousel images={images} />
               </div>
             )}
-            <p className="price-buyerview">${listing.price}</p>
-            <p className="post-date">Posted {TimeAgo(listing.postDate)}</p>
+            <div className="price-buyerview">${listing.price}</div>
+            <div className="post-date">Posted {TimeAgo(listing.postDate)}</div>
             <button className="btn" onClick={handleBuyNow}>Buy Now</button>
             <button className="btn" onClick={handleMakeOffer}>Make Offer</button>
             <button className="btn" onClick={handleStartChat}>Start a Chat</button>
