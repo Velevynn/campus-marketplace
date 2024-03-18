@@ -1,154 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import styled, { css } from 'styled-components';
 import { FaCheckCircle, FaTimesCircle, FaEye, FaEyeSlash  } from 'react-icons/fa';
 import logoImage from '../assets/haggle-horizontal.png';
 import { Link, useNavigate } from 'react-router-dom';
-
-// Styled components
-const Container = styled.div`
-  max-width: 400px;
-  margin: 0 auto;
-  margin-top: 35px;
-  padding: 40px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  font-family: Inter;
-`;
-
-const LoginContainer = styled.div`
-  max-width: 400px;
-  min-height: 60px;
-  margin: 10px auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-`;
-
-const HeaderLabel = styled.label`
-  color: #666;
-  font-size: 17px;
-  text-align: center;
-`;
-
-const LinkedLabel = styled.label`
-  color: #666;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 10px;
-  font-weight: normal;
-`;
-
-const LoginLabel = styled.label`
-  color: #666;
-  font-size: 14px;
-  text-align: center;
-  margin: 25px;
-  font-weight: normal;
-`;
-
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-`;
-
-const InputGroup = styled.div`
-  position: relative;
-  margin-bottom: 0px;
-`;
-
-const InputLabel = styled.label`
-  position: absolute;
-  top: -15%;
-  left: 4%;
-  font-size: 14px;
-  color: #999;
-  transition: all 0.3s ease;
-  pointer-events: none;
-  font-weight: normal;
-
-  ${props => props.hasContent && css`
-    transform: translate(0%, -45%);
-    font-size: 10px;
-    font-weight: normal;
-    color: #999;
-  `}
-`;
-
-const Input = styled.input`
-  position: absolute
-  width: 100%;
-  padding-top: 14px;
-  padding-bottom: 6px;
-  height: 40px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  box-sizing: border-box;
-  font-size: 12px;
-  transition: border 0.3s, box-shadow 0.3s;
-
-  &:focus {
-    outline: none;
-    border-color: #007b00;
-    box-shadow: 0 0 8px rgba(0, 183, 0, 0.8);
-  }
-`;
-
-const ValidationIcon = styled.span`
-  position: absolute;
-  top: 65%;
-  right: 10px;
-  transform: translateY(-85%);
-  color: ${props => props.isValid ? '#138A3E' : 'red'};
-`;
-
-const Button = styled.button`
-  padding: 8px;
-  background-color: #16A44A;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-top: 20px;
-  transition: background-color 0.3s;
-
-  &:hover {
-      background-color: #138A3E;
-      border-color: #16A44A;
-  }
-
-  &:disabled {
-    background-color: #8CCBA1;
-    cursor: not-allowed;
-    border-color: transparent;
-  }
-`;
-
-/*const SuccessMessage = styled.div`
-  color: green;
-  margin-top: 5px;
-  font-size: 12px;
-`;*/
-
-const PasswordRules = styled.div`
-  background-color: #f7f7f7;
-  padding: 10px;
-  border-radius: 4px;
-  font-size: 12px;
-  color: #666;
-  position: absolute;
-  right: -350px;
-  top: 0px;
-  width: 300px;
-`;
-
-const VisibilityToggle = styled.span`
-  position: absolute;
-  top: 20%;
-  right: 10px;
-  color: #666;
-  cursor: pointer;
-`;
+import { Container, Form, InputGroup, Input, InputLabel, VisibilityToggle, Button, LinkedLabel, HeaderLabel, ValidationIcon, PasswordRules, BottomContainer, BottomLabel } from './AuthenticationStyling';
 
 
 function SignUpPage() {
@@ -162,7 +17,6 @@ function SignUpPage() {
 
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [passwordFocused, setPasswordFocused] = useState(false);
-  const [registrationSuccess, setRegistrationSuccess] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
@@ -210,11 +64,19 @@ function SignUpPage() {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-
-    setUser({
-      ...user,
-      [name]: value,
-    });
+  
+    if (name === "phoneNum") {
+      const filteredValue = value.replace(/[^\d]/g, '');
+      setUser({
+        ...user,
+        [name]: filteredValue,
+      });
+    } else {
+      setUser({
+        ...user,
+        [name]: value,
+      });
+    }
   };
 
   const togglePasswordVisibility = () => {
@@ -244,15 +106,10 @@ function SignUpPage() {
           // Proceed with registration if no conflicts
           const registerResponse = await axios.post('https://haggle.onrender.com/users/register', user);
           if (registerResponse.status === 201) {
-            setRegistrationSuccess(true);
-            if (registrationSuccess) {
-              navigate('/profile');
-            }
             navigate('/profile');
           }
         }
       } catch (error) {
-        console.log(error);
         if (error.response) {
           // Backend should provide specific error message in response
           const message = error.response.data.error || error.response.data.message;
@@ -319,6 +176,7 @@ function SignUpPage() {
                     value={user.username}
                     maxLength = "25"
                     onChange={handleChange}
+                    hasContent={user.username.length > 0}
                     required />
                 <InputLabel htmlFor="username" hasContent={user.username.length > 0}>Username</InputLabel>
                 <ValidationIcon isValid={isInputValid('username', user.username)}>
@@ -334,6 +192,7 @@ function SignUpPage() {
                     maxLength = "40"
                     value={user.full_name}
                     onChange={handleChange}
+                    hasContent={user.full_name.length > 0}
                     required />
                 <InputLabel htmlFor="full_name" hasContent={user.full_name.length > 0}>Full Name</InputLabel>
                 <ValidationIcon isValid={isInputValid('full_name', user.full_name)}>
@@ -351,21 +210,22 @@ function SignUpPage() {
                 onChange={handleChange}
                 onFocus={handlePasswordFocus}
                 onBlur={handlePasswordBlur}
+                hasContent={user.password.length > 0}
                 required />
               <InputLabel htmlFor="password" hasContent={user.password.length > 0}>Password</InputLabel>
-              {passwordFocused && ( // Conditional rendering based on focus
+              {passwordFocused && (
                   <PasswordRules>
                   <div style={{ color: user.password.length >= 8 ? 'green' : 'red' }}>
                     {user.password.length >= 8 ? <FaCheckCircle style={{ marginRight: '8px', position: 'relative', top: '2px' }} /> : <FaTimesCircle style={{ marginRight: '8px', position: 'relative', top: '2px' }} />}
-                    At least 8 characters.
+                    At least 8 characters
                   </div>
                   <div style={{ color: /[0-9]/.test(user.password) ? 'green' : 'red' }}>
                     {/[0-9]/.test(user.password) ? <FaCheckCircle style={{ marginRight: '8px', position: 'relative', top: '2px' }} /> : <FaTimesCircle style={{ marginRight: '8px', position: 'relative', top: '2px' }} />}
-                    At least one number.
+                    At least one number
                   </div>
                   <div style={{ color: /[\W_]/.test(user.password) ? 'green' : 'red' }}>
                     {/[\W_]/.test(user.password) ? <FaCheckCircle style={{ marginRight: '8px', position: 'relative', top: '2px' }} /> : <FaTimesCircle style={{ marginRight: '8px', position: 'relative', top: '2px' }} />}
-                    At least one special character.
+                    At least one special character
                   </div>
                 </PasswordRules>
               )}
@@ -391,14 +251,14 @@ function SignUpPage() {
         </Form>
 
         </Container>
-        <LoginContainer>
-          <LoginLabel>
+        <BottomContainer>
+          <BottomLabel>
             Already have an account? {}
-            <Link to="/login" style={{ display: 'inline', color: '#0056b3'}}>
+            <Link to="/login" style={{ display: 'inline', color: '#0056b3', fontWeight: 'bold'}}>
               Log in
             </Link>
-          </LoginLabel>
-      </LoginContainer>
+          </BottomLabel>
+      </BottomContainer>
       </>
   );
 }

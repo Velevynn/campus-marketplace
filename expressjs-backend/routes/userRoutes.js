@@ -224,4 +224,87 @@ router.delete('/delete', async (req, res) => {
   }
 });
 
+
+router.post('/users/forgot-password', async (req, res) => {
+  const { email } = req.body;
+  console.log("hello");
+  if (!email) {
+    return res.status(400).json({ error: 'Email is required' });
+  }
+
+  try {
+    const connection = createConnection();
+    console.log("hello");
+    // Verify if email exists
+    const { rows: users } = await connection.query('SELECT * FROM users WHERE email = $1', [email]);
+    if (users.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const resetToken = crypto.randomBytes(20).toString('hex');
+    const resetExpires = new Date(Date.now() + 3600000); // 1 hour from now
+
+    // Save the resetToken and expiration time to the user's record in the database
+    await connection.query('UPDATE users SET reset_password_token = $1, reset_password_expires = $2 WHERE email = $3', [resetToken, resetExpires, email]);
+
+    const resetUrl = `http://localhost:3000/reset-password?token=${resetToken}`;
+
+    const nodemailer = require('nodemailer');
+    const transporter = nodemailer.createTransport({
+      service: 'outlook',
+      auth: {
+        user: 'no-reply.haggle@outlook.com',
+        pass: 'haggle1234!'
+      }
+    });
+  
+    const mailOptions = {
+      from: 'no-reply.haggle@outlook.com', // Replace with your email
+      to: email, // The user's email address
+      subject: 'Password Reset Request',
+      html: `<p>You requested a password reset. Click the link below to set a new password:</p><p><a href="${resetUrl}">Reset Password</a></p>`
+    };
+  
+    transporter.sendMail(mailOptions, function(error, info){
+      if (error) {
+        console.error('Error sending email:', error);
+        res.status(500).json({ error: 'Failed to send forgot password email' });
+      } else {
+        console.log('Email sent: ' + info.response);
+        res.json({ message: 'Reset link sent to your email address' });
+      }
+    });
+
+    await connection.end();
+    
+  } catch (error) {
+    console.error('Error in forgot-password route:', error);
+    res.status(500).json({ error: 'Failed to send forgot password email' });
+  }
+});
+
+router.post('/users/reset-password', async (req, res) => {
+  const { token, password } = req.body;
+
+  try {
+    const connection = createConnection();
+
+    // Verify token and its expiration
+    const { rows: users } = await connection.query('SELECT * FROM users WHERE reset_password_token = $1 AND reset_password_expires > NOW()', [token]);
+    if (users.length === 0) {
+      return res.status(400).json({ error: 'Invalid or expired token' });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await connection.query('UPDATE users SET password = $1, reset_password_token = NULL, reset_password_expires = NULL WHERE user_id = $2', [hashedPassword, users[0].user_id]);
+
+    res.json({ message: 'Password has been reset successfully' });
+    
+  } catch (error) {
+    console.error('Error resetting password:', error);
+    res.status(500).json({ error: 'Failed to reset password' });
+  }
+});
+
+
 module.exports = router;
