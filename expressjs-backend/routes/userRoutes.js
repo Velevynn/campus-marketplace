@@ -1,19 +1,16 @@
 // userRoutes.js
 const express = require('express');
 const router = express.Router();
-const mysql = require('mysql2/promise');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-require('../util/database');
-
 const secretKey = 'YourSecretKey';
-
 const { verifyToken } = require('../util/middleware');
-
 const { Pool } = require('pg');
 require('dotenv').config();
+
 const connectionString = process.env.DB_CONNECTION_STRING;
 
+// Create connection pool to connect to the database.
 function createConnection() {
   const pool = new Pool({
     connectionString: connectionString,
@@ -21,9 +18,9 @@ function createConnection() {
   return pool
 }
 
+// Check if non-duplicate user info already exists in the database.
 router.post('/check', async (req, res) => {
     const { username, email, phoneNumber } = req.body;
-    //TODO: let phoneNumber = 1234567890
     let conflict = false;
 
     try {
@@ -34,21 +31,29 @@ router.post('/check', async (req, res) => {
         'SELECT 1 FROM users WHERE username = $1 LIMIT 1',
         [username]
       );
-      if (usernameResult.length > 0) { conflict = 'Username'; }
+      if (usernameResult.length > 0) {
+        conflict = 'Username';
+      }
+
       // Check if email exists
       const { rows: emailResult } = await connection.query(
         'SELECT 1 FROM users WHERE email = $1 LIMIT 1',
         [email]
       );
-      if (emailResult.length > 0) { conflict = 'Email'; }
+      if (emailResult.length > 0) {
+        conflict = 'Email';
+      }
 
       // Check if phone number exists
       const { rows: phoneResult } = await connection.query(
         `SELECT 1 FROM users WHERE "phoneNumber" = $1 LIMIT 1`,
         [phoneNumber]
       );
-      if (phoneResult.length > 0) { conflict = 'Phone Number'; }
+      if (phoneResult.length > 0) {
+        conflict = 'Phone Number';
+      }
   
+      // If conflict found, return specific conflict.
       if (conflict) {
         res.status(409).json({
           exists: true,
@@ -67,6 +72,7 @@ router.post('/check', async (req, res) => {
     }
 });
 
+// Insert user info into database upon signup.
 router.post('/register', async (req, res) => {
     const { username, full_name, password, email, phoneNum: phoneNumber } = req.body;
     //TODO:
@@ -77,12 +83,16 @@ router.post('/register', async (req, res) => {
       const bcrypt = require('bcrypt');
       const hashedPassword = await bcrypt.hash(password, 10);
       const connection = createConnection();
+
+      // Insert user details into the users table.
       const  { result } = await connection.query(
         'INSERT INTO users (username, "fullName", password, email, "phoneNumber") VALUES ($1, $2, $3, $4, $5)',
         [username, full_name, hashedPassword, email, phoneNumber]
       );
-  
+      
+      // Create json web token to maintain sign-in throughout pages.
       const token = jwt.sign({ username: username }, secretKey, { expiresIn: '24h' });
+
       await connection.end();
       res.status(201).json({ message: 'User registered successfully', token });
     } catch (error) {
@@ -91,11 +101,13 @@ router.post('/register', async (req, res) => {
     }
 });
 
+// Sign in user after verifying account details.
 router.post('/login', async (req, res) => {
     const { username, password } = req.body;
     try {
       if (username === null || password === null) throw Error;
       const connection = createConnection();
+      // Attempt to retrieve user's information from database.
       const { rows: users } = await connection.query(
         'SELECT username, password FROM users WHERE username = $1',
         [username]
@@ -104,11 +116,14 @@ router.post('/login', async (req, res) => {
       if (users.length > 0) {
         const user = users[0];
         const validPassword = await bcrypt.compare(password, user.password);
+        // Check the input password against the actual password and...
         if (validPassword) {
+          // Create json web token if successful.
           const token = jwt.sign({ username: username }, secretKey, { expiresIn: '24h' });
           await connection.end();
           res.status(200).json({ message: 'User logged in successfully', token });
-        } else {
+        }
+        else {
           res.status(401).json({ error: 'Invalid password' });
         }
       } else {
@@ -120,16 +135,20 @@ router.post('/login', async (req, res) => {
     }
 });
 
+// Retrieve profile information from token.
 router.get('/profile', verifyToken, async (req, res) => {
-    const username = req.user.username; // Extracted from token
+    // Extract username from token.
+    const username = req.user.username;
 
     try {
       const connection = createConnection();
+      // Retrieve user details from extracted username...
       const { rows: user } = await connection.query(
         'SELECT username, "fullName", email, "phoneNumber" FROM users WHERE username = $1',
         [username]
       );
   
+      // And if the user exists, return their information.
       if (user.length > 0) {
         res.status(200).json(user[0]);
       }
@@ -144,11 +163,13 @@ router.post('/userID', async (req, res) => {
     try {
       if (username === null) throw Error();
       const connection = createConnection();
+      // Retrieve userID from queried username.
       const { rows : user } = await connection.query(
         'SELECT "userID" FROM users WHERE username = $1',
-        [username]
+        [req.query.username]
       );
   
+      // And if user exists, return the userID.
       if (user.length > 0) {
         res.status(200).json({ userID: user[0].userID });
       } else {
