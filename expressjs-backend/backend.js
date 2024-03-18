@@ -11,7 +11,6 @@ var cors = require('cors');
 app.use(cors());
 app.use(express.json());
 
-
 app.use('/users', userRoutes);  // user-related routes are in listingRoutes.js
 app.use('/listings', listingRoutes);  // listing-related routes are handled in userRoutes.js
 app.listen(PORT, () => {

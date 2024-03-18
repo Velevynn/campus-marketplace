@@ -114,7 +114,7 @@ const ListingView = () => {
             )}
           </div>
           <div className="description">
-            <h3>Description</h3>
+            <h3>{listing.title}</h3>
             <p>{listing.description}</p>
           </div>
         </div>
