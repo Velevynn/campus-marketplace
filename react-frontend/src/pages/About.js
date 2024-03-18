@@ -10,7 +10,7 @@ function About() {
       <div className="team-container">
         <Bio
           name="Alex"
-          bio="4th Year CS Major (miget)"
+          bio="4th Year CS Major. I like biking hiking. I like going on branch 500 commits behind then manually merging."
         />
 
         <Bio
@@ -20,13 +20,13 @@ function About() {
 
         <Bio
           name="Joshua"
-          bio="3rd Year SE Major"
+          bio="3rd Year SE Major. I like Kickboxing and going Jim"
         />
 
         <Bio
           name="Jimmy"
           bio="
-          3rd Year CS Major. I'm pro valorant"
+          3rd Year CS Major. I'm pro valorant and being the best around in Collegiate Valorant Tourneys."
         />
 
         <Bio
