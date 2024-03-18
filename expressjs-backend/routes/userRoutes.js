@@ -158,7 +158,7 @@ router.get('/profile', verifyToken, async (req, res) => {
     }
 });
 
-router.post('/userID', async (req, res) => {
+router.get('/userID', async (req, res) => {
     const { username } = req.body;
     try {
       if (username === null) throw Error();

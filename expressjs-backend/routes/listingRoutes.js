@@ -33,12 +33,11 @@ router.post("/", upload.array('image'), async (req, res) => {
         let i = 0;
         for (const image of images) {
           // Images are labeled image0, image1, etc.
-          const imageData = image.buffer;
           await uploadImageToS3(`${listingID}/image${i}`, image.buffer);
           i++;
         }
     
-        res.status(201).send(listingToAdd);
+        res.status(201).send(req.body);
       } 
       catch (error) {
         console.error("Error adding listing:", error);
