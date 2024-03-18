@@ -10,7 +10,7 @@ function LoginPage() {
   const [isFormValid, setIsFormValid] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -30,7 +30,7 @@ function LoginPage() {
       };
       const response = await axios.post('http://localhost:8000/users/login', requestBody);
       localStorage.setItem('token', response.data.token); // Store the token
-      navigate('/profile')
+      window.location.href = '/profile';
     } catch (error) {
       if (error.response) {
         setErrorMessage('Error: ' + error.response.data.error);
