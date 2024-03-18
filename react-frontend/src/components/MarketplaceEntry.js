@@ -62,7 +62,7 @@ function Entry({ title, price, listingID }) {
           <h2 className="title" style={{ fontSize: getTitleFontSize() }}>
             {title}
           </h2>
-          <p className="price">{price === "0.00" ? "FREE" : `$${price}`}</p>
+          <p className="price">{price === "0" || price === 0 ? "FREE" : `$${price}`}</p>
         </div>
       </div>
     </Link>
@@ -71,7 +71,7 @@ function Entry({ title, price, listingID }) {
 
 Entry.propTypes = {
   title: PropTypes.string.isRequired,
-  price: PropTypes.string.isRequired,
+  price: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   listingID: PropTypes.number.isRequired,
 };
 
