@@ -8,6 +8,7 @@ export const Container = styled.div`
   margin-bottom: 15px;
   padding: 40px;
   padding-bottom: 15px;
+  font-family: 'Inter';
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 `;
 
@@ -112,6 +113,7 @@ export const BottomContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  font-family: 'Inter';
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 `;
 

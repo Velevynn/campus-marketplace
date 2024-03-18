@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import "./ListingView.css";
 import ImageCarousel from "../components/ImageCarousel.js";
+import LoadingSpinner from "../components/LoadingSpinner.js";
 ////import { jwtDecode } from "jwt-decode";
 
 const ListingView = () => {
@@ -12,6 +13,7 @@ const ListingView = () => {
   const [isOwner, setIsOwner] = useState(false);
   console.log(setIsOwner);
   /* hook to fetch data when listingID changes */
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -54,6 +56,16 @@ const ListingView = () => {
 
     fetchImages();
   }, [listingID]);
+/*
+  const TimeAgo = (timestamp) => {
+    let currentDate = Date();
+    let postDate = new Date('1/26/2024');
+    timestamp = timestamp.toString();
+    const difference = currentDate.getTime() - postDate.getTime();
+    console.log(difference);
+    return timestamp;
+  }
+  */
 
   const handleBuyNow = () => {
     /* Add logic for handling "Buy Now" action */
@@ -103,6 +115,7 @@ const ListingView = () => {
               </div>
             )}
             <p className="price-buyerview">${listing.price}</p>
+            <p className="post-date">Posted</p>
             <button className="btn" onClick={handleBuyNow}>Buy Now</button>
             <button className="btn" onClick={handleMakeOffer}>Make Offer</button>
             <button className="btn" onClick={handleStartChat}>Start a Chat</button>
@@ -119,7 +132,7 @@ const ListingView = () => {
           </div>
         </div>
       ) : (
-        <p>LISTING IS NULL</p>
+        <LoadingSpinner/>
       )}
     </div>
   );
