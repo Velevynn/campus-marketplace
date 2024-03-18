@@ -28,7 +28,7 @@ function LoginPage() {
         identifier: credentials.identifier,
         password: credentials.password,
       };
-      const response = await axios.post('http://localhost:8000/users/login', requestBody);
+      const response = await axios.post('http://localhost:6969/users/login', requestBody);
       localStorage.setItem('token', response.data.token); // Store the token
       navigate('/profile')
     } catch (error) {
@@ -107,7 +107,7 @@ function LoginPage() {
 
       <BottomContainer>
         <BottomLabel>
-          Don&apos;t have an account? {}
+          Don't have an account? {}
           <Link to="/signup" style={{ display: 'inline', color: '#0056b3', fontWeight: 'bold'}}>
             Sign up
           </Link>
