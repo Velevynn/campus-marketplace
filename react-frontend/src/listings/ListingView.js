@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import "./ListingView.css";
 import ImageCarousel from "../components/ImageCarousel.js";
+import LoadingSpinner from "../components/LoadingSpinner.js";
 ////import { jwtDecode } from "jwt-decode";
 
 const ListingView = () => {
@@ -119,7 +120,7 @@ const ListingView = () => {
           </div>
         </div>
       ) : (
-        <p>LISTING IS NULL</p>
+        <LoadingSpinner/>
       )}
     </div>
   );
