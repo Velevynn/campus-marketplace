@@ -76,7 +76,7 @@ router.post('/check', async (req, res) => {
 // Insert user info into database upon signup.
 router.post('/register', async (req, res) => {
     const { username, full_name, password, email, phoneNum: phoneNumber } = req.body;
-    console.log(username, full_name, password, email, phoneNum);
+    console.log(username, full_name, password, email, phoneNumber);
     //TODO:
     //const fullName = 'testUser';
     // It appears bcrypt was intended to be used but not imported. Ensure bcrypt is imported.
