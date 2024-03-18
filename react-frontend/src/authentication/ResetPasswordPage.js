@@ -42,7 +42,7 @@ const ResetPasswordPage = () => {
     }
 
     try {
-      await axios.post('http://localhost:8000/users/reset-password', {
+      await axios.post('https://haggle.onrender.com/users/reset-password', {
         token,
         password
       });
