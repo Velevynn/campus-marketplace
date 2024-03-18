@@ -5,6 +5,7 @@ import "./pages.css";
 import axios from "axios";
 import { useSearchParams } from "react-router-dom";
 import Entry from "../components/MarketplaceEntry";
+import ScrollToTopButton from "../components/ScrollToTopButton";
 
 function Marketplace() {
   const [searchParams] = useSearchParams();
@@ -64,8 +65,16 @@ function Marketplace() {
         />
       ))}
       </div>
+      <ScrollToTopButton onClick={scrollToTop} />
     </div>
   );
 }
+
+const scrollToTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+};
 
 export default Marketplace;
