@@ -67,7 +67,7 @@ function ProfilePage() {
       }
 
       try {
-        const response = await axios.get(`https://haggle.onrender.com/users/profile`, {
+        const response = await axios.get(`http://localhost:8000/users/profile`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }

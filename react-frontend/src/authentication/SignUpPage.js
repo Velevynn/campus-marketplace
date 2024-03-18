@@ -231,7 +231,7 @@ function SignUpPage() {
     if (isFormValid) {
       try {
         // Pre-registration check for existing username, email, or phone number
-        const checkResponse = await axios.post('https://haggle.onrender.com/users/check', {
+        const checkResponse = await axios.post('http://localhost:8000/users/check', {
           email: user.email,
           phoneNum: user.phoneNum,
           username: user.username,
@@ -242,7 +242,7 @@ function SignUpPage() {
           setErrorMessage(`${checkResponse.data.message} already exists.`);
         } else {
           // Proceed with registration if no conflicts
-          const registerResponse = await axios.post('https://haggle.onrender.com/users/register', user);
+          const registerResponse = await axios.post('http://localhost:8000/users/register', user);
           if (registerResponse.status === 201) {
             setRegistrationSuccess(true);
             if (registrationSuccess) {
