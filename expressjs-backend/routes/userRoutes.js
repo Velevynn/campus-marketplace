@@ -24,6 +24,7 @@ router.post('/check', async (req, res) => {
     let conflict = false;
 
     try {
+      if (username === null || email === null || phoneNumber === null) {throw Error;}
       const connection = createConnection();
       // Check if username exists
       const { rows: usernameResult } = await connection.query(
@@ -45,7 +46,7 @@ router.post('/check', async (req, res) => {
 
       // Check if phone number exists
       const { rows: phoneResult } = await connection.query(
-        `SELECT 1 FROM users WHERE 'phoneNumber' = $1 LIMIT 1`,
+        `SELECT 1 FROM users WHERE "phoneNumber" = $1 LIMIT 1`,
         [phoneNumber]
       );
       if (phoneResult.length > 0) {
@@ -66,7 +67,7 @@ router.post('/check', async (req, res) => {
         });
       }
     } catch (error) {
-      console.error('Error checking user details:', error);
+      // console.error('Error checking user details:', error);
       res.status(500).json({ error: 'Failed to check user details' });
     }
 });
@@ -74,12 +75,13 @@ router.post('/check', async (req, res) => {
 // Insert user info into database upon signup.
 router.post('/register', async (req, res) => {
     const { username, full_name, password, email, phoneNum: phoneNumber } = req.body;
-
-    // Encrypt password for storing in database.
-    const bcrypt = require('bcrypt');
-    const hashedPassword = await bcrypt.hash(password, 10);
-  
+    //TODO:
+    //const fullName = 'testUser';
+    // It appears bcrypt was intended to be used but not imported. Ensure bcrypt is imported.
     try {
+      if (username === null || full_name === null || password === null || email === null || phoneNumber === null) {throw Error;}
+      const bcrypt = require('bcrypt');
+      const hashedPassword = await bcrypt.hash(password, 10);
       const connection = createConnection();
 
       // Insert user details into the users table.
@@ -93,31 +95,24 @@ router.post('/register', async (req, res) => {
 
       await connection.end();
       res.status(201).json({ message: 'User registered successfully', token });
-      } 
-    catch (error) {
-      console.error('Error registering user:', error);
-      if (error.code === 'ER_DUP_ENTRY') {
-        // Handle duplicate entry error
-        res.status(409).json({ error: 'Username or email already exists' });
-      } else {
-        res.status(500).json({ error: 'Failed to register user' });
-      }
+    } catch (error) {
+      //console.error('Error registering user:', error);
+      res.status(500).json({ error: 'Failed to register user' });
     }
 });
 
 // Sign in user after verifying account details.
 router.post('/login', async (req, res) => {
     const { username, password } = req.body;
-
     try {
+      if (username === null || password === null) throw Error;
       const connection = createConnection();
       // Attempt to retrieve user's information from database.
       const { rows: users } = await connection.query(
         'SELECT username, password FROM users WHERE username = $1',
         [username]
       );
-
-      // If user exists...
+      //console.log(users.length);
       if (users.length > 0) {
         const user = users[0];
         const validPassword = await bcrypt.compare(password, user.password);
@@ -156,8 +151,6 @@ router.get('/profile', verifyToken, async (req, res) => {
       // And if the user exists, return their information.
       if (user.length > 0) {
         res.status(200).json(user[0]);
-      } else {
-        res.status(404).json({ error: 'User not found' });
       }
     } catch (error) {
       console.error('Error fetching user profile:', error);
@@ -165,11 +158,10 @@ router.get('/profile', verifyToken, async (req, res) => {
     }
 });
 
-// Retrieve userID through username.
-router.get('/userID', async (req, res) => {
-    const { retrievedUsername } = req.query.username;
-
+router.post('/userID', async (req, res) => {
+    const { username } = req.body;
     try {
+      if (username === null) throw Error();
       const connection = createConnection();
       // Retrieve userID from queried username.
       const { rows : user } = await connection.query(
@@ -187,6 +179,49 @@ router.get('/userID', async (req, res) => {
       console.error('Error fetching userID:', error);
       res.status(500).json({ error: 'Failed to fetch userID' });
     }
+});
+
+router.delete('/delete', async (req, res) => {
+  const { username, password } = req.body;
+  try {
+    if (!username || !password) throw Error('Username and password are required');
+
+    const connection = createConnection();
+
+    // Check if the username exists
+    const { rows: usernameResult } = await connection.query(
+      'SELECT 1 FROM users WHERE username = $1 LIMIT 1',
+      [username]
+    );
+    const usernameExists = usernameResult.length > 0;
+
+    if (usernameExists) {
+      // Check if the provided password matches the hashed password in the database
+      const { rows: users } = await connection.query(
+        'SELECT password FROM users WHERE username = $1',
+        [username]
+      );
+
+      const user = users[0];
+      const validPassword = await bcrypt.compare(password, user.password);
+
+      if (validPassword) {
+        // Delete the user account
+        await connection.query(
+          'DELETE FROM users WHERE username = $1',
+          [username]
+        );
+        res.status(200).json({ message: 'Account deleted successfully' });
+      } else {
+        res.status(401).json({ error: 'Invalid password' });
+      }
+    } else {
+      res.status(404).json({ error: 'User not found' });
+    }
+  } catch (error) {
+    console.error('Error deleting account:', error);
+    res.status(500).json({ error: 'Failed to delete account' });
+  }
 });
 
 module.exports = router;
