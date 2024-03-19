@@ -17,3 +17,8 @@
 --- Product Spec ---
 
 https://docs.google.com/document/d/1q0nC7W3DTViva0hseFEp7Kv1w5NV9NboWGGN5qR_MrE/edit?usp=sharing
+
+<img width="620" alt="image" src="https://github.com/Velevynn/haggle/assets/113927390/f92690a1-46d0-4284-9858-15deabe1a7ec">
+Date ran: 03/17/2024
+Time Ran: 6:10pm
+
