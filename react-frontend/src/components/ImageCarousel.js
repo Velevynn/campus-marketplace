@@ -15,9 +15,8 @@ function ImageCarousel({ images }) {
   
 
   return (
-    <div className = "image-carousel-container"> {}
 
-        <div className="image-carousel"> {/* Add this class */}
+        <div className="image-carousel">
         <Slider {...settings}>
             {images.map((imageNum, index) => (
             <div key={index}>
@@ -26,7 +25,6 @@ function ImageCarousel({ images }) {
             ))}
         </Slider>
         </div>
-    </div>
   );
 }
 
