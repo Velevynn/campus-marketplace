@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import logoImage from '../assets/haggle-horizontal.png';
 import { FaEye, FaEyeSlash  } from 'react-icons/fa';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Container, Form, InputGroup, Input, InputLabel, VisibilityToggle, Button, LinkedLabel, ForgotPasswordLabel, BottomContainer, BottomLabel } from './AuthenticationStyling';
 
 function LoginPage() {
@@ -10,7 +10,7 @@ function LoginPage() {
   const [isFormValid, setIsFormValid] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -30,7 +30,7 @@ function LoginPage() {
       };
       const response = await axios.post('https://haggle.onrender.com/users/login', requestBody);
       localStorage.setItem('token', response.data.token); // Store the token
-      navigate('/profile')
+      window.location.href = '/profile';
     } catch (error) {
       if (error.response) {
         setErrorMessage('Error: ' + error.response.data.error);
