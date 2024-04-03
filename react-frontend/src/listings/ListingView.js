@@ -68,10 +68,10 @@ const ListingView = () => {
     const differenceInDays = Math.round(difference / (1000 * 3600 * 24));
     console.log(difference);
     let message = "";
-    if (differenceInDays >= 1) {
-      message = differenceInDays.toString() + " day ago";
-    } else {
+    if (differenceInDays > 1) {
       message = differenceInDays.toString() + " days ago";
+    } else {
+      message = differenceInDays.toString() + " day ago";
     }
 
     return message;
