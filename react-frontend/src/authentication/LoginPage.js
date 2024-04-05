@@ -2,11 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 // Importing navigation hooks and components for routing and navigation
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 // Importing logo, icons, and styled components for UI
 import logoImage from '../assets/haggle-horizontal.png';
 import { FaEye, FaEyeSlash  } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
 import { Container, Form, InputGroup, Input, InputLabel, VisibilityToggle, Button, LinkedLabel, ForgotPasswordLabel, BottomContainer, BottomLabel } from './AuthenticationStyling';
 
 
