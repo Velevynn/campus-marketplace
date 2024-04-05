@@ -1,37 +1,50 @@
+// Importing necessary React hooks and Axios for HTTP requests
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+// Importing navigation hooks and components for routing and navigation
+import { Link, useNavigate } from 'react-router-dom';
+// Importing logo, icons, and styled components for UI
 import logoImage from '../assets/haggle-horizontal.png';
 import { FaEye, FaEyeSlash  } from 'react-icons/fa';
-import { Link, useNavigate } from 'react-router-dom';
 import { Container, Form, InputGroup, Input, InputLabel, VisibilityToggle, Button, LinkedLabel, ForgotPasswordLabel, BottomContainer, BottomLabel } from './AuthenticationStyling';
 
+
+// LoginPage component for handling user login
 function LoginPage() {
+  // State for storing user credentials, form validity, error messages, and password visibility
   const [credentials, setCredentials] = useState({ identifier: '', password: '' });
   const [isFormValid, setIsFormValid] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
   const navigate = useNavigate();
 
+  // Handles changes in input fields and updates the credentials state
   const handleChange = (event) => {
     const { name, value } = event.target;
     setCredentials({ ...credentials, [name]: value });
   };
 
+  // Toggles the visibility of the password input field
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
 
+  // Handles the form submission event for login
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
+      // Constructs the request body and sends a POST request to the login endpoint
       const requestBody = {
         identifier: credentials.identifier,
         password: credentials.password,
       };
       const response = await axios.post('http://localhost:8000/users/login', requestBody);
-      localStorage.setItem('token', response.data.token); // Store the token
+
+      // Stores the received token in local storage and navigates to the profile page
+      localStorage.setItem('token', response.data.token);
       navigate('/profile')
     } catch (error) {
+      // Sets an error message based on the response from the server or a general failure message
       if (error.response) {
         setErrorMessage('Error: ' + error.response.data.error);
       } else {
@@ -40,11 +53,13 @@ function LoginPage() {
     }
   };
 
+  // Effect hook to update the form validity based on the credentials state
   useEffect(() => {
     const isValid = credentials.identifier.length > 0 && credentials.password.length > 0;
     setIsFormValid(isValid);
   }, [credentials]);
 
+  // Renders the login form, providing fields for identifier and password, and displays error messages if any exist
   return (
     <>
       <Container>
@@ -79,7 +94,7 @@ function LoginPage() {
             <InputLabel htmlFor="password" hasContent={credentials.password.length > 0}>Password</InputLabel>
             <VisibilityToggle onClick={togglePasswordVisibility}>
                 {passwordVisible ? <FaEye /> : <FaEyeSlash />}
-              </VisibilityToggle>
+            </VisibilityToggle>
           </InputGroup>
 
           <Button type="submit" disabled={!isFormValid}>

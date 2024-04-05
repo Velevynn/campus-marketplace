@@ -36,15 +36,6 @@ router.post('/check', async (req, res) => {
         conflict = 'Username';
       }
 
-      // Check if email exists
-      const { rows: emailResult } = await connection.query(
-        'SELECT 1 FROM users WHERE email = $1 LIMIT 1',
-        [email]
-      );
-      if (emailResult.length > 0) {
-        conflict = 'Email';
-      }
-
       // Check if phone number exists
       const { rows: phoneResult } = await connection.query(
         `SELECT 1 FROM users WHERE "phoneNumber" = $1 LIMIT 1`,
@@ -52,6 +43,15 @@ router.post('/check', async (req, res) => {
       );
       if (phoneResult.length > 0) {
         conflict = 'Phone Number';
+      }
+
+      // Check if email exists
+      const { rows: emailResult } = await connection.query(
+        'SELECT 1 FROM users WHERE email = $1 LIMIT 1',
+        [email]
+      );
+      if (emailResult.length > 0) {
+        conflict = 'Email';
       }
   
       // If conflict found, return specific conflict.
@@ -75,10 +75,7 @@ router.post('/check', async (req, res) => {
 
 // Insert user info into database upon signup.
 router.post('/register', async (req, res) => {
-    const { username, full_name, password, email, phoneNum: phoneNumber } = req.body;
-    //TODO:
-    //const fullName = 'testUser';
-    // It appears bcrypt was intended to be used but not imported. Ensure bcrypt is imported.
+    const { username, full_name, password, email, phoneNumber: phoneNumber } = req.body;
     try {
       if (username === null || full_name === null || password === null || email === null || phoneNumber === null) {throw Error;}
       const bcrypt = require('bcrypt');
@@ -287,7 +284,7 @@ router.post('/forgot-password', async (req, res) => {
       service: 'outlook',
       auth: {
         user: 'no-reply.haggle@outlook.com',
-        pass: 'haggle1234!'
+        pass: 'haggle1234!' // store more securely
       }
     });
   

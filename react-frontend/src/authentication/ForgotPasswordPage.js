@@ -1,18 +1,25 @@
+// Importing necessary React hooks and Axios for HTTP requests
 import React, { useState } from 'react';
 import axios from 'axios';
+// Importing logo and styling components
 import logoImage from '../assets/haggle-horizontal.png';
 import { Link } from 'react-router-dom';
 import { Container, Description, HeaderLabel, Form, InputGroup, Input, InputLabel, Button, BottomContainer, BottomLabel } from './AuthenticationStyling';
 
+// Component for the "Forgot Password" page
 const ForgotPasswordPage = () => {
+  // State hooks for managing email input and message display
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   //const navigate = useNavigate();
 
+
+  // Event handler for updating the email state on input change
   const handleChange = (event) => {
     setEmail(event.target.value);
   };
 
+  // Event handler for form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
@@ -24,6 +31,7 @@ const ForgotPasswordPage = () => {
     }
   };
 
+  // Rendering the Forgot Password page
   return (
     <>
       <Container>
@@ -50,6 +58,7 @@ const ForgotPasswordPage = () => {
               id="email"
               value={email}
               onChange={handleChange}
+              hasContent={email.length > 0}
               required />
             <InputLabel htmlFor="email" hasContent={email.length > 0}>Email Address</InputLabel>
           </InputGroup>

@@ -1,18 +1,23 @@
+// Importing necessary React hooks and Axios for HTTP requests
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FaCheckCircle, FaTimesCircle, FaEye, FaEyeSlash  } from 'react-icons/fa';
+// Importing components for the layout, styling, and form elements
 import logoImage from '../assets/haggle-horizontal.png';
-import { Link, useNavigate } from 'react-router-dom';
+import { FaCheckCircle, FaTimesCircle, FaEye, FaEyeSlash  } from 'react-icons/fa';
 import { Container, Form, InputGroup, Input, InputLabel, VisibilityToggle, Button, LinkedLabel, HeaderLabel, ValidationIcon, PasswordRules, BottomContainer, BottomLabel } from './AuthenticationStyling';
+// Importing navigation hooks and components for routing
+import { Link, useNavigate } from 'react-router-dom';
 
 
+// SignUpPage component for the user registration process
 function SignUpPage() {
+  // State for form data, password visibility, input focus, and form validation
   const [user, setUser] = useState({
     username: '',
     full_name: '',
     password: '',
     email: '',
-    phoneNum: '',
+    phoneNumber: '',
   });
 
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -21,21 +26,23 @@ function SignUpPage() {
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
-  // Validate each input field
+  // Function to validate form inputs based on predefined rules
   const isInputValid = (name, value) => {
+    // Password validation rules
     const passwordRules = {
       minLength: value.length >= 8,
       containsNumber: /[0-9]/.test(value),
       containsSpecialChar: /[\W_]/.test(value),
     };
 
+    // Phone number validation rules
     const phoneNumRules = {
       minLength: value.length === 10,
       maxLength: value.length === 10,
       containsNumber: /[0-9]/.test(value),
     };
 
-
+    // Validation logic for different inputs
     switch (name) {
       case 'username':
         return value.length >= 3 && value.length <= 25;
@@ -45,13 +52,14 @@ function SignUpPage() {
         return Object.values(passwordRules).every(valid => valid);
       case 'email':
         return /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(value);
-      case 'phoneNum':
+      case 'phoneNumber':
         return Object.values(phoneNumRules).every(valid => valid);
       default:
         return false;
     }
   };
 
+  // Effect hook to update form validity based on input validation
   useEffect(() => {
     const isValid = Object.keys(user).every((key) =>
       isInputValid(key, user[key])
@@ -59,13 +67,14 @@ function SignUpPage() {
     setIsFormValid(isValid);
   }, [user]);
 
+  // Handlers for password input focus, visibility toggle, and general input changes
   const handlePasswordFocus = () => setPasswordFocused(true);
   const handlePasswordBlur = () => setPasswordFocused(false);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-  
-    if (name === "phoneNum") {
+    // Special handling for phoneNumber to ensure only numbers are inputted
+    if (name === "phoneNumber") {
       const filteredValue = value.replace(/[^\d]/g, '');
       setUser({
         ...user,
@@ -79,11 +88,12 @@ function SignUpPage() {
     }
   };
 
+  // Function to set password visiblity to true if false and vice versa
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
 
-
+  // Function to handle form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
   
@@ -92,18 +102,19 @@ function SignUpPage() {
 
     if (isFormValid) {
       try {
-        // Pre-registration check for existing username, email, or phone number
+        // Check for existing user information before proceeding to registration
         const checkResponse = await axios.post('http://localhost:8000/users/check', {
           email: user.email,
-          phoneNum: user.phoneNum,
+          phoneNumber: user.phoneNumber,
           username: user.username,
         });
-  
+        
+        // Display specific error message based on the conflict
         if (checkResponse.data.exists) {
-          // Display specific error message based on the conflict
           setErrorMessage(`${checkResponse.data.message} already exists.`);
+
+        // Proceed with registration if no conflicts
         } else {
-          // Proceed with registration if no conflicts
           const registerResponse = await axios.post('http://localhost:8000/users/register', user);
           if (registerResponse.status === 201) {
             navigate('/profile');
@@ -111,7 +122,7 @@ function SignUpPage() {
         }
       } catch (error) {
         if (error.response) {
-          // Backend should provide specific error message in response
+          // Backend provides specific error message in response
           const message = error.response.data.error || error.response.data.message;
           setErrorMessage(`Error:  ${message}`);
         } else {
@@ -119,12 +130,13 @@ function SignUpPage() {
           setErrorMessage('An error occurred during registration. Please try again.');
         }
       }
+    // doesn't pop up since submit button is disabled until all fields are filled out... get rid of
     } else {
       setErrorMessage("Please ensure all fields are filled out correctly before submitting.");
     }
   };
   
-
+  // Render the sign-up form with validation feedback and navigation options
   return (
     <>
     <Container>
@@ -155,16 +167,16 @@ function SignUpPage() {
             <InputGroup>
                 <Input
                     type="tel"
-                    name="phoneNum"
-                    id="phoneNum"
-                    value={user.phoneNum}
+                    name="phoneNumber"
+                    id="phoneNumber"
+                    value={user.phoneNumber}
                     maxLength = "10"
                     onChange={handleChange}
-                    hasContent={user.phoneNum.length > 0}
+                    hasContent={user.phoneNumber.length > 0}
                     required />
-                <InputLabel htmlFor="phoneNum" hasContent={user.phoneNum.length > 0}>Mobile Number</InputLabel>
-                <ValidationIcon isValid={isInputValid('phoneNum', user.phoneNum)}>
-                    {user.phoneNum.length > 0 ? (isInputValid('phoneNum', user.phoneNum) ? <FaCheckCircle /> : <FaTimesCircle />) : null}
+                <InputLabel htmlFor="phoneNumber" hasContent={user.phoneNumber.length > 0}>Mobile Number</InputLabel>
+                <ValidationIcon isValid={isInputValid('phoneNumber', user.phoneNumber)}>
+                    {user.phoneNumber.length > 0 ? (isInputValid('phoneNumber', user.phoneNumber) ? <FaCheckCircle /> : <FaTimesCircle />) : null}
                 </ValidationIcon>
             </InputGroup>
 
