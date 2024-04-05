@@ -9,25 +9,27 @@ const { verifyToken } = require('../util/middleware');
 const { Pool } = require('pg');
 require('dotenv').config();
 
-const connectionString = process.env.DB_CONNECTION_STRING;
+const connectionString = process.env.DB_CONNECTION_STRING; // stores supabase db connection string, allowing us to connect to supabase db
 
 // Create connection pool to connect to the database.
 function createConnection() {
+  // Pool is a cache of database connections. Allows pre-established connections to be reused instead of constantly opening/closing connections
   const pool = new Pool({
     connectionString: connectionString,
   });
   return pool
 }
 
-// Check if non-duplicate user info already exists in the database.
-router.post('/check', async (req, res) => {
+// Asynchronous route handler to check if non-duplicate user info already exists in the database.
+router.post('/check', async (req, res) => { // async function means we can use await keyword to pause the function's execution at asynchronous operations without blocking the entire server's execution
     const { username, email, phoneNumber } = req.body;
     let conflict = false;
 
     try {
+      // throw error if any fields are empty (which they shouldn't be)
       if (username === null || email === null || phoneNumber === null) {throw Error;}
       const connection = createConnection();
-      // Check if username exists
+      // Check if username already exists in db. If so, conflict is the username
       const { rows: usernameResult } = await connection.query(
         'SELECT 1 FROM users WHERE username = $1 LIMIT 1',
         [username]
@@ -36,7 +38,7 @@ router.post('/check', async (req, res) => {
         conflict = 'Username';
       }
 
-      // Check if phone number exists
+      // Check if phone number already exists in db. If so, conflict is phone number
       const { rows: phoneResult } = await connection.query(
         `SELECT 1 FROM users WHERE "phoneNumber" = $1 LIMIT 1`,
         [phoneNumber]
@@ -45,7 +47,7 @@ router.post('/check', async (req, res) => {
         conflict = 'Phone Number';
       }
 
-      // Check if email exists
+      // Check if email already exists in db...
       const { rows: emailResult } = await connection.query(
         'SELECT 1 FROM users WHERE email = $1 LIMIT 1',
         [email]
@@ -54,23 +56,24 @@ router.post('/check', async (req, res) => {
         conflict = 'Email';
       }
   
-      // If conflict found, return specific conflict.
+      // If conflict for any of the above is found, we send back the error message
       if (conflict) {
         res.status(409).json({
           exists: true,
           message: `${conflict} already exists.`,
           conflict
-        });
-      } else {
+        }); // HTTP 409 (Conflict) - element already exists for one of user's attributes
+      } else { // else there is no conflict
         res.status(200).json({
           exists: false,
           message: 'No conflicts with username, email, or phone number.'
-        });
+        }); // HTTP 200 (OK)
       }
+    // catch any missed errors
     } catch (error) {
       // console.error('Error checking user details:', error);
       res.status(500).json({ error: 'Failed to check user details' });
-    }
+    } // HTTP 500 (Internal Server Error) - unexpected conditions
 });
 
 // Insert user info into database upon signup.
@@ -78,15 +81,17 @@ router.post('/register', async (req, res) => {
     const { username, full_name, password, email, phoneNumber: phoneNumber } = req.body;
     try {
       console.log("Making Null Checks");
-      if (username === null || full_name === null || password === null || email === null || phoneNumber === null) {throw Error;}
+      if (username === null || full_name === null || password === null || email === null || phoneNumber === null) {throw Error;} // ensure fields are filled, throw error if not
+      // Asynchronously hash the password using bcrypt library. 10 saltrounds = hash password 10 times. the more rounds the longer it takes to finish hashing
       const bcrypt = require('bcrypt');
-      const hashedPassword = await bcrypt.hash(password, 10);
+      const hashedPassword = await bcrypt.hash(password, 10); // await pauses execution of async function for bcrypt.hash to run
       console.log("Hashed Password: ", hashedPassword);
       const connection = createConnection();
 
       console.log("Inserting into users table");
       // Insert user details into the users table.
-      const  { result } = await connection.query(
+      // result is used only to execute the query... we don't actually need it for anything else
+      const  { result } = await connection.query( 
         'INSERT INTO users (username, "fullName", password, email, "phoneNumber") VALUES ($1, $2, $3, $4, $5)',
         [username, full_name, hashedPassword, email, phoneNumber]
       );
@@ -96,10 +101,10 @@ router.post('/register', async (req, res) => {
       const token = jwt.sign({ username: username }, secretKey, { expiresIn: '24h' });
 
       await connection.end();
-      res.status(201).json({ message: 'User registered successfully', token });
+      res.status(201).json({ message: 'User registered successfully', token }); // HTTP 201 (Created) - led to creation of new resource
     } catch (error) {
       //console.error('Error registering user:', error);
-      res.status(500).json({ error: 'Failed to register user' });
+      res.status(500).json({ error: 'Failed to register user' }); // HTTP 500 (Internal Server Error) - unexpected condition
     }
 });
 
@@ -110,7 +115,7 @@ router.post('/login', async (req, res) => {
 
   if (typeof identifier !== 'string' || typeof password !== 'string') {
     console.log('Validation error: Identifier or password is not a string.');
-    return res.status(400).json({ error: 'Identifier and password are required and must be strings.' });
+    return res.status(400).json({ error: 'Identifier and password are required and must be strings.' }); // HTTP 400 (Bad Request) - invalid user input format
   }
   
 
@@ -153,18 +158,18 @@ router.post('/login', async (req, res) => {
         console.log('JWT token generated:', token);
         await connection.end();
         console.log('Database connection released.');
-        res.status(200).json({ message: 'User logged in successfully', token });
+        res.status(200).json({ message: 'User logged in successfully', token }); // HTTP 200 (OK)
       } else {
         console.log('Password verification failed.');
-        res.status(401).json({ error: 'Invalid password' });
+        res.status(401).json({ error: 'Invalid password' }); // HTTP 401 (Unauthorized) - incorrect credentials/password
       }
     } else {
       console.log('No user found matching the criteria.');
-      res.status(404).json({ error: 'User not found' });
+      res.status(404).json({ error: 'User not found' }); // HTTP 404 (Not Found) - can't find existing resource (user)
     }
   } catch (error) {
     console.error('Error during login process:', error);
-    res.status(500).json({ error: 'Failed to log in' });
+    res.status(500).json({ error: 'Failed to log in' }); // HTTP 500 (Internal Server Error) - unexpected error/condition
   }
 });
 
@@ -184,11 +189,11 @@ router.get('/profile', verifyToken, async (req, res) => {
   
       // And if the user exists, return their information.
       if (user.length > 0) {
-        res.status(200).json(user[0]);
+        res.status(200).json(user[0]); // HTTP (OK) - user exists
       }
     } catch (error) {
       console.error('Error fetching user profile:', error);
-      res.status(500).json({ error: 'Failed to fetch user profile' });
+      res.status(500).json({ error: 'Failed to fetch user profile' }); // HTTP 500 (Internal Server Error) - unexpected error/condition
     }
 });
 
@@ -205,16 +210,18 @@ router.get('/userID', async (req, res) => {
   
       // And if user exists, return the userID.
       if (user.length > 0) {
-        res.status(200).json({ userID: user[0].userID });
+        res.status(200).json({ userID: user[0].userID }); // HTTP 200 (OK) - user exists, return userId
       } else {
-        res.status(404).json({ error: 'User not found' });
+        res.status(404).json({ error: 'User not found' }); // HTTP 404 (Not Found) - error finding resource (user)
       }
     } catch (error) {
       console.error('Error fetching userID:', error);
-      res.status(500).json({ error: 'Failed to fetch userID' });
+      res.status(500).json({ error: 'Failed to fetch userID' }); // HTTP 500 (Internal Server Error) - Unexpected condition met
     }
 });
 
+
+// this will need to be modified
 router.delete('/delete', async (req, res) => {
   const { username, password } = req.body;
   try {
@@ -245,7 +252,7 @@ router.delete('/delete', async (req, res) => {
           'DELETE FROM users WHERE username = $1',
           [username]
         );
-        res.status(200).json({ message: 'Account deleted successfully' });
+        res.status(200).json({ message: 'Account deleted successfully' }); // HTTP 200 (OK)
       } else {
         res.status(401).json({ error: 'Invalid password' });
       }
