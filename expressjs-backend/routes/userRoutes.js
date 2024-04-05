@@ -221,7 +221,7 @@ router.get('/userID', async (req, res) => {
 });
 
 
-// this will need to be modified
+// this will need to be modified to delete all listings, reviews, etc... that are dependent on userID as foreign key
 router.delete('/delete', async (req, res) => {
   const { username, password } = req.body;
   try {
@@ -254,28 +254,26 @@ router.delete('/delete', async (req, res) => {
         );
         res.status(200).json({ message: 'Account deleted successfully' }); // HTTP 200 (OK)
       } else {
-        res.status(401).json({ error: 'Invalid password' });
+        res.status(401).json({ error: 'Invalid password' }); // HTTP 401 (Unauthorized) - lacks valid authentication credentials
       }
     } else {
-      res.status(404).json({ error: 'User not found' });
+      res.status(404).json({ error: 'User not found' }); // HTTP 404 (Not Found) - resource not found
     }
   } catch (error) {
     console.error('Error deleting account:', error);
-    res.status(500).json({ error: 'Failed to delete account' });
+    res.status(500).json({ error: 'Failed to delete account' }); // HTTP 500 (Internal Server Error) - unexpected condition met, throw error
   }
 });
 
 
 router.post('/forgot-password', async (req, res) => {
   const { email } = req.body;
-  console.log("hello");
   if (!email) {
     return res.status(400).json({ error: 'Email is required' });
   }
 
   try {
     const connection = createConnection();
-    console.log("hello");
     // Verify if email exists
     const { rows: users } = await connection.query('SELECT * FROM users WHERE email = $1', [email]);
     if (users.length === 0) {
@@ -283,7 +281,7 @@ router.post('/forgot-password', async (req, res) => {
     }
 
     const resetToken = crypto.randomBytes(20).toString('hex');
-    const resetExpires = new Date(Date.now() + 3600000); // 1 hour from now
+    const resetExpires = new Date(Date.now() + 3600000); // 1 hour from now (60 * 60 * 1000) ms
 
     // Save the resetToken and expiration time to the user's record in the database
     await connection.query('UPDATE users SET "resetPasswordToken" = $1, "resetPasswordExpires" = $2 WHERE email = $3', [resetToken, resetExpires, email]);
