@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { FaEye, FaEyeSlash, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
+import logoImage from '../assets/haggle-horizontal.png';
 import {
   Container,
   Form,
@@ -56,8 +57,13 @@ const ResetPasswordPage = () => {
   return (
     <Container>
       <Form onSubmit={handleSubmit}>
-        <HeaderLabel>Reset Password</HeaderLabel>
-        <Description>Please enter your new password below.</Description>
+        <img src={logoImage} alt="Logo" style={{ display: 'block', margin: '0 auto 20px', maxWidth: '200px', height: 'auto' }} />
+        <HeaderLabel style={{ marginTop: '0px'}}>
+            Reset Password
+        </HeaderLabel>
+        <Description style={{ marginTop: '0px'}}>
+            Enter your new password and check it to confirm it&apos;s correct.
+        </Description>
         <InputGroup>
           <Input
             type={passwordVisible ? "text" : "password"}
@@ -88,7 +94,7 @@ const ResetPasswordPage = () => {
             {passwordVisible ? <FaEye /> : <FaEyeSlash />}
           </VisibilityToggle>
         </InputGroup>
-        <Button type="submit" disabled={!isPasswordValid}>Reset</Button>
+        <Button type="submit" disabled={!isPasswordValid} style={{ marginTop: '20px'}}>Reset</Button>
       </Form>
     </Container>
   );
