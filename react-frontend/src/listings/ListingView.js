@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import "./ListingView.css";
 import ImageCarousel from "../components/ImageCarousel.js";
-////import { jwtDecode } from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 const ListingView = () => {
   const { listingID } = useParams();
@@ -19,12 +19,36 @@ const ListingView = () => {
         const response = await axios.get(
           `http://localhost:8000/listings/${listingID}`,
         );
-        /* check currently logged-in userID */
-        //const loggedInUserID = fetchUserProfile();
+        
         /* set fetched data to state */
         if (response.data.length > 0) {
           setListing(response.data[0]);
-          //setIsOwner(response.data[0].userID === loggedInUserID.data[0].userID);
+          /* check currently logged-in userID */
+          const token = localStorage.getItem("token"); // Retrieve the JWT token from localStorage
+          if(token){
+            const decodedToken = jwtDecode(token); // Decode the token
+            const username = decodedToken.username; // Extract the username from the token
+            try {
+              // Make a request to the backend to fetch the userID based on the username
+              const response2 = await axios.get(`http://localhost:8000/users/userID`, { 
+                params: {
+                  'username': username
+                }
+              }, {
+                headers: {
+                  'Authorization': `Bearer ${token}`
+                }
+              });
+        
+              const loggedInUserID = response2.data.userID;
+              setIsOwner(response.data[0].userID === loggedInUserID); // If userIDs are the same, we know this user owns this listing
+              console.log("logged in userID: ", loggedInUserID);
+            } catch (error) {
+              console.log(error);
+            }
+          } else{
+            console.log("user not logged in or token not found");
+          }
           console.log(response.data);
         }
       } catch (error) {
@@ -107,10 +131,10 @@ const ListingView = () => {
             <button className="btn" onClick={handleMakeOffer}>Make Offer</button>
             <button className="btn" onClick={handleStartChat}>Start a Chat</button>
             {isOwner && (
-              <>
-                <button onClick={handleEditListing}>Edit Listing</button>
-                <button onClick={handleDeleteListing}>Delete Listing</button>
-              </>
+              <div className="owner-controls">
+                <button className="btn btn-secondary" onClick={handleEditListing}>Edit Listing</button>
+              <button className="btn btn-secondary" onClick={handleDeleteListing}>Delete Listing</button>
+              </div>
             )}
           </div>
           <div className="description">
