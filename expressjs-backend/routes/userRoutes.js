@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const secretKey = 'YourSecretKey';
+const secretKey = 'YourSecretKey'; // 32 bytes, generated using a cryptographically secure random number generator to ensure unpredictability... move to .env
 const crypto = require('crypto');
 const { verifyToken } = require('../util/middleware');
 const { Pool } = require('pg');
@@ -95,10 +95,6 @@ router.post('/register', async (req, res) => {
         'INSERT INTO users (username, "fullName", password, email, "phoneNumber") VALUES ($1, $2, $3, $4, $5)',
         [username, full_name, hashedPassword, email, phoneNumber]
       );
-      
-      console.log("Creating jwt");
-      // Create json web token to maintain sign-in throughout pages.
-      const token = jwt.sign({ username: username }, secretKey, { expiresIn: '24h' });
 
       await connection.end();
       res.status(201).json({ message: 'User registered successfully', token }); // HTTP 201 (Created) - led to creation of new resource
@@ -117,7 +113,6 @@ router.post('/login', async (req, res) => {
     console.log('Validation error: Identifier or password is not a string.');
     return res.status(400).json({ error: 'Identifier and password are required and must be strings.' }); // HTTP 400 (Bad Request) - invalid user input format
   }
-  
 
   try {
     console.log('Attempting to connect to DB...');
@@ -154,6 +149,7 @@ router.post('/login', async (req, res) => {
       console.log('Password verification result:', validPassword);
 
       if (validPassword) {
+        // creating JWT
         const token = jwt.sign({ username: user.username }, secretKey, { expiresIn: '24h' });
         console.log('JWT token generated:', token);
         await connection.end();

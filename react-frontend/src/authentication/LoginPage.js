@@ -63,11 +63,11 @@ function LoginPage() {
       <Container>
         <img src={logoImage} alt="Logo" style={{ display: 'block', margin: '0 auto 20px', maxWidth: '200px', height: 'auto' }} />
         <Form onSubmit={handleSubmit}>
-        {errorMessage && (
-          <div style={{ color: 'red', marginTop: '20px', fontSize: '12px' }}>
-            {errorMessage}
-          </div>
-        )}
+          {errorMessage && (
+            <div style={{ color: 'red', marginTop: '20px', fontSize: '12px' }}>
+              {errorMessage}
+            </div>
+          )}
           <InputGroup>
             <Input
               type="text"

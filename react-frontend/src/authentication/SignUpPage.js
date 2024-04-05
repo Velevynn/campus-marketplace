@@ -118,7 +118,7 @@ function SignUpPage() {
           // Proceed with registration if no conflicts
           const registerResponse = await axios.post('https://haggle.onrender.com/users/register', user);
           if (registerResponse.status === 201) {
-            navigate('/profile');
+            navigate('/login');
           }
         }
       } catch (error) {
