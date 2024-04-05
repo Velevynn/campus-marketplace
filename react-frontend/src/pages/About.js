@@ -15,7 +15,7 @@ function About() {
 
         <Bio
           name="Alexander"
-          bio="3rd Year CS Major. I am a dancer in United Movement is a non-audition dance club at Cal Poly in San Luis Obispo. Let's dance."
+          bio="3rd Year CS Major. I am a dancer in United Movement, a non-audition dance club at Cal Poly in San Luis Obispo. Let's dance."
         />
 
         <Bio

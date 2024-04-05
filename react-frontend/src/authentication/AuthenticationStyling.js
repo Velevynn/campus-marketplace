@@ -8,6 +8,8 @@ General Components
 */
 // Container for centering and styling the main content area
 export const Container = styled.div`
+  display: flex;
+  flex-direction: column;
   max-width: 400px;
   margin: 0 auto;
   margin-top: 35px;
@@ -16,6 +18,7 @@ export const Container = styled.div`
   padding-bottom: 15px;
   font-family: 'Inter';
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  align-items: center;
 `;
 
 // Form styled component for styling form elements collectively

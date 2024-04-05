@@ -23,7 +23,7 @@ function ProfilePage() {
   // Function to handle sign out action
   const handleSignOut = () => {
     localStorage.removeItem('token');
-    navigate('/login');
+    window.location.href = '/login';
   };
 
   // Function to navigate to the change password page
@@ -43,7 +43,7 @@ function ProfilePage() {
 
       try {
         // Attempting to fetch user profile data with the stored token
-        const response = await axios.get(`http://localhost:8000/users/profile`, {
+        const response = await axios.get(`https://haggle.onrender.com/users/profile`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }

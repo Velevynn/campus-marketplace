@@ -6,6 +6,7 @@ import { Link, useNavigate } from 'react-router-dom';
 // Importing logo, icons, and styled components for UI
 import logoImage from '../assets/haggle-horizontal.png';
 import { FaEye, FaEyeSlash  } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 import { Container, Form, InputGroup, Input, InputLabel, VisibilityToggle, Button, LinkedLabel, ForgotPasswordLabel, BottomContainer, BottomLabel } from './AuthenticationStyling';
 
 
@@ -16,7 +17,7 @@ function LoginPage() {
   const [isFormValid, setIsFormValid] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   // Handles changes in input fields and updates the credentials state
   const handleChange = (event) => {
@@ -38,11 +39,9 @@ function LoginPage() {
         identifier: credentials.identifier,
         password: credentials.password,
       };
-      const response = await axios.post('http://localhost:8000/users/login', requestBody);
-
-      // Stores the received token in local storage and navigates to the profile page
-      localStorage.setItem('token', response.data.token);
-      navigate('/profile')
+      const response = await axios.post('https://haggle.onrender.com/users/login', requestBody);
+      localStorage.setItem('token', response.data.token); // Stores the received token in local storage and navigates to the profile page
+      window.location.href = '/profile';
     } catch (error) {
       // Sets an error message based on the response from the server or a general failure message
       if (error.response) {
