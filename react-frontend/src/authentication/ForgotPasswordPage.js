@@ -43,12 +43,11 @@ const ForgotPasswordPage = () => {
             Enter your email and we will send you a link to reset your password.
         </Description>
 
-
         <Form onSubmit={handleSubmit}>
-        {message && (
-            <div style={{ color: 'green', marginTop: '20px', fontSize: '12px' }}>
-              {message}
-            </div>
+          {message && (
+              <div style={{ color: 'green', marginTop: '20px', fontSize: '12px' }}>
+                {message}
+              </div>
           )}
 
           <InputGroup>
@@ -62,6 +61,7 @@ const ForgotPasswordPage = () => {
               required />
             <InputLabel htmlFor="email" hasContent={email.length > 0}>Email Address</InputLabel>
           </InputGroup>
+          
           <Button type="submit" style={{ marginTop: '20px'}}>
             Send Reset Link
           </Button>

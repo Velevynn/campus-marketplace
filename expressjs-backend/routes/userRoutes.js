@@ -280,20 +280,23 @@ router.post('/forgot-password', async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
+    // use crypto to generate a new password reset token + expiration time (1 hour from now)
     const resetToken = crypto.randomBytes(20).toString('hex');
     const resetExpires = new Date(Date.now() + 3600000); // 1 hour from now (60 * 60 * 1000) ms
 
     // Save the resetToken and expiration time to the user's record in the database
     await connection.query('UPDATE users SET "resetPasswordToken" = $1, "resetPasswordExpires" = $2 WHERE email = $3', [resetToken, resetExpires, email]);
 
+    // create the reset password url using the token
     const resetUrl = `http://localhost:3000/reset-password?token=${resetToken}`;
 
+    // use nodemailer 
     const nodemailer = require('nodemailer');
     const transporter = nodemailer.createTransport({
       service: 'outlook',
       auth: {
         user: 'no-reply.haggle@outlook.com',
-        pass: 'haggle1234!' // store more securely
+        pass: 'haggle1234!' // store more securely in .env file
       }
     });
   
@@ -301,7 +304,10 @@ router.post('/forgot-password', async (req, res) => {
       from: 'no-reply.haggle@outlook.com', // Replace with your email
       to: email, // The user's email address
       subject: 'Password Reset Request',
-      html: `<p>You requested a password reset. Click the link below to set a new password:</p><p><a href="${resetUrl}">Reset Password</a></p>`
+      html: `<p>You requested a password reset. Click the link below to set a new password:</p>
+             <p>
+                <a href="${resetUrl}">Reset Password</a>
+             </p>`
     };
   
     transporter.sendMail(mailOptions, function(error, info){

@@ -31,6 +31,7 @@ export const Form = styled.form`
 export const InputGroup = styled.div`
   position: relative;
   margin-bottom: 0px;
+  width: 100%;
 `;
 
 // InputLabel styled component for customizing input labels
