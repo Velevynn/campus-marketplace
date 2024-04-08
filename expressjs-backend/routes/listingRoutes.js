@@ -95,6 +95,27 @@ router.get("/:listingID/", async (req, res) => {
       }
 });
 
+router.delete("/:listingID/", async (req, res) => {
+  try {
+      // Extract listingID from query parameters.
+      const { listingID } = req.params;
+
+      // Retrieve listing details from database if listing exists.
+      const connection = createConnection();
+      await connection.query(
+        'DELETE FROM listings WHERE "listingID" =  $1 LIMIT 1',
+        [listingID]
+      );
+      res.status(204).send(); // successful delete
+      await connection.end();
+    }
+    catch (error) {
+      console.error("An error occurred while deleting the listing:", error);
+      res.status(500).send("An error occurred while deleting the listing");
+    }
+});
+
+
 // Retrieve images for given listingID.
 router.get("/images/:listingID/", async (req, res) => {
   try {
