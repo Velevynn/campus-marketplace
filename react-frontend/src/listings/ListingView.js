@@ -17,7 +17,7 @@ const ListingView = () => {
       try {
         /* get data of listing by its ID */
         const response = await axios.get(
-          `http://localhost:8000/listings/${listingID}`,
+          `https://haggle.onrender.com/listings/${listingID}`,
         );
         
         /* set fetched data to state */
@@ -30,7 +30,7 @@ const ListingView = () => {
             const username = decodedToken.username; // Extract the username from the token
             try {
               // Make a request to the backend to fetch the userID based on the username
-              const response2 = await axios.get(`http://localhost:8000/users/userID`, { 
+              const response2 = await axios.get(`https://haggle.onrender.com/users/userID`, { 
                 params: {
                   'username': username
                 }
@@ -65,7 +65,7 @@ const ListingView = () => {
       try {
         /* Fetch images for the listing from the backend */
         const response = await axios.get(
-          `http://localhost:8000/listings/images/${listingID}`,
+          `https://haggle.onrender.com/listings/images/${listingID}`,
         );
         if (response.data.length > 0) {
           setImages(response.data);
@@ -103,10 +103,18 @@ const ListingView = () => {
     window.location.href = "/listings/:listingID/edit";
   };
 
-  const handleDeleteListing = () => {
-    /* Add logic for handling "Delete Listing" action */
+  const handleDeleteListing = async () => {
     console.log("Delete Listing clicked for listing:", listing);
-    window.location.href = "/listings/:listingID/delete";
+    //window.location.href = "/listings/:listingID/delete";
+    try {
+      console.log("listingID deleting: ", listingID);
+      await axios.delete(`https://haggle.onrender.com/listings/${listingID}`,
+      );
+      console.log("listing successfully deleted");
+      window.location.href = '/'; // go back to home page
+    } catch (error){
+      console.error("error deleting listing", error);
+    }
   };
 
   /* first check if listing data is available, then render */

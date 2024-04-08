@@ -14,7 +14,6 @@ import ProtectedRoute from "./utils/ProtectedRoute"; // Importing ProtectedRoute
 import BuyNow from "./pages/BuyNow.js";
 import MakeOffer from "./pages/MakeOffer.js";
 import StartChat from "./pages/Chat.js";
-import DeleteListing from "./pages/DeleteListing.js";
 import EditListing from "./pages/EditListing.js";
 
 function App() {
@@ -45,7 +44,6 @@ function App() {
           <Route path="/listings/:listingID/buy" element={<ProtectedRoute> <BuyNow /></ProtectedRoute> } />
           <Route path="/listings/:listingID/offer" element={<ProtectedRoute> <MakeOffer /></ProtectedRoute> } />
           <Route path="/listings/:listingID/chat" element={<ProtectedRoute> <StartChat /></ProtectedRoute> } />
-          <Route path="/listings/:listingID/delete" element={<ProtectedRoute> <DeleteListing /></ProtectedRoute> } />
           <Route path="/listings/:listingID/edit" element={<ProtectedRoute> <EditListing /></ProtectedRoute> } />
           <Route
               path = "*"
