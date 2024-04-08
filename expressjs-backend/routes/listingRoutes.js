@@ -102,10 +102,15 @@ router.delete("/:listingID/", async (req, res) => {
 
       // Retrieve listing details from database if listing exists.
       const connection = createConnection();
-      await connection.query(
-        'DELETE FROM listings WHERE "listingID" =  $1 LIMIT 1',
+      const result = await connection.query(
+        'DELETE FROM listings WHERE "listingID" =  $1',
         [listingID]
       );
+      
+      if (result.rowCount === 0) {
+        return res.status(404).send("Listing not found");
+      }
+
       res.status(204).send(); // successful delete
       await connection.end();
     }
