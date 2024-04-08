@@ -1,187 +1,48 @@
+// Importing necessary React hooks and Axios for HTTP requests
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import styled, { css } from 'styled-components';
-import { FaCheckCircle, FaTimesCircle, FaEye, FaEyeSlash  } from 'react-icons/fa';
+// Importing components for the layout, styling, and form elements
 import logoImage from '../assets/haggle-horizontal.png';
+import { FaCheckCircle, FaTimesCircle, FaEye, FaEyeSlash  } from 'react-icons/fa';
+import { Container, Form, InputGroup, Input, InputLabel, VisibilityToggle, Button, LinkedLabel, HeaderLabel, ValidationIcon, PasswordRules, BottomContainer, BottomLabel } from './AuthenticationStyling';
+// Importing navigation hooks and components for routing
 import { Link, useNavigate } from 'react-router-dom';
 
-// Styled components
-const Container = styled.div`
-  max-width: 400px;
-  margin: 0 auto;
-  margin-top: 35px;
-  padding: 40px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  font-family: Inter;
-`;
 
-const LoginContainer = styled.div`
-  max-width: 400px;
-  min-height: 60px;
-  margin: 10px auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-`;
-
-const HeaderLabel = styled.label`
-  color: #666;
-  font-size: 17px;
-  text-align: center;
-`;
-
-const LinkedLabel = styled.label`
-  color: #666;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 10px;
-  font-weight: normal;
-`;
-
-const LoginLabel = styled.label`
-  color: #666;
-  font-size: 14px;
-  text-align: center;
-  margin: 25px;
-  font-weight: normal;
-`;
-
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-`;
-
-const InputGroup = styled.div`
-  position: relative;
-  margin-bottom: 0px;
-`;
-
-const InputLabel = styled.label`
-  position: absolute;
-  top: -15%;
-  left: 4%;
-  font-size: 14px;
-  color: #999;
-  transition: all 0.3s ease;
-  pointer-events: none;
-  font-weight: normal;
-
-  ${props => props.hasContent && css`
-    transform: translate(0%, -45%);
-    font-size: 10px;
-    font-weight: normal;
-    color: #999;
-  `}
-`;
-
-const Input = styled.input`
-  position: absolute
-  width: 100%;
-  padding-top: 14px;
-  padding-bottom: 6px;
-  height: 40px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  box-sizing: border-box;
-  font-size: 12px;
-  transition: border 0.3s, box-shadow 0.3s;
-
-  &:focus {
-    outline: none;
-    border-color: #007b00;
-    box-shadow: 0 0 8px rgba(0, 183, 0, 0.8);
-  }
-`;
-
-const ValidationIcon = styled.span`
-  position: absolute;
-  top: 65%;
-  right: 10px;
-  transform: translateY(-85%);
-  color: ${props => props.isValid ? '#138A3E' : 'red'};
-`;
-
-const Button = styled.button`
-  padding: 8px;
-  background-color: #16A44A;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-top: 20px;
-  transition: background-color 0.3s;
-
-  &:hover {
-      background-color: #138A3E;
-      border-color: #16A44A;
-  }
-
-  &:disabled {
-    background-color: #8CCBA1;
-    cursor: not-allowed;
-    border-color: transparent;
-  }
-`;
-
-/*const SuccessMessage = styled.div`
-  color: green;
-  margin-top: 5px;
-  font-size: 12px;
-`;*/
-
-const PasswordRules = styled.div`
-  background-color: #f7f7f7;
-  padding: 10px;
-  border-radius: 4px;
-  font-size: 12px;
-  color: #666;
-  position: absolute;
-  right: -350px;
-  top: 0px;
-  width: 300px;
-`;
-
-const VisibilityToggle = styled.span`
-  position: absolute;
-  top: 20%;
-  right: 10px;
-  color: #666;
-  cursor: pointer;
-`;
-
-
+// SignUpPage component for the user registration process
 function SignUpPage() {
+  // State for form data, password visibility, input focus, and form validation
   const [user, setUser] = useState({
     username: '',
     full_name: '',
     password: '',
     email: '',
-    phoneNum: '',
+    phoneNumber: '',
   });
 
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [passwordFocused, setPasswordFocused] = useState(false);
-  const [registrationSuccess, setRegistrationSuccess] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
-  // Validate each input field
+  // Function to validate form inputs based on predefined rules
   const isInputValid = (name, value) => {
+    // Password validation rules
     const passwordRules = {
       minLength: value.length >= 8,
       containsNumber: /[0-9]/.test(value),
       containsSpecialChar: /[\W_]/.test(value),
     };
 
+    // Phone number validation rules
     const phoneNumRules = {
       minLength: value.length === 10,
       maxLength: value.length === 10,
       containsNumber: /[0-9]/.test(value),
     };
 
-
+    // Validation logic for different inputs
     switch (name) {
       case 'username':
         return value.length >= 3 && value.length <= 25;
@@ -191,13 +52,14 @@ function SignUpPage() {
         return Object.values(passwordRules).every(valid => valid);
       case 'email':
         return /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(value);
-      case 'phoneNum':
+      case 'phoneNumber':
         return Object.values(phoneNumRules).every(valid => valid);
       default:
         return false;
     }
   };
 
+  // Effect hook to update form validity based on input validation
   useEffect(() => {
     const isValid = Object.keys(user).every((key) =>
       isInputValid(key, user[key])
@@ -205,23 +67,33 @@ function SignUpPage() {
     setIsFormValid(isValid);
   }, [user]);
 
+  // Handlers for password input focus, visibility toggle, and general input changes
   const handlePasswordFocus = () => setPasswordFocused(true);
   const handlePasswordBlur = () => setPasswordFocused(false);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-
-    setUser({
-      ...user,
-      [name]: value,
-    });
+    // Special handling for phoneNumber to ensure only numbers are inputted
+    if (name === "phoneNumber") {
+      const filteredValue = value.replace(/[^\d]/g, '');
+      setUser({
+        ...user,
+        [name]: filteredValue,
+      });
+    } else {
+      setUser({
+        ...user,
+        [name]: value,
+      });
+    }
   };
 
+  // Function to set password visiblity to true if false and vice versa
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
 
-
+  // Function to handle form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
   
@@ -233,28 +105,25 @@ function SignUpPage() {
         // Pre-registration check for existing username, email, or phone number
         const checkResponse = await axios.post('https://haggle.onrender.com/users/check', {
           email: user.email,
-          phoneNum: user.phoneNum,
+          phoneNumber: user.phoneNumber,
           username: user.username,
         });
-  
+        
+        // Display specific error message based on the conflict
         if (checkResponse.data.exists) {
-          // Display specific error message based on the conflict
           setErrorMessage(`${checkResponse.data.message} already exists.`);
+
+        // Proceed with registration if no conflicts
         } else {
           // Proceed with registration if no conflicts
           const registerResponse = await axios.post('https://haggle.onrender.com/users/register', user);
           if (registerResponse.status === 201) {
-            setRegistrationSuccess(true);
-            if (registrationSuccess) {
-              navigate('/profile');
-            }
-            navigate('/profile');
+            navigate('/login');
           }
         }
       } catch (error) {
-        console.log(error);
         if (error.response) {
-          // Backend should provide specific error message in response
+          // Backend provides specific error message in response
           const message = error.response.data.error || error.response.data.message;
           setErrorMessage(`Error:  ${message}`);
         } else {
@@ -262,12 +131,13 @@ function SignUpPage() {
           setErrorMessage('An error occurred during registration. Please try again.');
         }
       }
+    // doesn't pop up since submit button is disabled until all fields are filled out... get rid of
     } else {
       setErrorMessage("Please ensure all fields are filled out correctly before submitting.");
     }
   };
   
-
+  // Render the sign-up form with validation feedback and navigation options
   return (
     <>
     <Container>
@@ -298,16 +168,16 @@ function SignUpPage() {
             <InputGroup>
                 <Input
                     type="tel"
-                    name="phoneNum"
-                    id="phoneNum"
-                    value={user.phoneNum}
+                    name="phoneNumber"
+                    id="phoneNumber"
+                    value={user.phoneNumber}
                     maxLength = "10"
                     onChange={handleChange}
-                    hasContent={user.phoneNum.length > 0}
+                    hasContent={user.phoneNumber.length > 0}
                     required />
-                <InputLabel htmlFor="phoneNum" hasContent={user.phoneNum.length > 0}>Mobile Number</InputLabel>
-                <ValidationIcon isValid={isInputValid('phoneNum', user.phoneNum)}>
-                    {user.phoneNum.length > 0 ? (isInputValid('phoneNum', user.phoneNum) ? <FaCheckCircle /> : <FaTimesCircle />) : null}
+                <InputLabel htmlFor="phoneNumber" hasContent={user.phoneNumber.length > 0}>Mobile Number</InputLabel>
+                <ValidationIcon isValid={isInputValid('phoneNumber', user.phoneNumber)}>
+                    {user.phoneNumber.length > 0 ? (isInputValid('phoneNumber', user.phoneNumber) ? <FaCheckCircle /> : <FaTimesCircle />) : null}
                 </ValidationIcon>
             </InputGroup>
 
@@ -319,6 +189,7 @@ function SignUpPage() {
                     value={user.username}
                     maxLength = "25"
                     onChange={handleChange}
+                    hasContent={user.username.length > 0}
                     required />
                 <InputLabel htmlFor="username" hasContent={user.username.length > 0}>Username</InputLabel>
                 <ValidationIcon isValid={isInputValid('username', user.username)}>
@@ -334,6 +205,7 @@ function SignUpPage() {
                     maxLength = "40"
                     value={user.full_name}
                     onChange={handleChange}
+                    hasContent={user.full_name.length > 0}
                     required />
                 <InputLabel htmlFor="full_name" hasContent={user.full_name.length > 0}>Full Name</InputLabel>
                 <ValidationIcon isValid={isInputValid('full_name', user.full_name)}>
@@ -351,21 +223,22 @@ function SignUpPage() {
                 onChange={handleChange}
                 onFocus={handlePasswordFocus}
                 onBlur={handlePasswordBlur}
+                hasContent={user.password.length > 0}
                 required />
               <InputLabel htmlFor="password" hasContent={user.password.length > 0}>Password</InputLabel>
-              {passwordFocused && ( // Conditional rendering based on focus
+              {passwordFocused && (
                   <PasswordRules>
                   <div style={{ color: user.password.length >= 8 ? 'green' : 'red' }}>
                     {user.password.length >= 8 ? <FaCheckCircle style={{ marginRight: '8px', position: 'relative', top: '2px' }} /> : <FaTimesCircle style={{ marginRight: '8px', position: 'relative', top: '2px' }} />}
-                    At least 8 characters.
+                    At least 8 characters
                   </div>
                   <div style={{ color: /[0-9]/.test(user.password) ? 'green' : 'red' }}>
                     {/[0-9]/.test(user.password) ? <FaCheckCircle style={{ marginRight: '8px', position: 'relative', top: '2px' }} /> : <FaTimesCircle style={{ marginRight: '8px', position: 'relative', top: '2px' }} />}
-                    At least one number.
+                    At least one number
                   </div>
                   <div style={{ color: /[\W_]/.test(user.password) ? 'green' : 'red' }}>
                     {/[\W_]/.test(user.password) ? <FaCheckCircle style={{ marginRight: '8px', position: 'relative', top: '2px' }} /> : <FaTimesCircle style={{ marginRight: '8px', position: 'relative', top: '2px' }} />}
-                    At least one special character.
+                    At least one special character
                   </div>
                 </PasswordRules>
               )}
@@ -391,14 +264,14 @@ function SignUpPage() {
         </Form>
 
         </Container>
-        <LoginContainer>
-          <LoginLabel>
+        <BottomContainer>
+          <BottomLabel>
             Already have an account? {}
-            <Link to="/login" style={{ display: 'inline', color: '#0056b3'}}>
+            <Link to="/login" style={{ display: 'inline', color: '#0056b3', fontWeight: 'bold'}}>
               Log in
             </Link>
-          </LoginLabel>
-      </LoginContainer>
+          </BottomLabel>
+      </BottomContainer>
       </>
   );
 }

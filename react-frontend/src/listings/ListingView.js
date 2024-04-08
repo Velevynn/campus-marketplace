@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import "./ListingView.css";
 import ImageCarousel from "../components/ImageCarousel.js";
+import LoadingSpinner from "../components/LoadingSpinner.js";
 import { jwtDecode } from "jwt-decode";
 
 const ListingView = () => {
@@ -12,6 +13,7 @@ const ListingView = () => {
   const [isOwner, setIsOwner] = useState(false);
   console.log(setIsOwner);
   /* hook to fetch data when listingID changes */
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -79,6 +81,26 @@ const ListingView = () => {
     fetchImages();
   }, [listingID]);
 
+  const TimeAgo = (timestamp) => {
+    
+    const string = timestamp.toString().slice(5,7) + '/' + timestamp.toString().slice(8,10) + '/' + timestamp.toString().slice(0,4);
+    //timestamp = string;
+    console.log(string);
+    let currentDate = new Date();
+    let postDate = new Date(string);
+    const difference = currentDate.getTime() - postDate.getTime();
+    const differenceInDays = Math.round(difference / (1000 * 3600 * 24));
+    console.log(difference);
+    let message = "";
+    if (differenceInDays > 1) {
+      message = differenceInDays.toString() + " days ago";
+    } else {
+      message = differenceInDays.toString() + " day ago";
+    }
+
+    return message;
+  }
+
   const handleBuyNow = () => {
     /* Add logic for handling "Buy Now" action */
     console.log("Buy Now clicked for listing:", listing);
@@ -134,7 +156,8 @@ const ListingView = () => {
                 <ImageCarousel images={images} />
               </div>
             )}
-            <p className="price-buyerview">${listing.price}</p>
+            <div className="price-buyerview">${listing.price}</div>
+            <div className="post-date">Posted {TimeAgo(listing.postDate)}</div>
             <button className="btn" onClick={handleBuyNow}>Buy Now</button>
             <button className="btn" onClick={handleMakeOffer}>Make Offer</button>
             <button className="btn" onClick={handleStartChat}>Start a Chat</button>
@@ -151,7 +174,7 @@ const ListingView = () => {
           </div>
         </div>
       ) : (
-        <p>LISTING IS NULL</p>
+        <LoadingSpinner/>
       )}
     </div>
   );

@@ -45,28 +45,33 @@ router.post("/", upload.array('image'), async (req, res) => {
       }
 });
 
-// Retrieve listings, optionally according to query parameters.
+// Retrieve listings with pagination and optional query parameters
 router.get("/", async (req, res) => {
-    try {
-        // Extract the search query parameter
-        const { q } = req.query;
+  try {
+    const { q, page } = req.query;
+    const itemsPerPage = 30; // Define how many items to return per page
 
-        let query = "SELECT * FROM listings";
-    
-        // If there is a search query, modify the SQL query to include a WHERE clause
-        if (q) {
-          query += ` WHERE "title" LIKE '%${q}%' OR "description" LIKE '%${q}%'`;
-        }
+    let query = "SELECT * FROM listings";
 
-        const connection = createConnection();
-        const { rows } = await connection.query(query);
-        res.status(200).send(rows);
-        await connection.end();
-      }
-      catch (error) {
-        console.error("An error occurred while fetching listings:", error);
-        res.status(500).send("An error occurred while fetching listings");
-      }
+    // If there is a search query, modify the SQL query to include a WHERE clause
+    if (q) {
+      query += ` WHERE "title" LIKE '%${q}%' OR "description" LIKE '%${q}%'`;
+    }
+
+    // Calculate offset based on the requested page
+    const offset = (page - 1) * itemsPerPage;
+
+    // Append LIMIT and OFFSET to the query for pagination
+    query += ` LIMIT ${itemsPerPage} OFFSET ${offset}`;
+
+    const connection = createConnection();
+    const { rows } = await connection.query(query);
+    res.status(200).send(rows);
+    await connection.end();
+  } catch (error) {
+    console.error("An error occurred while fetching listings:", error);
+    res.status(500).send("An error occurred while fetching listings");
+  }
 });
 
 // Retrieve listing details for given listingID.
@@ -168,5 +173,8 @@ async function addListing(listing) {
       throw error;
     }
   }
+
+  
+
 
 module.exports = router;

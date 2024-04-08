@@ -1,21 +1,26 @@
 .notification {
   position: fixed;
   bottom: 20px;
-  right: 20px;
-  background-color: rgba(200, 152, 152, 1);
+  left: 20px;
+  background-color: rgb(204, 161, 161);
   color: #fff;
   padding: 10px 10px;
-  border-radius: 10px;
+  border-radius: 25px;
   opacity: 0;
   transition: opacity 0.3s ease-in-out;
+  height: 60px;
+  align-items: center;
+  vertical-align: center;
 }
 
 .notification.visible {
-  opacity: 1;
+  opacity: .98;
 }
 
 .notif-text {
   height: 5px;
   color: black;
   opacity: 100;
+  font-size: 15px;
+  margin-top: 7.5px;
 }

@@ -10,36 +10,28 @@ function About() {
       <div className="team-container">
         <Bio
           name="Alex"
-          bio="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. 
-        Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus."
+          bio="4th Year CS Major. I enjoy biking, hiking and traveling."
         />
 
         <Bio
           name="Alexander"
-          bio="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. 
-        Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus."
+          bio="3rd Year CS Major. I am a dancer in United Movement, a non-audition dance club at Cal Poly in San Luis Obispo. Let's dance."
         />
 
         <Bio
           name="Joshua"
-          bio="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. 
-        Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus."
+          bio="3rd Year SE Major. I enjoy Kickboxing and going to the gym."
         />
 
         <Bio
           name="Jimmy"
           bio="
-          Hi there, I'm Jimmy, a third-year computer science major at Cal Poly. I thrive on the challenges 
-          of coding and problem-solving, both in and out of the classroom. Beyond my studies, I'm always 
-          diving into creative tech projects, driven by a passion to make a mark in the ever-evolving world 
-          of technology. My goal? To contribute innovatively and shape the future through my love for 
-          coding and exploration of cutting-edge solutions."
+          3rd Year CS Major. I'm a valorant player for the Cal Poly Collegiate Gaming Club."
         />
 
         <Bio
           name="Karan"
-          bio="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. 
-        Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus."
+          bio="2nd Year SE Major. I enjoy long walks on the beach and meditating."
         />
       </div>
     </div>

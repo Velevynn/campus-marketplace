@@ -1,49 +1,16 @@
+// Importing necessary React hooks and Axios for HTTP requests
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import styled from 'styled-components';
-import profileImagePlaceholder from '../assets/profile-placeholder.png';
+//Importing navigation hook
 import { useNavigate } from 'react-router-dom';
+// Importing profile image placeholder and styled components
+import profileImagePlaceholder from '../assets/profile-placeholder.png';
+import { Container, Button, ButtonContainer, ProfileImage, ProfileField, ProfileLabel, ProfileValue} from '../authentication/AuthenticationStyling';
 
-const Container = styled.div`
-  max-width: 600px;
-  margin: 0 auto;
-  margin-top: 50px;
-  padding: 20px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-`;
 
-const ProfileImage = styled.img`
-  width: 120px;
-  height: 120px;
-  border-radius: 60px;
-  margin: 20px auto;
-  display: block;
-`;
-
-const ProfileField = styled.div`
-  margin: 10px 0;
-`;
-
-const ProfileLabel = styled.span`
-  font-weight: bold;
-`;
-
-const ProfileValue = styled.span`
-  margin-left: 10px;
-`;
-
-const SignOutButton = styled.button`
-  padding: 10px 20px;
-  background-color: #f44336; /* Red */
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  display: block;
-  margin: 20px auto;
-`;
-
+// ProfilePage component to display the user's profile information
 function ProfilePage() {
+  // State to store the user's profile information
   const [userProfile, setUserProfile] = useState({
     username: '',
     full_name: '',
@@ -53,35 +20,46 @@ function ProfilePage() {
 
   const navigate = useNavigate();
 
+  // Function to handle sign out action
   const handleSignOut = () => {
-    localStorage.removeItem('token'); // Remove the token from localStorage
-    window.location.href = '/login'; // navigate to profile page (refresh to update nav bar for profile)
+    localStorage.removeItem('token');
+    window.location.href = '/login';
   };
 
+  // Function to navigate to the change password page
+  const handleChangePassword = () => {
+    navigate('/change-password');
+  };
+
+  // Effect hook to fetch the user's profile information on component mount
   useEffect(() => {
     const fetchUserProfile = async () => {
       const token = localStorage.getItem('token');
+      // Redirects to login page if no token is found
       if (!token) {
-        navigate('/profile'); // Redirect to login if there's no token
+        navigate('/login');
         return;
       }
 
       try {
+        // Attempting to fetch user profile data with the stored token
         const response = await axios.get(`https://haggle.onrender.com/users/profile`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
         });
+        // Updates the profile state with fetched data
         setUserProfile(response.data);
       } catch (error) {
         console.error('Failed to fetch profile data:', error);
-        navigate('/login');
+        navigate('/login');  // Redirects to login on error
       }
     };
 
     fetchUserProfile();
   }, [navigate]);
 
+  // Render the user's profile information and options to change password or sign out
   return (
     <Container>
       <ProfileImage src={profileImagePlaceholder} alt="Profile" />
@@ -93,7 +71,11 @@ function ProfilePage() {
           </ProfileField>
         ))}
       </form>
-      <SignOutButton onClick={handleSignOut}>Sign Out</SignOutButton>
+      <ButtonContainer>
+        <Button onClick={handleChangePassword}>Change Password</Button>
+        <Button onClick={handleSignOut}>Sign Out</Button>
+        {/*<Button onClick={handleDeleteProfile}>Delete Profile</Button>*/}
+      </ButtonContainer>
     </Container>
   );
 }
