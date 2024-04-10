@@ -42,6 +42,12 @@
 
 .btn {
   margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.btn-secondary {
+  background-color: #6c757d; /* Gray background color */
+  color: #fff; /* White text color */
 }
 
 /* Make offer and start a chat styles */
@@ -70,4 +76,11 @@
 
 .post-date {
   margin-bottom: 15px;
+}
+
+.owner-controls {
+  display: flex;
+  flex-direction: row; /* Arrange buttons horizontally */
+  align-items: center;
+  margin-top: 10px; /* Adjust spacing from description */
 }

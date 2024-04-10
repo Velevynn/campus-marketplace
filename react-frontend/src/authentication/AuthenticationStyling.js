@@ -1,6 +1,12 @@
+// Styled components for authentication related pages, using styled-components for CSS-in-JS
 import styled, { css } from 'styled-components';
 
-// General Components
+/*
+
+General Components
+
+*/
+// Container for centering and styling the main content area
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -15,16 +21,20 @@ export const Container = styled.div`
   align-items: center;
 `;
 
+// Form styled component for styling form elements collectively
 export const Form = styled.form`
   display: flex;
   flex-direction: column;
 `;
 
+// InputGroup styled component for grouping input fields and their labels
 export const InputGroup = styled.div`
   position: relative;
   margin-bottom: 0px;
+  width: 100%;
 `;
 
+// InputLabel styled component for customizing input labels
 export const InputLabel = styled.label`
   position: absolute;
   top: -15%;
@@ -35,6 +45,7 @@ export const InputLabel = styled.label`
   pointer-events: none;
   font-weight: normal;
 
+  // Conditional styling when the input field has content
   ${props => props.hasContent && css`
     transform: translate(0%, -45%);
     font-size: 10px;
@@ -43,8 +54,8 @@ export const InputLabel = styled.label`
   `}
 `;
 
+// Input styled component for customizing text inputs
 export const Input = styled.input`
-  position: absolute
   width: 100%;
   padding-top: ${(props) => (props.hasContent ? "20px" : "12px")};
   padding-bottom: ${(props) => (props.hasContent ? "8px" : "8px")}
@@ -56,6 +67,7 @@ export const Input = styled.input`
   font-size: 12px;
   transition: border 0.3s, box-shadow 0.3s;
 
+  // Styles for when the input is focused
   &:focus {
     outline: none;
     border-color: #007b00;
@@ -63,6 +75,7 @@ export const Input = styled.input`
   }
 `;
 
+// VisibilityToggle styled component for the password visibility toggle icon
 export const VisibilityToggle = styled.span`
   position: absolute;
   top: 20%;
@@ -71,6 +84,7 @@ export const VisibilityToggle = styled.span`
   cursor: pointer;
 `;
 
+// Linked Label for 'terms of service' and 'privacy policy'
 export const LinkedLabel = styled.label`
   color: #666;
   font-size: 12px;
@@ -79,6 +93,8 @@ export const LinkedLabel = styled.label`
   font-weight: normal
 `;
 
+
+// Main button styling with hover, focus, and disabled states for visual feedback
 export const Button = styled.button`
   padding: 8px;
   background-color: #16A44A;
@@ -109,6 +125,7 @@ export const Button = styled.button`
   }
 `;
 
+// Container for additional info/navigation at the bottom of the page (already have an account?) (don't have an account?)
 export const BottomContainer = styled.div`
   max-width: 400px;
   min-height: 60px;
@@ -120,6 +137,7 @@ export const BottomContainer = styled.div`
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 `;
 
+// Label at for text in BottomContainer, use with <Link> to navigate to another page
 export const BottomLabel = styled.label`
   color: #666;
   font-size: 14px;
@@ -128,8 +146,13 @@ export const BottomLabel = styled.label`
   font-weight: normal;
 `;
 
-// Components specific to LoginPage.js
+/*
 
+Components specific to LoginPage.js
+
+*/
+
+// Styling for forgot password label
 export const ForgotPasswordLabel= styled.label`
 color: #666;
 font-size: 12px;
@@ -139,7 +162,12 @@ margin-bottom: 10px;
 font-weight: normal;
 `;
 
-// SignUp.js Specific
+/*
+
+Components specific to SignUp.js
+
+*/
+
 
 export const HeaderLabel = styled.label`
   color: #666;
@@ -169,7 +197,11 @@ export const PasswordRules = styled.div`
   width: 300px;
 `;
 
-// ProfilePage.js specific
+/*
+
+Components specific to ProfilePage.js
+
+*/
 
 export const ButtonContainer = styled.div`
   display: flex;
@@ -199,7 +231,12 @@ export const ProfileValue = styled.span`
   margin-left: 10px;
 `;
 
-// Components specific for ForgotPasswordPage.js
+/*
+
+Components specific to ForgotPasswordPage.js
+
+*/
+
 export const HeaderContainer = styled.div`
   display: flex;
   align-items: center;
@@ -241,7 +278,12 @@ export const Description = styled.p`
   margin-bottom: 20px;
 `;
 
-// Components specific to ResetPasswordPage.js
+/*
+
+Components specific to ResetPasswordPage.js
+
+*/
+
 export const Rule = styled.div`
   display: flex;
   align-items: center;
