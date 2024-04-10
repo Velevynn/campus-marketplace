@@ -79,18 +79,19 @@ router.post('/register', async (req, res) => {
     //TODO:
     //const fullName = 'testUser';
     // It appears bcrypt was intended to be used but not imported. Ensure bcrypt is imported.
+    console.log(username);
     try {
       if (username === null || full_name === null || password === null || email === null || phoneNumber === null) {throw Error;}
       const bcrypt = require('bcrypt');
       const hashedPassword = await bcrypt.hash(password, 10);
       const connection = createConnection();
-
+      console.log("reached");
       // Insert user details into the users table.
       const  { result } = await connection.query(
         'INSERT INTO users (username, "fullName", password, email, "phoneNumber") VALUES ($1, $2, $3, $4, $5)',
         [username, full_name, hashedPassword, email, phoneNumber]
       );
-      
+      console.log("reached1");
       // Create json web token to maintain sign-in throughout pages.
       const token = jwt.sign({ username: username }, secretKey, { expiresIn: '24h' });
 
