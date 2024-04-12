@@ -15,23 +15,23 @@ function About() {
 
         <Bio
           name="Alexander"
-          bio="3rd Year CS Major. I am a dancer in United Movement is a non-audition dance club at Cal Poly in San Luis Obispo. Let's dance."
+          bio="3rd Year CS Major. I am a dancer in United Movement, a non-audition dance club at Cal Poly in San Luis Obispo. Let's dance."
         />
 
         <Bio
           name="Joshua"
-          bio="3rd Year SE Major. I like Kickboxing and going Jim"
+          bio="3rd Year SE Major. I enjoy Kickboxing and going to the gym."
         />
 
         <Bio
           name="Jimmy"
           bio="
-          3rd Year CS Major. I'm pro valorant and being the best around in Collegiate Valorant Tourneys."
+          3rd Year CS Major. I'm a valorant player for the Cal Poly Collegiate Gaming Club."
         />
 
         <Bio
           name="Karan"
-          bio="2nd Year SE Major (im cooked)"
+          bio="2nd Year SE Major. I enjoy long walks on the beach and meditating."
         />
       </div>
     </div>

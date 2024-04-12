@@ -1,10 +1,16 @@
+// Importing necessary React hooks and Axios for HTTP requests
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import profileImagePlaceholder from '../assets/profile-placeholder.png';
+//Importing navigation hook
 import { useNavigate } from 'react-router-dom';
+// Importing profile image placeholder and styled components
+import profileImagePlaceholder from '../assets/profile-placeholder.png';
 import { Container, Button, ButtonContainer, ProfileImage, ProfileField, ProfileLabel, ProfileValue} from '../authentication/AuthenticationStyling';
 
+
+// ProfilePage component to display the user's profile information
 function ProfilePage() {
+  // State to store the user's profile information
   const [userProfile, setUserProfile] = useState({
     username: '',
     full_name: '',
@@ -14,60 +20,46 @@ function ProfilePage() {
 
   const navigate = useNavigate();
 
+  // Function to handle sign out action
   const handleSignOut = () => {
     localStorage.removeItem('token');
     window.location.href = '/login';
   };
-/*
-  const handleDeleteProfile = async () => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      navigate('/login');
-      return;
-    }
 
-    try {
-      await axios.delete(`http://localhost:8000/users/profile`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      localStorage.removeItem('token');
-      navigate('/login');
-    } catch (error) {
-      console.error('Failed to delete profile:', error);
-    }
-  };
-*/
+  // Function to navigate to the change password page
   const handleChangePassword = () => {
     navigate('/change-password');
   };
 
+  // Effect hook to fetch the user's profile information on component mount
   useEffect(() => {
     const fetchUserProfile = async () => {
       const token = localStorage.getItem('token');
+      // Redirects to login page if no token is found
       if (!token) {
         navigate('/login');
         return;
       }
 
       try {
-        const response = await axios.get(`http://localhost:8000/users/profile`, {
+        // Attempting to fetch user profile data with the stored token
+        const response = await axios.get(`https://haggle.onrender.com/users/profile`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
         });
+        // Updates the profile state with fetched data
         setUserProfile(response.data);
       } catch (error) {
         console.error('Failed to fetch profile data:', error);
-        navigate('/login');
+        navigate('/login');  // Redirects to login on error
       }
     };
 
     fetchUserProfile();
   }, [navigate]);
 
+  // Render the user's profile information and options to change password or sign out
   return (
     <Container>
       <ProfileImage src={profileImagePlaceholder} alt="Profile" />
