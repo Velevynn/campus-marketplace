@@ -87,6 +87,7 @@ export const Button = styled.button`
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  width: 100%;
   transition: background-color 0.3s, box-shadow 0.3s; // Added box-shadow to the transition for a smooth effect
 
   &:hover {

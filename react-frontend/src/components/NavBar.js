@@ -1,10 +1,9 @@
-// NavBar.js
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; 
 import logo from "../assets/logo.png";
-import "./navbar.css"; // Import CSS file for styling
+import "./navbar.css";
 import SearchBar from "./SearchBar";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 function getProfileName() {
   const token = localStorage.getItem("token");
@@ -19,40 +18,42 @@ function getProfileName() {
 }
 
 function NavBar() {
+  const navigate = useNavigate();
+
+  const handlePostListingClick = () => {
+    navigate("/new-listing"); 
+  };
+
   return (
-    <nav className="navbar">
-      <div className="logo-container">
-        <div className="logo">
-          <Link to="/marketplace">
+    <div className="flex-container" style={{marginBottom: '20px'}}>
+      <nav className="vertical-center">
+
+          <Link className="logo-container" to="/marketplace">
             <img src={logo} alt="Logo" />
           </Link>
+
+        <div>
+          <SearchBar />
         </div>
-      </div>
 
-      <div className="search-bar-div">
-        <SearchBar />
-      </div>
-
-      <ul className="nav-links">
-        <li>
-          <Link to="/about">About</Link>
-        </li>
-        <li>
-          <Link to="/marketplace">Marketplace</Link>
-        </li>
-        <li>
-          <Link to="/profile">{getProfileName()}</Link>
-        </li>
-        <li>
-          <Link to="/new-listing" className="post-listing-button">
-            Post a Listing
-          </Link>
-        </li>
-      </ul>
-    </nav>
+        <ul className="flex-row">
+          <li>
+            <Link to="/about">About</Link>
+          </li>
+          <li>
+            <Link to="/marketplace">Marketplace</Link>
+          </li>
+          <li>
+            <Link to="/profile">{getProfileName()}</Link>
+          </li>
+        </ul>
+        <button className="margin" onClick={handlePostListingClick}>
+          Post a Listing
+        </button>
+      
+      </nav>
+    </div>
   );
 }
-
-
 
 export default NavBar;

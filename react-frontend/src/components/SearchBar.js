@@ -45,7 +45,7 @@ function Search() {
         onKeyDown={handleKeyPress}
         className="search-input"
       />
-      <button type="submit" onClick={handleSearch} className="search-button">
+      <button type="searchButton" onClick={handleSearch}>
         <img src={search} alt="search-icon" className="search-img" />
       </button>
       {showNotification && <Notify message="Search field empty" />}

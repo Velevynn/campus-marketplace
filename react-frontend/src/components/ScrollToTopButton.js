@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import './ScrollToTopButton.css'; // Import your CSS file
-import arrow from '../assets/arrow.png';
 
 const ScrollToTopButton = ({ onClick }) => {
   const [isVisible, setIsVisible] = useState(false);
@@ -33,7 +32,7 @@ const ScrollToTopButton = ({ onClick }) => {
       onClick={handleClick}
       style={{ pointerEvents: isVisible ? 'auto' : 'none' }} // Control clickability based on visibility
     >
-      <img src={arrow} className="scroll-img" alt="return-arrow" />
+      <text>^</text>
     </button>
   );
 };

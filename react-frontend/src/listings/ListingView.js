@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import "./ListingView.css";
 import ImageCarousel from "../components/ImageCarousel.js";
 import LoadingSpinner from "../components/LoadingSpinner.js";
 ////import { jwtDecode } from "jwt-decode";
@@ -107,43 +106,42 @@ const ListingView = () => {
     window.location.href = "/listings/:listingID/delete";
   };
 
+  if (!listing) {
+    return (
+      <LoadingSpinner/>
+    );
+  }
+
   /* first check if listing data is available, then render */
   return (
-    <div className="listing-container">
-      {listing ? (
-        <div className="listing-content">
-          <div>
-            <h1>{listing.name}</h1>
-            {/* Check if there is only one image */}
-            {images.length === 1 ? (
-              <div className="single-image-container">
-                <img src={images[0].imageURL} alt="Listing" className="single-image" />
-              </div>
-            ) : (
-              <div className="images">
-                <ImageCarousel images={images} />
-              </div>
-            )}
-            <div className="price-buyerview">${listing.price}</div>
-            <div className="post-date">Posted {TimeAgo(listing.postDate)}</div>
-            <button className="btn" onClick={handleBuyNow}>Buy Now</button>
-            <button className="btn" onClick={handleMakeOffer}>Make Offer</button>
-            <button className="btn" onClick={handleStartChat}>Start a Chat</button>
-            {isOwner && (
-              <>
-                <button onClick={handleEditListing}>Edit Listing</button>
-                <button onClick={handleDeleteListing}>Delete Listing</button>
-              </>
-            )}
-          </div>
-          <div className="description">
-            <h3>{listing.title}</h3>
-            <p>{listing.description}</p>
-          </div>
+    <div className="medium-container">
+      <div className="flex-row">
+        <div>
+          <ImageCarousel images={images} />
+          <div className="margin-top">
+            <button className="margin-right" onClick={handleBuyNow}>Buy Now</button>
+            <button className="margin-right" onClick={handleMakeOffer}>Make Offer</button>
+            <button className="margin-right" onClick={handleStartChat}>Start a Chat</button>
         </div>
-      ) : (
-        <LoadingSpinner/>
-      )}
+        </div>
+        
+
+        <div className="margin-left">
+          <h1>{listing.title}</h1>
+          <h5>${listing.price}</h5>
+          <p>Posted {TimeAgo(listing.postDate)}</p>
+          <p>{listing.description}</p>
+        </div>
+          
+          
+        
+        {isOwner && (
+          <>
+            <button onClick={handleEditListing}>Edit Listing</button>
+            <button onClick={handleDeleteListing}>Delete Listing</button>
+          </>
+        )}
+      </div>
     </div>
   );
 };

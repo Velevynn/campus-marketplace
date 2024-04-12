@@ -154,6 +154,8 @@ sup {
  * Remove the border on images inside links in IE 10.
  */
 img {
+  width: 100%;
+  height: auto;
   border-style: none;
 }
 
@@ -176,8 +178,6 @@ textarea {
   /* 1 */
   margin: 0;
   /* 2 */
-
-  border-radius: 7px;
 }
 
 /**
@@ -374,13 +374,8 @@ figure {
 html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font:
-    normal normal normal 1rem/1.6 -apple-system,
-    BlinkMacSystemFont,
-    Helvetica Neue,
-    Helvetica,
-    Arial,
-    sans-serif;
+  font: normal normal normal 1rem/1.6 -apple-system, BlinkMacSystemFont,
+    Helvetica Neue, Helvetica, Arial, sans-serif;
   font-size: 1rem;
 }
 
@@ -395,7 +390,7 @@ ol,
 ul,
 dl,
 table {
-  margin: 0 0 1.5rem 0;
+  margin: 0 0 0rem 0;
 }
 
 ul li ul {
@@ -413,13 +408,8 @@ h4,
 h5 {
   margin: 1.5rem 0;
   font-weight: 600;
-  font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    Helvetica Neue,
-    Helvetica,
-    Arial,
-    sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, Helvetica Neue, Helvetica,
+    Arial, sans-serif;
   line-height: 1.2;
   color: #404040;
 }
@@ -482,14 +472,14 @@ h5 {
 }
 
 a {
-  color: #000000;
+  color: green;
   text-decoration: none;
 }
 
 a:hover,
 a:active,
 a:focus {
-  color: green;
+  color: rgb(0,83,0);
   text-decoration: none;
 }
 
@@ -533,9 +523,7 @@ kbd {
   background-color: #f7f7f7;
   border: 1px solid #ccc;
   border-radius: 3px;
-  box-shadow:
-    0 1px 0 rgba(0, 0, 0, 0.2),
-    0 0 0 2px #fff inset;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 2px #fff inset;
   color: #333;
   display: inline-block;
   font-family: Helvetica, Arial, sans-serif;
@@ -570,26 +558,41 @@ dd {
   margin-bottom: 0.5rem;
 }
 
+.flex-container {
+  width: auto;
+  height: auto;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
 .full-container {
-  max-width: 100%;
   padding: 0 1rem;
+  max-width: 100%;
+  text-align: center;
 }
 
 .container,
 .small-container,
 .medium-container {
   max-width: 100%;
-  padding: 0 0rem;
   margin-left: auto;
   margin-right: auto;
+  margin-bottom: auto;
+}
+
+.small-container,
+.medium-container {
+  padding: 40px;
+  border-radius: 10px;
+  
 }
 
 .small-container {
-  max-width: 800px;
+  max-width: 400px;
 }
 
 .medium-container {
-  max-width: 1000px;
+  max-width: 1200px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .content-section {
@@ -612,14 +615,23 @@ dd {
 }
 
 .flex-row {
-  margin-left: -1rem;
-  margin-right: -1rem;
+  margin-left: 2rem;
+  margin-right: 2rem;
 }
 
 .flex-row {
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
+  gap: 10px;
+  list-style-type: none;
+
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  list-style-type: none;
 }
 
 .flex-small,
@@ -723,7 +735,7 @@ dd {
 
 .responsive-image {
   max-width: 100%;
-  max-height: 100%;
+  height: auto;
 }
 
 .show {
@@ -770,6 +782,19 @@ dd {
   margin-bottom: 2rem;
 }
 
+.margin-right {
+  margin-right: 0.5rem;
+}
+
+.margin-left {
+  margin-left: 0.5rem;
+}
+
+.margin {
+  margin: 0.5rem;
+}
+
+
 .alternate-background {
   background: #fafafa;
   color: #404040;
@@ -806,28 +831,23 @@ button,
 [type="button"] {
   -webkit-appearance: none;
   display: inline-block;
-  background-color: green;
-  color: white;
-  border: none;
-  border-radius: 7px;
-  cursor: pointer; /* Show pointer cursor on hover */
+  border-style: none;
+  border-radius: 4px;
+  background: green;
+  color: #ffffff;
   font-weight: 600;
-  font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    Helvetica Neue,
-    Helvetica,
-    Arial,
-    sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, Helvetica Neue, Helvetica,
+    Arial, sans-serif;
   font-size: 1rem;
   text-transform: none;
   padding: 0.75rem 1.25rem;
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 0 0;
   vertical-align: middle;
   text-align: center;
   cursor: pointer;
   text-decoration: none;
   line-height: 1;
+  width: 150px;
 }
 
 .button:hover,
@@ -836,7 +856,7 @@ button:hover,
 [type="submit"]:hover,
 [type="reset"]:hover,
 [type="button"]:hover {
-  background-color: #244c00;
+  background: rgb(0, 83, 0);
   color: #ffffff;
   text-decoration: none;
 }
@@ -853,7 +873,7 @@ button:active,
 [type="reset"]:active,
 [type="button"]:focus,
 [type="button"]:active {
-  background-color: #244c00;
+  background: green;
   color: #ffffff;
   text-decoration: none;
 }
@@ -945,7 +965,7 @@ textarea {
   padding: 0.75rem;
   outline: none;
   background: transparent;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0rem;
   font-size: 1rem;
   width: 100%;
   max-width: 100%;
@@ -1003,13 +1023,13 @@ select:focus,
 select:active,
 textarea:focus,
 textarea:active {
-  box-shadow:
-    inset 0 1px 1px rgba(0, 0, 0, 0.1),
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
 }
 
 textarea {
   overflow: auto;
-  height: auto;
+  height: 10vw;
 }
 
 fieldset {
@@ -1056,6 +1076,11 @@ label {
   }
 }
 
+.custom-file-input {
+  display: none;
+}
+
+
 input.has-error,
 input.has-error:hover,
 input.has-error:focus,
@@ -1069,9 +1094,7 @@ textarea.has-error:hover,
 textarea.has-error:focus,
 textarea.has-error:active {
   border: 1px solid #d33c40;
-  box-shadow:
-    inset 0 1px 1px rgba(0, 0, 0, 0.1),
-    0 0 6px #f4cecf;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1), 0 0 6px #f4cecf;
 }
 
 input.is-success,
@@ -1087,9 +1110,7 @@ textarea.is-success:hover,
 textarea.is-success:focus,
 textarea.is-success:active {
   border: 1px solid #29de7d;
-  box-shadow:
-    inset 0 1px 1px rgba(0, 0, 0, 0.1),
-    0 0 6px #97efc0;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1), 0 0 6px #97efc0;
 }
 
 ::-webkit-input-placeholder,

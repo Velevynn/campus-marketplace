@@ -1,16 +1,16 @@
 // About.js (Josh)
 import React from "react";
-import "./pages.css";
 import Bio from "../components/Bio";
 
 function About() {
   return (
-    <div style={{ margin: "25px", textAlign: "center" }}>
-      <h1 style={{ fontFamily: "Newsreader, serif", fontSize: "3rem" }}>About</h1>
-      <div className="team-container">
+    <div>
+      <h1 className="vertical-center">About</h1>
+      <div className="flex-row">
         <Bio
           name="Alex"
           bio="4th Year CS Major. I like biking hiking. I like going on branch 500 commits behind then manually merging."
+          className="small-container"
         />
 
         <Bio
