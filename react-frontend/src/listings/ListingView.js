@@ -155,8 +155,8 @@ const ListingView = () => {
 
         <div className="margin-left">
           <h1>{listing.title}</h1>
-          <h5>${listing.price}</h5>
           <p>Posted {TimeAgo(listing.postDate)}</p>
+          <h5 style={{color: "green"}}>${listing.price}</h5>
           <p>{listing.description}</p>
         </div>
           

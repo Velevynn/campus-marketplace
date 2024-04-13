@@ -1,5 +1,7 @@
 import React, { useState } from "react";
+import Notify from "../components/ErrorNotification";
 import axios from "axios";
+import LoadingSpinner from "../components/LoadingSpinner";
 import { jwtDecode } from "jwt-decode";
 
 function AddListing() {
@@ -12,6 +14,9 @@ function AddListing() {
     quantity: 1,
     images: []
   });
+  const [showNotification, setShowNotification] = useState(false);
+  const [notificationMsg, setNotificationMsg] = useState("");
+  const [loading, setLoading] = useState(false);
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -31,8 +36,24 @@ function AddListing() {
     }
   }
 
+  function displayNotification(message) {
+    setNotificationMsg(message);
+      setShowNotification(true);
+      setTimeout(() => {
+        setShowNotification(false); // Hide notification after 3 seconds
+      }, 3300);
+  }
+
   function handleImageChange(event) {
     const files = Array.from(event.target.files);
+    if (files.length > 8) {
+      displayNotification("Max number of images is 8");
+      setListing(prevListing => ({
+        ...prevListing,
+        images: []
+      }));
+      return;
+    }
     setListing(prevListing => ({
       ...prevListing,
       images: files
@@ -40,12 +61,24 @@ function AddListing() {
   }
 
   async function submitForm() {
-    if (listing.title !== "" && listing.price !== "") {
       const token = localStorage.getItem("token"); // Retrieve the JWT token from localStorage
       const decodedToken = jwtDecode(token); // Decode the token
       const username = decodedToken.username; // Extract the username from the token
+
+
+      if (listing.title == "") {
+        displayNotification("Must fill out Title field");
+        return;
+      } else if (listing.price == "") {
+        displayNotification("Must fill out Price field");
+        return;
+      } else if (listing.images.length == 0) {
+        displayNotification("Must upload at least one image");
+        return;
+      }
   
       try {
+        setLoading(true);
         // Make a request to the backend to fetch the userID based on the username
         const response = await axios.get(`https://haggle.onrender.com/users/userID`, { 
           params: {
@@ -83,69 +116,72 @@ function AddListing() {
       } catch (error) {
         console.log(error);
       }
+      displayNotification("Must fill out Title and Price fields");
     }
-  }
   
   
   
 
   return (
     <div className="small-container" style={{ fontFamily: "Inter" , boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)'}}>
-      <h3 className="vertical-center">Post Listing</h3>
-      <form className="">
-        <label htmlFor="title">Title</label>
-        <input
-          type="text"
-          name="title"
-          id="title"
-          value={listing.title}
-          onChange={handleChange}
-        />
-        <label htmlFor="description">Description</label>
-        <textarea
-          type="text"
-          name="description"
-          id="description"
-          value={listing.description}
-          onChange={handleChange}
-        />
-        <label htmlFor="price">Price</label>
-        <input
-          type="text"
-          name="price"
-          id="price"
-          value={listing.price}
-          onChange={handleChange}
-        />
-      
+      {loading? (
+        <>
+          <h3 className="vertical-center">Posting your listing</h3>
+          <LoadingSpinner/>
+        </>
+      ) : (
+      <>
+        <h3 className="vertical-center">Post Listing</h3>
+        <form className="">
+          <label htmlFor="title">Title</label>
+          <input
+            type="text"
+            name="title"
+            id="title"
+            value={listing.title}
+            onChange={handleChange}
+          />
+          <label htmlFor="description">Description</label>
+          <textarea
+            type="text"
+            name="description"
+            id="description"
+            value={listing.description}
+            onChange={handleChange}
+          />
+          <label htmlFor="price">Price</label>
+          <input
+            type="text"
+            name="price"
+            id="price"
+            value={listing.price}
+            onChange={handleChange}
+          />   
+        </form>
 
-        {/*For displaying how many images have been selected*/}
-        {listing.images.length > 0 && (
-          <p>{listing.images.length} image(s) selected</p>
-        )}
-
-
-        
-      </form>
-      <div className="vertical-center">
-        <div className="margin-top">
-          <label htmlFor="images" className="button">
-            <span>Select Images</span>
-            <input
-              type="file"
-              name="images"
-              id="images"
-              accept="image/*"
-              multiple
-              className="custom-file-input"
-              onChange={handleImageChange}
-            />
-          </label>
+        <div className="vertical-center">
+          <div className="margin-top">
+            <label htmlFor="images" className="button">
+              <span>Select Images</span>
+              <input
+                type="file"
+                name="images"
+                id="images"
+                accept="image/*"
+                multiple
+                className="custom-file-input"
+                onChange={handleImageChange}
+              />
+            </label>
+          </div>
         </div>
-      </div>
-      <div className="vertical-center" >
-        <button className="margin-top" onClick={submitForm}>Post Listing</button>
-      </div>
+        <p className="vertical-center margin"> {listing.images.length}/8 images selected</p>
+        <div className="vertical-center" >
+          <button onClick={submitForm}>Post Listing</button>
+        </div>
+        {showNotification && <Notify message={notificationMsg} />}
+      </>
+      )}
     </div>
   );
 }
