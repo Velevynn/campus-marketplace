@@ -150,11 +150,6 @@ const ListingView = () => {
       <div className="flex-row">
         <div>
           <ImageCarousel images={images} />
-          <div className="margin-top">
-            <button className="margin-right" onClick={handleBuyNow}>Buy Now</button>
-            <button className="margin-right" onClick={handleMakeOffer}>Make Offer</button>
-            <button className="margin-right" onClick={handleStartChat}>Start a Chat</button>
-        </div>
         </div>
         
 
@@ -167,13 +162,20 @@ const ListingView = () => {
           
           
         
+        
+      </div>
+      <div className="text-right margin-top">
         {isOwner && (
           <>
-            <button onClick={handleEditListing}>Edit Listing</button>
-            <button onClick={handleDeleteListing}>Delete Listing</button>
+            <button className="muted-button margin-right" onClick={handleEditListing}>Edit Listing</button>
+            <button className="muted-button margin-right" onClick={handleDeleteListing}>Delete Listing</button>
           </>
         )}
-      </div>
+            <button className="margin-right" onClick={handleBuyNow}>Buy Now</button>
+            <button className="margin-right" onClick={handleMakeOffer}>Make Offer</button>
+            <button className="margin-right" onClick={handleStartChat}>Start a Chat</button>
+            
+        </div>
     </div>
   );
 };
