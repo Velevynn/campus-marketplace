@@ -1,28 +1,31 @@
 .image-carousel {
-    width: 35vw;
-    height: 35vw;
-    overflow: hidden;
+    width: 27vw;
+    height: 27vw;
     background-color: rgb(222, 222, 222);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     display: flex;
     align-items: center;
+    object-fit: contain;
   }
-  
+
   .thumbnails {
-    display: flex;
-    justify-content: left;
-    width: 80px;
-    height: 80px;
+    display: inline-flex;
+    flex-wrap: wrap;
+    max-width: 30vw;
     margin-top: 10px; /* Adjust margin as needed */
+
   }
   
   .thumbnails img {
-
-    margin-right: 10px;
+    width: 5vw;
+    height: 5vw;
+    background-color: gray;
+    margin-right: 0.5vw;
+    margin-bottom: 0.5vw;
     cursor: pointer;
-    border: 1px solid #ccc;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   }
   
   .thumbnails img.active {
-    border-color: green; /* Border color for active thumbnail */
+    border: 1px solid green;
   }

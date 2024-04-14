@@ -38,7 +38,7 @@ function LoginPage() {
         identifier: credentials.identifier,
         password: credentials.password,
       };
-      const response = await axios.post('http://localhost:8000/users/login', requestBody);
+      const response = await axios.post('https://haggle.onrender.com/users/login', requestBody);
       localStorage.setItem('token', response.data.token); // Stores the received token in local storage and navigates to the profile page
       window.location.href = '/profile';
     } catch (error) {

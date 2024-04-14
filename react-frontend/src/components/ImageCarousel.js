@@ -34,7 +34,7 @@ function ImageCarousel({ images }) {
             key={index}
             src={image.imageURL}
             alt={`Thumbnail ${index}`}
-            className={currentImage === index ? "active" : "inactive"}
+            className={currentImage === index ? "active" : ""}
             onClick={() => selectImage(index)}
           />
         ))}
