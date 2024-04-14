@@ -27,11 +27,36 @@ export const Form = styled.form`
   flex-direction: column;
 `;
 
+export const LogoImage = styled.img`
+  display: block;
+  margin: 0 auto 0px;
+  width: 200px;
+  height: auto;
+`;
+
+export const ErrorLabel = styled.label`
+  display: block;
+  color: red;
+  margin-top: -10px;
+  font-size: 12px;
+  text-align: left;
+  font-weight: normal;
+`;
+
+export const SuccessLabel = styled.label`
+  display: block;
+  color: green;
+  margin-top: -10px;
+  font-size: 12px;
+  text-align: left;
+  font-weight: normal;
+`;
+
 // InputGroup styled component for grouping input fields and their labels
 export const InputGroup = styled.div`
   position: relative;
   margin-bottom: 0px;
-  width: 100%;
+  width: 320px;
 `;
 
 // InputLabel styled component for customizing input labels
@@ -100,6 +125,7 @@ export const Button = styled.button`
   background-color: #16A44A;
   color: white;
   border: none;
+  margin-top: 10px;
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s, box-shadow 0.3s; // Added box-shadow to the transition for a smooth effect
@@ -186,13 +212,11 @@ export const ValidationIcon = styled.span`
 
 // also specific to ResetPasswordPage.js
 export const PasswordRules = styled.div`  
-  background-color: #f7f7f7;
   padding: 10px;
   border-radius: 4px;
   font-size: 12px;
   color: #666;
-  position: absolute;
-  right: -350px;
+  position: relative;
   top: 0px;
   width: 300px;
 `;

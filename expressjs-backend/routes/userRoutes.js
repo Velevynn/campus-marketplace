@@ -3,13 +3,21 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const secretKey = 'YourSecretKey'; // 32 bytes, generated using a cryptographically secure random number generator to ensure unpredictability... move to .env
 const crypto = require('crypto');
 const { verifyToken } = require('../util/middleware');
 const { Pool } = require('pg');
+const {google} = require('googleapis');
 require('dotenv').config();
 
 const connectionString = process.env.DB_CONNECTION_STRING; // stores supabase db connection string, allowing us to connect to supabase db
+
+const secretKey = process.env.JWT_SECRET_KEY; // stores jtw secret key
+
+const oauth2Client = new google.auth.OAuth2(
+  process.env.REACT_APP_GOOGLE_CLIENT_ID, // Make sure these are correctly set in your .env file
+  process.env.GOOGLE_CLIENT_SECRET,
+  'http://localhost:8000/users/auth/google/callback' // This must match the authorized redirect URIs in your Google Cloud Console
+);
 
 // Create connection pool to connect to the database.
 function createConnection() {

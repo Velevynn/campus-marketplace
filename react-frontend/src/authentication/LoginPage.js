@@ -6,8 +6,7 @@ import { Link } from 'react-router-dom';
 // Importing logo, icons, and styled components for UI
 import logoImage from '../assets/haggle-horizontal.png';
 import { FaEye, FaEyeSlash  } from 'react-icons/fa';
-import { Container, Form, InputGroup, Input, InputLabel, VisibilityToggle, Button, LinkedLabel, ForgotPasswordLabel, BottomContainer, BottomLabel } from './AuthenticationStyling';
-
+import { Container, Form, LogoImage, ErrorLabel, InputGroup, Input, InputLabel, HeaderLabel, VisibilityToggle, Button, LinkedLabel, ForgotPasswordLabel, BottomContainer, BottomLabel } from './AuthenticationStyling';
 
 // LoginPage component for handling user login
 function LoginPage() {
@@ -61,12 +60,17 @@ function LoginPage() {
   return (
     <>
       <Container>
-        <img src={logoImage} alt="Logo" style={{ display: 'block', margin: '0 auto 20px', maxWidth: '200px', height: 'auto' }} />
+        <LogoImage src={logoImage} alt="Logo"/>
+        
+        <HeaderLabel style={{ marginTop: '0px'}}>
+            Log in to buy, sell, and trade
+        </HeaderLabel>
+
         <Form onSubmit={handleSubmit}>
           {errorMessage && (
-            <div style={{ color: 'red', marginTop: '20px', fontSize: '12px' }}>
+            <ErrorLabel>
               {errorMessage}
-            </div>
+            </ErrorLabel>
           )}
           <InputGroup>
             <Input
