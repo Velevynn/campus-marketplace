@@ -1,33 +1,31 @@
-/* Add a border around the carousel */
-
 .image-carousel {
-    width: 400px;
-    height: 400px;
-    border-radius: 0px;
-    overflow: hidden; /* Ensure the border is not hidden by overflow */
-    background-color: rgb(0,0,0);
+    width: 27vw;
+    height: 27vw;
+    background-color: rgb(222, 222, 222);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    object-fit: contain;
+  }
 
-}
+  .thumbnails {
+    display: inline-flex;
+    flex-wrap: wrap;
+    max-width: 30vw;
+    margin-top: 10px; /* Adjust margin as needed */
 
-.image-carousel .slick-prev{
-    font-size: 0;
-    z-index: 1
-}
-
-.image-carousel .slick-next{
-    font-size: 0;
-    z-index: 1
-}
-
-.image-carousel .slick-slide img {
-    object-fit: cover;
-    width: 100%;
-    height: auto;
-}
+  }
   
-
-.slick-prev:before,
-.slick-next:before {
-   display:none;
-}
+  .thumbnails img {
+    width: 5vw;
+    height: 5vw;
+    background-color: gray;
+    margin-right: 0.5vw;
+    margin-bottom: 0.5vw;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .thumbnails img.active {
+    border: 1px solid green;
+  }

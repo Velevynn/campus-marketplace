@@ -19,6 +19,7 @@ export const Container = styled.div`
   font-family: 'Inter';
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   align-items: center;
+  border-radius: 7px;
 `;
 
 // Form styled component for styling form elements collectively
@@ -128,6 +129,7 @@ export const Button = styled.button`
   margin-top: 10px;
   border-radius: 4px;
   cursor: pointer;
+  width: 100%;
   transition: background-color 0.3s, box-shadow 0.3s; // Added box-shadow to the transition for a smooth effect
 
   &:hover {

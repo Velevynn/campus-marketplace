@@ -1,105 +1,21 @@
-/* NavBar.css */
-.navbar {
-  background-color: rgba(255, 255, 255, 0.885);
-  display: flex;
-  width: 100%;
-  align-items: center;
-  padding: 0px 10px 30px 10px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); /* Add drop shadow */
+.flex-container {
   position: sticky !important;
   top: 0;
   z-index: 100;
+  background-color: rgba(255, 255, 255, 0.885);
 }
-
 
 .logo-container {
-  flex-grow: 1;
-}
-
-.logo img {
-  height: 60px;
-  margin-top: 10px;
-  margin-right: 20px;
-}
-
-.search-bar-div {
-  flex-grow: 2;
-  height: 24px;
-  margin-left: 0px;
-  width: 27vh;
-
-}
-
-.nav-links {
-  list-style-type: none;
-  margin: 0;
   display: flex;
   align-items: center;
-  font-family: 'inter', sans-serif;
-  white-space: nowrap;
-  justify-content: right;
+  padding: 10px;
+  width: 150px;
+  min-width: 100px;
 }
 
-.nav-links li {
-  margin: 0 10px;
-  margin-top: -5px;
-}
-
-.nav-links {
-  flex-grow: 2;
-}
-
-.post-listing-button {
-  padding: 1.4vh 1.4vh;
-  background-color: green;
-  color: white;
-  border-radius: 7px;
-}
-
-.logo {
-  /* Your logo styles */
-  width: 100px;
-  height: 50px;
-  flex-grow: 1;
-}
-
-/* Define the transition for the logo */
-.logo img {
-  transition: transform 0.3s ease-in-out; /* Adjust timing and easing as needed */
-}
 
 /* Apply hover effect on the logo */
-.logo:hover img {
-  transform: scale(1.06); /* Adjust scale factor as needed */
-}
-
-.nav-links {
-  margin: 33px 0px 0px 15.839vh;
-  font-size: 1.032vw;
-}
-
-.nav-links a {
-  text-decoration: none;
-}
-
-.nav-links a:hover {
-  text-decoration: none;
-}
-
-.nav-links a:active {
-  text-decoration: none;
-}
-
-.nav-links a:visited {
-  text-decoration: none;
-}
-
-.post-listing-button:hover {
-  background-color: #244c00;
-  color: white;
-}
-
-.post-listing-button:visited {
-  color: white;
-  text-decoration: none;
+.logo-container:hover img {
+  transform: scale(1.06); 
+  transition: transform 0.3s ease-in-out; 
 }

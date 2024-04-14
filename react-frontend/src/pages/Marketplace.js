@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import "./pages.css";
 import axios from "axios";
 import { useSearchParams } from "react-router-dom";
 import Entry from "../components/MarketplaceEntry";
@@ -53,8 +52,8 @@ function Marketplace() {
   }, []);
 
   return (
-    <div style={{ margin: "25px" }}>
-      <div className="entries-container">
+    <div>
+      <div className="full-container">
         {isLoading ? ( // Render loading spinner if isLoading is true
           <LoadingSpinner />
         ) : (
@@ -63,7 +62,7 @@ function Marketplace() {
               key={entry.listingID}
               title={entry.title}
               price={entry.price}
-              listingID={entry.listingID}
+              listingID={Number(entry.listingID)}
             />
           ))
         )}
