@@ -27,7 +27,7 @@ function Entry({ title, price, listingID }) {
       try {
         /* Fetch images for the listing from the backend */
         const response = await axios.get(
-          `https://haggle.onrender.com/listings/images/${listingID}`,
+          `http://localhost:8000/listings/images/${listingID}`,
         );
         if (response.data.length > 0) {
           setImages(response.data);

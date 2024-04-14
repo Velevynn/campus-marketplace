@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import "./ListingView.css";
 import ImageCarousel from "../components/ImageCarousel.js";
 import LoadingSpinner from "../components/LoadingSpinner.js";
 import { jwtDecode } from "jwt-decode";
+import { useNavigate } from 'react-router-dom';
 
 const ListingView = () => {
   const { listingID } = useParams();
   const [listing, setListing] = useState(null);
   const [images, setImages] = useState([]);
   const [isOwner, setIsOwner] = useState(false);
+  const navigate = useNavigate();
   console.log(setIsOwner);
   /* hook to fetch data when listingID changes */
 
@@ -18,7 +21,7 @@ const ListingView = () => {
       try {
         /* get data of listing by its ID */
         const response = await axios.get(
-          `https://haggle.onrender.com/listings/${listingID}`,
+          `http://localhost:8000/listings/${listingID}`,
         );
         
         /* set fetched data to state */
@@ -31,7 +34,7 @@ const ListingView = () => {
             const username = decodedToken.username; // Extract the username from the token
             try {
               // Make a request to the backend to fetch the userID based on the username
-              const response2 = await axios.get(`https://haggle.onrender.com/users/userID`, { 
+              const response2 = await axios.get(`http://localhost:8000/users/userID`, { 
                 params: {
                   'username': username
                 }
@@ -66,7 +69,7 @@ const ListingView = () => {
       try {
         /* Fetch images for the listing from the backend */
         const response = await axios.get(
-          `https://haggle.onrender.com/listings/images/${listingID}`,
+          `http://localhost:8000/listings/images/${listingID}`,
         );
         if (response.data.length > 0) {
           setImages(response.data);
@@ -121,7 +124,7 @@ const ListingView = () => {
   const handleEditListing = () => {
     /* Add logic for handling "Edit Listing" action */
     console.log("Edit Listing clicked for listing:", listing);
-    window.location.href = "/listings/:listingID/edit";
+    navigate(`/listings/${listingID}/edit`);
   };
 
   const handleDeleteListing = async () => {
@@ -129,7 +132,7 @@ const ListingView = () => {
     //window.location.href = "/listings/:listingID/delete";
     try {
       console.log("listingID deleting: ", listingID);
-      await axios.delete(`https://haggle.onrender.com/listings/${listingID}`,
+      await axios.delete(`http://localhost:8000/listings/${listingID}`,
       );
       console.log("listing successfully deleted");
       window.location.href = '/'; // go back to home page
@@ -138,42 +141,43 @@ const ListingView = () => {
     }
   };
 
-  if (!listing) {
-    return (
-      <LoadingSpinner/>
-    );
-  }
-
   /* first check if listing data is available, then render */
   return (
-    <div className="medium-container">
-      <div className="flex-row">
-        <div>
-          <ImageCarousel images={images} />
-          <div className="margin-top">
-            <button className="margin-right" onClick={handleBuyNow}>Buy Now</button>
-            <button className="margin-right" onClick={handleMakeOffer}>Make Offer</button>
-            <button className="margin-right" onClick={handleStartChat}>Start a Chat</button>
+    <div className="listing-container">
+      {listing ? (
+        <div className="listing-content">
+          <div>
+            <h1>{listing.name}</h1>
+            {/* Check if there is only one image */}
+            {images.length === 1 ? (
+              <div className="single-image-container">
+                <img src={images[0].imageURL} alt="Listing" className="single-image" />
+              </div>
+            ) : (
+              <div className="images">
+                <ImageCarousel images={images} />
+              </div>
+            )}
+            <div className="price-buyerview">${listing.price}</div>
+            <div className="post-date">Posted {TimeAgo(listing.postDate)}</div>
+            <button className="btn" onClick={handleBuyNow}>Buy Now</button>
+            <button className="btn" onClick={handleMakeOffer}>Make Offer</button>
+            <button className="btn" onClick={handleStartChat}>Start a Chat</button>
+            {isOwner && (
+              <div className="owner-controls">
+                <button className="btn btn-secondary" onClick={handleEditListing}>Edit Listing</button>
+                <button className="btn btn-secondary" onClick={handleDeleteListing}>Delete Listing</button>
+              </div>
+            )}
+          </div>
+          <div className="description">
+            <h3>{listing.title}</h3>
+            <p>{listing.description}</p>
+          </div>
         </div>
-        </div>
-        
-
-        <div className="margin-left">
-          <h1>{listing.title}</h1>
-          <h5>${listing.price}</h5>
-          <p>Posted {TimeAgo(listing.postDate)}</p>
-          <p>{listing.description}</p>
-        </div>
-          
-          
-        
-        {isOwner && (
-          <>
-            <button onClick={handleEditListing}>Edit Listing</button>
-            <button onClick={handleDeleteListing}>Delete Listing</button>
-          </>
-        )}
-      </div>
+      ) : (
+        <LoadingSpinner/>
+      )}
     </div>
   );
 };

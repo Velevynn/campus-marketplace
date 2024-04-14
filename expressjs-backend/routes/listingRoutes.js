@@ -142,6 +142,76 @@ router.get("/images/:listingID/", async (req, res) => {
     }
 });
 
+router.put("/:listingID", async (req, res) => {
+  try {
+    const { listingID } = req.params;
+    const { title, description, price, expirationDate, quantity } = req.body;
+
+    if (!title || !price) {
+      return res.status(400).send("Title and price are required for updating the listing.");
+    }
+
+    const connection = createConnection();
+    const result = await connection.query(
+      `UPDATE listings 
+       SET "title" = $1, 
+           "description" = $2, 
+           "price" = $3, 
+           "expirationDate" = $4, 
+           "quantity" = $5
+       WHERE "listingID" = $6`,
+      [title, description, price, expirationDate, quantity, listingID]
+    );
+
+    // Check if the listing was updated successfully.
+    if (result.rowCount === 0) {
+      await connection.end();
+      return res.status(404).send("Listing not found");
+    }
+    res.status(200).send("Listing updated successfully");
+    await connection.end();
+  } catch (error) {
+    console.error("An error occurred while updating the listing:", error);
+    res.status(500).send("An error occurred while updating the listing");
+  }
+});
+
+router.put("/images/:listingID", async (req, res) => {
+  try {
+    const { listingID } = req.params;
+    const { images } = req.body;
+
+    // Validate that images array is provided and is an array
+    if (!images || !Array.isArray(images)) {
+      return res.status(400).send("Images array is required for updating the listing images.");
+    }
+
+    const connection = createConnection();
+
+    // Delete existing images associated with the listingID
+    await connection.query(
+      `DELETE FROM images WHERE "listingID" = $1`,
+      [listingID]
+    );
+
+    // Insert new images into the database using addImages function
+    await addImages(listingID, images);
+
+    // Upload all images to S3 under a folder named after the listingID
+    let i = 0;
+    for (const imageUrl of images) {
+      await uploadImageToS3(`${listingID}/image${i}`, imageUrl);
+      i++;
+    }
+
+    // Send success response
+    res.status(200).send("Listing images updated successfully");
+  } catch (error) {
+    console.error("An error occurred while updating listing images:", error);
+    res.status(500).send("An error occurred while updating listing images");
+  }
+});
+
 // Function to add one or multiple images to database.
 async function addImages(listingID, numImages) {
   try {

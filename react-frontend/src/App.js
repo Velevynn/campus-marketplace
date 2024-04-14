@@ -14,7 +14,7 @@ import ProtectedRoute from "./utils/ProtectedRoute"; // Importing ProtectedRoute
 import BuyNow from "./pages/BuyNow.js";
 import MakeOffer from "./pages/MakeOffer.js";
 import StartChat from "./pages/Chat.js";
-import EditListing from "./pages/EditListing.js";
+import EditListing from "./listings/EditListing.js";
 import ForgotPasswordPage from './authentication/ForgotPasswordPage';
 import ResetPasswordPage from './authentication/ResetPasswordPage';
 import ChangePasswordPage from './authentication/ChangePasswordPage';
