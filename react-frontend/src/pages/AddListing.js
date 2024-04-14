@@ -38,10 +38,10 @@ function AddListing() {
 
   function displayNotification(message) {
     setNotificationMsg(message);
-      setShowNotification(true);
-      setTimeout(() => {
-        setShowNotification(false); // Hide notification after 3 seconds
-      }, 3300);
+    setShowNotification(true);
+    setTimeout(() => {
+      setShowNotification(false); // Hide notification after 3 seconds
+    }, 3300);
   }
 
   function handleImageChange(event) {
@@ -54,11 +54,51 @@ function AddListing() {
       }));
       return;
     }
-    setListing(prevListing => ({
-      ...prevListing,
-      images: files
-    }));
+  
+    // Check resolution of each image
+    const promises = files.map(file => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const img = new Image();
+          img.src = event.target.result;
+          img.onload = () => {
+            resolve({ file, width: img.width, height: img.height });
+          };
+          img.onerror = () => {
+            reject(new Error("Failed to load image"));
+          };
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+  
+    Promise.all(promises)
+      .then(results => {
+        const nonValidImages = results.filter(({ width, height }) => {
+          return width < 500 || height < 500;
+        });
+        if (nonValidImages.length > 0) {
+          setListing(prevListing => ({
+            ...prevListing,
+            images: []
+          }));
+          displayNotification("Minimum Image Resolution is 500x500px");
+          // Don't update the state if there are non-valid images
+        } else {
+          // Update the state with valid images if all images meet the resolution criteria
+          setListing(prevListing => ({
+            ...prevListing,
+            images: files
+          }));
+        }
+      })
+      .catch(error => {
+        console.error("Error checking image resolution:", error);
+        return []; // Return an empty array in case of error
+      });
   }
+  
 
   async function submitForm() {
       const token = localStorage.getItem("token"); // Retrieve the JWT token from localStorage

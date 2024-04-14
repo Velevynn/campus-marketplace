@@ -5,27 +5,27 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     display: flex;
     align-items: center;
-    object-fit: contain;
+    justify-content: center;
   }
 
-  .thumbnails {
-    display: inline-flex;
-    flex-wrap: wrap;
-    max-width: 30vw;
-    margin-top: 10px; /* Adjust margin as needed */
+.thumbnails {
+  display: inline-flex;
+  flex-wrap: wrap;
+  max-width: 30vw;
+  margin-top: 10px; /* Adjust margin as needed */
 
-  }
-  
-  .thumbnails img {
-    width: 5vw;
-    height: 5vw;
-    background-color: gray;
-    margin-right: 0.5vw;
-    margin-bottom: 0.5vw;
-    cursor: pointer;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .thumbnails img.active {
-    border: 1px solid green;
-  }
+}
+
+.thumbnails img {
+  width: 5vw;
+  height: 5vw;
+  background-color: gray;
+  margin-right: 0.5vw;
+  margin-bottom: 0.5vw;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.thumbnails img.active {
+  border: 1px solid green;
+}
