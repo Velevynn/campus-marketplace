@@ -50,12 +50,10 @@ router.post("/:listingID/bookmark/", async (req, res) => {
   console.log("Received params when bookmarking listing: ", req.query);
     try {
         // Extract listingID and userID from query parameters.
-        const { listingID } = req.query.listingID;
-        const { userID } = req.query.userID;
-        console.log("Extracted and stored params: ", userID, listingID)
+        console.log("Extracted and stored params: ", req.query.userID, req.query.listingID)
 
         // Add new relationship to bookmark table.
-        await addBookmark(userID, listingID);
+        await addBookmark(req.query.userID, req.query.listingID);
         res.status(201).send
       }
     catch (error) {
@@ -144,16 +142,14 @@ router.delete("/:listingID/bookmark/", async (req, res) => {
   console.log("Received paramaters: ", req.query)
 
   // Extract userID and listingID from query parameters.
-  const { userID } = req.params.userID;
-  console.log("Stored userID: ", userID)
-  const { listingID } = req.params.listingID;
-  console.log("Stored listingID: ", listingID)
+  console.log("Retrieved userID: ", req.query.userID)
+  console.log("Retrieved listingID: ", req.query.listingID)
 
   try {
     const connetion = createConnection();
     const result = await connection.query(
       'DELETE FROM bookmarks WHERE "userID" = $1 AND "listingID" = $2',
-      [userID, listingID]
+      [req.query.userID, req.query.listingID]
     );
 
     if (result.rowCount === 0) {
