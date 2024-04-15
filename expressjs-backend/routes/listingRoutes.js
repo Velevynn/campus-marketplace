@@ -202,14 +202,14 @@ router.get("/:listingID/bookmark/", async (req, res) => {
         req.query.listingID
       ])
 
-    console.log("Returned rows from delete call in bookmark backend.")
+    console.log("Returned rows from select call in bookmark backend.")
     if ( rows.length > 0 ) {
       const bookmarked = true;
       res.status(200).send(bookmarked);
     }
     else {
       const bookmarked = false;
-      res.status(404).send(bookmarked);
+      res.status(204).send(bookmarked);
     }
     await connection.end();
   }
