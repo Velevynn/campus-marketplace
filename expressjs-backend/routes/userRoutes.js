@@ -232,6 +232,7 @@ async function findUserByEmail(email) {
 }
 
 router.post('/register-google-user', async (req, res) => {
+  console.log("Received data:", req.body); 
   const { email, name, username, phoneNumber } = req.body;
   try {
     const connection = createConnection();
@@ -242,6 +243,7 @@ router.post('/register-google-user', async (req, res) => {
     connection.end();
     const user = result.rows[0];
     const token = jwt.sign({ userId: user.id, email: user.email }, process.env.JWT_SECRET_KEY, { expiresIn: '24h' });
+    console.log("Registration successful:", user);
     res.status(201).json({ message: 'User registered successfully', token });
   } catch (error) {
     console.error('Error registering Google user:', error);
