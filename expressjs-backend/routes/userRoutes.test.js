@@ -14,6 +14,7 @@ jest.mock('pg', () => {
   };
 });
 
+
 const mockRequestBody = {
   username: 'dnednedne',  // these credentials are not in the database
   full_name: 'dne dnes',
