@@ -47,11 +47,11 @@ router.post("/", upload.array('image'), async (req, res) => {
 
 // Bookmark a listing.
 router.post("/:listingID/bookmark/", async (req, res) => {
-  console.log("Received params when bookmarking listing: ", req.params);
+  console.log("Received params when bookmarking listing: ", req.query);
     try {
         // Extract listingID and userID from query parameters.
-        const { listingID } = req.params.listingID;
-        const { userID } = req.params.userID;
+        const { listingID } = req.query.listingID;
+        const { userID } = req.query.userID;
         console.log("Extracted and stored params: ", userID, listingID)
 
         // Add new relationship to bookmark table.
@@ -140,8 +140,8 @@ router.delete("/:listingID/", async (req, res) => {
     }
 });
 
-router.delete("/:listingID/bookmark", async (req, res) => {
-  console.log("Received paramaters: ", req.params)
+router.delete("/:listingID/bookmark/", async (req, res) => {
+  console.log("Received paramaters: ", req.query)
 
   // Extract userID and listingID from query parameters.
   const { userID } = req.params.userID;
@@ -193,10 +193,13 @@ router.get("/images/:listingID/", async (req, res) => {
 
 // TODO: Add route for checking if a bookmark exists or not.
 // Check if a bookmark exists between a user and listing.
-router.get("/:listingID/bookmark", async (req, res) => {
+router.get("/:listingID/bookmark/", async (req, res) => {
+  console.log("Parameters received from frontend in backend request: ", req.query);
   try {
-    const { listingID } = req.params.listingID;
-    const { userID } = req.params.userID;
+    const { listingID } = req.query.listingID;
+    const { userID } = req.query.userID;
+    console.log("listingID extracted from frontend in backend request: ", listingID);
+    console.log("userID extracted from frontend in backend request: ", userID);
 
     const connection = createConnection();
     const { rows } = await connection.query('SELECT * FROM bookmarks WHERE "userID" = $1 AND "listingID" = $2',
@@ -205,6 +208,7 @@ router.get("/:listingID/bookmark", async (req, res) => {
         listingID
       ])
 
+    console.log("Returned rows from delete call in bookmark backend.")
     if ( rows.length > 0 ) {
       const bookmarked = true;
       res.status(200).send(bookmarked);

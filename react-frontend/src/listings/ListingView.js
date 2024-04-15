@@ -11,7 +11,7 @@ const ListingView = () => {
   const [listing, setListing] = useState(null);
   const [images, setImages] = useState([]);
   const [isOwner, setIsOwner] = useState(false);
-  const [isBookmarked, setBookmark] = useState(null);
+  const [isBookmarked, setBookmark] = useState(false);
   const hasPageBeenRendered = useRef({ activateBookmark: false });
   const [loggedID, setLoggedID] = useState(null);
   const [toggledBookmark, setBookmarkToggle] = useState(false);
@@ -52,10 +52,12 @@ const ListingView = () => {
               setLoggedID(loggedInUserID);
               setIsOwner(response.data[0].userID === loggedInUserID); // If userIDs are the same, we know this user owns this listing
               console.log("logged in userID: ", loggedInUserID);
+              console.log("Params passed into initial bookmark status check: ", loggedInUserID, listingID);
+
 
               try {
                 // Check if a bookmark exists.
-                const bookmarked = await axios.get('https://haggle.onrender.com/${listingID}/bookmark', {
+                const bookmarked = await axios.get('https://haggle.onrender.com/listings/${listingID}/bookmark', {
                   params: {
                     'userID': loggedInUserID,
                     'listingID': listingID
@@ -139,10 +141,12 @@ const ListingView = () => {
         if (loggedID) {
           if (isBookmarked) {
             // Make call to backend to add bookmark.
+            console.log("Create bookmark called.");
             createBookmark();
           }
           else if (!isBookmarked) {
             // Make call to backend to delete bookmark.
+            console.log("Delete bookmark called.");
             deleteBookmark();
           }
         }
