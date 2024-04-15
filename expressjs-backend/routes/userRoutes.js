@@ -194,7 +194,7 @@ router.get('/auth/google', (req, res) => {
 router.get('/auth/google/callback', async (req, res) => {
   try {
     const { tokens } = await oauth2Client.getToken(req.query.code); // Exchange code for tokens
-    console.log(tokens);
+    console.log("tokens: ", tokens);
     oauth2Client.setCredentials(tokens);
 
     const oauth2 = google.oauth2({
