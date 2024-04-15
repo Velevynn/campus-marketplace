@@ -212,25 +212,6 @@ router.get('/auth/google/callback', async (req, res) => {
   }
 });
 
-async function findUserByEmail(email) {
-  const connection = createConnection();
-  try {
-    console.log(`Searching for user by email: ${email}`);
-    const result = await connection.query(
-      'SELECT * FROM users WHERE email = $1',
-      [email]
-    );
-    console.log('Database query result:', result.rows);
-    return result.rows[0]; // returns undefined if no user is found
-  } catch (error) {
-    console.error('Database query error:', error);
-    throw error;
-  } finally {
-    await connection.end();
-    console.log('Database connection closed');
-  }
-}
-
 router.post('/register-google-user', async (req, res) => {
   console.log("Received data:", req.body); 
   const { email, name, username, phoneNumber } = req.body;

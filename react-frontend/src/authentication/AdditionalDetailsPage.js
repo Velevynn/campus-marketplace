@@ -33,16 +33,17 @@ function AdditionalDetailsPage() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
+      console.log(userData);
       const response = await axios.post('https://haggle.onrender.com/register-google-user', userData);
       localStorage.setItem('token', response.data.token);
       navigate('/profile'); // Redirect to profile page
     } catch (error) {
-      console.error('Registration failed:', error);
       if (error.response) {
         setErrorMessage(`Registration failed: ${error.response.data.error}`);
       } else {
         setErrorMessage(`Registration failed: ${error.message}`);
       }
+      console.error('Registration failed:', error);
     }
   };
 
