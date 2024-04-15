@@ -13,31 +13,38 @@ function AdditionalDetailsPage() {
     name: new URLSearchParams(window.location.search).get('name')
   });
 
+  console.log("Email from query:", userData.email);
+  console.log("Name from query:", userData.name);
+
   const [isFormValid, setIsFormValid] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  useEffect(() => {
-    const isValid = userData.username.trim().length > 0 && userData.phoneNumber.trim().length > 0;
-    setIsFormValid(isValid);
-  }, [userData]);
-
+  // Handle input changes
   const handleChange = (event) => {
     const { name, value } = event.target;
     setUserData({ ...userData, [name]: value });
   };
 
+  // Validate form
+  useEffect(() => {
+    const isValid = userData.username.trim().length > 0 && userData.phoneNumber.trim().length > 0;
+    setIsFormValid(isValid);
+  }, [userData]);
+
+  // Submit handler
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (!isFormValid) {
+      setErrorMessage('Please fill all fields correctly.');
+      return;
+    }
     try {
       const response = await axios.post('https://haggle.onrender.com/register-google-user', userData);
       localStorage.setItem('token', response.data.token);
-      navigate('/profile');
+      navigate('/profile'); // Redirect to profile page after registration
     } catch (error) {
-      if (error.response) {
-        setErrorMessage(`Registration failed: ${error.response.data.error}`);
-      } else {
-        setErrorMessage(`Registration failed: ${error.message}`);
-      }
+      const errorText = error.response ? error.response.data.error : error.message;
+      setErrorMessage(`Registration failed: ${errorText}`);
       console.error('Registration failed:', error);
     }
   };

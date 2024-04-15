@@ -202,8 +202,10 @@ router.get('/auth/google/callback', async (req, res) => {
     });
     const userInfo = await oauth2.userinfo.get();
 
-    // Redirect to additional input page with URL parameters
-    res.redirect(`http://localhost:3000/additional-details?email=${encodeURIComponent(userInfo.data.email)}&name=${encodeURIComponent(userInfo.data.name)}`);
+    // Redirect with email and name to the front end
+    const redirectUrl = `http://localhost:3000/additional-details?email=${encodeURIComponent(userInfo.data.email)}&name=${encodeURIComponent(userInfo.data.name)}`;
+    console.log('Redirecting to:', redirectUrl);  // Log the URL to debug
+    res.redirect(redirectUrl);
   } catch (error) {
     console.error('Error in OAuth callback:', error);
     res.status(500).json({ error: 'Authentication failed', details: error });
