@@ -54,13 +54,13 @@ function LoginPage() {
   };
 
   const handleGoogleLogin = () => {
-    const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+    const clientId = '71122616560-tv80mel7fi0s2etitj1enhk192v06h0e.apps.googleusercontent.com';
 
     console.log('Google Client IDDDD:', clientId);
 
-    const redirectUri = 'https://haggle.onrender.com/login';
+    const redirectUrl = 'https://haggle.onrender.com/users/auth/google/callback';
     const scope = encodeURI('email profile');
-    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&access_type=offline&prompt=consent`;
+    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUrl}&response_type=code&scope=${scope}&access_type=offline&prompt=consent`;
     window.location.href = authUrl;
   };
 

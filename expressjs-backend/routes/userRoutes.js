@@ -191,8 +191,8 @@ router.get('/auth/google', (req, res) => {
   res.redirect(authUrl);
 });
 
-router.get('/users/auth/google/callback', async (req, res) => {
-  console.log('/users/auth/google/callback hit with query:', req.query);
+router.get('/auth/google/callback', async (req, res) => {
+  console.log('/auth/google/callback hit with query:', req.query);
   try {
     if (!req.query.code) {
       console.error('No code received in query parameters');
