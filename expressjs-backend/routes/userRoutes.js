@@ -207,7 +207,7 @@ router.get('/auth/google/callback', async (req, res) => {
     res.redirect(`http://localhost:3000/additional-details?email=${encodeURIComponent(userInfo.data.email)}&name=${encodeURIComponent(userInfo.data.name)}`);
   } catch (error) {
     console.error('Error in OAuth callback:', error);
-    res.status(500).json({ error: 'Authentication failed',bruh: tokens, details: error });
+    res.status(500).json({ error: 'Authentication failed', bruh: tokens, details: error });
   }
 });
 
@@ -222,7 +222,7 @@ router.post('/register-google-user', async (req, res) => {
     );
     connection.end();
     const user = result.rows[0];
-    const token = jwt.sign({ userId: user.id, email: user.email }, process.env.JWT_SECRET_KEY, { expiresIn: '24h' });
+    const token = jwt.sign({ username: user.username }, secretKey, { expiresIn: '24h' });
     // console.log("Registration successful:", user);
     res.status(201).json({ message: 'User registered successfully', token });
   } catch (error) {

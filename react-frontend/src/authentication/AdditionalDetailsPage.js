@@ -39,7 +39,7 @@ function AdditionalDetailsPage() {
       return;
     }
     try {
-      const response = await axios.post('https://haggle.onrender.com/register-google-user', userData);
+      const response = await axios.post('https://haggle.onrender.com/users/register-google-user', userData);
       localStorage.setItem('token', response.data.token);
       navigate('/profile'); // Redirect to profile page after registration
     } catch (error) {
