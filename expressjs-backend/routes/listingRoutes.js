@@ -47,12 +47,12 @@ router.post("/", upload.array('image'), async (req, res) => {
 
 // Bookmark a listing.
 router.post("/:listingID/bookmark/", async (req, res) => {
- 
-
+  console.log("Received params when bookmarking listing: ", req.params);
     try {
         // Extract listingID and userID from query parameters.
         const { listingID } = req.params.listingID;
         const { userID } = req.params.userID;
+        console.log("Extracted and stored params: ", userID, listingID)
 
         // Add new relationship to bookmark table.
         await addBookmark(userID, listingID);
@@ -139,6 +139,35 @@ router.delete("/:listingID/", async (req, res) => {
       res.status(500).send("An error occurred while deleting the listing");
     }
 });
+
+router.delete("/:listingID/bookmark", async (req, res) => {
+  console.log("Received paramaters: ", req.params)
+
+  // Extract userID and listingID from query parameters.
+  const { userID } = req.params.userID;
+  console.log("Stored userID: ", userID)
+  const { listingID } = req.params.listingID;
+  console.log("Stored listingID: ", listingID)
+
+  try {
+    const connetion = createConnection();
+    const result = await connection.query(
+      'DELETE FROM bookmarks WHERE "userID" = $1 AND "listingID" = $2',
+      [userID, listingID]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).send("Bookmark not found.");
+    }
+
+    // Successful deletion.
+    res.status(204).send();
+  }
+  catch (error) {
+    console.error("An error occurred while deleting the bookmark: ", error);
+    res.status(500).send("An error occurred while deleting the listing.");
+  }
+})
 
 
 // Retrieve images for given listingID.

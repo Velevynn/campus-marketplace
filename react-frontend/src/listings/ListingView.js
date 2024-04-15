@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import ImageCarousel from "../components/ImageCarousel.js";
@@ -11,9 +11,10 @@ const ListingView = () => {
   const [listing, setListing] = useState(null);
   const [images, setImages] = useState([]);
   const [isOwner, setIsOwner] = useState(false);
-  const [isBookmarked, setBookmark] = useState(false);
+  const [isBookmarked, setBookmark] = useState(null);
   const hasPageBeenRendered = useRef({ activateBookmark: false });
   const [loggedID, setLoggedID] = useState(null);
+  const [toggledBookmark, setBookmarkToggle] = useState(false);
 
   const navigate = useNavigate();
   console.log(setIsOwner);
@@ -124,38 +125,32 @@ const ListingView = () => {
     return message;
   }
 
-  // TODO: Add logic for bookmark being marked or not
-  // - Make call to backend to check if link between userID and listingID exists
-  //    - Sends UserID and listingID through parameters
-  // - Change visual state
-  // - Implement CSS to handle in frontend?
+  // TODO: 
+  // Change visual state
   // Make Protected Route (arbitrary webpage in App.js?)
-  // in initial load, put logged in userid into a useValue() to prevent re-calls
 
   /* Hook to change bookmark status when bookmark button is clicked. */
   useEffect(() => {
-    // Ignore first activation on web page load.
-    if (hasPageBeenRendered.current["activateBookmark"]) {
-      // Check if user is loggedIn
-      if (loggedID) {
-        // If listing is not currently bookmarked...
-        if (!isBookmarked) {
-          // Make call to backend to add bookmark if it doesn't already exist.
-          createBookmark();
-          setBookmark(true);
-        }
-        // If listing is currently bookmarked...
-        else if (isBookmarked) {
-          // Make call to backend to delete bookmark.
-          deleteBookmark();
-          setBookmark(false);
+    const changeBookmark = async () => {
+      // Ignore first activation on web page load and ignore initial bookmark check.
+      if (hasPageBeenRendered.current["activateBookmark"] && toggledBookmark) {
+        // Check if user is loggedIn
+        console.log("Logged ID for bookmark check: ", loggedID);
+        if (loggedID) {
+          if (isBookmarked) {
+            // Make call to backend to add bookmark.
+            createBookmark();
+          }
+          else if (!isBookmarked) {
+            // Make call to backend to delete bookmark.
+            deleteBookmark();
+          }
         }
       }
-      
+      // Set bookmark hook to be active only after first load.
+      hasPageBeenRendered.current["activateBookmark"] = true;
     }
-    
-    // Set bookmark hook to be active only after first load.
-    hasPageBeenRendered.current["activateBookmark"] = true;
+    changeBookmark();
   }, [isBookmarked]);
   
 
@@ -198,6 +193,15 @@ const ListingView = () => {
     }
   };
 
+  // Toggle the local bookmark status.
+  const toggleBookmark = () => {
+    console.log("Toggle Bookmark clicked for listing: ", listing);
+    setBookmarkToggle(true);
+    console.log("Current bookmark status: ", isBookmarked);
+    setBookmark(!isBookmarked);
+    console.log("New bookmark status: ", isBookmarked);
+  }
+
   // Create Bookmark in database.
   const createBookmark = async () => {
     // Post bookmark to database.
@@ -207,7 +211,7 @@ const ListingView = () => {
       await axios.post(
         `https://haggle.onrender.com/listings/${listingID}/bookmark`, {
           params: {
-            'userID': userID,
+            'userID': loggedID,
             'listingID': listingID
           }
         }
@@ -227,7 +231,7 @@ const ListingView = () => {
       console.log("Deleting bookmark.");
       const response = await axios.delete('https://haggle.onrender.com/listings/${listingID}/bookmark')
       // TODO: Handle Response
-      console.log("Deleted bookmark.")
+      console.log("Deleted bookmark: ", response);
     }
     catch (error) {
       console.error("Error deleting bookmark on frontend: ", error);
@@ -264,6 +268,7 @@ const ListingView = () => {
             <button className="margin-right" onClick={handleBuyNow}>Buy Now</button>
             <button className="margin-right" onClick={handleMakeOffer}>Make Offer</button>
             <button className="margin-right" onClick={handleStartChat}>Start a Chat</button>
+            <button className="margin-right" onClick={toggleBookmark}>Bookmark</button>
         </div>
     </div>
   );
