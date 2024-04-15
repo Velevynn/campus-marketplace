@@ -60,7 +60,6 @@ function AdditionalDetailsPage() {
           />
         </InputGroup>
         <InputGroup>
-          <InputLabel htmlFor="phoneNumber">Phone Number</InputLabel>
           <Input
             type="tel"
             name="phoneNumber"
@@ -69,6 +68,7 @@ function AdditionalDetailsPage() {
             onChange={handleChange}
             required
           />
+          <InputLabel htmlFor="phoneNumber">Phone Number</InputLabel>
         </InputGroup>
         <Button type="submit" disabled={!isFormValid}>
           Complete Registration
