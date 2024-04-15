@@ -207,7 +207,7 @@ router.get('/auth/google/callback', async (req, res) => {
     res.redirect(`http://localhost:3000/additional-details?email=${encodeURIComponent(userInfo.data.email)}&name=${encodeURIComponent(userInfo.data.name)}`);
   } catch (error) {
     console.error('Error in OAuth callback:', error);
-    res.status(500).json({ error: 'Authentication failed', details: error });
+    res.status(500).json({ error: 'Authentication failed',bruh: tokens, details: error });
   }
 });
 
