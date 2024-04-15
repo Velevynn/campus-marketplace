@@ -34,6 +34,9 @@ function AdditionalDetailsPage() {
     event.preventDefault();
     try {
       console.log(userData);
+      const result = await axios.get('https://haggle.onrender.com/auth/google/callback');
+      userData.name = result.name;
+      userData.email = result.email;
       const response = await axios.post('https://haggle.onrender.com/register-google-user', userData);
       localStorage.setItem('token', response.data.token);
       navigate('/profile'); // Redirect to profile page

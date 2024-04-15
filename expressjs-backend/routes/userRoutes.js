@@ -203,9 +203,11 @@ router.get('/auth/google/callback', async (req, res) => {
     });
     const userInfo = await oauth2.userinfo.get();
 
+    const result = {email : userInfo.data.email, name : userInfo.data.name};
     // Temporarily store user info (consider using sessions or a temporary store)
     // Redirect to additional input page
-    res.redirect(`/additional-details?email=${encodeURIComponent(userInfo.data.email)}&name=${encodeURIComponent(userInfo.data.name)}`);
+    res.status(200).json(result); // send it back
+    // res.redirect(`/additional-details?email=${encodeURIComponent(userInfo.data.email)}&name=${encodeURIComponent(userInfo.data.name)}`);
   } catch (error) {
     console.error('Error in OAuth callback:', error);
     res.status(500).json({ error: 'Authentication failed', details: error });
