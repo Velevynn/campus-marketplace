@@ -232,22 +232,6 @@ async function findUserByEmail(email) {
   }
 }
 
-async function createUser(userData) {
-  const { email, name, googleId } = userData;
-  const connection = createConnection();
-  try {
-    const newUser = await connection.query(
-      'INSERT INTO users (email, "fullName", "googleId") VALUES ($1, $2, $3) RETURNING *',
-      [email, name, googleId]
-    );
-    await connection.end();
-    return newUser.rows[0]; // return the new user object
-  } catch (error) {
-    console.error('Error creating user:', error);
-    throw error;
-  }
-}
-
 router.post('/register-google-user', async (req, res) => {
   const { email, name, username, phoneNumber } = req.body;
   try {
