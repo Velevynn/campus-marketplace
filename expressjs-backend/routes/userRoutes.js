@@ -4,7 +4,6 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const { google } = require('googleapis');
 const jwt = require('jsonwebtoken');
-const { google } = require('googleapis');
 const crypto = require('crypto');
 const { verifyToken } = require('../util/middleware');
 const { Pool } = require('pg');
