@@ -192,7 +192,6 @@ router.get('/auth/google', (req, res) => {
 });
 
 router.get('/auth/google/callback', async (req, res) => {
-  // Existing Google callback code
   try {
     const { tokens } = await oauth2Client.getToken(req.query.code);
     oauth2Client.setCredentials(tokens);
@@ -203,11 +202,8 @@ router.get('/auth/google/callback', async (req, res) => {
     });
     const userInfo = await oauth2.userinfo.get();
 
-    const result = {email : userInfo.data.email, name : userInfo.data.name};
-    // Temporarily store user info (consider using sessions or a temporary store)
-    // Redirect to additional input page
-    res.status(200).json(result); // send it back
-    // res.redirect(`/additional-details?email=${encodeURIComponent(userInfo.data.email)}&name=${encodeURIComponent(userInfo.data.name)}`);
+    // Redirect to additional input page with URL parameters
+    res.redirect(`http://localhost:3000/additional-details?email=${encodeURIComponent(userInfo.data.email)}&name=${encodeURIComponent(userInfo.data.name)}`);
   } catch (error) {
     console.error('Error in OAuth callback:', error);
     res.status(500).json({ error: 'Authentication failed', details: error });
