@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate, Link } from 'react-router-dom'; // Import navigate hook for redirection after form submission
-
-import { HeaderLabel, Container, Form, LogoImage, ErrorLabel, InputGroup, Input, InputLabel, Button, LinkedLabel } from './AuthenticationStyling'; // Ensure all these components are properly imported
-import logoImage from '../assets/haggle-horizontal.png'; // Adjust path as necessary
+import { useNavigate, Link } from 'react-router-dom';
+import { HeaderLabel, Container, Form, LogoImage, ErrorLabel, InputGroup, Input, InputLabel, Button, LinkedLabel } from './AuthenticationStyling';
+import logoImage from '../assets/haggle-horizontal.png';
 
 function AdditionalDetailsPage() {
+  const navigate = useNavigate();
   const [userData, setUserData] = useState({
     username: '',
     phoneNumber: '',
@@ -13,9 +13,11 @@ function AdditionalDetailsPage() {
     name: new URLSearchParams(window.location.search).get('name')
   });
 
+  console.log("Email from query:", userData.email);
+  console.log("Name from query:", userData.name);
+
   const [isFormValid, setIsFormValid] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const navigate = useNavigate(); // Using navigate to redirect
 
   // Handle input changes
   const handleChange = (event) => {
@@ -32,17 +34,18 @@ function AdditionalDetailsPage() {
   // Submit handler
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (!isFormValid) {
+      setErrorMessage('Please fill all fields correctly.');
+      return;
+    }
     try {
       const response = await axios.post('https://haggle.onrender.com/register-google-user', userData);
       localStorage.setItem('token', response.data.token);
-      navigate('/profile'); // Redirect to profile page
+      navigate('/profile'); // Redirect to profile page after registration
     } catch (error) {
+      const errorText = error.response ? error.response.data.error : error.message;
+      setErrorMessage(`Registration failed: ${errorText}`);
       console.error('Registration failed:', error);
-      if (error.response) {
-        setErrorMessage(`Registration failed: ${error.response.data.error}`);
-      } else {
-        setErrorMessage(`Registration failed: ${error.message}`);
-      }
     }
   };
 

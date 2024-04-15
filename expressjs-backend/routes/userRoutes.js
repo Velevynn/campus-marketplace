@@ -193,7 +193,6 @@ router.get('/auth/google', (req, res) => {
 });
 
 router.get('/auth/google/callback', async (req, res) => {
-  // Existing Google callback code
   try {
     const { tokens } = await oauth2Client.getToken(req.query.code);
     oauth2Client.setCredentials(tokens);
@@ -204,33 +203,15 @@ router.get('/auth/google/callback', async (req, res) => {
     });
     const userInfo = await oauth2.userinfo.get();
 
-    // Temporarily store user info (consider using sessions or a temporary store)
-    // Redirect to additional input page
-    res.redirect(`/additional-details?email=${encodeURIComponent(userInfo.data.email)}&name=${encodeURIComponent(userInfo.data.name)}`);
+    // Redirect with email and name to the front end
+    const redirectUrl = `http://localhost:3000/additional-details?email=${encodeURIComponent(userInfo.data.email)}&name=${encodeURIComponent(userInfo.data.name)}`;
+    console.log('Redirecting to:', redirectUrl);  // Log the URL to debug
+    res.redirect(redirectUrl);
   } catch (error) {
     console.error('Error in OAuth callback:', error);
     res.status(500).json({ error: 'Authentication failed', details: error });
   }
 });
-
-async function findUserByEmail(email) {
-  const connection = createConnection();
-  try {
-    console.log(`Searching for user by email: ${email}`);
-    const result = await connection.query(
-      'SELECT * FROM users WHERE email = $1',
-      [email]
-    );
-    console.log('Database query result:', result.rows);
-    return result.rows[0]; // returns undefined if no user is found
-  } catch (error) {
-    console.error('Database query error:', error);
-    throw error;
-  } finally {
-    await connection.end();
-    console.log('Database connection closed');
-  }
-}
 
 router.post('/register-google-user', async (req, res) => {
   console.log("Received data:", req.body); 
