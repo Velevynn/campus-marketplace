@@ -47,15 +47,13 @@ router.post("/", upload.array('image'), async (req, res) => {
 
 // Bookmark a listing.
 router.post("/:listingID/bookmark/", async (req, res) => {
-  console.log("Received params when bookmarking listing: ", req.params);
+  console.log("Received params when bookmarking listing: ", req.query);
     try {
         // Extract listingID and userID from query parameters.
-        const { listingID } = req.params.listingID;
-        const { userID } = req.params.userID;
-        console.log("Extracted and stored params: ", userID, listingID)
+        console.log("Extracted and stored params: ", req.query.userID, req.query.listingID)
 
         // Add new relationship to bookmark table.
-        await addBookmark(userID, listingID);
+        await addBookmark(req.query.userID, req.query.listingID);
         res.status(201).send
       }
     catch (error) {
@@ -140,20 +138,18 @@ router.delete("/:listingID/", async (req, res) => {
     }
 });
 
-router.delete("/:listingID/bookmark", async (req, res) => {
-  console.log("Received paramaters: ", req.params)
+router.delete("/:listingID/bookmark/", async (req, res) => {
+  console.log("Received paramaters: ", req.query)
 
   // Extract userID and listingID from query parameters.
-  const { userID } = req.params.userID;
-  console.log("Stored userID: ", userID)
-  const { listingID } = req.params.listingID;
-  console.log("Stored listingID: ", listingID)
+  console.log("Retrieved userID: ", req.query.userID)
+  console.log("Retrieved listingID: ", req.query.listingID)
 
   try {
     const connetion = createConnection();
     const result = await connection.query(
       'DELETE FROM bookmarks WHERE "userID" = $1 AND "listingID" = $2',
-      [userID, listingID]
+      [req.query.userID, req.query.listingID]
     );
 
     if (result.rowCount === 0) {
@@ -193,25 +189,27 @@ router.get("/images/:listingID/", async (req, res) => {
 
 // TODO: Add route for checking if a bookmark exists or not.
 // Check if a bookmark exists between a user and listing.
-router.get("/:listingID/bookmark", async (req, res) => {
+router.get("/:listingID/bookmark/", async (req, res) => {
+  console.log("Parameters received from frontend in backend request: ", req.query);
   try {
-    const { listingID } = req.params.listingID;
-    const { userID } = req.params.userID;
+    console.log("listingID extracted from frontend in backend request: ", req.query.listingID);
+    console.log("userID extracted from frontend in backend request: ", req.query.userID);
 
     const connection = createConnection();
     const { rows } = await connection.query('SELECT * FROM bookmarks WHERE "userID" = $1 AND "listingID" = $2',
       [
-        userID,
-        listingID
+        req.query.userID,
+        req.query.listingID
       ])
 
+    console.log("Returned rows from select call in bookmark backend.")
     if ( rows.length > 0 ) {
       const bookmarked = true;
       res.status(200).send(bookmarked);
     }
     else {
       const bookmarked = false;
-      res.status(404).send(bookmarked);
+      res.status(204).send(bookmarked);
     }
     await connection.end();
   }
