@@ -193,7 +193,7 @@ router.get('/auth/google', (req, res) => {
 
 router.get('/auth/google/callback', async (req, res) => {
   try {
-    const { tokens } = await oauth2Client.getToken(req.query.code);
+    const { tokens } = await oauth2Client.getToken(req.query.code); // Exchange code for tokens
     oauth2Client.setCredentials(tokens);
 
     const oauth2 = google.oauth2({
@@ -202,10 +202,8 @@ router.get('/auth/google/callback', async (req, res) => {
     });
     const userInfo = await oauth2.userinfo.get();
 
-    // Redirect with email and name to the front end
-    const redirectUrl = `http://localhost:3000/additional-details?email=${encodeURIComponent(userInfo.data.email)}&name=${encodeURIComponent(userInfo.data.name)}`;
-    console.log('Redirecting to:', redirectUrl);  // Log the URL to debug
-    res.redirect(redirectUrl);
+    // Now redirect to your client-side route with the user info
+    res.redirect(`http://localhost:3000/additional-details?email=${encodeURIComponent(userInfo.data.email)}&name=${encodeURIComponent(userInfo.data.name)}`);
   } catch (error) {
     console.error('Error in OAuth callback:', error);
     res.status(500).json({ error: 'Authentication failed', details: error });
