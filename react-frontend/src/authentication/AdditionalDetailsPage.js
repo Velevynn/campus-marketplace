@@ -9,8 +9,8 @@ function AdditionalDetailsPage() {
   const [userData, setUserData] = useState({
     username: '',
     phoneNumber: '',
-    email: new URLSearchParams(window.location.search).get('email'),
-    name: new URLSearchParams(window.location.search).get('name')
+    email: new URLSearchParams(window.location.search).get('email'),  // Get 'email' from URL
+    name: new URLSearchParams(window.location.search).get('name')  // Get 'name' from URL
   });
 
   console.log("Email from query:", userData.email);
