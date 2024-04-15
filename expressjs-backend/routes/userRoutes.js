@@ -18,7 +18,7 @@ console.log('JWT key:', secretKey);
 const oauth2Client = new google.auth.OAuth2(
   process.env.REACT_APP_GOOGLE_CLIENT_ID,
   process.env.GOOGLE_CLIENT_SECRET,
-  'https://haggle.onrender.com/users/auth/google/callback'
+  'https://haggle.onrender.com/authentication-page'
 );
 console.log('OAuth2 client initialized:', oauth2Client);
 console.log('Google Client ID:', process.env.REACT_APP_GOOGLE_CLIENT_ID);
