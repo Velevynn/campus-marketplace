@@ -19,6 +19,7 @@ import EditListing from "./listings/EditListing.js";
 import ForgotPasswordPage from './authentication/ForgotPasswordPage';
 import ResetPasswordPage from './authentication/ResetPasswordPage';
 import ChangePasswordPage from './authentication/ChangePasswordPage';
+import AdditionalDetailsPage from './authentication/AdditionalDetailsPage';
 
 function App() {
   return (
@@ -52,6 +53,7 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/change-password" element={<ChangePasswordPage />} />
+          <Route path="/additional-details" element={<AdditionalDetailsPage />} />
           <Route
               path = "*"
               element = {<PageNotFound/>}

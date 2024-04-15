@@ -18,7 +18,7 @@ console.log('JWT key:', secretKey);
 const oauth2Client = new google.auth.OAuth2(
   process.env.REACT_APP_GOOGLE_CLIENT_ID,
   process.env.GOOGLE_CLIENT_SECRET,
-  'https://haggle.onrender.com/authentication-page'
+  'http://localhost:3000/additional-details'
 );
 console.log('OAuth2 client initialized:', oauth2Client);
 console.log('Google Client ID:', process.env.REACT_APP_GOOGLE_CLIENT_ID);
@@ -185,7 +185,8 @@ router.post('/login', async (req, res) => {
 router.get('/auth/google', (req, res) => {
   const authUrl = oauth2Client.generateAuthUrl({
     access_type: 'offline', // Indicates that we need to retrieve a refresh token
-    scope: 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile'
+    scope: 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile',
+    redirect_uri: 'https://haggle.onrender.com/additional-details'
   });
   console.log('Generated Google Auth URL:', authUrl);
   res.redirect(authUrl);
