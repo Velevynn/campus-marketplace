@@ -45,6 +45,26 @@ router.post("/", upload.array('image'), async (req, res) => {
       }
 });
 
+// Bookmark a listing.
+router.post("/:listingID/bookmark/", async (req, res) => {
+ 
+
+    try {
+        // Extract listingID and userID from query parameters.
+        const { listingID } = req.params.listingID;
+        const { userID } = req.params.userID;
+
+        // Add new relationship to bookmark table.
+        await addBookmark(userID, listingID);
+        res.status(201).send
+      }
+    catch (error) {
+      console.error("Error adding bookmark: ", error);
+      res.status(500).json({ error: "Failed to add bookmark" });
+    }
+});
+
+
 // Retrieve listings with pagination and optional query parameters
 router.get("/", async (req, res) => {
   try {
@@ -141,6 +161,36 @@ router.get("/images/:listingID/", async (req, res) => {
       res.status(500).send("An error occurred while fetching the images");
     }
 });
+
+// TODO: Add route for checking if a bookmark exists or not.
+// Check if a bookmark exists between a user and listing.
+router.get("/:listingID/bookmark", async (req, res) => {
+  try {
+    const { listingID } = req.params.listingID;
+    const { userID } = req.params.userID;
+
+    const connection = createConnection();
+    const { rows } = await connection.query('SELECT * FROM bookmarks WHERE "userID" = $1 AND "listingID" = $2',
+      [
+        userID,
+        listingID
+      ])
+
+    if ( rows.length > 0 ) {
+      const bookmarked = true;
+      res.status(200).send(bookmarked);
+    }
+    else {
+      const bookmarked = false;
+      res.status(404).send(bookmarked);
+    }
+    await connection.end();
+  }
+  catch (error) {
+    console.error("An error occurred while checking for a bookmark: ", error);
+    res.status(500).send("An error occurred while checking for a bookmark.");
+  }
+})
 
 router.put("/:listingID", async (req, res) => {
   try {
@@ -270,7 +320,27 @@ async function addListing(listing) {
     }
   }
 
-  
+// Function to bookmark a listing.
+async function addBookmark(userID, listingID) {
+  try {
+    const connection = createConnection();
+    const { rows } = await connection.query(
+      'INSERT INTO bookmarks ("userID", "listingID") VALUES ($1, $2)',
+      [
+        userID,
+        listingID
+      ]
+    )
+
+    await connection.end();
+    return;
+  }
+  catch (error) {
+    console.error("An error occured while bookmarking this listing:", error);
+    throw error;
+  }
+}
+
 
 
 module.exports = router;

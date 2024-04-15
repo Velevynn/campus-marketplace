@@ -11,6 +11,10 @@ const ListingView = () => {
   const [listing, setListing] = useState(null);
   const [images, setImages] = useState([]);
   const [isOwner, setIsOwner] = useState(false);
+  const [isBookmarked, setBookmark] = useState(false);
+  const hasPageBeenRendered = useRef({ activateBookmark: false });
+  const [loggedID, setLoggedID] = useState(null);
+
   const navigate = useNavigate();
   console.log(setIsOwner);
   /* hook to fetch data when listingID changes */
@@ -44,11 +48,29 @@ const ListingView = () => {
               });
         
               const loggedInUserID = response2.data.userID;
+              setLoggedID(loggedInUserID);
               setIsOwner(response.data[0].userID === loggedInUserID); // If userIDs are the same, we know this user owns this listing
               console.log("logged in userID: ", loggedInUserID);
-            } catch (error) {
+
+              try {
+                // Check if a bookmark exists.
+                const bookmarked = await axios.get('https://haggle.onrender.com/${listingID}/bookmark', {
+                  params: {
+                    'userID': loggedInUserID,
+                    'listingID': listingID
+                  }
+                })
+                // Set the bookmarked value to true or false.
+                setBookmark(bookmarked);
+              }
+              catch (error) {
+                console.log("Error while retrieving initial bookmark status: ", error);
+              }
+            }
+            catch (error) {
               console.log(error);
             }
+
           } else{
             console.log("user not logged in or token not found");
           }
@@ -102,6 +124,42 @@ const ListingView = () => {
     return message;
   }
 
+  // TODO: Add logic for bookmark being marked or not
+  // - Make call to backend to check if link between userID and listingID exists
+  //    - Sends UserID and listingID through parameters
+  // - Change visual state
+  // - Implement CSS to handle in frontend?
+  // Make Protected Route (arbitrary webpage in App.js?)
+  // in initial load, put logged in userid into a useValue() to prevent re-calls
+
+  /* Hook to change bookmark status when bookmark button is clicked. */
+  useEffect(() => {
+    // Ignore first activation on web page load.
+    if (hasPageBeenRendered.current["activateBookmark"]) {
+      // Check if user is loggedIn
+      if (loggedID) {
+        // If listing is not currently bookmarked...
+        if (!isBookmarked) {
+          // Make call to backend to add bookmark if it doesn't already exist.
+          createBookmark();
+          setBookmark(true);
+        }
+        // If listing is currently bookmarked...
+        else if (isBookmarked) {
+          // Make call to backend to delete bookmark.
+          deleteBookmark();
+          setBookmark(false);
+        }
+      }
+      
+    }
+    
+    // Set bookmark hook to be active only after first load.
+    hasPageBeenRendered.current["activateBookmark"] = true;
+  }, [isBookmarked]);
+  
+
+
   const handleBuyNow = () => {
     /* Add logic for handling "Buy Now" action */
     console.log("Buy Now clicked for listing:", listing);
@@ -137,6 +195,42 @@ const ListingView = () => {
       window.location.href = '/'; // go back to home page
     } catch (error){
       console.error("error deleting listing", error);
+    }
+  };
+
+  // Create Bookmark in database.
+  const createBookmark = async () => {
+    // Post bookmark to database.
+    console.log("Create Bookmark clicked for listing: ", listing);
+    try {
+      console.log("Posting bookmark.");
+      await axios.post(
+        `https://haggle.onrender.com/listings/${listingID}/bookmark`, {
+          params: {
+            'userID': userID,
+            'listingID': listingID
+          }
+        }
+      )
+      console.log("Posted bookmark.")
+    }
+    // Set an error while posting the bookmark data.
+    catch (error) {
+      console.error("Error creating bookmark: ", error)
+    }
+  };
+
+  // Delete bookmark from database.
+  const deleteBookmark = async () => {
+    console.log("Delete Bookmark clicked for listing: ", listing);
+    try {
+      console.log("Deleting bookmark.");
+      const response = await axios.delete('https://haggle.onrender.com/listings/${listingID}/bookmark')
+      // TODO: Handle Response
+      console.log("Deleted bookmark.")
+    }
+    catch (error) {
+      console.error("Error deleting bookmark on frontend: ", error);
     }
   };
 
