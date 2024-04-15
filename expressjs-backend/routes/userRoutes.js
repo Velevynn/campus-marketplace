@@ -186,7 +186,7 @@ router.get('/auth/google', (req, res) => {
   const authUrl = oauth2Client.generateAuthUrl({
     access_type: 'offline', // Indicates that we need to retrieve a refresh token
     scope: 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile',
-    redirect_uri: 'https://haggle.onrender.com/additional-details'
+    redirect_uri: 'http://localhost:3000/additional-details'
   });
   console.log('Generated Google Auth URL:', authUrl);
   res.redirect(authUrl);
@@ -380,7 +380,7 @@ router.post('/forgot-password', async (req, res) => {
     await connection.query('UPDATE users SET "resetPasswordToken" = $1, "resetPasswordExpires" = $2 WHERE email = $3', [resetToken, resetExpires, email]);
 
     // create the reset password url using the token
-    const resetUrl = `https://haggle.onrender.com/reset-password?token=${resetToken}`;
+    const resetUrl = `http://localhost:3000/reset-password?token=${resetToken}`;
 
     // use nodemailer 
     const nodemailer = require('nodemailer');
