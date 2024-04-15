@@ -47,7 +47,9 @@ router.post("/", upload.array('image'), async (req, res) => {
 
 // Bookmark a listing.
 router.post("/:listingID/bookmark/", async (req, res) => {
-  console.log("Received params when bookmarking listing: ", req.query);
+  console.log("Received query when bookmarking listing: ", req.query);
+  console.log("Received params when bookmarking listing: ", req.params);
+  console.log("Received body when bookmarking listing: ", req.body);
     try {
         // Extract listingID and userID from query parameters.
         console.log("Extracted and stored params: ", req.query.userID, req.query.listingID)
@@ -146,7 +148,7 @@ router.delete("/:listingID/bookmark/", async (req, res) => {
   console.log("Retrieved listingID: ", req.query.listingID)
 
   try {
-    const connetion = createConnection();
+    const connection = createConnection();
     const result = await connection.query(
       'DELETE FROM bookmarks WHERE "userID" = $1 AND "listingID" = $2',
       [req.query.userID, req.query.listingID]

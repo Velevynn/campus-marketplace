@@ -3,10 +3,10 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const secretKey = 'YourSecretKey'; // 32 bytes, generated using a cryptographically secure random number generator to ensure unpredictability... move to .env
 const crypto = require('crypto');
 const { verifyToken } = require('../util/middleware');
 const { Pool } = require('pg');
-const {google} = require('googleapis');
 require('dotenv').config();
 
 const connectionString = process.env.DB_CONNECTION_STRING; // stores supabase db connection string, allowing us to connect to supabase db
@@ -26,11 +26,11 @@ console.log('Google Client Secret:', process.env.GOOGLE_CLIENT_SECRET);
 
 // Create connection pool to connect to the database.
 function createConnection() {
-  console.log('Creating database connection...');
+  // Pool is a cache of database connections. Allows pre-established connections to be reused instead of constantly opening/closing connections
   const pool = new Pool({
     connectionString: connectionString,
   });
-  return pool;
+  return pool
 }
 
 // Asynchronous route handler to check if non-duplicate user info already exists in the database.
@@ -108,9 +108,8 @@ router.post('/register', async (req, res) => {
         'INSERT INTO users (username, "fullName", password, email, "phoneNumber") VALUES ($1, $2, $3, $4, $5)',
         [username, full_name, hashedPassword, email, phoneNumber]
       );
-
       await connection.end();
-      res.status(201).json({ message: 'User registered successfully', token }); // HTTP 201 (Created) - led to creation of new resource
+      res.status(201).json({ message: 'User registered successfully'}); // HTTP 201 (Created) - led to creation of new resource
     } catch (error) {
       //console.error('Error registering user:', error);
       res.status(500).json({ error: 'Failed to register user' }); // HTTP 500 (Internal Server Error) - unexpected condition
