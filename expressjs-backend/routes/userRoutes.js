@@ -12,20 +12,25 @@ require('dotenv').config();
 const connectionString = process.env.DB_CONNECTION_STRING; // stores supabase db connection string, allowing us to connect to supabase db
 
 const secretKey = process.env.JWT_SECRET_KEY; // stores jtw secret key
+console.log('JWT key:', secretKey);
+
 
 const oauth2Client = new google.auth.OAuth2(
-  process.env.REACT_APP_GOOGLE_CLIENT_ID, // Make sure these are correctly set in your .env file
+  process.env.REACT_APP_GOOGLE_CLIENT_ID,
   process.env.GOOGLE_CLIENT_SECRET,
-  'http://localhost:8000/users/auth/google/callback' // This must match the authorized redirect URIs in your Google Cloud Console
+  'https://haggle.onrender.com/users/auth/google/callback'
 );
+console.log('OAuth2 client initialized:', oauth2Client);
+console.log('Google Client ID:', process.env.REACT_APP_GOOGLE_CLIENT_ID);
+console.log('Google Client Secret:', process.env.GOOGLE_CLIENT_SECRET);
 
 // Create connection pool to connect to the database.
 function createConnection() {
-  // Pool is a cache of database connections. Allows pre-established connections to be reused instead of constantly opening/closing connections
+  console.log('Creating database connection...');
   const pool = new Pool({
     connectionString: connectionString,
   });
-  return pool
+  return pool;
 }
 
 // Asynchronous route handler to check if non-duplicate user info already exists in the database.
@@ -177,6 +182,97 @@ router.post('/login', async (req, res) => {
   }
 });
 
+router.get('/auth/google', (req, res) => {
+  const authUrl = oauth2Client.generateAuthUrl({
+    access_type: 'offline', // Indicates that we need to retrieve a refresh token
+    scope: 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile'
+  });
+  console.log('Generated Google Auth URL:', authUrl);
+  res.redirect(authUrl);
+});
+
+router.get('/users/auth/google/callback', async (req, res) => {
+  console.log('/users/auth/google/callback hit with query:', req.query);
+  try {
+    if (!req.query.code) {
+      console.error('No code received in query parameters');
+      return res.status(400).json({ error: 'No authorization code received' });
+    }
+    console.log('Authorization code received:', req.query.code);
+
+    const { tokens } = await oauth2Client.getToken(req.query.code);
+    console.log('Tokens received:', tokens);
+    if (!tokens) {
+      console.error('No tokens received');
+      return res.status(500).json({ error: 'Failed to exchange code for tokens' });
+    }
+    console.log('Tokens received:', tokens);
+
+    oauth2Client.setCredentials(tokens);
+
+    const oauth2 = google.oauth2({
+      auth: oauth2Client,
+      version: 'v2'
+    });
+    const userInfo = await oauth2.userinfo.get();
+    console.log('User info retrieved:', userInfo.data);
+
+    let user = await findUserByEmail(userInfo.data.email);
+    if (!user) {
+      user = await createUser({
+        email: userInfo.data.email,
+        name: userInfo.data.name,
+        googleId: userInfo.data.id
+      });
+    }
+
+    const token = jwt.sign(
+      { userId: user.id, email: user.email },
+      process.env.JWT_SECRET_KEY,
+      { expiresIn: '24h' }
+    );
+
+    res.redirect(`https://haggle.onrender.com/profile?token=${token}`);
+  } catch (error) {
+    console.error('Error in OAuth callback:', error);
+    res.status(500).json({ error: 'Authentication failed', details: error });
+  }
+});
+
+async function findUserByEmail(email) {
+  const connection = createConnection();
+  try {
+    console.log(`Searching for user by email: ${email}`);
+    const result = await connection.query(
+      'SELECT * FROM users WHERE email = $1',
+      [email]
+    );
+    console.log('Database query result:', result.rows);
+    return result.rows[0]; // returns undefined if no user is found
+  } catch (error) {
+    console.error('Database query error:', error);
+    throw error;
+  } finally {
+    await connection.end();
+    console.log('Database connection closed');
+  }
+}
+
+async function createUser(userData) {
+  const { email, name, googleId } = userData;
+  const connection = createConnection();
+  try {
+    const newUser = await connection.query(
+      'INSERT INTO users (email, "fullName", "googleId") VALUES ($1, $2, $3) RETURNING *',
+      [email, name, googleId]
+    );
+    await connection.end();
+    return newUser.rows[0]; // return the new user object
+  } catch (error) {
+    console.error('Error creating user:', error);
+    throw error;
+  }
+}
 
 // Retrieve profile information from token.
 router.get('/profile', verifyToken, async (req, res) => {
@@ -292,7 +388,7 @@ router.post('/forgot-password', async (req, res) => {
     await connection.query('UPDATE users SET "resetPasswordToken" = $1, "resetPasswordExpires" = $2 WHERE email = $3', [resetToken, resetExpires, email]);
 
     // create the reset password url using the token
-    const resetUrl = `http://localhost:3000/reset-password?token=${resetToken}`;
+    const resetUrl = `https://haggle.onrender.com/reset-password?token=${resetToken}`;
 
     // use nodemailer 
     const nodemailer = require('nodemailer');

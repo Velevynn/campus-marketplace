@@ -7,6 +7,9 @@ import { Link } from 'react-router-dom';
 import logoImage from '../assets/haggle-horizontal.png';
 import { FaEye, FaEyeSlash  } from 'react-icons/fa';
 import { Container, Form, LogoImage, ErrorLabel, InputGroup, Input, InputLabel, HeaderLabel, VisibilityToggle, Button, LinkedLabel, ForgotPasswordLabel, BottomContainer, BottomLabel } from './AuthenticationStyling';
+// import google for google login
+
+
 
 // LoginPage component for handling user login
 function LoginPage() {
@@ -50,6 +53,17 @@ function LoginPage() {
     }
   };
 
+  const handleGoogleLogin = () => {
+    const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+
+    console.log('Google Client IDDDD:', clientId);
+
+    const redirectUri = 'https://haggle.onrender.com/login';
+    const scope = encodeURI('email profile');
+    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&access_type=offline&prompt=consent`;
+    window.location.href = authUrl;
+  };
+
   // Effect hook to update the form validity based on the credentials state
   useEffect(() => {
     const isValid = credentials.identifier.length > 0 && credentials.password.length > 0;
@@ -73,6 +87,7 @@ function LoginPage() {
             </ErrorLabel>
           )}
           <InputGroup>
+            <InputLabel htmlFor="identifier" hasContent={credentials.identifier.length > 0}>Email, Phone, or Username</InputLabel>
             <Input
               type="text"
               name="identifier"
@@ -81,10 +96,10 @@ function LoginPage() {
               onChange={handleChange}
               hasContent={credentials.identifier.length > 0}
               required/>
-            <InputLabel htmlFor="identifier" hasContent={credentials.identifier.length > 0}>Email, Phone, or Username</InputLabel>
           </InputGroup>
 
           <InputGroup>
+            <InputLabel htmlFor="password" hasContent={credentials.password.length > 0}>Password</InputLabel>
             <Input
               type={passwordVisible ? "text" : "password"}
               name="password"
@@ -93,7 +108,6 @@ function LoginPage() {
               onChange={handleChange}
               hasContent={credentials.password.length > 0}
               required/>
-            <InputLabel htmlFor="password" hasContent={credentials.password.length > 0}>Password</InputLabel>
             <VisibilityToggle onClick={togglePasswordVisibility}>
                 {passwordVisible ? <FaEye /> : <FaEyeSlash />}
             </VisibilityToggle>
@@ -101,6 +115,10 @@ function LoginPage() {
 
           <Button type="submit" disabled={!isFormValid}>
               Log in
+          </Button>
+
+          <Button onClick={handleGoogleLogin} style={{ background: '#DB4437', marginTop: '10px' }}>
+            Continue with Google
           </Button>
 
           <LinkedLabel>

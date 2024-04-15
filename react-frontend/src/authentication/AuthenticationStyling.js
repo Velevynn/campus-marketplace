@@ -56,7 +56,7 @@ export const SuccessLabel = styled.label`
 // InputGroup styled component for grouping input fields and their labels
 export const InputGroup = styled.div`
   position: relative;
-  margin-bottom: 0px;
+  margin-bottom: 8px;
   width: 320px;
 `;
 
@@ -83,9 +83,10 @@ export const InputLabel = styled.label`
 // Input styled component for customizing text inputs
 export const Input = styled.input`
   width: 100%;
-  padding-top: ${(props) => (props.hasContent ? "20px" : "12px")};
+  padding-top: ${(props) => (props.hasContent ? "20px" : "14px")};
   padding-bottom: ${(props) => (props.hasContent ? "8px" : "8px")}
-  line-height: ${props => props.hasContent ? "24px" : "18px"};
+  line-height: ${props => props.hasContent ? "24px" : "14px"};
+
   height: 40px;
   border: 1px solid #ddd;
   border-radius: 4px;
