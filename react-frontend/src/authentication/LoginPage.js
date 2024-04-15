@@ -54,7 +54,8 @@ function LoginPage() {
 
   const handleGoogleLogin = () => {
     const clientId = '71122616560-tv80mel7fi0s2etitj1enhk192v06h0e.apps.googleusercontent.com';
-    const redirectUrl = 'https://haggle.onrender.com/users/auth/google/callback';
+
+    const redirectUrl = 'http://localhost:3000/additional-details';
     const scope = encodeURI('email profile');
     const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUrl}&response_type=code&scope=${scope}&access_type=offline&prompt=consent`;
     window.location.href = authUrl;
