@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import ImageCarousel from "../components/ImageCarousel.js";
@@ -6,80 +6,52 @@ import LoadingSpinner from "../components/LoadingSpinner.js";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from 'react-router-dom';
 
+//TODO: Bookmark -> useEffect to grab current status, toggle on button 
+
 const ListingView = () => {
   const { listingID } = useParams();
   const [listing, setListing] = useState(null);
   const [images, setImages] = useState([]);
   const [isOwner, setIsOwner] = useState(false);
   const [isBookmarked, setBookmark] = useState(false);
-  const hasPageBeenRendered = useRef({ activateBookmark: false });
   const [loggedID, setLoggedID] = useState(null);
-  const [toggledBookmark, setBookmarkToggle] = useState(false);
 
   const navigate = useNavigate();
   console.log(setIsOwner);
   /* hook to fetch data when listingID changes */
 
+
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         /* get data of listing by its ID */
-        const response = await axios.get(
+        const listingData = await axios.get(
           `https://haggle.onrender.com/listings/${listingID}`,
         );
-        
         /* set fetched data to state */
-        if (response.data.length > 0) {
-          setListing(response.data[0]);
+        if (listingData.data.length > 0) {
+          setListing(listingData.data[0]);
+
           /* check currently logged-in userID */
-          const token = localStorage.getItem("token"); // Retrieve the JWT token from localStorage
-          if(token){
-            const decodedToken = jwtDecode(token); // Decode the token
-            const username = decodedToken.username; // Extract the username from the token
-            try {
-              // Make a request to the backend to fetch the userID based on the username
-              const response2 = await axios.get(`https://haggle.onrender.com/users/userID`, { 
-                params: {
-                  'username': username
-                }
-              }, {
-                headers: {
-                  'Authorization': `Bearer ${token}`
-                }
-              });
-        
-              const loggedInUserID = response2.data.userID;
-              setLoggedID(loggedInUserID);
-              setIsOwner(response.data[0].userID === loggedInUserID); // If userIDs are the same, we know this user owns this listing
-              console.log("logged in userID: ", loggedInUserID);
-              console.log("Params passed into initial bookmark status check: ", loggedInUserID, listingID);
+          const userID = fetchUserID();
 
+          // Check if user is logged in.
+          if (userID) {
+            console.log("User is logged in.")
+            setLoggedID(userID)
+            setIsOwner(listingData.data[0].userID === userID);
+            console.log("State: logged in userID", loggedID);
+            console.log("Params passed into initial bookmark status check: ", userID, listingID);
 
-              try {
-                // Check if a bookmark exists.
-                const bookmarked = await axios.get('https://haggle.onrender.com/listings/${listingID}/bookmark', {
-                  params: {
-                    'userID': loggedInUserID,
-                    'listingID': listingID
-                  }
-                })
-
-                if (bookmarked.status == 200) {
-                  setBookmark(true);
-                }
-              }
-              catch (error) {
-                console.log("Error while retrieving initial bookmark status: ", error);
-              }
-            }
-            catch (error) {
-              console.log(error);
-            }
-
-          } else{
-            console.log("user not logged in or token not found");
+            // Check initial bookmark status.
+            fetchBookmark()
           }
-          console.log(response.data);
+          
+          // User is not logged in or token is not found.
+          else{
+            console.log("User is not logged in or token not found");
+          }
         }
       } catch (error) {
         console.error("Error fetching listing:", error);
@@ -129,71 +101,6 @@ const ListingView = () => {
     return message;
   }
 
-  // TODO: 
-  // Change visual state
-  // Make Protected Route (arbitrary webpage in App.js?)
-
-  /* Hook to change bookmark status when bookmark button is clicked. */
-  useEffect(() => {
-    const changeBookmark = async () => {
-      // Ignore first activation on web page load and ignore initial bookmark check.
-      if (hasPageBeenRendered.current["activateBookmark"] && toggledBookmark) {
-        // Check if user is loggedIn
-        console.log("Logged ID for bookmark check: ", loggedID);
-        if (loggedID) {
-          if (isBookmarked) {
-            // Make call to backend to add bookmark.
-            console.log("Create bookmark called.");
-            // Create Bookmark in database.
-            const createBookmark = async () => {
-              // Post bookmark to database.
-              console.log("Create Bookmark clicked for listing: ", listing);
-              try {
-                console.log("Posting bookmark with userID", loggedID, "and listingID", listingID);
-                await axios.post(
-                  `https://haggle.onrender.com/listings/${listingID}/bookmark`, {
-                    params: {
-                      'userID': loggedID,
-                      'listingID': listingID
-                    }
-                  }
-                )
-                console.log("Posted bookmark.")
-              }
-              // Set an error while posting the bookmark data.
-              catch (error) {
-                console.error("Error creating bookmark: ", error)
-              }
-            };
-            createBookmark();
-          }
-          else if (!isBookmarked) {
-            // Make call to backend to delete bookmark.
-            console.log("Delete bookmark called.");
-            // Delete bookmark from database.
-            const deleteBookmark = async () => {
-              console.log("Delete Bookmark clicked for listing: ", listing);
-              try {
-                console.log("Deleting bookmark.");
-                const response = await axios.delete('https://haggle.onrender.com/listings/${listingID}/bookmark')
-                // TODO: Handle Response
-                console.log("Deleted bookmark: ", response);
-              }
-              catch (error) {
-                console.error("Error deleting bookmark on frontend: ", error);
-              }
-            };
-            deleteBookmark();
-          }
-        }
-      }
-      // Set bookmark hook to be active only after first load.
-      hasPageBeenRendered.current["activateBookmark"] = true;
-    }
-    changeBookmark();
-  }, [isBookmarked]);
-  
-
 
   const handleBuyNow = () => {
     /* Add logic for handling "Buy Now" action */
@@ -234,16 +141,105 @@ const ListingView = () => {
   };
 
   // Toggle the local bookmark status.
-  const toggleBookmark = () => {
+  const toggleBookmark = async () => {
     console.log("Toggle Bookmark clicked for listing: ", listing);
-    setBookmarkToggle(true);
     console.log("Current bookmark status: ", isBookmarked);
-    setBookmark(!isBookmarked);
+    // If the listing is not currently bookmarked, bookmark it.
+    if (!isBookmarked) {
+      console.log("Posting bookmark with userID", loggedID, "and listingID", listingID);
+      createBookmark();
+      setBookmark(true);
+    }
+    // If the listing is currently bookmarked, remove it.
+    else if (isBookmarked) {
+      console.log("Deleting bookmark with userID:", loggedID, "and listingID:", listingID);
+      deleteBookmark();
+      setBookmark(false);
+    }
     console.log("New bookmark status: ", isBookmarked);
   }
 
-  
+  const createBookmark = async () => {
+    console.log("Entered createBookmark");
+    try {
+      await axios.post(
+        `https://haggle.onrender.com/listings/${listingID}/bookmark`, {
+          'userID': loggedID,
+          'listingID': listingID
+        }
+      )
+      console.log("Posted bookmark.")
+    }
+    // Set an error while posting the bookmark data.
+    catch (error) {
+      console.error("Error posting bookmark: ", error)
+    }
+  }
 
+  const deleteBookmark = async () => {
+    console.log("Entered deleteBookmark");
+    try {
+      await axios.delete(
+        'https://haggle.onrender.com/listings/${listingID}/bookmark', {
+          'userID': loggedID,
+          'listingID': listingID
+        }
+      )
+    }
+    // Set an error while deleting the bookmark data.
+    catch (error) {
+      console.error("Error deleting bookmark: ", error);
+    }
+  }
+
+  const fetchUserID = async () => {
+    console.log("Fetching userID from JWT token.");
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      const username = decodedToken.username;
+      console.log("Decoded username:", username);
+      try {
+        // Make a request to the backend to fetch the userID based on the username
+        const userData = await axios.get(`https://haggle.onrender.com/users/userID`, { 
+          params: {
+            'username': username
+          }
+        }, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        return userData.data.userID;
+      }
+      catch (error) {
+        console.log("Error while fetching userID from JWT token:", error);
+      }
+    }
+    // return null if there is no token
+    return null;
+  }
+
+  const fetchBookmark = async () => {
+    console.log("Fetching initial bookmark status with userID:", loggedID)
+    try {
+      // Check if a bookmark exists.
+      const bookmarked = await axios.get('https://haggle.onrender.com/listings/${listingID}/bookmark', {
+        params: {
+          'userID': loggedID,
+          'listingID': listingID
+        }
+      })
+
+      if (bookmarked.status == 200) {
+        setBookmark(true);
+      }
+    }
+    catch (error) {
+      console.log("Error while retrieving initial bookmark status: ", error);
+    }
+  }
   
 
   if (!listing) {
@@ -252,6 +248,7 @@ const ListingView = () => {
     );
   }
 
+  // TODO: Find images for the bookmark toggle
   /* first check if listing data is available, then render */
   return (
     <div className="medium-container">
@@ -276,7 +273,7 @@ const ListingView = () => {
             <button className="margin-right" onClick={handleBuyNow}>Buy Now</button>
             <button className="margin-right" onClick={handleMakeOffer}>Make Offer</button>
             <button className="margin-right" onClick={handleStartChat}>Start a Chat</button>
-            <button className="margin-right" onClick={toggleBookmark}>Bookmark</button>
+            <button className="margin-right" onClick={toggleBookmark}>{isBookmarked ? 'Unbookmark' : 'Bookmark'}</button>
         </div>
     </div>
   );

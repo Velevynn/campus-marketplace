@@ -47,21 +47,18 @@ router.post("/", upload.array('image'), async (req, res) => {
 
 // Bookmark a listing.
 router.post("/:listingID/bookmark/", async (req, res) => {
-  console.log("Received query when bookmarking listing: ", req.query);
-  console.log("Received params when bookmarking listing: ", req.params);
   console.log("Received body when bookmarking listing: ", req.body);
-    try {
-        // Extract listingID and userID from query parameters.
-        console.log("Extracted and stored params: ", req.query.userID, req.query.listingID)
-
-        // Add new relationship to bookmark table.
-        await addBookmark(req.query.userID, req.query.listingID);
-        res.status(201).send
-      }
-    catch (error) {
-      console.error("Error adding bookmark: ", error);
-      res.status(500).json({ error: "Failed to add bookmark" });
-    }
+  console.log(".userID: ", req.body.userID);
+  console.log(".listingID", req.body.listingID);
+  try {
+    // Add new relationship to bookmark table.
+    await addBookmark(req.body.userID, req.body.listingID);
+    res.status(201).send
+  }
+  catch (error) {
+    console.error("Error adding bookmark: ", error);
+    res.status(500).json({ error: "Failed to add bookmark." });
+  }
 });
 
 
@@ -193,10 +190,10 @@ router.get("/images/:listingID/", async (req, res) => {
 // Check if a bookmark exists between a user and listing.
 router.get("/:listingID/bookmark/", async (req, res) => {
   console.log("Parameters received from frontend in backend request: ", req.query);
-  try {
-    console.log("listingID extracted from frontend in backend request: ", req.query.listingID);
-    console.log("userID extracted from frontend in backend request: ", req.query.userID);
+  console.log("listingID extracted from frontend in backend request: ", req.query.listingID);
+  console.log("userID extracted from frontend in backend request: ", req.query.userID);
 
+  try {
     const connection = createConnection();
     const { rows } = await connection.query('SELECT * FROM bookmarks WHERE "userID" = $1 AND "listingID" = $2',
       [
