@@ -192,22 +192,9 @@ router.get('/auth/google', (req, res) => {
 });
 
 router.get('/auth/google/callback', async (req, res) => {
-  console.log('/auth/google/callback hit with query:', req.query);
+  // Existing Google callback code
   try {
-    if (!req.query.code) {
-      console.error('No code received in query parameters');
-      return res.status(400).json({ error: 'No authorization code received' });
-    }
-    console.log('Authorization code received:', req.query.code);
-
     const { tokens } = await oauth2Client.getToken(req.query.code);
-    console.log('Tokens received:', tokens);
-    if (!tokens) {
-      console.error('No tokens received');
-      return res.status(500).json({ error: 'Failed to exchange code for tokens' });
-    }
-    console.log('Tokens received:', tokens);
-
     oauth2Client.setCredentials(tokens);
 
     const oauth2 = google.oauth2({
@@ -215,24 +202,10 @@ router.get('/auth/google/callback', async (req, res) => {
       version: 'v2'
     });
     const userInfo = await oauth2.userinfo.get();
-    console.log('User info retrieved:', userInfo.data);
 
-    let user = await findUserByEmail(userInfo.data.email);
-    if (!user) {
-      user = await createUser({
-        email: userInfo.data.email,
-        name: userInfo.data.name,
-        googleId: userInfo.data.id
-      });
-    }
-
-    const token = jwt.sign(
-      { userId: user.id, email: user.email },
-      process.env.JWT_SECRET_KEY,
-      { expiresIn: '24h' }
-    );
-
-    res.redirect(`https://haggle.onrender.com/profile?token=${token}`);
+    // Temporarily store user info (consider using sessions or a temporary store)
+    // Redirect to additional input page
+    res.redirect(`/additional-details?email=${encodeURIComponent(userInfo.data.email)}&name=${encodeURIComponent(userInfo.data.name)}`);
   } catch (error) {
     console.error('Error in OAuth callback:', error);
     res.status(500).json({ error: 'Authentication failed', details: error });
@@ -273,6 +246,24 @@ async function createUser(userData) {
     throw error;
   }
 }
+
+router.post('/register-google-user', async (req, res) => {
+  const { email, name, username, phoneNumber } = req.body;
+  try {
+    const connection = createConnection();
+    const result = await connection.query(
+      'INSERT INTO users (email, "fullName", username, "phoneNumber") VALUES ($1, $2, $3, $4) RETURNING *',
+      [email, name, username, phoneNumber]
+    );
+    connection.end();
+    const user = result.rows[0];
+    const token = jwt.sign({ userId: user.id, email: user.email }, process.env.JWT_SECRET_KEY, { expiresIn: '24h' });
+    res.status(201).json({ message: 'User registered successfully', token });
+  } catch (error) {
+    console.error('Error registering Google user:', error);
+    res.status(500).json({ error: 'Failed to register user' });
+  }
+});
 
 // Retrieve profile information from token.
 router.get('/profile', verifyToken, async (req, res) => {
