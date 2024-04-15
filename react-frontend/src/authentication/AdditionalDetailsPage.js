@@ -38,7 +38,11 @@ function AdditionalDetailsPage() {
       navigate('/profile'); // Redirect to profile page
     } catch (error) {
       console.error('Registration failed:', error);
-      setErrorMessage('Registration failed. Please try again.');
+      if (error.response) {
+        setErrorMessage(`Registration failed: ${error.response.data.error}`);
+      } else {
+        setErrorMessage(`Registration failed: ${error.message}`);
+      }
     }
   };
 
