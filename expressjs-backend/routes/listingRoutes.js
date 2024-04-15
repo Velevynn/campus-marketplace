@@ -196,16 +196,14 @@ router.get("/images/:listingID/", async (req, res) => {
 router.get("/:listingID/bookmark/", async (req, res) => {
   console.log("Parameters received from frontend in backend request: ", req.query);
   try {
-    const { listingID } = req.query.listingID;
-    const { userID } = req.query.userID;
-    console.log("listingID extracted from frontend in backend request: ", listingID);
-    console.log("userID extracted from frontend in backend request: ", userID);
+    console.log("listingID extracted from frontend in backend request: ", req.query.listingID);
+    console.log("userID extracted from frontend in backend request: ", req.query.userID);
 
     const connection = createConnection();
     const { rows } = await connection.query('SELECT * FROM bookmarks WHERE "userID" = $1 AND "listingID" = $2',
       [
-        userID,
-        listingID
+        req.query.userID,
+        req.query.listingID
       ])
 
     console.log("Returned rows from delete call in bookmark backend.")
