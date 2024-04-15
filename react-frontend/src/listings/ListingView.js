@@ -63,8 +63,10 @@ const ListingView = () => {
                     'listingID': listingID
                   }
                 })
-                // Set the bookmarked value to true or false.
-                setBookmark(bookmarked);
+
+                if (bookmarked.status == 200) {
+                  setBookmark(true);
+                }
               }
               catch (error) {
                 console.log("Error while retrieving initial bookmark status: ", error);
@@ -142,11 +144,45 @@ const ListingView = () => {
           if (isBookmarked) {
             // Make call to backend to add bookmark.
             console.log("Create bookmark called.");
+            // Create Bookmark in database.
+            const createBookmark = async () => {
+              // Post bookmark to database.
+              console.log("Create Bookmark clicked for listing: ", listing);
+              try {
+                console.log("Posting bookmark with userID", loggedID, "and listingID", listingID);
+                await axios.post(
+                  `https://haggle.onrender.com/listings/${listingID}/bookmark`, {
+                    params: {
+                      'userID': loggedID,
+                      'listingID': listingID
+                    }
+                  }
+                )
+                console.log("Posted bookmark.")
+              }
+              // Set an error while posting the bookmark data.
+              catch (error) {
+                console.error("Error creating bookmark: ", error)
+              }
+            };
             createBookmark();
           }
           else if (!isBookmarked) {
             // Make call to backend to delete bookmark.
             console.log("Delete bookmark called.");
+            // Delete bookmark from database.
+            const deleteBookmark = async () => {
+              console.log("Delete Bookmark clicked for listing: ", listing);
+              try {
+                console.log("Deleting bookmark.");
+                const response = await axios.delete('https://haggle.onrender.com/listings/${listingID}/bookmark')
+                // TODO: Handle Response
+                console.log("Deleted bookmark: ", response);
+              }
+              catch (error) {
+                console.error("Error deleting bookmark on frontend: ", error);
+              }
+            };
             deleteBookmark();
           }
         }
@@ -206,41 +242,9 @@ const ListingView = () => {
     console.log("New bookmark status: ", isBookmarked);
   }
 
-  // Create Bookmark in database.
-  const createBookmark = async () => {
-    // Post bookmark to database.
-    console.log("Create Bookmark clicked for listing: ", listing);
-    try {
-      console.log("Posting bookmark.");
-      await axios.post(
-        `https://haggle.onrender.com/listings/${listingID}/bookmark`, {
-          params: {
-            'userID': loggedID,
-            'listingID': listingID
-          }
-        }
-      )
-      console.log("Posted bookmark.")
-    }
-    // Set an error while posting the bookmark data.
-    catch (error) {
-      console.error("Error creating bookmark: ", error)
-    }
-  };
+  
 
-  // Delete bookmark from database.
-  const deleteBookmark = async () => {
-    console.log("Delete Bookmark clicked for listing: ", listing);
-    try {
-      console.log("Deleting bookmark.");
-      const response = await axios.delete('https://haggle.onrender.com/listings/${listingID}/bookmark')
-      // TODO: Handle Response
-      console.log("Deleted bookmark: ", response);
-    }
-    catch (error) {
-      console.error("Error deleting bookmark on frontend: ", error);
-    }
-  };
+  
 
   if (!listing) {
     return (
