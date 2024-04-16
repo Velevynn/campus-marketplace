@@ -193,8 +193,7 @@ router.get('/auth/google', (req, res) => {
 
 router.get('/auth/google/callback', async (req, res) => {
   try {
-    const { tokens } = await oauth2Client.getToken(req.query.code); // Exchange code for tokens
-    console.log("tokens: ", tokens);
+    const { tokens } = await oauth2Client.getToken(req.query.code);
     oauth2Client.setCredentials(tokens);
 
     const oauth2 = google.oauth2({
@@ -203,40 +202,23 @@ router.get('/auth/google/callback', async (req, res) => {
     });
     const userInfo = await oauth2.userinfo.get();
 
-    try {
-      const connection = createConnection();
-      console.log("Connected Successfully in callback");
-      // check if the user already exists in the database
-      const existingUser = await connection.query(
-        'SELECT * FROM users WHERE email = $1',
-        [email]
-      );
+    const connection = createConnection();
+    const { rows: existingUsers } = await connection.query(
+      'SELECT * FROM users WHERE email = $1',
+      [userInfo.data.email]
+    );
 
-      console.log("Existing User: ", existingUser)
-  
-      if (existingUser.rows.length > 0) { // if user exists...
-        console.log("user exists");
-        const user = existingUser.rows[0];
-        const token = jwt.sign({ username: user.username }, secretKey, { expiresIn: '24h' });
-
-        console.log("JWT Token: ", token);
-        res.redirect(`http://localhost:3000/profile`);
-        
-      } else {
-        console.log("User doesn't exist");
-        // Now redirect to your client-side route with the user info
-        res.redirect(`http://localhost:3000/additional-details?email=${encodeURIComponent(userInfo.data.email)}&name=${encodeURIComponent(userInfo.data.name)}`);
-
-      }
-  
-    } catch (error) {
-      console.error('Error registering Google user:', error);
-      res.status(500).json({ error: 'Failed to register user' });
+    if (existingUsers.length > 0) {
+      const user = existingUsers[0];
+      const token = jwt.sign({ username: user.username }, secretKey, { expiresIn: '24h' });
+      res.redirect(`http://localhost:3000/profile?token=${encodeURIComponent(token)}`);
+    } else {
+      // Redirect to a registration page if user does not exist
+      res.redirect(`http://localhost:3000/additional-details?email=${encodeURIComponent(userInfo.data.email)}&name=${encodeURIComponent(userInfo.data.name)}`);
     }
-    
-    } catch (error) {
+  } catch (error) {
     console.error('Error in OAuth callback:', error);
-    res.status(500).json({ error: 'Authentication failed', bruh: tokens, details: error });
+    res.status(500).json({ error: 'Authentication failed', details: error });
   }
 });
 
