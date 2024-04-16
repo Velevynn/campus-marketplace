@@ -203,9 +203,35 @@ router.get('/auth/google/callback', async (req, res) => {
     });
     const userInfo = await oauth2.userinfo.get();
 
-    // Now redirect to your client-side route with the user info
-    res.redirect(`http://localhost:3000/additional-details?email=${encodeURIComponent(userInfo.data.email)}&name=${encodeURIComponent(userInfo.data.name)}`);
-  } catch (error) {
+    try {
+      const connection = createConnection();
+      console.log("Connected Successfully in callback");
+      // check if the user already exists in the database
+      const existingUser = await connection.query(
+        'SELECT * FROM users WHERE email = $1',
+        [email]
+      );
+
+      console.log("Existing User: ", existingUser)
+  
+      if (existingUser.rows.length > 0) { // if user exists...
+        const user = existingUser.rows[0];
+        const token = jwt.sign({ username: user.username }, secretKey, { expiresIn: '24h' });
+
+        console.log("JWT Token: ", token);
+        
+      } else {
+        // Now redirect to your client-side route with the user info
+        res.redirect(`http://localhost:3000/additional-details?email=${encodeURIComponent(userInfo.data.email)}&name=${encodeURIComponent(userInfo.data.name)}`);
+
+      }
+  
+    } catch (error) {
+      console.error('Error registering Google user:', error);
+      res.status(500).json({ error: 'Failed to register user' });
+    }
+    
+    } catch (error) {
     console.error('Error in OAuth callback:', error);
     res.status(500).json({ error: 'Authentication failed', bruh: tokens, details: error });
   }

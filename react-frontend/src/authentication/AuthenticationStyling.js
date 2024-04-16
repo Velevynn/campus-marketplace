@@ -83,9 +83,9 @@ export const InputLabel = styled.label`
 // Input styled component for customizing text inputs
 export const Input = styled.input`
   width: 100%;
-  padding-top: ${(props) => (props.hasContent ? "20px" : "14px")};
+  padding-top: ${(props) => (props.hasContent ? "22px" : "14px")};
   padding-bottom: ${(props) => (props.hasContent ? "8px" : "8px")}
-  line-height: ${props => props.hasContent ? "24px" : "14px"};
+  line-height: ${props => props.hasContent ? "22px" : "16px"};
 
   height: 40px;
   border: 1px solid #ddd;
@@ -124,7 +124,9 @@ export const LinkedLabel = styled.label`
 // Main button styling with hover, focus, and disabled states for visual feedback
 export const Button = styled.button`
   padding: 8px;
-  background-color: #16A44A;
+  background-color: #14A44A;
+  align-items: center;  // Align items vertically
+  justify-content: center;  // Center content horizontally
   color: white;
   border: none;
   margin-top: 10px;
@@ -141,9 +143,9 @@ export const Button = styled.button`
 
   &:focus,
   &:active {
-    background-color: #16A44A; // Keep the original green color
+    background-color: #14A44A; // Keep the original green color
     outline: none; // Removes the default focus outline
-    border-color: #16A44A; // Ensures the border color stays consistent
+    border-color: #14A44A; // Ensures the border color stays consistent
     box-shadow: 0 0 0 2px rgba(22, 164, 74, 0.5); // Optional: Adds a custom focus glow
   }
 
@@ -189,6 +191,15 @@ text-align: center;
 margin-top: 20px;
 margin-bottom: 10px;
 font-weight: normal;
+`;
+
+export const GoogleImage = styled.img`
+  width: 20px;  // Adjusted width for better visual balance
+  height: 20px;  // Keep height and width the same for a square aspect ratio
+  margin-right: 50px;  // Adds spacing between the image and the text
+  margin-left: -60px;  // Moves the image 5px to the left
+  vertical-align: middle;  // Aligns the image vertically with text
+  object-fit: cover;
 `;
 
 /*
@@ -318,3 +329,5 @@ export const Rule = styled.div`
   font-size: 12px;
   color: ${props => props.isValid ? 'green' : 'red'};
 `;
+
+

@@ -6,8 +6,8 @@ import { Link } from 'react-router-dom';
 // Importing logo, icons, and styled components for UI
 import logoImage from '../assets/haggle-horizontal.png';
 import { FaEye, FaEyeSlash  } from 'react-icons/fa';
-import { Container, Form, LogoImage, ErrorLabel, InputGroup, Input, InputLabel, HeaderLabel, VisibilityToggle, Button, LinkedLabel, ForgotPasswordLabel, BottomContainer, BottomLabel } from './AuthenticationStyling';
-
+import { Container, Form, LogoImage, ErrorLabel, InputGroup, Input, InputLabel, HeaderLabel, VisibilityToggle, Button, GoogleImage, LinkedLabel, ForgotPasswordLabel, BottomContainer, BottomLabel } from './AuthenticationStyling';
+import googlepng from '../assets/google.png';
 
 
 // LoginPage component for handling user login
@@ -114,8 +114,9 @@ function LoginPage() {
               Log in
           </Button>
 
-          <Button onClick={handleGoogleLogin} style={{ background: '#DB4437', marginTop: '10px' }}>
-            Continue with Google
+          <Button onClick={handleGoogleLogin} style={{ background: '#14A44A' , padding: '6px'}}>
+            <GoogleImage src={googlepng} alt="google"></GoogleImage>
+            <span style={{ position: 'relative', top: '2px' }}>Continue with Google</span>
           </Button>
 
           <LinkedLabel>

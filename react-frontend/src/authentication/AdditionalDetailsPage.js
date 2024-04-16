@@ -50,42 +50,50 @@ function AdditionalDetailsPage() {
   };
 
   return (
-    <Container>
-      <LogoImage src={logoImage} alt="Haggle Logo"/>
-      <Form onSubmit={handleSubmit}>
-        <HeaderLabel>Complete Your Registration</HeaderLabel>
-        {errorMessage && <ErrorLabel>{errorMessage}</ErrorLabel>}
-        <InputGroup>
-          <InputLabel htmlFor="username">Username</InputLabel>
-          <Input
-            type="text"
-            name="username"
-            id="username"
-            value={userData.username}
-            onChange={handleChange}
-            required
-          />
-        </InputGroup>
-        <InputGroup>
-          <Input
-            type="tel"
-            name="phoneNumber"
-            id="phoneNumber"
-            value={userData.phoneNumber}
-            onChange={handleChange}
-            required
-          />
-          <InputLabel htmlFor="phoneNumber">Phone Number</InputLabel>
-        </InputGroup>
-        <Button type="submit" disabled={!isFormValid}>
-          Complete Registration
-        </Button>
-        <LinkedLabel>
-          By registering you agree to our <Link to="/terms-of-service">Terms of Service</Link> and acknowledge our <Link to="/privacy-policy">Privacy Policy</Link>.
-        </LinkedLabel>
-      </Form>
-    </Container>
+    <>
+      <Container>
+        <LogoImage src={logoImage} alt="Haggle Logo"/>
+        <Form onSubmit={handleSubmit}>
+          <HeaderLabel>Complete Your Registration</HeaderLabel>
+          {errorMessage && <ErrorLabel>{errorMessage}</ErrorLabel>}
+          <InputGroup>
+            <InputLabel htmlFor="username" hasContent={userData.username.trim().length > 0}>Username</InputLabel>
+            <Input
+              type="text"
+              name="username"
+              id="username"
+              value={userData.username}
+              onChange={handleChange}
+              hasContent={userData.username.trim().length > 0}
+              required
+            />
+          </InputGroup>
+
+          <InputGroup>
+            <InputLabel htmlFor="phoneNumber" hasContent={userData.phoneNumber.trim().length > 0}>Phone Number</InputLabel>
+            <Input
+              type="tel"
+              name="phoneNumber"
+              id="phoneNumber"
+              value={userData.phoneNumber}
+              onChange={handleChange}
+              hasContent={userData.phoneNumber.trim().length > 0}
+              required
+            />
+          </InputGroup>
+
+          <Button type="submit" disabled={!isFormValid}>
+            Complete Registration
+          </Button>
+
+          <LinkedLabel>
+            By registering you agree to our <Link to="/terms-of-service">Terms of Service</Link> and acknowledge our <Link to="/privacy-policy">Privacy Policy</Link>.
+          </LinkedLabel>
+
+        </Form>
+      </Container>
+    </>
   );
-} // comment
+}
 
 export default AdditionalDetailsPage;
