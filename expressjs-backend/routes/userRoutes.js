@@ -215,12 +215,15 @@ router.get('/auth/google/callback', async (req, res) => {
       console.log("Existing User: ", existingUser)
   
       if (existingUser.rows.length > 0) { // if user exists...
+        console.log("user exists");
         const user = existingUser.rows[0];
         const token = jwt.sign({ username: user.username }, secretKey, { expiresIn: '24h' });
 
         console.log("JWT Token: ", token);
+        res.redirect(`http://localhost:3000/profile`);
         
       } else {
+        console.log("User doesn't exist");
         // Now redirect to your client-side route with the user info
         res.redirect(`http://localhost:3000/additional-details?email=${encodeURIComponent(userInfo.data.email)}&name=${encodeURIComponent(userInfo.data.name)}`);
 
