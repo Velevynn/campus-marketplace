@@ -212,28 +212,46 @@ router.get('/auth/google/callback', async (req, res) => {
 });
 
 router.post('/register-google-user', async (req, res) => {
-  // console.log("Received data:", req.body); 
   const { email, name, username, phoneNumber } = req.body;
+
   try {
     const connection = createConnection();
+
+    // check if the user already exists in the database
+    const existingUser = await connection.query(
+      'SELECT * FROM users WHERE email = $1',
+      [email]
+    );
+
+    if (existingUser.rows.length > 0) {
+      const user = existingUser.rows[0];
+      
+      // if the user exists and has a password, they should use their Haggle credentials to log in
+      if (user.password) {
+        return res.status(409).json({ error: 'User exists with a password. Please use Haggle credentials to log in.' });
+      }
+
+      // if the user exists and does not have a password, continue the registration process
+      const token = jwt.sign({ username: user.username }, secretKey, { expiresIn: '24h' });
+      return res.status(200).json({ message: 'User logged in successfully via Google', token });
+    }
+
+    // if the user does not exist in the database, insert new user details
     const result = await connection.query(
       'INSERT INTO users (email, "fullName", username, "phoneNumber") VALUES ($1, $2, $3, $4) RETURNING *',
       [email, name, username, phoneNumber]
     );
-    connection.end();
-    const user = result.rows[0];
-    const token = jwt.sign({ username: user.username }, secretKey, { expiresIn: '24h' });
-    // console.log("Registration successful:", user);
-    res.status(201).json({ message: 'User registered successfully', token });
+    const newUser = result.rows[0];
+    const token = jwt.sign({ username: newUser.username }, secretKey, { expiresIn: '24h' });
+    res.status(201).json({ message: 'User registered successfully via Google', token });
+
   } catch (error) {
     console.error('Error registering Google user:', error);
     res.status(500).json({ error: 'Failed to register user' });
   }
 });
 
-// Retrieve profile information from token.
 router.get('/profile', verifyToken, async (req, res) => {
-    // Extract username from token.
     const username = req.user.username;
 
     try {
