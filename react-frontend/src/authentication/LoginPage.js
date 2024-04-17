@@ -59,6 +59,7 @@ function LoginPage() {
     const scope = encodeURI('email profile');
     const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUrl}&response_type=code&scope=${scope}&access_type=offline&prompt=consent`;
     window.location.href = authUrl;
+    
   };
 
   // Effect hook to update the form validity based on the credentials state

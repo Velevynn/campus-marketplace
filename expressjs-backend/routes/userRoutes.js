@@ -193,14 +193,14 @@ router.get('/auth/google', (req, res) => {
 
 router.get('/auth/google/callback', async (req, res) => {
   try {
-    const { tokens } = await oauth2Client.getToken(req.query.code);
+    const { tokens } = await oauth2Client.getToken(req.query.code); // Exchange the authorization code for tokens
     oauth2Client.setCredentials(tokens);
 
     const oauth2 = google.oauth2({
       auth: oauth2Client,
       version: 'v2'
     });
-    const userInfo = await oauth2.userinfo.get();
+    const userInfo = await oauth2.userinfo.get(); // Get user info
 
     const connection = createConnection();
     const { rows: existingUsers } = await connection.query(
@@ -208,12 +208,11 @@ router.get('/auth/google/callback', async (req, res) => {
       [userInfo.data.email]
     );
 
-    if (existingUsers.length > 0) {
+    if (existingUsers.length > 0) { // if there is a user returned from the select statement...
       const user = existingUsers[0];
       const token = jwt.sign({ username: user.username }, secretKey, { expiresIn: '24h' });
-      res.redirect(`http://localhost:3000/profile?token=${encodeURIComponent(token)}`);
-    } else {
-      // Redirect to a registration page if user does not exist
+      res.status(200).json({ message: 'User logged in successfully', token });
+    } else { // if there isnt a user returned from the select statement...
       res.redirect(`http://localhost:3000/additional-details?email=${encodeURIComponent(userInfo.data.email)}&name=${encodeURIComponent(userInfo.data.name)}`);
     }
   } catch (error) {
