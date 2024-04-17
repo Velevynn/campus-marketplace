@@ -138,11 +138,7 @@ router.delete("/:listingID/", async (req, res) => {
 });
 
 router.delete("/:listingID/bookmark/", async (req, res) => {
-  console.log("Received paramaters: ", req.query)
-
-  // Extract userID and listingID from query parameters.
-  console.log("Retrieved userID: ", req.query.userID)
-  console.log("Retrieved listingID: ", req.query.listingID)
+  console.log("Delete bookmark paramaters:", req.query)
 
   try {
     const connection = createConnection();
@@ -189,9 +185,7 @@ router.get("/images/:listingID/", async (req, res) => {
 // TODO: Add route for checking if a bookmark exists or not.
 // Check if a bookmark exists between a user and listing.
 router.get("/:listingID/bookmark/", async (req, res) => {
-  console.log("Parameters received from frontend in backend request: ", req.query);
-  console.log("listingID extracted from frontend in backend request: ", req.query.listingID);
-  console.log("userID extracted from frontend in backend request: ", req.query.userID);
+  console.log("Get bookmark parameters:", req.query);
 
   try {
     const connection = createConnection();
