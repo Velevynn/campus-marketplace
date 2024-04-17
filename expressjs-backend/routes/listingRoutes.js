@@ -45,6 +45,23 @@ router.post("/", upload.array('image'), async (req, res) => {
       }
 });
 
+// Bookmark a listing.
+router.post("/:listingID/bookmark/", async (req, res) => {
+  console.log("Received body when bookmarking listing: ", req.body);
+  console.log(".userID: ", req.body.userID);
+  console.log(".listingID", req.body.listingID);
+  try {
+    // Add new relationship to bookmark table.
+    await addBookmark(req.body.userID, req.body.listingID);
+    res.status(201).send
+  }
+  catch (error) {
+    console.error("Error adding bookmark: ", error);
+    res.status(500).json({ error: "Failed to add bookmark." });
+  }
+});
+
+
 // Retrieve listings with pagination and optional query parameters
 router.get("/", async (req, res) => {
   try {
@@ -120,6 +137,29 @@ router.delete("/:listingID/", async (req, res) => {
     }
 });
 
+router.delete("/:listingID/bookmark/", async (req, res) => {
+  console.log("Delete bookmark paramaters:", req.query)
+
+  try {
+    const connection = createConnection();
+    const result = await connection.query(
+      'DELETE FROM bookmarks WHERE "userID" = $1 AND "listingID" = $2',
+      [req.query.userID, req.query.listingID]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).send("Bookmark not found.");
+    }
+
+    // Successful deletion.
+    res.status(204).send();
+  }
+  catch (error) {
+    console.error("An error occurred while deleting the bookmark: ", error);
+    res.status(500).send("An error occurred while deleting the listing.");
+  }
+})
+
 
 // Retrieve images for given listingID.
 router.get("/images/:listingID/", async (req, res) => {
@@ -141,6 +181,36 @@ router.get("/images/:listingID/", async (req, res) => {
       res.status(500).send("An error occurred while fetching the images");
     }
 });
+
+// TODO: Add route for checking if a bookmark exists or not.
+// Check if a bookmark exists between a user and listing.
+router.get("/:listingID/bookmark/", async (req, res) => {
+  console.log("Get bookmark parameters:", req.query);
+
+  try {
+    const connection = createConnection();
+    const { rows } = await connection.query('SELECT * FROM bookmarks WHERE "userID" = $1 AND "listingID" = $2',
+      [
+        req.query.userID,
+        req.query.listingID
+      ])
+
+    console.log("Returned rows from select call in bookmark backend.")
+    if ( rows.length > 0 ) {
+      const bookmarked = true;
+      res.status(200).send(bookmarked);
+    }
+    else {
+      const bookmarked = false;
+      res.status(204).send(bookmarked);
+    }
+    await connection.end();
+  }
+  catch (error) {
+    console.error("An error occurred while checking for a bookmark: ", error);
+    res.status(500).send("An error occurred while checking for a bookmark.");
+  }
+})
 
 router.put("/:listingID", async (req, res) => {
   try {
@@ -267,7 +337,27 @@ async function addListing(listing) {
     }
   }
 
-  
+// Function to bookmark a listing.
+async function addBookmark(userID, listingID) {
+  try {
+    const connection = createConnection();
+    const { rows } = await connection.query(
+      'INSERT INTO bookmarks ("userID", "listingID") VALUES ($1, $2)',
+      [
+        userID,
+        listingID
+      ]
+    )
+
+    await connection.end();
+    return;
+  }
+  catch (error) {
+    console.error("An error occured while bookmarking this listing:", error);
+    throw error;
+  }
+}
+
 
 
 module.exports = router;

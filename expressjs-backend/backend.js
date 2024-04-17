@@ -15,4 +15,4 @@ app.use('/users', userRoutes);  // user-related routes are in listingRoutes.js
 app.use('/listings', listingRoutes);  // listing-related routes are handled in userRoutes.js
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
-});  // listen on PORT 8000
+});

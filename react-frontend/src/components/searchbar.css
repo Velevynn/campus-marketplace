@@ -24,6 +24,8 @@
 }
 
 .search-img {
+  max-width: 250%;
+  max-height: 250%;
   width: 250%;
   height: auto;
   position: relative;

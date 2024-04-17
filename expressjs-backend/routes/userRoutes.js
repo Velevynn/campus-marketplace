@@ -2,14 +2,27 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
+const { google } = require('googleapis');
 const jwt = require('jsonwebtoken');
-const secretKey = 'YourSecretKey'; // 32 bytes, generated using a cryptographically secure random number generator to ensure unpredictability... move to .env
 const crypto = require('crypto');
 const { verifyToken } = require('../util/middleware');
 const { Pool } = require('pg');
 require('dotenv').config();
 
 const connectionString = process.env.DB_CONNECTION_STRING; // stores supabase db connection string, allowing us to connect to supabase db
+
+const secretKey = process.env.JWT_SECRET_KEY; // stores jtw secret key
+// console.log('JWT key:', secretKey);
+
+
+const oauth2Client = new google.auth.OAuth2(
+  process.env.REACT_APP_GOOGLE_CLIENT_ID,
+  process.env.GOOGLE_CLIENT_SECRET,
+  'https://haggle.onrender.com/users/auth/google/callback'
+);
+// console.log('OAuth2 client initialized:', oauth2Client);
+// console.log('Google Client ID:', process.env.REACT_APP_GOOGLE_CLIENT_ID);
+// console.log('Google Client Secret:', process.env.GOOGLE_CLIENT_SECRET);
 
 // Create connection pool to connect to the database.
 function createConnection() {
@@ -80,24 +93,23 @@ router.post('/check', async (req, res) => { // async function means we can use a
 router.post('/register', async (req, res) => {
     const { username, full_name, password, email, phoneNumber: phoneNumber } = req.body;
     try {
-      console.log("Making Null Checks");
+      // console.log("Making Null Checks");
       if (username === null || full_name === null || password === null || email === null || phoneNumber === null) {throw Error;} // ensure fields are filled, throw error if not
       // Asynchronously hash the password using bcrypt library. 10 saltrounds = hash password 10 times. the more rounds the longer it takes to finish hashing
       const bcrypt = require('bcrypt');
       const hashedPassword = await bcrypt.hash(password, 10); // await pauses execution of async function for bcrypt.hash to run
-      console.log("Hashed Password: ", hashedPassword);
+      // console.log("Hashed Password: ", hashedPassword);
       const connection = createConnection();
 
-      console.log("Inserting into users table");
+      // console.log("Inserting into users table");
       // Insert user details into the users table.
       // result is used only to execute the query... we don't actually need it for anything else
       const  { result } = await connection.query( 
         'INSERT INTO users (username, "fullName", password, email, "phoneNumber") VALUES ($1, $2, $3, $4, $5)',
         [username, full_name, hashedPassword, email, phoneNumber]
       );
-
       await connection.end();
-      res.status(201).json({ message: 'User registered successfully', token }); // HTTP 201 (Created) - led to creation of new resource
+      res.status(201).json({ message: 'User registered successfully'}); // HTTP 201 (Created) - led to creation of new resource
     } catch (error) {
       //console.error('Error registering user:', error);
       res.status(500).json({ error: 'Failed to register user' }); // HTTP 500 (Internal Server Error) - unexpected condition
@@ -107,10 +119,10 @@ router.post('/register', async (req, res) => {
 // Sign in user after verifying account details.
 router.post('/login', async (req, res) => {
   const { identifier, password } = req.body;
-  console.log('Received login request with:', { identifier, password });
+  // console.log('Received login request with:', { identifier, password });
 
   if (typeof identifier !== 'string' || typeof password !== 'string') {
-    console.log('Validation error: Identifier or password is not a string.');
+    // console.log('Validation error: Identifier or password is not a string.');
     return res.status(400).json({ error: 'Identifier and password are required and must be strings.' }); // HTTP 400 (Bad Request) - invalid user input format
   }
 
@@ -169,10 +181,87 @@ router.post('/login', async (req, res) => {
   }
 });
 
+router.get('/auth/google', (req, res) => {
+  const authUrl = oauth2Client.generateAuthUrl({
+    access_type: 'offline', // Indicates that we need to retrieve a refresh token
+    scope: 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile',
+    redirect_uri: 'https://haggle.onrender.com/users/auth/google/callback'
+  });
+  // console.log('Generated Google Auth URL:', authUrl);
+  res.redirect(authUrl);
+});
 
-// Retrieve profile information from token.
+router.get('/auth/google/callback', async (req, res) => {
+  try {
+    const { tokens } = await oauth2Client.getToken(req.query.code); // Exchange the authorization code for tokens
+    oauth2Client.setCredentials(tokens);
+
+    const oauth2 = google.oauth2({
+      auth: oauth2Client,
+      version: 'v2'
+    });
+    const userInfo = await oauth2.userinfo.get(); // Get user info
+
+    const connection = createConnection();
+    const { rows: existingUsers } = await connection.query(
+      'SELECT * FROM users WHERE email = $1',
+      [userInfo.data.email]
+    );
+
+    if (existingUsers.length > 0) { // if there is a user returned from the select statement...
+      const user = existingUsers[0];
+      const token = jwt.sign({ username: user.username }, secretKey, { expiresIn: '24h' });
+      res.status(200).json({ message: 'User logged in successfully', token });
+    } else { // if there isnt a user returned from the select statement...
+      res.redirect(`http://localhost:3000/additional-details?email=${encodeURIComponent(userInfo.data.email)}&name=${encodeURIComponent(userInfo.data.name)}`);
+    }
+  } catch (error) {
+    console.error('Error in OAuth callback:', error);
+    res.status(500).json({ error: 'Authentication failed', details: error });
+  }
+});
+
+router.post('/register-google-user', async (req, res) => {
+  const { email, name, username, phoneNumber } = req.body;
+
+  try {
+    const connection = createConnection();
+
+    // check if the user already exists in the database
+    const existingUser = await connection.query(
+      'SELECT * FROM users WHERE email = $1',
+      [email]
+    );
+
+    if (existingUser.rows.length > 0) {
+      const user = existingUser.rows[0];
+      
+      // if the user exists and has a password, they should use their Haggle credentials to log in
+      if (user.password) {
+        return res.status(409).json({ error: 'User exists with a password. Please use Haggle credentials to log in.' });
+      }
+
+      // if the user exists and does not have a password, continue the registration process
+      const token = jwt.sign({ username: user.username }, secretKey, { expiresIn: '24h' });
+      return res.status(200).json({ message: 'User logged in successfully via Google', token });
+    }
+
+    // if the user does not exist in the database, insert new user details
+    const result = await connection.query(
+      'INSERT INTO users (email, "fullName", username, "phoneNumber") VALUES ($1, $2, $3, $4) RETURNING *',
+      [email, name, username, phoneNumber]
+    );
+    const newUser = result.rows[0];
+    const token = jwt.sign({ username: newUser.username }, secretKey, { expiresIn: '24h' });
+    res.status(201).json({ message: 'User registered successfully via Google', token });
+
+  } catch (error) {
+    console.error('Error registering Google user:', error);
+    res.status(500).json({ error: 'Failed to register user' });
+  }
+});
+
 router.get('/profile', verifyToken, async (req, res) => {
-    // Extract username from token.
     const username = req.user.username;
 
     try {
@@ -311,7 +400,7 @@ router.post('/forgot-password', async (req, res) => {
         console.error('Error sending email:', error);
         res.status(500).json({ error: 'Failed to send forgot password email' });
       } else {
-        console.log('Email sent: ' + info.response);
+        // console.log('Email sent: ' + info.response);
         res.json({ message: 'Reset link sent to your email address' });
       }
     });
@@ -332,9 +421,9 @@ router.post('/reset-password', async (req, res) => {
 
     // Verify token and its expiration
     const { rows: users } = await connection.query('SELECT * FROM users WHERE "resetPasswordToken" = $1 AND "resetPasswordExpires" > NOW()', [token]);
-    console.log(users);
+    // console.log(users);
     if (users.length === 0) {
-      console.log("invalid");
+      // console.log("invalid");
       return res.status(400).json({ error: 'Invalid or expired token' });
     }
 

@@ -6,7 +6,8 @@ import { Link } from 'react-router-dom';
 // Importing logo, icons, and styled components for UI
 import logoImage from '../assets/haggle-horizontal.png';
 import { FaEye, FaEyeSlash  } from 'react-icons/fa';
-import { Container, Form, InputGroup, Input, InputLabel, VisibilityToggle, Button, LinkedLabel, ForgotPasswordLabel, BottomContainer, BottomLabel } from './AuthenticationStyling';
+import { Container, Form, LogoImage, ErrorLabel, InputGroup, Input, InputLabel, HeaderLabel, VisibilityToggle, Button, GoogleImage, LinkedLabel, ForgotPasswordLabel, BottomContainer, BottomLabel } from './AuthenticationStyling';
+import googlepng from '../assets/google.png';
 
 
 // LoginPage component for handling user login
@@ -51,6 +52,16 @@ function LoginPage() {
     }
   };
 
+  const handleGoogleLogin = () => {
+    const clientId = '71122616560-tv80mel7fi0s2etitj1enhk192v06h0e.apps.googleusercontent.com';
+
+    const redirectUrl = 'https://haggle.onrender.com/users/auth/google/callback';
+    const scope = encodeURI('email profile');
+    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUrl}&response_type=code&scope=${scope}&access_type=offline&prompt=consent`;
+    window.location.href = authUrl;
+    
+  };
+
   // Effect hook to update the form validity based on the credentials state
   useEffect(() => {
     const isValid = credentials.identifier.length > 0 && credentials.password.length > 0;
@@ -61,14 +72,20 @@ function LoginPage() {
   return (
     <>
       <Container>
-        <img src={logoImage} alt="Logo" style={{ display: 'block', margin: '0 auto 20px', maxWidth: '200px', height: 'auto' }} />
+        <LogoImage src={logoImage} alt="Logo"/>
+        
+        <HeaderLabel style={{ marginTop: '0px'}}>
+            Log in to buy, sell, and trade
+        </HeaderLabel>
+
         <Form onSubmit={handleSubmit}>
           {errorMessage && (
-            <div style={{ color: 'red', marginTop: '20px', fontSize: '12px' }}>
+            <ErrorLabel>
               {errorMessage}
-            </div>
+            </ErrorLabel>
           )}
           <InputGroup>
+            <InputLabel htmlFor="identifier" hasContent={credentials.identifier.length > 0}>Email, Phone, or Username</InputLabel>
             <Input
               type="text"
               name="identifier"
@@ -77,10 +94,10 @@ function LoginPage() {
               onChange={handleChange}
               hasContent={credentials.identifier.length > 0}
               required/>
-            <InputLabel htmlFor="identifier" hasContent={credentials.identifier.length > 0}>Email, Phone, or Username</InputLabel>
           </InputGroup>
 
           <InputGroup>
+            <InputLabel htmlFor="password" hasContent={credentials.password.length > 0}>Password</InputLabel>
             <Input
               type={passwordVisible ? "text" : "password"}
               name="password"
@@ -89,7 +106,6 @@ function LoginPage() {
               onChange={handleChange}
               hasContent={credentials.password.length > 0}
               required/>
-            <InputLabel htmlFor="password" hasContent={credentials.password.length > 0}>Password</InputLabel>
             <VisibilityToggle onClick={togglePasswordVisibility}>
                 {passwordVisible ? <FaEye /> : <FaEyeSlash />}
             </VisibilityToggle>
@@ -97,6 +113,11 @@ function LoginPage() {
 
           <Button type="submit" disabled={!isFormValid}>
               Log in
+          </Button>
+
+          <Button onClick={handleGoogleLogin} style={{ background: '#14A44A' , padding: '6px'}}>
+            <GoogleImage src={googlepng} alt="google"></GoogleImage>
+            <span style={{ position: 'relative', top: '2px' }}>Continue with Google</span>
           </Button>
 
           <LinkedLabel>

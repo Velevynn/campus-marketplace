@@ -1,7 +1,6 @@
 // middleware.js
 const jwt = require('jsonwebtoken');
-
-const secretKey = 'YourSecretKey'; // 32 bytes, generated using a cryptographically secure random number generator to ensure unpredictability... move to .env
+const secretKey = process.env.JWT_SECRET_KEY;
 
 const verifyToken = (req, res, next) => {
   // Extract the 'Authorization' header from the incoming request.

@@ -4,7 +4,7 @@ import axios from 'axios';
 // Importing components for the layout, styling, and form elements
 import logoImage from '../assets/haggle-horizontal.png';
 import { FaCheckCircle, FaTimesCircle, FaEye, FaEyeSlash  } from 'react-icons/fa';
-import { Container, Form, InputGroup, Input, InputLabel, VisibilityToggle, Button, LinkedLabel, HeaderLabel, ValidationIcon, PasswordRules, BottomContainer, BottomLabel } from './AuthenticationStyling';
+import { Container, Form, LogoImage, ErrorLabel, InputGroup, Input, InputLabel, VisibilityToggle, Button, LinkedLabel, HeaderLabel, ValidationIcon, PasswordRules, BottomContainer, BottomLabel } from './AuthenticationStyling';
 // Importing navigation hooks and components for routing
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -116,8 +116,8 @@ function SignUpPage() {
         // Proceed with registration if no conflicts
         } else {
           // Proceed with registration if no conflicts
-          const registerResponse = await axios.post('http://localhost:8000/users/register', user);
-          if (registerResponse.status === 201) {
+          const registerResponse = await axios.post('https://haggle.onrender.com/users/register', user);
+          if (registerResponse.status === 201) { // success
             navigate('/login');
           }
         }
@@ -140,14 +140,18 @@ function SignUpPage() {
   // Render the sign-up form with validation feedback and navigation options
   return (
     <>
-    <Container>
-        <img src={logoImage} alt="Haggle Logo" style={{ display: 'block', margin: '0 auto 0px', maxWidth: '200px', height: 'auto' }} />        <Form onSubmit={handleSubmit}>
+      <Container>
+          <LogoImage src={logoImage} alt="Logo"/>      <Form onSubmit={handleSubmit}>
 
           <HeaderLabel style={{ marginTop: '20px'}}>
-            Join our community of Cal Poly students to buy, sell, and trade.
+            Join our community of Cal Poly students to buy, sell, and trade
           </HeaderLabel>
 
-          {errorMessage && <div style={{ color: 'red', marginTop: '0px', marginBottom: '0px', fontSize: '12px', textAlign: 'left' }}>{errorMessage}</div>}
+          {errorMessage && (
+            <ErrorLabel>
+              {errorMessage}
+            </ErrorLabel>
+          )}
 
           <InputGroup style={{ marginTop: '5px' }}>
               <Input
@@ -226,7 +230,12 @@ function SignUpPage() {
                 hasContent={user.password.length > 0}
                 required />
               <InputLabel htmlFor="password" hasContent={user.password.length > 0}>Password</InputLabel>
-              {passwordFocused && (
+              <VisibilityToggle onClick={togglePasswordVisibility}>
+                {passwordVisible ? <FaEye /> : <FaEyeSlash />}
+              </VisibilityToggle>
+            </InputGroup>
+
+            {passwordFocused && (
                   <PasswordRules>
                   <div style={{ color: user.password.length >= 8 ? 'green' : 'red' }}>
                     {user.password.length >= 8 ? <FaCheckCircle style={{ marginRight: '8px', position: 'relative', top: '2px' }} /> : <FaTimesCircle style={{ marginRight: '8px', position: 'relative', top: '2px' }} />}
@@ -241,11 +250,7 @@ function SignUpPage() {
                     At least one special character
                   </div>
                 </PasswordRules>
-              )}
-              <VisibilityToggle onClick={togglePasswordVisibility}>
-                {passwordVisible ? <FaEye /> : <FaEyeSlash />}
-              </VisibilityToggle>
-            </InputGroup>
+            )}
             
             <Button type="submit" disabled={!isFormValid}>
                 Sign Up
@@ -262,17 +267,17 @@ function SignUpPage() {
                 </Link>
             </LinkedLabel>
         </Form>
-
-        </Container>
-        <BottomContainer>
+      </Container>
+      
+      <BottomContainer>
           <BottomLabel>
-            Already have an account? {}
-            <Link to="/login" style={{ display: 'inline', color: '#0056b3', fontWeight: 'bold'}}>
-              Log in
-            </Link>
+              Already have an account? {}
+              <Link to="/login" style={{ display: 'inline', color: '#0056b3', fontWeight: 'bold'}}>
+                Log in
+              </Link>
           </BottomLabel>
-      </BottomContainer>
-      </>
+    </BottomContainer>
+    </>
   );
 }
 

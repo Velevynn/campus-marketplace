@@ -4,7 +4,8 @@ import axios from 'axios';
 // Importing logo and styling components
 import logoImage from '../assets/haggle-horizontal.png';
 import { Link } from 'react-router-dom';
-import { Container, Description, HeaderLabel, Form, InputGroup, Input, InputLabel, Button, BottomContainer, BottomLabel } from './AuthenticationStyling';
+import { FaCheckCircle, FaTimesCircle  } from 'react-icons/fa';
+import { Container, ValidationIcon, SuccessLabel, Description, HeaderLabel, Form, InputGroup, Input, InputLabel, Button, BottomContainer, BottomLabel } from './AuthenticationStyling';
 
 // Component for the "Forgot Password" page
 const ForgotPasswordPage = () => {
@@ -13,6 +14,11 @@ const ForgotPasswordPage = () => {
   const [message, setMessage] = useState('');
   //const navigate = useNavigate();
 
+  // check if valid email
+  const isValidEmail = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  };
 
   // Event handler for updating the email state on input change
   const handleChange = (event) => {
@@ -45,9 +51,9 @@ const ForgotPasswordPage = () => {
 
         <Form onSubmit={handleSubmit}>
           {message && (
-              <div style={{ color: 'green', marginTop: '20px', fontSize: '12px' }}>
-                {message}
-              </div>
+              <SuccessLabel>
+                  {message}
+              </SuccessLabel>
           )}
 
           <InputGroup>
@@ -60,9 +66,12 @@ const ForgotPasswordPage = () => {
               hasContent={email.length > 0}
               required />
             <InputLabel htmlFor="email" hasContent={email.length > 0}>Email Address</InputLabel>
+            <ValidationIcon isValid={isValidEmail(email)}>
+                {email.length > 0 ? (isValidEmail(email) ? <FaCheckCircle /> : <FaTimesCircle />) : null}
+              </ValidationIcon>
           </InputGroup>
           
-          <Button type="submit" style={{ marginTop: '20px'}}>
+          <Button type="submit" disabled={!isValidEmail(email)} style={{ marginTop: '20px'}}>
             Send Reset Link
           </Button>
         </Form>
