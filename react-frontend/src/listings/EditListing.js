@@ -28,7 +28,7 @@ function EditListing() {
         console.log("username: ", username);
 
         // Fetch listing details including images
-        const response = await axios.get(`https://haggle.onrender.com/listings/${listingID}`, {
+        const response = await axios.get(`http://localhost:8000/listings/${listingID}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -70,7 +70,7 @@ function EditListing() {
         try {
           /* Fetch images for the listing from the backend */
           const response = await axios.get(
-            `https://haggle.onrender.com/listings/images/${listingID}`,
+            `http://localhost:8000/listings/images/${listingID}`,
           );
           if (response.data.length > 0) {
             setImages(response.data);
@@ -103,32 +103,36 @@ function EditListing() {
           description: listing.description,
           price: listing.price,
           expirationDate: listing.expirationDate,
-          quantity: listing.quantity
+          quantity: listing.quantity,
+          images: listing.images
         };
   
         // Send PUT request to update listing details
-        await axios.put(`https://haggle.onrender.com/listings/${listingID}`, listingData, {
+        await axios.put(`http://localhost:8000/listings/${listingID}`, listingData, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json"
           }
         });
         
-        /*
+        
         // Update images for the listing
         const formData = new FormData();
         listing.images.forEach((image) => {
-          formData.append("images", image);
+          formData.append("image", image);
         });
-  
+
+        const formDataEntries = Array.from(formData.entries());
+        console.log("FormData entries:", formDataEntries);
+
         // Send PUT request to update listing images
-        await axios.put(`https://haggle.onrender.com/listings/images/${listingID}`, formData, {
+        await axios.put(`http://localhost:8000/listings/images/${listingID}`, formData, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "multipart/form-data"
           }
         });
-        */
+        
         // Redirect to the marketplace page after successful update
         navigate(`/listings/${listingID}`);
       } catch (error) {

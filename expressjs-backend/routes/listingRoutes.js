@@ -176,15 +176,10 @@ router.put("/:listingID", async (req, res) => {
   }
 });
 
-router.put("/images/:listingID", async (req, res) => {
+router.put("/images/:listingID", upload.array('image'), async (req, res) => {
   try {
     const { listingID } = req.params;
-    const { images } = req.body;
-
-    // Validate that images array is provided and is an array
-    if (!images || !Array.isArray(images)) {
-      return res.status(400).send("Images array is required for updating the listing images.");
-    }
+    const images = req.files;
 
     const connection = createConnection();
 
@@ -195,17 +190,19 @@ router.put("/images/:listingID", async (req, res) => {
     );
 
     // Insert new images into the database using addImages function
-    await addImages(listingID, images);
+    await addImages(listingID, images.length);
 
+  
     // Upload all images to S3 under a folder named after the listingID
     let i = 0;
-    for (const imageUrl of images) {
-      await uploadImageToS3(`${listingID}/image${i}`, imageUrl);
+    for (const image of images) {
+      // Images are labeled image0, image1, etc.
+      await uploadImageToS3(`${listingID}/image${i}`, image.buffer);
       i++;
     }
 
     // Send success response
-    res.status(200).send("Listing images updated successfully");
+    res.status(201).send(req.body);
   } catch (error) {
     console.error("An error occurred while updating listing images:", error);
     res.status(500).send("An error occurred while updating listing images");
@@ -223,7 +220,7 @@ async function addImages(listingID, numImages) {
         'INSERT INTO images ("listingID", "imageURL") VALUES ($1, $2)',
         [
           listingID,
-          `https://haggleimgs.s3.amazonaws.com/${listingID}/image${i}`,
+          `https://haggleimgs.s3.amazonaws.com/${listingID}/image${i}?rand=${Math.floor(Math.random()*100000)}`,
         ],
       );
     }

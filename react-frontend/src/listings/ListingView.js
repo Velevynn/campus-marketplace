@@ -20,7 +20,7 @@ const ListingView = () => {
       try {
         /* get data of listing by its ID */
         const response = await axios.get(
-          `https://haggle.onrender.com/listings/${listingID}`,
+          `http://localhost:8000/listings/${listingID}`,
         );
         
         /* set fetched data to state */
@@ -33,7 +33,7 @@ const ListingView = () => {
             const username = decodedToken.username; // Extract the username from the token
             try {
               // Make a request to the backend to fetch the userID based on the username
-              const response2 = await axios.get(`https://haggle.onrender.com/users/userID`, { 
+              const response2 = await axios.get(`http://localhost:8000/users/userID`, { 
                 params: {
                   'username': username
                 }
@@ -68,7 +68,7 @@ const ListingView = () => {
       try {
         /* Fetch images for the listing from the backend */
         const response = await axios.get(
-          `https://haggle.onrender.com/listings/images/${listingID}`,
+          `http://localhost:8000/listings/images/${listingID}`,
         );
         if (response.data.length > 0) {
           setImages(response.data);
@@ -131,7 +131,7 @@ const ListingView = () => {
     //window.location.href = "/listings/:listingID/delete";
     try {
       console.log("listingID deleting: ", listingID);
-      await axios.delete(`https://haggle.onrender.com/listings/${listingID}`,
+      await axios.delete(`http://localhost:8000/listings/${listingID}`,
       );
       console.log("listing successfully deleted");
       window.location.href = '/'; // go back to home page
