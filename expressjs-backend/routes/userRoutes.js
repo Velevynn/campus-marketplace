@@ -263,7 +263,6 @@ router.post('/register-google-user', async (req, res) => {
 
 router.get('/profile', verifyToken, async (req, res) => {
     const username = req.user.username;
-
     try {
       const connection = createConnection();
       // Retrieve user details from extracted username...

@@ -8,19 +8,6 @@ import missing from "../assets/missing.jpg"
 function Entry({ title, price, listingID }) {
   const [images, setImages] = useState([]);
 
-  const getTitleFontSize = () => {
-    if (title != undefined) {
-      if (title.length > 21) {
-        return "15px";
-      } else if (title.length > 14) {
-        return "20px";
-      } else {
-        return "25px";
-      }
-    } else {
-      return "10px";
-    }
-  };
 
   useEffect(() => {
     const fetchImages = async () => {
@@ -58,11 +45,11 @@ function Entry({ title, price, listingID }) {
           <img src = {source} alt="Entry Image" className="entry-image" />
         </div>
 
-        <div className="text-container">
-          <h2 className="title" style={{ fontSize: getTitleFontSize() }}>
+        <div>
+          <h5 className="margin">
             {title}
-          </h2>
-          <p className="price">{price === "0" || price === 0 ? "FREE" : `$${price}`}</p>
+          </h5>
+          <p className="margin"> {price === "0" || price === 0 ? "FREE" : `$${price}`}</p>
         </div>
       </div>
     </Link>

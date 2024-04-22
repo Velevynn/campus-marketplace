@@ -142,75 +142,77 @@ function EditListing() {
   };
 
   return (
-    <div className="small-container" style={{ fontFamily: "Inter" , boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)', padding: '20px', maxWidth: '600px', margin: 'auto'}}>
-      <h2>Edit Listing</h2>
-      <form>
-        <label htmlFor="title">New Title</label>
-        <input
-          type="text"
-          name="title"
-          id="title"
-          value={listing.title}
-          onChange={handleChange}
-        />
-        <label htmlFor="description">New Description</label>
-        <textarea
-          name="description"
-          id="description"
-          value={listing.description}
-          onChange={handleChange}
-        />
-        <label htmlFor="price">New Price</label>
-        <input
-          type="text"
-          name="price"
-          id="price"
-          value={listing.price}
-          onChange={handleChange}
-        />
-        <div className="thumbnails">
-          {images.map((image, index) => (
-            <img
-              key={index}
-              src={image.imageURL}
-              alt={`Thumbnail ${index}`}
-              style={{ marginRight: '10px' }} // Add inline style to create space between images
-            />
+    <div className="vertical-center margin">
+      <div className="small-container drop-shadow">
+        <h2>Edit Listing</h2>
+        <form>
+          <label htmlFor="title">New Title</label>
+          <input
+            type="text"
+            name="title"
+            id="title"
+            value={listing.title}
+            onChange={handleChange}
+          />
+          <label htmlFor="description">New Description</label>
+          <textarea
+            name="description"
+            id="description"
+            value={listing.description}
+            onChange={handleChange}
+          />
+          <label htmlFor="price">New Price</label>
+          <input
+            type="text"
+            name="price"
+            id="price"
+            value={listing.price}
+            onChange={handleChange}
+          />
+          <div className="thumbnails">
+            {images.map((image, index) => (
+              <img
+                key={index}
+                src={image.imageURL}
+                alt={`Thumbnail ${index}`}
+                style={{ marginRight: '10px' }} // Add inline style to create space between images
+              />
+            ))}
+            {listing.images.map((file, index) => (
+              <img
+                key={`new-${index}`}
+                src={URL.createObjectURL(file)}
+                alt={`New Thumbnail ${index}`}
+                style={{ marginRight: '10px' }} // Add inline style to create space between images
+              />
           ))}
-          {listing.images.map((file, index) => (
-            <img
-              key={`new-${index}`}
-              src={URL.createObjectURL(file)}
-              alt={`New Thumbnail ${index}`}
-              style={{ marginRight: '10px' }} // Add inline style to create space between images
-            />
-        ))}
-        </div>
+          </div>
 
-        {/*For displaying how many images have been selected*/}
-        {listing.images.length > 0 && (
-          <p>{listing.images.length} new image(s) selected</p>
-        )}
+          {/*For displaying how many images have been selected*/}
+          {listing.images.length > 0 && (
+            <p>{listing.images.length} new image(s) selected</p>
+          )}
 
-      </form>
-      <div className="vertical-center">
-        <div className="margin-top">
-          <label htmlFor="images" className="button">
-            <span>Add Images</span>
-            <input
-              type="file"
-              name="images"
-              id="images"
-              accept="image/*"
-              multiple
-              className="custom-file-input"
-              onChange={handleImageChange}
-            />
-          </label>
+        </form>
+        <div className="vertical-center">
+          <div className="margin-top">
+            <label htmlFor="images" className="button">
+              <span>Add Images</span>
+              <input
+                type="file"
+                name="images"
+                id="images"
+                accept="image/*"
+                multiple
+                className="custom-file-input"
+                onChange={handleImageChange}
+              />
+            </label>
+          </div>
         </div>
-      </div>
-      <div className="vertical-center" >
-        <button className="margin-top" onClick={submitForm}>Update</button>
+        <div className="vertical-center" >
+          <button className="margin-top" onClick={submitForm}>Update</button>
+        </div>
       </div>
     </div>
   );

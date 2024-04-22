@@ -1,0 +1,22 @@
+.google-img {
+    height: 25px;
+}
+
+.logo-img {
+    width: 175px;
+}
+
+.input {
+    position: relative;
+}
+
+.toggle-icon {
+    position: absolute;
+    top: 0.75rem;
+    right: 1rem;
+    cursor: pointer;
+}
+
+.span-button {
+    transition: opacity 0.5s ease;
+}
