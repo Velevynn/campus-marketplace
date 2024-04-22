@@ -120,8 +120,8 @@ function LoginPage() {
             
           <div className="margin">
           <button className={`span-button ${isFormValid ? "" : "disabled"}`} type="submit" disabled={!isFormValid}>
-  Log in
-</button>
+            Log in
+          </button>
           </div>
 
           <div className="margin">

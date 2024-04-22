@@ -123,21 +123,25 @@ function ProfilePage() {
           <Button onClick={handleSignOut}>Sign Out</Button>
         </ButtonContainer>
       </Container>
-      <Container>
+      
+      <div className="vertical-center margin">
+        <div className="small-container drop-shadow">
         {!showDeleteConfirmation && (
-          <Button onClick={confirmDelete}>Delete Profile</Button>
+          <button className="span-button" onClick={confirmDelete}>Delete Profile</button>
         )}
         {showDeleteConfirmation && (
-          <div className="overlay">
-            <form className="confirmation-form" onSubmit={handleDelete}>
-              <input
-                type="text"
-                name="username"
-                placeholder="Username"
-                value={deleteConfirmationData.username}
-                onChange={handleInputChange}
-                required
-              />
+            <form className="" onSubmit={handleDelete}>
+              <div className="margin input">
+                <input
+                  type="text"
+                  name="username"
+                  placeholder="Username"
+                  value={deleteConfirmationData.username}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div className="margin input">
               <input
                 type="password"
                 name="password"
@@ -146,15 +150,18 @@ function ProfilePage() {
                 onChange={handleInputChange}
                 required
               />
-              <div className="button-container">
-                <Button type="submit">Confirm Delete</Button>
-                <Button type="button" onClick={handleCancelDelete}>Cancel</Button>
+              </div>
+              <div className="vertical-center flex-column">
+                  <button className={deleteConfirmationData.username.length > 0 
+                    && deleteConfirmationData.password.length > 0 ? "button" : "disabled"}>Confirm Delete</button>
+                  <button onClick={handleCancelDelete}>Cancel</button>
               </div>
               {deleteError && <ErrorMessage>{deleteError}</ErrorMessage>}
             </form>
-          </div>
+          
         )}
-      </Container>
+          </div>
+      </div>
     </div>
   );
 }

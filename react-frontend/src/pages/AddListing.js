@@ -195,7 +195,7 @@ function AddListing() {
       ) : (
       <>
         <h2 className="vertical-center no-margin-bottom">Post Listing</h2>
-        <form className="">
+        <form>
           <label htmlFor="title">Title (Required)</label>
           <input
             type="text"
