@@ -5,6 +5,7 @@ import ImageCarousel from "../components/ImageCarousel.js";
 import LoadingSpinner from "../components/LoadingSpinner.js";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from 'react-router-dom';
+import "./ListingView.css";
 
 //TODO: Bookmark -> useEffect to grab current status, toggle on button 
 
@@ -39,6 +40,7 @@ function ListingView() {
                 'Authorization': `Bearer ${token}`
               }
             });
+            console.log("loggedID:", userData.data.userID);
             setLoggedID(userData.data.userID);
           }
           catch (error) {
@@ -60,7 +62,7 @@ function ListingView() {
       try {
         /* get data of listing by its ID */
         const response = await axios.get(
-          `http://localhost:8000/listings/${listingID}`,
+          `https://haggle.onrender.com/listings/${listingID}`,
         );
         
         /* set fetched data to state */
@@ -81,7 +83,7 @@ function ListingView() {
     };
 
     fetchData();
-  }, [listingID]);
+  }, [listingID, loggedID]);
 
   // Hook to fetch initial bookmark status if the user is logged in.
   useEffect(() => {
@@ -134,13 +136,10 @@ function ListingView() {
   const TimeAgo = (timestamp) => {
     
     const string = timestamp.toString().slice(5,7) + '/' + timestamp.toString().slice(8,10) + '/' + timestamp.toString().slice(0,4);
-    //timestamp = string;
-    //console.log(string);
     let currentDate = new Date();
     let postDate = new Date(string);
     const difference = currentDate.getTime() - postDate.getTime();
     const differenceInDays = Math.round(difference / (1000 * 3600 * 24));
-    //console.log(difference);
     let message = "";
     if (differenceInDays > 1) {
       message = differenceInDays.toString() + " days ago";
@@ -254,41 +253,45 @@ function ListingView() {
 
   if (!listing) {
     return (
-      <LoadingSpinner/>
+        <div className="margin">
+          <LoadingSpinner/>
+        </div>
     );
   }
 
   // TODO: Find images for the bookmark toggle
   /* first check if listing data is available, then render */
   return (
-    <div className="medium-container">
-      <div className="flex-row">
-        <div>
-          <ImageCarousel images={images} />
+    <div className="vertical-center margin">
+      <div className="medium-container drop-shadow">
+        <div className="listing-layout">
+          <div className="margin vertical-center">
+            <ImageCarousel images={images} />
+          </div>
+          <div>
+            <h1>{listing.title}</h1>
+            <p>Posted {TimeAgo(listing.postDate)}</p>
+            <h5 style={{color: "green"}}>${listing.price}</h5>
+            <p>{listing.description}</p>
+          </div>
         </div>
-        <div className="margin-left">
-          <h1>{listing.title}</h1>
-          <p>Posted {TimeAgo(listing.postDate)}</p>
-          <h5 style={{color: "green"}}>${listing.price}</h5>
-          <p>{listing.description}</p>
-        </div>
+        <div className="text-right margin-top">
+          {isOwner && (
+            <>
+              <button className="muted-button margin-right" onClick={handleEditListing}>Edit Listing</button>
+              <button className="muted-button margin-right" onClick={handleDeleteListing}>Delete Listing</button>
+            </>
+          )}
+              <button className="margin-right" onClick={handleBuyNow}>Buy Now</button>
+              <button className="margin-right" onClick={handleMakeOffer}>Make Offer</button>
+              <button className="margin-right" onClick={handleStartChat}>Start a Chat</button>
+              <button className="margin-right" onClick={toggleBookmark}>{
+                isBookmarked ? (
+                <img src="react-frontend\src\assets\filled-bookmark.svg"/>) : (
+                <img src="react-frontend\src\assets\empty-bookmark.svg"/>)
+                }</button>
+          </div>
       </div>
-      <div className="text-right margin-top">
-        {isOwner && (
-          <>
-            <button className="muted-button margin-right" onClick={handleEditListing}>Edit Listing</button>
-            <button className="muted-button margin-right" onClick={handleDeleteListing}>Delete Listing</button>
-          </>
-        )}
-            <button className="margin-right" onClick={handleBuyNow}>Buy Now</button>
-            <button className="margin-right" onClick={handleMakeOffer}>Make Offer</button>
-            <button className="margin-right" onClick={handleStartChat}>Start a Chat</button>
-            <button className="margin-right" onClick={toggleBookmark}>{
-              isBookmarked ? (
-              <img src="react-frontend\src\assets\filled-bookmark.svg"/>) : (
-              <img src="react-frontend\src\assets\empty-bookmark.svg"/>)
-              }</button>
-        </div>
     </div>
   );
 }

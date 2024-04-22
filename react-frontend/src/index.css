@@ -392,10 +392,12 @@ ul,
 dl,
 table {
   margin: 0 0 0rem 0;
+  font-family: inter;
 }
 
 ul li ul {
   margin-bottom: 0;
+  list-style-type: none;
 }
 
 ol li ol {
@@ -409,8 +411,7 @@ h4,
 h5 {
   margin: 1.5rem 0;
   font-weight: 600;
-  font-family: -apple-system, BlinkMacSystemFont, Helvetica Neue, Helvetica,
-    Arial, sans-serif;
+  font-family: inter;
   line-height: 1.2;
   color: #404040;
 }
@@ -475,6 +476,7 @@ h5 {
 a {
   color: green;
   text-decoration: none;
+  font-family: inter
 }
 
 a:hover,
@@ -510,7 +512,7 @@ pre {
   padding: 1rem;
   tab-size: 2;
   color: #404040;
-  font-family: Menlo, monospace;
+  font-family: inter;
   font-size: 14px;
   margin: 0 0 1.5rem 0;
 }
@@ -563,6 +565,8 @@ dd {
   width: auto;
   height: auto;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  border-radius: 20px;
 }
 
 .full-container {
@@ -575,25 +579,21 @@ dd {
 .small-container,
 .medium-container {
   max-width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: auto;
 }
 
 .small-container,
 .medium-container {
   padding: 40px;
-  border-radius: 10px;
+  border-radius: 20px;
   
 }
 
 .small-container {
-  max-width: 400px;
+  width: 400px;
 }
 
 .medium-container {
-  max-width: 1200px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 1200px;
 }
 
 .content-section {
@@ -625,8 +625,8 @@ dd {
   flex-direction: row;
   gap: 10px;
   list-style-type: none;
-
 }
+
 
 .flex-column {
   display: flex;
@@ -801,6 +801,19 @@ dd {
   color: #404040;
 }
 
+.disabled {
+  opacity: 0.5;
+  pointer-events: none; 
+}
+
+.enabled {
+  opacity: 1; 
+}
+
+.drop-shadow {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
 .space-between {
   justify-content: space-between;
 }
@@ -825,6 +838,7 @@ dd {
  * Buttons
  */
 .button,
+.span-button,
 a.button,
 button,
 [type="submit"],
@@ -833,12 +847,11 @@ button,
   -webkit-appearance: none;
   display: inline-block;
   border-style: none;
-  border-radius: 4px;
+  border-radius: 10px;
   background: green;
   color: #ffffff;
   font-weight: 600;
-  font-family: -apple-system, BlinkMacSystemFont, Helvetica Neue, Helvetica,
-    Arial, sans-serif;
+  font-family: inter;
   font-size: 1rem;
   text-transform: none;
   padding: 0.75rem 1.25rem;
@@ -851,7 +864,14 @@ button,
   width: 150px;
 }
 
+.span-button {
+  width: 100%;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
 .button:hover,
+.span-button:hover,
 a.button:hover,
 button:hover,
 [type="submit"]:hover,
@@ -862,6 +882,8 @@ button:hover,
   text-decoration: none;
 }
 
+.span-button:focus,
+.span-button:active,
 .button:focus,
 .button:active,
 a.button:focus,
@@ -892,8 +914,7 @@ button::-moz-focus-inner,
 .accent-button,
 a.accent-button {
   color: #ffffff;
-  border: 1px solid #29de7d;
-  background: #29de7d;
+  background: #2ed057b0;
 }
 
 .accent-button:hover,
@@ -903,7 +924,6 @@ a.accent-button:hover,
 a.accent-button:focus,
 a.accent-button:active {
   color: #ffffff;
-  border: 1px solid #1cb864;
   background: #1cb864;
 }
 
@@ -921,7 +941,6 @@ a.muted-button:hover,
 a.muted-button:focus,
 a.muted-button:active {
   color: #4e4e4e;
-  border: 1px solid #818181;
   background: transparent;
 }
 
@@ -962,7 +981,7 @@ select,
 textarea {
   display: block;
   border: 1px solid #dedede;
-  border-radius: 4px;
+  border-radius: 15px;
   padding: 0.75rem;
   outline: none;
   background: transparent;

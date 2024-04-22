@@ -55,7 +55,9 @@ function Marketplace() {
     <div>
       <div className="full-container">
         {isLoading ? ( // Render loading spinner if isLoading is true
-          <LoadingSpinner />
+          <div className="margin">
+            <LoadingSpinner />
+          </div>
         ) : (
           entries.map((entry) => (
             <Entry 

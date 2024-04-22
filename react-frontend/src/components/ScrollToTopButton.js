@@ -32,7 +32,7 @@ const ScrollToTopButton = ({ onClick }) => {
       onClick={handleClick}
       style={{ pointerEvents: isVisible ? 'auto' : 'none' }} // Control clickability based on visibility
     >
-      <text>^</text>
+      <p>^</p>
     </button>
   );
 };
