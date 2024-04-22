@@ -50,32 +50,6 @@ function ProfilePage() {
   };
 
   useEffect(() => {
-<<<<<<< HEAD
-=======
-    const fetchUserProfile = async () => {
-      const token = localStorage.getItem('token');
-      // Redirects to login page if no token is found
-      if (!token) {
-        navigate('/login');
-        return;
-      }
-
-      try {
-        // Attempting to fetch user profile data with the stored token
-        const response = await axios.get(`https://haggle.onrender.com/users/profile`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        // Updates the profile state with fetched data
-        setUserProfile(response.data);
-      } catch (error) {
-        console.error('Failed to fetch profile data:', error);
-        navigate('/login');  // Redirects to login on error
-      }
-    };
-
->>>>>>> a8f4f0a8b9532019e851a1ff21c299d71ef7ed45
     fetchUserProfile();
   }, []);
 
