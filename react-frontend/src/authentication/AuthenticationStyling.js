@@ -177,6 +177,13 @@ export const BottomLabel = styled.label`
   font-weight: normal;
 `;
 
+
+export const ErrorMessage = styled.div`
+  color: red;
+  font-size: 14px;
+  margin-top: 5px;
+  text-align: center;
+`;
 /*
 
 Components specific to LoginPage.js

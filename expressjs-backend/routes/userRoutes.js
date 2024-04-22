@@ -438,5 +438,46 @@ router.post('/reset-password', async (req, res) => {
   }
 });
 
+router.delete('/delete', verifyToken, async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    // Get username from the token
+    const tokenUsername = req.user.username;
+
+    // Check if the provided username matches the username in the token
+    if (username !== tokenUsername) {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
+
+    // Query database to find the user
+    const query = 'SELECT * FROM users WHERE username = $1';
+    const { rows } = await pool.query(query, [username]);
+
+    // Check if user exists
+    if (rows.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const user = rows[0];
+    console.log("reached");
+    // Verify the provided password against the hashed password in the database
+    const validPassword = await bcrypt.compare(password, user.password);
+    console.log("reached compare");
+    if (!validPassword) {
+      return res.status(401).json({ error: 'Invalid password' });
+    }
+
+    // Delete the user's account
+    await pool.query('DELETE FROM users WHERE username = $1', [username]);
+
+    res.status(200).json({ message: 'Account deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting account:', error);
+    res.status(500).json({ error: 'Failed to delete account' });
+  }
+});
+
+
 
 module.exports = router;
