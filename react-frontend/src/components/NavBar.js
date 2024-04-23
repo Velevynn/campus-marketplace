@@ -47,7 +47,7 @@ function NavBar() {
           </li>
         </div>
         <button className="" onClick={handlePostListingClick}>
-          Post a Listing
+          Post
         </button>
       
       </nav>

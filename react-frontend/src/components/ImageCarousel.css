@@ -1,6 +1,6 @@
 .image-carousel {
-  width: 380px;
-  height: 380px;
+  width: 385px;
+  height: 385px;
   background-color: rgb(222, 222, 222);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   display: flex;
@@ -13,17 +13,17 @@
 .thumbnails {
   display: inline-flex;
   flex-wrap: wrap;
-  max-width: 380px;
+  max-width: 385px;
   margin-top: 10px;
   transition: opacity 0.5s ease;
 }
 
 .thumbnails img {
-  width: 55px;
-  height: 55px;
+  width: 60px;
+  height: 60px;
   background-color: rgb(222, 222, 222);
-  margin-right: 10px;
-  margin-bottom: 3.75px;
+  margin-right: 5px;
+  margin-bottom: 5px;
   cursor: pointer;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
@@ -48,8 +48,16 @@
   }
   .thumbnails {
     max-width: 80vw;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    
+  }
+  .thumbnails img {
+    width: calc(80vw*60/385);
+    height: calc(80vw*60/385);
+    background-color: rgb(222, 222, 222);
+    margin-right: calc(80vw*5/385);
+    margin-bottom: calc(80vw*5/385);
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
   }
 } 

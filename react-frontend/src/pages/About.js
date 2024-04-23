@@ -6,8 +6,8 @@ import "./About.css"
 function About() {
   return (
     <div>
-      <h1 className="vertical-center">About</h1>
-      <div className="flex-row about-layout">
+      <h1 className="vertical-center margin">About</h1>
+      <div className="about-layout">
         <Bio
           name="Alex"
           bio="4th Year CS Major. I like biking hiking. I like going on branch 500 commits behind then manually merging."

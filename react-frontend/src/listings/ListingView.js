@@ -282,26 +282,29 @@ function ListingView() {
     <div className="vertical-center margin">
       <div className="medium-container drop-shadow">
         <div className="listing-layout">
-          <div className="margin vertical-center">
+          <div className="margin vertical-center flex-column">
             <ImageCarousel images={images} />
+            <div>
+            {isOwner && (
+              <>
+                <button className="muted-button margin-right" onClick={handleEditListing}>Edit Listing</button>
+                <button className="margin-right" style={{backgroundColor: "red"}}onClick={handleDeleteListing}>Delete Listing</button>
+              </>
+            )}
+            </div>
           </div>
-          <div>
-            <h1>{listing.title}</h1>
+          <div className="margin">
+            <h1 className="no-margin-top">{listing.title}</h1>
             <p>Posted {TimeAgo(listing.postDate)}</p>
             <h5 style={{color: "green"}}>${listing.price}</h5>
             <p>{listing.description}</p>
           </div>
         </div>
-        <div className="vertical-center margin-top">
-        {isOwner && (
-          <>
-            <button className="muted-button margin-right" onClick={handleEditListing}>Edit Listing</button>
-            <button className="muted-button margin-right" onClick={handleDeleteListing}>Delete Listing</button>
-          </>
-        )}
+        <div className="vertical-center">
+        
             <button className="margin-right" onClick={handleBuyNow}>Buy Now</button>
             <button className="margin-right" onClick={handleMakeOffer}>Make Offer</button>
-            <button className="margin-right" onClick={handleStartChat}>Start a Chat</button>
+            <button className="margin-right" onClick={handleStartChat}>Start Chat</button>
             <div className="vertical-center" onClick={toggleBookmark}>
               {isBookmarked ? 
               (<img className="bookmark" src={filledBookmark}/>) : 
