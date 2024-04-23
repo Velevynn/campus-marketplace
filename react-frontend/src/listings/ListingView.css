@@ -1,3 +1,5 @@
+  /* listingview.css */
+
 .listing-layout {
     display: flex;
     flex-direction: row;
@@ -10,3 +12,30 @@
         flex-direction: column;
     }
   }
+
+
+.bookmark {
+    max-width: 30px;
+    max-height: 30px;
+    cursor: pointer;
+    transition-duration: 0.4s;
+}
+
+.bookmark:hover {
+    /*transform: scale(1.1); 
+    transition: transform 0.2s ease-in-out;*/
+    animation: rotateBackAndForth 0.5s ease-in-out infinite alternate;
+
+}
+
+@keyframes rotateBackAndForth {
+    0% {
+        transform: rotate(0deg);
+    }
+    50% {
+        transform: rotate(10deg);
+    }
+    100% {
+        transform: rotate(-10deg);
+    }
+}
