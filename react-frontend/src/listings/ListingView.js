@@ -292,23 +292,6 @@ function ListingView() {
             <p>{listing.description}</p>
           </div>
         </div>
-        <div className="text-right margin-top">
-          {isOwner && (
-            <>
-              <button className="muted-button margin-right" onClick={handleEditListing}>Edit Listing</button>
-              <button className="muted-button margin-right" onClick={handleDeleteListing}>Delete Listing</button>
-            </>
-          )}
-              <button className="margin-right" onClick={handleBuyNow}>Buy Now</button>
-              <button className="margin-right" onClick={handleMakeOffer}>Make Offer</button>
-              <button className="margin-right" onClick={handleStartChat}>Start a Chat</button>
-              <button className="margin-right" onClick={toggleBookmark}>{
-                isBookmarked ? (
-                <img src="react-frontend\src\assets\filled-bookmark.svg"/>) : (
-                <img src="react-frontend\src\assets\empty-bookmark.svg"/>)
-                }</button>
-          </div>
-      </div>
         <div className="vertical-center margin-top">
         {isOwner && (
           <>
@@ -326,6 +309,8 @@ function ListingView() {
               }</div>
             
         </div>
+      </div>
+        
     </div>
   );
 }
