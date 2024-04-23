@@ -7,7 +7,7 @@ import { jwtDecode } from "jwt-decode";
 import { useNavigate } from 'react-router-dom';
 import emptyBookmark from "../assets/empty-bookmark.png";
 import filledBookmark from "../assets/filled-bookmark.png";
-import './listingview.css';
+import './ListingView.css';
 
 function ListingView() {
   const { listingID } = useParams();
