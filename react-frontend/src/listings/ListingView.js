@@ -293,14 +293,14 @@ function ListingView() {
             )}
             </div>
           </div>
-          <div className="margin">
+          <div className="margin" type="text">
             <h1 className="no-margin-top">{listing.title}</h1>
             <p>Posted {TimeAgo(listing.postDate)}</p>
             <h5 style={{color: "green"}}>${listing.price}</h5>
             <p>{listing.description}</p>
           </div>
         </div>
-        <div className="vertical-center">
+        <div className="vertical-center margin-top">
         
             <button className="margin-right" onClick={handleBuyNow}>Buy Now</button>
             <button className="margin-right" onClick={handleMakeOffer}>Make Offer</button>
