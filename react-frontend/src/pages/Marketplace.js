@@ -22,7 +22,7 @@ function Marketplace() {
 
   async function fetchEntries() {
     try {
-      const response = await axios.get(`https://haggle.onrender.com/listings?q=${q}&page=${page}`);
+      const response = await axios.get(`http://localhost:8000/listings?q=${q}&page=${page}`);
       if (response !== "") {
         console.log(response.data);
         setEntries(prevEntries => [...prevEntries, ...response.data]); // Append fetched entries to existing ones
@@ -55,7 +55,9 @@ function Marketplace() {
     <div>
       <div className="full-container">
         {isLoading ? ( // Render loading spinner if isLoading is true
-          <LoadingSpinner />
+          <div className="margin">
+            <LoadingSpinner />
+          </div>
         ) : (
           entries.map((entry) => (
             <Entry 

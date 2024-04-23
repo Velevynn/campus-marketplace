@@ -1,31 +1,55 @@
 .image-carousel {
-    width: 27vw;
-    height: 27vw;
-    background-color: rgb(222, 222, 222);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+  width: 380px;
+  height: 380px;
+  background-color: rgb(222, 222, 222);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  overflow: hidden;
+}
 
 .thumbnails {
   display: inline-flex;
   flex-wrap: wrap;
-  max-width: 30vw;
-  margin-top: 10px; /* Adjust margin as needed */
-
+  max-width: 380px;
+  margin-top: 10px;
+  transition: opacity 0.5s ease;
 }
 
 .thumbnails img {
-  width: 5vw;
-  height: 5vw;
-  background-color: gray;
-  margin-right: 0.5vw;
-  margin-bottom: 0.5vw;
+  width: 55px;
+  height: 55px;
+  background-color: rgb(222, 222, 222);
+  margin-right: 10px;
+  margin-bottom: 3.75px;
   cursor: pointer;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
 }
 
-.thumbnails img.active {
-  border: 1px solid green;
+.thumbnails img:last-child,
+.thumbnails img:nth-child(6n) {
+  /* No margin for last item in each line break*/
+  margin-right: 0;
 }
+
+.thumbnails img.inactive {
+  opacity: 0.7;
+}
+
+
+@media screen and (max-width: 768px) {
+  .image-carousel {
+    width: 80vw;
+    height: 80vw;
+    border-radius: 20px;
+  }
+  .thumbnails {
+    max-width: 80vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+} 

@@ -1,16 +1,16 @@
 // About.js (Josh)
 import React from "react";
 import Bio from "../components/Bio";
+import "./About.css"
 
 function About() {
   return (
     <div>
       <h1 className="vertical-center">About</h1>
-      <div className="flex-row">
+      <div className="flex-row about-layout">
         <Bio
           name="Alex"
           bio="4th Year CS Major. I like biking hiking. I like going on branch 500 commits behind then manually merging."
-          className="small-container"
         />
 
         <Bio

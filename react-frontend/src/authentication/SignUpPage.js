@@ -103,7 +103,7 @@ function SignUpPage() {
     if (isFormValid) {
       try {
         // Pre-registration check for existing username, email, or phone number
-        const checkResponse = await axios.post('https://haggle.onrender.com/users/check', {
+        const checkResponse = await axios.post('http://localhost:8000/users/check', {
           email: user.email,
           phoneNumber: user.phoneNumber,
           username: user.username,

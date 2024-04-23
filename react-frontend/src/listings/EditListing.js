@@ -28,7 +28,7 @@ function EditListing() {
         console.log("username: ", username);
 
         // Fetch listing details including images
-        const response = await axios.get(`https://haggle.onrender.com/listings/${listingID}`, {
+        const response = await axios.get(`http://localhost:8000/listings/${listingID}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -70,7 +70,7 @@ function EditListing() {
         try {
           /* Fetch images for the listing from the backend */
           const response = await axios.get(
-            `https://haggle.onrender.com/listings/images/${listingID}`,
+            `http://localhost:8000/listings/images/${listingID}`,
           );
           if (response.data.length > 0) {
             setImages(response.data);
@@ -103,32 +103,36 @@ function EditListing() {
           description: listing.description,
           price: listing.price,
           expirationDate: listing.expirationDate,
-          quantity: listing.quantity
+          quantity: listing.quantity,
+          images: listing.images
         };
   
         // Send PUT request to update listing details
-        await axios.put(`https://haggle.onrender.com/listings/${listingID}`, listingData, {
+        await axios.put(`http://localhost:8000/listings/${listingID}`, listingData, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json"
           }
         });
         
-        /*
+        
         // Update images for the listing
         const formData = new FormData();
         listing.images.forEach((image) => {
-          formData.append("images", image);
+          formData.append("image", image);
         });
-  
+
+        const formDataEntries = Array.from(formData.entries());
+        console.log("FormData entries:", formDataEntries);
+
         // Send PUT request to update listing images
-        await axios.put(`https://haggle.onrender.com/listings/images/${listingID}`, formData, {
+        await axios.put(`http://localhost:8000/listings/images/${listingID}`, formData, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "multipart/form-data"
           }
         });
-        */
+        
         // Redirect to the marketplace page after successful update
         navigate(`/listings/${listingID}`);
       } catch (error) {
@@ -138,75 +142,77 @@ function EditListing() {
   };
 
   return (
-    <div className="small-container" style={{ fontFamily: "Inter" , boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)', padding: '20px', maxWidth: '600px', margin: 'auto'}}>
-      <h2>Edit Listing</h2>
-      <form>
-        <label htmlFor="title">New Title</label>
-        <input
-          type="text"
-          name="title"
-          id="title"
-          value={listing.title}
-          onChange={handleChange}
-        />
-        <label htmlFor="description">New Description</label>
-        <textarea
-          name="description"
-          id="description"
-          value={listing.description}
-          onChange={handleChange}
-        />
-        <label htmlFor="price">New Price</label>
-        <input
-          type="text"
-          name="price"
-          id="price"
-          value={listing.price}
-          onChange={handleChange}
-        />
-        <div className="thumbnails">
-          {images.map((image, index) => (
-            <img
-              key={index}
-              src={image.imageURL}
-              alt={`Thumbnail ${index}`}
-              style={{ marginRight: '10px' }} // Add inline style to create space between images
-            />
+    <div className="vertical-center margin">
+      <div className="small-container drop-shadow">
+        <h2>Edit Listing</h2>
+        <form>
+          <label htmlFor="title">New Title</label>
+          <input
+            type="text"
+            name="title"
+            id="title"
+            value={listing.title}
+            onChange={handleChange}
+          />
+          <label htmlFor="description">New Description</label>
+          <textarea
+            name="description"
+            id="description"
+            value={listing.description}
+            onChange={handleChange}
+          />
+          <label htmlFor="price">New Price</label>
+          <input
+            type="text"
+            name="price"
+            id="price"
+            value={listing.price}
+            onChange={handleChange}
+          />
+          <div className="thumbnails">
+            {images.map((image, index) => (
+              <img
+                key={index}
+                src={image.imageURL}
+                alt={`Thumbnail ${index}`}
+                style={{ marginRight: '10px' }} // Add inline style to create space between images
+              />
+            ))}
+            {listing.images.map((file, index) => (
+              <img
+                key={`new-${index}`}
+                src={URL.createObjectURL(file)}
+                alt={`New Thumbnail ${index}`}
+                style={{ marginRight: '10px' }} // Add inline style to create space between images
+              />
           ))}
-          {listing.images.map((file, index) => (
-            <img
-              key={`new-${index}`}
-              src={URL.createObjectURL(file)}
-              alt={`New Thumbnail ${index}`}
-              style={{ marginRight: '10px' }} // Add inline style to create space between images
-            />
-        ))}
-        </div>
+          </div>
 
-        {/*For displaying how many images have been selected*/}
-        {listing.images.length > 0 && (
-          <p>{listing.images.length} new image(s) selected</p>
-        )}
+          {/*For displaying how many images have been selected*/}
+          {listing.images.length > 0 && (
+            <p>{listing.images.length} new image(s) selected</p>
+          )}
 
-      </form>
-      <div className="vertical-center">
-        <div className="margin-top">
-          <label htmlFor="images" className="button">
-            <span>Add Images</span>
-            <input
-              type="file"
-              name="images"
-              id="images"
-              accept="image/*"
-              multiple
-              className="custom-file-input"
-              onChange={handleImageChange}
-            />
-          </label>
+        </form>
+        <div className="vertical-center">
+          <div className="margin-top">
+            <label htmlFor="images" className="button">
+              <span>Add Images</span>
+              <input
+                type="file"
+                name="images"
+                id="images"
+                accept="image/*"
+                multiple
+                className="custom-file-input"
+                onChange={handleImageChange}
+              />
+            </label>
+          </div>
         </div>
-      </div>
-      <div className="vertical-center" >
-        <button className="margin-top" onClick={submitForm}>Update</button>
+        <div className="vertical-center" >
+          <button className="margin-top" onClick={submitForm}>Update</button>
+        </div>
       </div>
     </div>
   );
