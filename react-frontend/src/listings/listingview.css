@@ -1,4 +1,19 @@
-/* listingview.css */
+.listing-layout {
+    display: flex;
+    flex-direction: row;
+}
+
+
+
+@media screen and (max-width: 768px) {
+    .listing-layout {
+        /* Moves image preview to underneath add listing form */
+        display: flex;
+        flex-direction: column;
+    }
+  }
+
+  /* listingview.css */
 .bookmark {
     max-width: 30px;
     max-height: 30px;
