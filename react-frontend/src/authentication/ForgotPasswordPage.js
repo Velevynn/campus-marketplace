@@ -29,7 +29,7 @@ const ForgotPasswordPage = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post('http://localhost:8000/users/forgot-password', { email });
+      const response = await axios.post('https://haggle.onrender.com/users/forgot-password', { email });
       // Assuming the API responds with a success message
       setMessage(response.data.message || 'If an account with that email exists, we have sent a reset password link.');
     } catch (error) {

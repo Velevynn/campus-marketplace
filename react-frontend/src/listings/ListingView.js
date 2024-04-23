@@ -119,7 +119,7 @@ function ListingView() {
       try {
         /* Fetch images for the listing from the backend */
         const response = await axios.get(
-          `http://localhost:8000/listings/images/${listingID}`,
+          `https://haggle.onrender.com/listings/images/${listingID}`,
         );
         if (response.data.length > 0) {
           setImages(response.data);
@@ -180,7 +180,7 @@ function ListingView() {
     //window.location.href = "/listings/:listingID/delete";
     try {
       console.log("listingID deleting: ", listingID);
-      await axios.delete(`http://localhost:8000/listings/${listingID}`,
+      await axios.delete(`https://haggle.onrender.com/listings/${listingID}`,
       );
       console.log("listing successfully deleted");
       window.location.href = '/'; // go back to home page

@@ -61,7 +61,7 @@ function ProfilePage() {
     }
 
     try {
-      const response = await axios.delete(`http://localhost:8000/users/delete`, {
+      const response = await axios.delete(`https://haggle.onrender.com/users/delete`, {
         headers: {
           'Authorization': `Bearer ${token}`
         },
