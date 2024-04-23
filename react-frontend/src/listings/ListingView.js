@@ -5,8 +5,9 @@ import ImageCarousel from "../components/ImageCarousel.js";
 import LoadingSpinner from "../components/LoadingSpinner.js";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from 'react-router-dom';
-
-//TODO: Bookmark -> useEffect to grab current status, toggle on button 
+import emptyBookmark from "../assets/empty-bookmark.png";
+import filledBookmark from "../assets/filled-bookmark.png";
+import './listingview.css';
 
 function ListingView() {
   const { listingID } = useParams();
@@ -197,12 +198,26 @@ function ListingView() {
     // If the listing is not currently bookmarked, bookmark it.
     if (!isBookmarked) {
       console.log("Posting bookmark with userID", loggedID, "and listingID", listingID);
-      createBookmark();
+      try {
+        createBookmark();
+        setBookmark(true);
+      }
+      catch (error) {
+        console.log("Error in toggleBookmark.");
+      }
+      
     }
     // If the listing is currently bookmarked, remove it.
     else if (isBookmarked) {
       console.log("Deleting bookmark with userID:", loggedID, "and listingID:", listingID);
-      deleteBookmark();
+      try {
+        deleteBookmark();
+        setBookmark(false);
+      }
+      catch (error) {
+        console.log("Error in toggleBookmark.");
+      }
+      
     }
     console.log("New bookmark status: ", isBookmarked);
   }
@@ -216,13 +231,15 @@ function ListingView() {
           'listingID': listingID
         }
       )
-      console.log("Posted bookmark.")
       setBookmark(true);
+      console.log("Posted bookmark.")
+      console.log(isBookmarked);
     }
     // Set an error while posting the bookmark data.
     catch (error) {
       console.error("Error posting bookmark: ", error)
     }
+    console.log("Finished creating bookmark")
   }
 
   const deleteBookmark = async () => {
@@ -238,6 +255,7 @@ function ListingView() {
       )
       setBookmark(false);
       console.log("Deleted bookmark.")
+      console.log(isBookmarked);
     }
     // Set an error while deleting the bookmark data.
     catch (error) {
@@ -268,12 +286,13 @@ function ListingView() {
         </div>
         <div className="margin-left">
           <h1>{listing.title}</h1>
+          
           <p>Posted {TimeAgo(listing.postDate)}</p>
           <h5 style={{color: "green"}}>${listing.price}</h5>
           <p>{listing.description}</p>
         </div>
       </div>
-      <div className="text-right margin-top">
+        <div className="vertical-center margin-top">
         {isOwner && (
           <>
             <button className="muted-button margin-right" onClick={handleEditListing}>Edit Listing</button>
@@ -283,11 +302,12 @@ function ListingView() {
             <button className="margin-right" onClick={handleBuyNow}>Buy Now</button>
             <button className="margin-right" onClick={handleMakeOffer}>Make Offer</button>
             <button className="margin-right" onClick={handleStartChat}>Start a Chat</button>
-            <button className="margin-right" onClick={toggleBookmark}>{
-              isBookmarked ? (
-              <img src="react-frontend\src\assets\filled-bookmark.svg"/>) : (
-              <img src="react-frontend\src\assets\empty-bookmark.svg"/>)
-              }</button>
+            <div className="vertical-center" onClick={toggleBookmark}>
+              {isBookmarked ? 
+              (<img className="bookmark" src={filledBookmark}/>) : 
+              (<img className="bookmark" src={emptyBookmark}/>)
+              }</div>
+            
         </div>
     </div>
   );
