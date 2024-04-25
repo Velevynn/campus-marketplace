@@ -57,7 +57,7 @@ function ProfilePage() {
   const fetchBookmarks = async (userID) => {
     try {
       console.log(userID);
-      const response = await axios.get(`https://haggle.onrender.com/bookmark/${userID}`);
+      const response = await axios.get(`https://haggle.onrender.com/listings/bookmark/${userID}`);
       
       setBookmarks(response.data);
     } catch (error) {
