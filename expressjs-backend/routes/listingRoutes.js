@@ -224,7 +224,7 @@ router.get("/bookmark/:userID", async (req, res) => {
       ])
 
     console.log("Returned the bookmarks belonging to a particular user")
-    res.status(200).send(bookmarked);
+    res.status(200).send(rows);
     await connection.end();
   }
   catch (error) {
