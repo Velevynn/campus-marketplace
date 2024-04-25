@@ -42,7 +42,7 @@ function ProfilePage() {
     try {
       const response = await axios.get(`https://haggle.onrender.com/users/profile`, {
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`console.log(userID);
         }
       });
       setUserProfile(response.data);
