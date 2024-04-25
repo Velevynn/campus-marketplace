@@ -267,7 +267,7 @@ router.get('/profile', verifyToken, async (req, res) => {
       const connection = createConnection();
       // Retrieve user details from extracted username...
       const { rows: user } = await connection.query(
-        'SELECT username, "fullName", email, "phoneNumber" FROM users WHERE username = $1',
+        'SELECT username, "fullName", email, "phoneNumber", "userID" FROM users WHERE username = $1',
         [username]
       );
   

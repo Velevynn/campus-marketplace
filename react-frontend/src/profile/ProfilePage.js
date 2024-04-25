@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import ProfileCollection from '../components/ProfileCollection'
 import { useNavigate } from 'react-router-dom';
 import profileImagePlaceholder from '../assets/profile-placeholder.png';
 import { Container, Button, ButtonContainer, ProfileImage, ProfileField, ProfileLabel, ProfileValue, ErrorMessage } from '../authentication/AuthenticationStyling';
 
 function ProfilePage() {
+  const [bookmarks, setBookmarks] = useState([]);
   const [userProfile, setUserProfile] = useState({
     username: '',
     full_name: '',
     email: '',
     phoneNumber: '',
+    userID: ''
   });
 
   const navigate = useNavigate();
@@ -43,11 +46,24 @@ function ProfilePage() {
         }
       });
       setUserProfile(response.data);
+      fetchBookmarks(response.data.userID);
+      console.log(response.data, "my data");
     } catch (error) {
       console.error('Failed to fetch profile data:', error);
       navigate('/login');
     }
   };
+
+  const fetchBookmarks = async (userID) => {
+    try {
+      console.log(userID);
+      const response = await axios.get(`https://haggle.onrender.com/bookmark/${userID}`);
+      
+      setBookmarks(response.data);
+    } catch (error) {
+      console.error('Failed to fetch bookmarks', error);
+    }
+  }
 
   useEffect(() => {
     fetchUserProfile();
@@ -123,7 +139,9 @@ function ProfilePage() {
           <Button onClick={handleSignOut}>Sign Out</Button>
         </ButtonContainer>
       </Container>
-      
+
+      <ProfileCollection title = "My Bookmarks" bookmarks = {bookmarks}/>
+
       <div className="vertical-center margin">
         <div className="small-container drop-shadow">
         {!showDeleteConfirmation && (

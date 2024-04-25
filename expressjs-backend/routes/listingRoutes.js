@@ -212,6 +212,27 @@ router.get("/:listingID/bookmark/", async (req, res) => {
   }
 })
 
+router.get("/bookmark/:userID", async (req, res) => {
+  console.log("Get bookmark parameters:", req.query);
+
+  try {
+    const connection = createConnection();
+    const { rows } = await connection.query('SELECT * FROM bookmarks WHERE "userID" = $1',
+      [
+        req.query.userID,
+        req.query.listingID
+      ])
+
+    console.log("Returned the bookmarks belonging to a particular user")
+    res.status(200).send(bookmarked);
+    await connection.end();
+  }
+  catch (error) {
+    console.error("An error occurred while checking for a bookmark: ", error);
+    res.status(500).send("An error occurred while checking for a bookmark.");
+  }
+})
+
 router.put("/:listingID", async (req, res) => {
   try {
     const { listingID } = req.params;
@@ -357,6 +378,8 @@ async function addBookmark(userID, listingID) {
     throw error;
   }
 }
+
+
 
 
 
