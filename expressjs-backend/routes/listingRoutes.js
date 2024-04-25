@@ -219,9 +219,8 @@ router.get("/bookmark/:userID", async (req, res) => {
     const connection = createConnection();
     const { rows } = await connection.query('SELECT * FROM bookmarks WHERE "userID" = $1',
       [
-        req.query.userID,
-        req.query.listingID
-      ])
+        req.query.userID
+      ]);
 
     console.log("Returned the bookmarks belonging to a particular user")
     res.status(200).send(rows);
