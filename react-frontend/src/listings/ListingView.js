@@ -226,7 +226,8 @@ function ListingView() {
       await axios.post(
         `https://haggle.onrender.com/listings/${listingID}/bookmark`, {
           'userID': loggedID,
-          'listingID': listingID
+          'listingID': listingID,
+          'title' : listing.title
         }
       )
       setBookmark(true);

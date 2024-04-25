@@ -50,9 +50,10 @@ router.post("/:listingID/bookmark/", async (req, res) => {
   console.log("Received body when bookmarking listing: ", req.body);
   console.log(".userID: ", req.body.userID);
   console.log(".listingID", req.body.listingID);
+  console.log(".title", req.body.title);
   try {
     // Add new relationship to bookmark table.
-    await addBookmark(req.body.userID, req.body.listingID);
+    await addBookmark(req.body.userID, req.body.listingID, req.body.title);
     res.status(201).send
   }
   catch (error) {
@@ -358,14 +359,15 @@ async function addListing(listing) {
   }
 
 // Function to bookmark a listing.
-async function addBookmark(userID, listingID) {
+async function addBookmark(userID, listingID, title) {
   try {
     const connection = createConnection();
     const { rows } = await connection.query(
-      'INSERT INTO bookmarks ("userID", "listingID") VALUES ($1, $2)',
+      'INSERT INTO bookmarks ("userID", "listingID", title) VALUES ($1, $2, $3)',
       [
         userID,
-        listingID
+        listingID,
+        title,
       ]
     )
 
