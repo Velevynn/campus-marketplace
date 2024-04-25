@@ -4,7 +4,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-//import { Link, useNavigate } from "react-router-dom"; 
+import { Link } from "react-router-dom"; 
 
 function ProfileCollection(props) {
     console.log(props.bookmarks);
@@ -30,8 +30,10 @@ function ProfileCollection(props) {
                 <Slider {...settings}>
                 {props.bookmarks.map((bookmark) => (
                 <div key={bookmark.bookmarkID}>
-                    <p>Image here</p>
-                    <h5>{bookmark.title}</h5>
+                    <Link to={`/listings/${bookmark.listingID}`} className="entry-link">
+                        <img src = {`https://haggleimgs.s3.amazonaws.com/${bookmark.listingID}/image0`} className="collection-image" />
+                        <h5>{bookmark.title}</h5>
+                    </Link>
                 </div>
                 ))}
             </Slider>
