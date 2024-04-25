@@ -58,7 +58,6 @@ function ProfilePage() {
     try {
       console.log(userID);
       const response = await axios.get(`https://haggle.onrender.com/listings/bookmark/${userID}`);
-      
       setBookmarks(response.data);
     } catch (error) {
       console.error('Failed to fetch bookmarks', error);
@@ -140,7 +139,7 @@ function ProfilePage() {
         </ButtonContainer>
       </Container>
 
-      <ProfileCollection title = "My Bookmarks" bookmarks = {bookmarks}/>
+      <ProfileCollection title = "My Bookmarks" bookmarks = {bookmarks} userID = {userProfile.userID}/>
 
       <div className="vertical-center margin">
         <div className="small-container drop-shadow">

@@ -1,10 +1,25 @@
 import React from "react";
 import PropTypes from "prop-types";
-//import axios from "axios";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
 //import { Link, useNavigate } from "react-router-dom"; 
 
 function ProfileCollection(props) {
     console.log(props.bookmarks);
+    const slidesToScroll = Math.ceil(props.bookmarks.length / 3);
+    // Configuration options for the Slick carousel
+    const settings = {
+        dots: true,
+        infinite: false,
+        speed: 500,
+        slidesToShow: 3,
+        slidesToScroll: slidesToScroll,
+        arrows: false,
+    };
+
+    
     return (
         <div>
             <div className="vertical-center margin">
@@ -12,7 +27,14 @@ function ProfileCollection(props) {
             </div>
             <div className="vertical-center margin">
                 <div className="small-container drop-shadow">
-                
+                <Slider {...settings}>
+                {props.bookmarks.map((bookmark) => (
+                <div key={bookmark.bookmarkID}>
+                    <p>Image here</p>
+                    <h5>{bookmark.title}</h5>
+                </div>
+                ))}
+            </Slider>
                 </div>
             </div>
         </div>
@@ -22,6 +44,7 @@ function ProfileCollection(props) {
   ProfileCollection.propTypes = {
     title: PropTypes.string.isRequired,
     bookmarks: PropTypes.array.isRequired,
+    userID: PropTypes.string.isRequried,
   };
 
   export default ProfileCollection;
