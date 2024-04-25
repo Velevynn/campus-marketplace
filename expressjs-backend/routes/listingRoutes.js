@@ -213,13 +213,13 @@ router.get("/:listingID/bookmark/", async (req, res) => {
 })
 
 router.get("/bookmark/:userID", async (req, res) => {
-  console.log("Get bookmark parameters:", req.query);
+  console.log("Get bookmark parameters:", req.params);
 
   try {
     const connection = createConnection();
     const { rows } = await connection.query('SELECT * FROM bookmarks WHERE "userID" = $1',
       [
-        req.query.userID
+        req.params.userID
       ]);
 
     console.log("Returned the bookmarks belonging to a particular user")
