@@ -127,7 +127,7 @@ function ProfilePage() {
         <ProfileImage src={profileImagePlaceholder} alt="Profile" />
         <form>
           {Object.entries(userProfile).map(([key, value]) => (
-            <ProfileField key={key}>
+            key !== 'userID' && <ProfileField key={key}>
               <ProfileLabel>{key.replace('_', ' ')}:</ProfileLabel>
               <ProfileValue>{value}</ProfileValue>
             </ProfileField>
