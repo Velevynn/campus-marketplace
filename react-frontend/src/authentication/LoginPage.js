@@ -68,6 +68,25 @@ function LoginPage() {
     setIsFormValid(isValid);
   }, [credentials]);
 
+  useEffect(() => {
+    // This function would be called on a component that captures the redirect.
+    const handleAuthCallback = async () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        if (code) {
+            try {
+                const response = await axios.get(`/api/auth/google/callback?code=${code}`);
+                localStorage.setItem('token', response.data.token);
+                navigate('/profile');
+            } catch (error) {
+                console.error('Error handling auth callback:', error);
+            }
+        }
+    };
+
+    handleAuthCallback();
+}, [navigate]);
+
   // Renders the login form, providing fields for identifier and password, and displays error messages if any exist
   return (
     <div className="vertical-center margin">
