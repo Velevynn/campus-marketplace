@@ -77,7 +77,7 @@ function LoginPage() {
           <img className="logo-img" src={logoImage} alt="Logo"/>
         </div>
         
-        <h5 className="text-center">
+        <h5 className="text-center" style={{fontSize: "18px"}}>
             Log in to buy, sell, and trade
         </h5>
 
@@ -114,9 +114,7 @@ function LoginPage() {
                 {passwordVisible ? <FaEye /> : <FaEyeSlash />}
             </div>
           </div>
-
-
-            
+          
             
           <div className="margin">
           <button className={`span-button ${isFormValid ? "" : "disabled"}`} type="submit" disabled={!isFormValid}>
@@ -127,8 +125,8 @@ function LoginPage() {
           <div className="margin">
             <button className="span-button margin" onClick={handleGoogleLogin}>
               <div className="vertical-center" >
-                <span className="margin-right">Continue with </span>
                 <img className="google-img" src={googlepng} alt="google"></img>
+                <span className="margin-center">Continue with Google</span>
               </div>
             </button>
           </div>
