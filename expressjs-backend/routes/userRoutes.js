@@ -211,10 +211,8 @@ router.get('/auth/google/callback', async (req, res) => {
     if (existingUsers.length > 0) { // if there is a user returned from the select statement...
       const user = existingUsers[0];
       const token = jwt.sign({ username: user.username }, secretKey, { expiresIn: '24h' });
-      // Redirect user to the profile page with a valid JWT token
-      res.redirect(`http://localhost:3000/profile?token=${encodeURIComponent(token)}`);
-    } else { // if there isn't a user returned from the select statement...
-      // Redirect to additional details page with user information filled from Google
+      res.redirect(`http://localhost:3000/profile}`);
+    } else { // if there isnt a user returned from the select statement...
       res.redirect(`http://localhost:3000/additional-details?email=${encodeURIComponent(userInfo.data.email)}&name=${encodeURIComponent(userInfo.data.name)}`);
     }
   } catch (error) {
