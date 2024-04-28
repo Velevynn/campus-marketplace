@@ -273,13 +273,13 @@ router.put("/images/:listingID", upload.array('image'), async (req, res) => {
     const images = req.files;
 
     const connection = createConnection();
-
+    /*
     // Delete existing images associated with the listingID
     await connection.query(
       `DELETE FROM images WHERE "listingID" = $1`,
       [listingID]
     );
-
+      */
     // Insert new images into the database using addImages function
     await addImages(listingID, images.length);
 
@@ -297,6 +297,24 @@ router.put("/images/:listingID", upload.array('image'), async (req, res) => {
   } catch (error) {
     console.error("An error occurred while updating listing images:", error);
     res.status(500).send("An error occurred while updating listing images");
+  }
+});
+
+router.delete("/images/:listingID/:imageID", async (req, res) => {
+  try {
+    const { listingID, imageID } = req.params;
+
+    const connection = createConnection();
+
+    await connection.query(
+      `DELETE FROM images WHERE "listingID" = $1 AND "imageID" = $2`,
+      [listingID, imageID]
+    );
+
+    res.status(200).send("Image deleted successfully");
+  } catch (error) {
+    console.error("An error occurred while deleting image:", error);
+    res.status(500).send("An error occurred while deleting image");
   }
 });
 

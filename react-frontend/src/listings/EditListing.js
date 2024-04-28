@@ -92,6 +92,11 @@ function EditListing() {
     }));
   };
 
+  const handleDeleteImage = (imageURL) => {
+    const updatedImages = images.filter((image) => image.imageURL !== imageURL);
+    setImages(updatedImages);
+  };
+
   const submitForm = async () => {
     if (listing.title !== "" && listing.price !== "") {
       try {
@@ -170,20 +175,53 @@ function EditListing() {
             onChange={handleChange}
           />
           <div className="thumbnails">
+            {/*For displaying thumbnails, with hover stuff*/}
             {images.map((image, index) => (
-              <img
+              <div
                 key={index}
-                src={image.imageURL}
-                alt={`Thumbnail ${index}`}
-                style={{ marginRight: '10px' }} // Add inline style to create space between images
-              />
+                style={{ position: 'relative', display: 'inline-block' }}
+                onMouseEnter={(e) => e.currentTarget.querySelector('.delete-overlay').style.visibility = 'visible'}
+                onMouseLeave={(e) => e.currentTarget.querySelector('.delete-overlay').style.visibility = 'hidden'}
+                onClick={() => handleDeleteImage(image.imageURL)}
+              >
+                <img
+                  src={image.imageURL}
+                  alt={`Thumbnail ${index}`}
+                  style={{ marginRight: '10px', cursor: 'pointer', transition: 'opacity 0.2s ease' }}
+                  onMouseEnter={(e) => e.target.style.opacity = 0.5}
+                  onMouseLeave={(e) => e.target.style.opacity = 1}
+                />
+                <div className="delete-overlay"
+                     style={{
+                       position: 'absolute',
+                       top: '5px',
+                       right: '7px',
+                       visibility: 'hidden',
+                       cursor: 'pointer'
+                     }}
+                     onClick={() => handleDeleteImage(image.imageURL)}
+                >
+                  {/* Red "X" icon */}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="#e3101a"
+                    style={{ filter: 'drop-shadow(3px 3px 2px rgba(0, 0, 0, 0.5))' }}
+                  >
+                    <path d="M19 6.41l-1.41-1.41-5.59 5.59-5.59-5.59-1.41 1.41 5.59 5.59-5.59 5.59 1.41 1.41 5.59-5.59 5.59 5.59 1.41-1.41-5.59-5.59 5.59-5.59z" />
+                  </svg>
+                </div>
+              </div>
             ))}
-            {listing.images.map((file, index) => (
+             {/*For displaying new selected images*/}
+             {listing.images.map((file, index) => (
               <img
                 key={`new-${index}`}
                 src={URL.createObjectURL(file)}
                 alt={`New Thumbnail ${index}`}
-                style={{ marginRight: '10px' }} // Add inline style to create space between images
+                style={{ marginRight: '10px' }}
               />
           ))}
           </div>
