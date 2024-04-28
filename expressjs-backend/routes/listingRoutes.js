@@ -183,28 +183,6 @@ router.get("/images/:listingID/", async (req, res) => {
     }
 });
 
-
-// Retrieve listings for given userID.
-router.get("/:userID", async (req, res) => {
-  try {
-      // Extract the listingID from query parameters.
-      const { userID } = req.params;
-      
-      // Retrieve image list from database if listing exists.
-      const connection = createConnection();
-      const { rows } = await connection.query('SELECT * FROM listings WHERE "userID" = $1', 
-        [userID]
-      );
-      
-      res.status(200).send(rows);
-      await connection.end();
-    } 
-    catch (error) {
-      console.error("An error occurred while fetching the images:", error);
-      res.status(500).send("An error occurred while fetching the images");
-    }
-});
-
 // TODO: Add route for checking if a bookmark exists or not.
 // Check if a bookmark exists between a user and listing.
 router.get("/:listingID/bookmark/", async (req, res) => {
@@ -254,6 +232,27 @@ router.get("/bookmark/:userID", async (req, res) => {
     res.status(500).send("An error occurred while checking for a bookmark.");
   }
 })
+
+// Retrieve listings for given userID.
+router.get("/:userID", async (req, res) => {
+  try {
+      // Extract the listingID from query parameters.
+      const { userID } = req.params.userID
+      
+      // Retrieve image list from database if listing exists.
+      const connection = createConnection();
+      const { rows } = await connection.query('SELECT * FROM listings WHERE "userID" = $1', 
+        [userID]
+      );
+      
+      res.status(200).send(rows);
+      await connection.end();
+    } 
+    catch (error) {
+      console.error("An error occurred while fetching the images:", error);
+      res.status(500).send("An error occurred while fetching the images");
+    }
+});
 
 router.put("/:listingID", async (req, res) => {
   try {
