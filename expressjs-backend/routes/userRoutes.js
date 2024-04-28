@@ -211,10 +211,9 @@ router.get('/auth/google/callback', async (req, res) => {
     if (existingUsers.length > 0) { // if there is a user returned from the select statement...
       const user = existingUsers[0];
       const token = jwt.sign({ username: user.username }, secretKey, { expiresIn: '24h' });
-      localStorage.setItem('token', response.data.token);
-      res.redirect('http://localhost:3000/profile')
+      res.json({ message: 'User logged in successfully', token });
     } else { // if there isnt a user returned from the select statement...
-      res.redirect('http://localhost:3000/additional-details?email=${encodeURIComponent(userInfo.data.email)}&name=${encodeURIComponent(userInfo.data.name)}');
+      res.redirect(`http://localhost:3000/additional-details?email=${encodeURIComponent(userInfo.data.email)}&name=${encodeURIComponent(userInfo.data.name)}`);
     }
   } catch (error) {
     console.error('Error in OAuth callback:', error);

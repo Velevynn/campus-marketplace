@@ -150,13 +150,6 @@ function ListingView() {
     return message;
   }
 
-
-  const handleBuyNow = () => {
-    /* Add logic for handling "Buy Now" action */
-    console.log("Buy Now clicked for listing:", listing);
-    window.location.href = "/listings/:listingID/buy";
-  };
-
   const handleMakeOffer = () => {
     /* Add logic for handling "Make Offer" action */
     console.log("Make Offer clicked for listing:", listing);
@@ -302,8 +295,6 @@ function ListingView() {
           </div>
         </div>
         <div className="vertical-center margin-top">
-        
-            <button className="margin-right" onClick={handleBuyNow}>Buy Now</button>
             <button className="margin-right" onClick={handleMakeOffer}>Make Offer</button>
             <button className="margin-right" onClick={handleStartChat}>Start Chat</button>
             <div className="vertical-center" onClick={toggleBookmark}>
