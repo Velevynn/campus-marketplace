@@ -140,7 +140,7 @@ function ProfilePage() {
       </Container>
 
       <ProfileCollection title = "My Bookmarks" bookmarks = {bookmarks} userID = {userProfile.userID}/>
-
+      <ProfileCollection title = "My Listings" bookmarks = {bookmarks} userID = {userProfile.userID}/>
       <div className="vertical-center margin">
         <div className="small-container drop-shadow">
         {!showDeleteConfirmation && (
