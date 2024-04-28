@@ -92,9 +92,30 @@ function EditListing() {
     }));
   };
 
-  const handleDeleteImage = (imageURL) => {
-    const updatedImages = images.filter((image) => image.imageURL !== imageURL);
-    setImages(updatedImages);
+  const handleDeleteImage = async (index) => {
+    try {
+      // Construct the imageURL based on the index
+      const baseimageURL = `https://haggleimgs.s3.amazonaws.com/${listingID}/image${index}`;
+      console.log(images);
+      console.log(baseimageURL);
+      // Find the corresponding image to delete
+      const imageToDelete = images.find((image) => image.imageURL.startsWith(baseimageURL));
+      if (!imageToDelete) {
+        console.error("Image not found for deletion");
+        return;
+      }
+      const imageURL = imageToDelete.imageURL;
+      console.log(imageURL);
+      // Make DELETE request to backend using the imageURL
+      const response = await axios.delete(`https://haggle.onrender.com/listings/images/${listingID}/${index}`);
+      console.log(response.data); // Log success message
+
+      // Refresh images after deletion
+      const updatedImages = images.filter((image) => image.imageURL !== imageURL);
+      setImages(updatedImages);
+    } catch (error) {
+      console.error("Error deleting image:", error);
+    }
   };
 
   const submitForm = async () => {
@@ -137,7 +158,8 @@ function EditListing() {
             "Content-Type": "multipart/form-data"
           }
         });
-        
+        const updatedImages = [...images, ...listing.images];
+        setImages(updatedImages);
         // Redirect to the marketplace page after successful update
         navigate(`/listings/${listingID}`);
       } catch (error) {
@@ -182,7 +204,7 @@ function EditListing() {
                 style={{ position: 'relative', display: 'inline-block' }}
                 onMouseEnter={(e) => e.currentTarget.querySelector('.delete-overlay').style.visibility = 'visible'}
                 onMouseLeave={(e) => e.currentTarget.querySelector('.delete-overlay').style.visibility = 'hidden'}
-                onClick={() => handleDeleteImage(image.imageURL)}
+                onClick={() => handleDeleteImage(index)}
               >
                 <img
                   src={image.imageURL}
@@ -199,7 +221,7 @@ function EditListing() {
                        visibility: 'hidden',
                        cursor: 'pointer'
                      }}
-                     onClick={() => handleDeleteImage(image.imageURL)}
+                     onClick={() => handleDeleteImage(index)}
                 >
                   {/* Red "X" icon */}
                   <svg

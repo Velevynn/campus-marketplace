@@ -300,15 +300,15 @@ router.put("/images/:listingID", upload.array('image'), async (req, res) => {
   }
 });
 
-router.delete("/images/:listingID/:imageID", async (req, res) => {
+router.delete("/images/:listingID/:imageURL", async (req, res) => {
   try {
-    const { listingID, imageID } = req.params;
+    const { listingID, imageURL } = req.params;
 
     const connection = createConnection();
 
     await connection.query(
-      `DELETE FROM images WHERE "listingID" = $1 AND "imageID" = $2`,
-      [listingID, imageID]
+      `DELETE FROM images WHERE "listingID" = $1 AND "imageURL" = $2`,
+      [listingID, imageURL]
     );
 
     res.status(200).send("Image deleted successfully");
