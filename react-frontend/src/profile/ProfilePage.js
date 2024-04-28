@@ -69,7 +69,7 @@ function ProfilePage() {
   const fetchMyListings = async (userID) => {
     try {
       console.log(userID);
-      const response = await axios.get(`https://haggle.onrender.com/listings/${userID}`);
+      const response = await axios.get(`https://haggle.onrender.com/listings/mylistings/${userID}`);
       setMyListings(response.data);
       console.log(response.data, "hello");
     } catch (error) {

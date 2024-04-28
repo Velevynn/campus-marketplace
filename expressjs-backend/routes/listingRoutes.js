@@ -65,6 +65,7 @@ router.post("/:listingID/bookmark/", async (req, res) => {
 
 // Retrieve listings with pagination and optional query parameters
 router.get("/", async (req, res) => {
+  console.log("retriving all listings");
   try {
     const { q, page } = req.query;
     const itemsPerPage = 30; // Define how many items to return per page
@@ -234,7 +235,8 @@ router.get("/bookmark/:userID", async (req, res) => {
 })
 
 // Retrieve listings for given userID.
-router.get("/:userID", async (req, res) => {
+router.get("/mylistings/:userID", async (req, res) => {
+  console.log(req.params.userID);
   try {
       // Retrieve image list from database if listing exists.
       const connection = createConnection();
