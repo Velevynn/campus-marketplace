@@ -201,11 +201,14 @@ router.get('/auth/google/callback', async (req, res) => {
       version: 'v2'
     });
     const userInfo = await oauth2.userinfo.get(); // Get user info
+    const email = decodeURIComponent(userInfo.data.email);
+    const name = decodeURIComponent(userInfo.data.name);
 
     const connection = createConnection();
+
     const { rows: existingUsers } = await connection.query(
       'SELECT * FROM users WHERE email = $1',
-      [userInfo.data.email]
+      [email]
     );
 
     if (existingUsers.length > 0) { // if there is a user returned from the select statement...
@@ -213,7 +216,7 @@ router.get('/auth/google/callback', async (req, res) => {
       const token = jwt.sign({ username: user.username }, secretKey, { expiresIn: '24h' });
       res.json({ message: 'User logged in successfully', token });
     } else { // if there isnt a user returned from the select statement...
-      res.redirect(`http://localhost:3000/additional-details?email=${encodeURIComponent(userInfo.data.email)}&name=${encodeURIComponent(userInfo.data.name)}`);
+      res.redirect(`http://localhost:3000/additional-details?email=${encodeURIComponent(email)}&name=${encodeURIComponent(name)}`);
     }
   } catch (error) {
     console.error('Error in OAuth callback:', error);
