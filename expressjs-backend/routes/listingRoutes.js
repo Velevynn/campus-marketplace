@@ -273,13 +273,11 @@ router.put("/images/:listingID", upload.array('image'), async (req, res) => {
     const images = req.files;
 
     const connection = createConnection();
-    /*
     // Delete existing images associated with the listingID
     await connection.query(
       `DELETE FROM images WHERE "listingID" = $1`,
       [listingID]
     );
-      */
     // Insert new images into the database using addImages function
     await addImages(listingID, images.length);
 
