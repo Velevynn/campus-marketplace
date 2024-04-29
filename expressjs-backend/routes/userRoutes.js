@@ -246,7 +246,7 @@ router.post('/register-google-user', async (req, res) => {
 
       // if the user exists and does not have a password, continue the registration process
       const token = jwt.sign({ username: user.username }, secretKey, { expiresIn: '24h' });
-      return res.status(200).json({ message: 'User logged in successfully via Google', token });
+      res.redirect(`http://localhost:3000/profile?token=${encodeURIComponent(token)}`);
     }
 
     // if the user does not exist in the database, insert new user details

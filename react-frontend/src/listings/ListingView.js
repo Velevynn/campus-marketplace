@@ -154,7 +154,7 @@ function ListingView() {
   const handleMakeOffer = () => {
     /* Add logic for handling "Make Offer" action */
     console.log("Make Offer clicked for listing:", listing);
-    window.location.href = "/listings/:listingID/offer";
+    navigate(`/listings/${listingID}/offer`);
   };
 
   const handleStartChat = () => {
@@ -171,15 +171,21 @@ function ListingView() {
 
   const handleDeleteListing = async () => {
     console.log("Delete Listing clicked for listing:", listing);
-    //window.location.href = "/listings/:listingID/delete";
-    try {
-      console.log("listingID deleting: ", listingID);
-      await axios.delete(`https://haggle.onrender.com/listings/${listingID}`,
-      );
-      console.log("listing successfully deleted");
-      window.location.href = '/'; // go back to home page
-    } catch (error){
-      console.error("error deleting listing", error);
+  
+    // Confirm deletion with the user
+    const confirmed = window.confirm("Are you sure you want to delete this listing?");
+    
+    if (confirmed) {
+      try {
+        console.log("listingID deleting: ", listingID);
+        await axios.delete(`https://haggle.onrender.com/listings/${listingID}`);
+        console.log("listing successfully deleted");
+        window.location.href = '/'; // go back to home page
+      } catch (error) {
+        console.error("error deleting listing", error);
+      }
+    } else {
+      console.log("Deletion cancelled by user.");
     }
   };
 
@@ -278,11 +284,11 @@ function ListingView() {
         <div className="listing-layout">
           <div className="margin vertical-center flex-column">
             <ImageCarousel images={images} />
-            <div>
+            <div className="vertical-center">
             {isOwner && (
               <>
                 <button className="muted-button margin-right" onClick={handleEditListing}>Edit Listing</button>
-                <button className="margin-right" style={{backgroundColor: "red"}}onClick={handleDeleteListing}>Delete Listing</button>
+                <button style={{backgroundColor: "red"}}onClick={handleDeleteListing}>Delete Listing</button>
               </>
             )}
             </div>

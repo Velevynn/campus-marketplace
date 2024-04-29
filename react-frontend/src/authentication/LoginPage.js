@@ -61,9 +61,12 @@ function LoginPage() {
   }, [credentials]);
   // Renders the login form, providing fields for identifier and password, and displays error messages if any exist
   return (
-    <>
-      <Container>
-        <LogoImage src={logoImage} alt="Logo"/>
+    <div className="vertical-center margin-top">
+      <div>
+      <div className="small-container drop-shadow">
+        <div className="vertical-center">
+          <img className="logo-img" src={logoImage} alt="Logo"/>
+        </div>
         
         <HeaderLabel style={{ marginTop: '0px'}}>
             Log in to buy, sell, and trade
