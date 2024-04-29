@@ -74,7 +74,7 @@ function Form() {
         });
         
         try {
-          await axios.post('https://haggle.onrender.com/listings', formData, {
+          await axios.post(process.env.REACT_APP_BACKEND_LINK + '/listings', formData, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }
