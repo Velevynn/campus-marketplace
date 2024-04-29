@@ -284,11 +284,11 @@ function ListingView() {
         <div className="listing-layout">
           <div className="margin vertical-center flex-column">
             <ImageCarousel images={images} />
-            <div>
+            <div className="vertical-center">
             {isOwner && (
               <>
                 <button className="muted-button margin-right" onClick={handleEditListing}>Edit Listing</button>
-                <button className="margin-right" style={{backgroundColor: "red"}}onClick={handleDeleteListing}>Delete Listing</button>
+                <button style={{backgroundColor: "red"}}onClick={handleDeleteListing}>Delete Listing</button>
               </>
             )}
             </div>

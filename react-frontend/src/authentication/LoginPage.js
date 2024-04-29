@@ -70,7 +70,7 @@ function LoginPage() {
 
   // Renders the login form, providing fields for identifier and password, and displays error messages if any exist
   return (
-    <div className="vertical-center margin">
+    <div className="vertical-center margin-top">
       <div>
       <div className="small-container drop-shadow">
         <div className="vertical-center">
