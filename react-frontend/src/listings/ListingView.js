@@ -170,15 +170,21 @@ function ListingView() {
 
   const handleDeleteListing = async () => {
     console.log("Delete Listing clicked for listing:", listing);
-    //window.location.href = "/listings/:listingID/delete";
-    try {
-      console.log("listingID deleting: ", listingID);
-      await axios.delete(`https://haggle.onrender.com/listings/${listingID}`,
-      );
-      console.log("listing successfully deleted");
-      window.location.href = '/'; // go back to home page
-    } catch (error){
-      console.error("error deleting listing", error);
+  
+    // Confirm deletion with the user
+    const confirmed = window.confirm("Are you sure you want to delete this listing?");
+    
+    if (confirmed) {
+      try {
+        console.log("listingID deleting: ", listingID);
+        await axios.delete(`https://haggle.onrender.com/listings/${listingID}`);
+        console.log("listing successfully deleted");
+        window.location.href = '/'; // go back to home page
+      } catch (error) {
+        console.error("error deleting listing", error);
+      }
+    } else {
+      console.log("Deletion cancelled by user.");
     }
   };
 

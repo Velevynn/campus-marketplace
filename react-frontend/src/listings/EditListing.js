@@ -106,20 +106,25 @@ function EditListing() {
       }
       const imageURL = imageToDelete.imageURL;
       console.log(imageURL);
-      // Make DELETE request to backend using the imageURL
-      const response = await axios.delete(`https://haggle.onrender.com/listings/images/${listingID}`, {
-        data: {
-          imageURL: imageURL
-        }
-      });
-      console.log(response.data); // Log success message
-
+      try{
+        // Make DELETE request to backend using the imageURL
+        const response = await axios.delete(`https://haggle.onrender.com/listings/images/${listingID}`, {
+          data: {
+            imageURL: imageURL
+          }
+        });
+        console.log(response.data); // Log success message
+      } catch (error) {
+        console.error("Error deleting image from table:", error);
+      }
+      // Refresh images after deletion
+      const updatedImages = images.filter((image) => image.imageURL !== imageURL);
+      console.log(updatedImages);
+      setImages(updatedImages);
     } catch (error) {
-      console.error("Error deleting image:", error);
+      console.error("Error deleting image from array:", error);
     }
-    // Refresh images after deletion
-    const updatedImages = images.filter((image) => image.imageURL !== imageURL);
-    setImages(updatedImages);
+    
   };
 
   const submitForm = async () => {
