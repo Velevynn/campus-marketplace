@@ -293,15 +293,8 @@ router.put("/images/:listingID", upload.array('image'), async (req, res) => {
     const { listingID } = req.params;
     const images = req.files;
 
-    const connection = createConnection();
-  
-    // Delete images that are not present in the array
-    await connection.query('BEGIN');
-    await connection.query(`DELETE FROM images WHERE "listingID" = $1`, [listingID]);
-
     // Insert new images into the database using addImages function
-    await addImagesTest(connection, listingID, images.length);
-    await connection.query('COMMIT');
+    await addImages(listingID, images.length);
   
     // Upload all images to S3 under a folder named after the listingID
     let i = 0;
@@ -319,9 +312,10 @@ router.put("/images/:listingID", upload.array('image'), async (req, res) => {
   }
 });
 
-router.delete("/images/:listingID/:imageURL", async (req, res) => {
+router.delete("/images/:listingID/", async (req, res) => {
   try {
-    const { listingID, imageURL } = req.params;
+    const { listingID } = req.params;
+    const { imageURL } = req.query;
 
     const connection = createConnection();
 
@@ -342,28 +336,6 @@ async function addImages(listingID, numImages) {
   try {
     const connection = createConnection();
 
-    // Insert each image into the database, one at a time.
-    for (i = 0; i < numImages; i++) {
-      await connection.query(
-        'INSERT INTO images ("listingID", "imageURL") VALUES ($1, $2)',
-        [
-          listingID,
-          `https://haggleimgs.s3.amazonaws.com/${listingID}/image${i}?rand=${Math.floor(Math.random()*100000)}`,
-        ],
-      );
-    }
-    
-    await connection.end();
-  }
-  catch (error) {
-    console.error("An error occured while inserting images", error);
-    throw error;
-  }
-}
-
-// Function to add one or multiple images to database.
-async function addImagesTest(connection, listingID, numImages) {
-  try {
     // Insert each image into the database, one at a time.
     for (i = 0; i < numImages; i++) {
       await connection.query(
