@@ -7,6 +7,7 @@ import { Container, Button, ButtonContainer, ProfileImage, ProfileField, Profile
 
 function ProfilePage() {
   const [bookmarks, setBookmarks] = useState([]);
+  const [listings, setMyListings] = useState([]);
   const [userProfile, setUserProfile] = useState({
     username: '',
     full_name: '',
@@ -47,6 +48,7 @@ function ProfilePage() {
       });
       setUserProfile(response.data);
       fetchBookmarks(response.data.userID);
+      fetchMyListings(response.data.userID);
       console.log(response.data, "my data");
     } catch (error) {
       console.error('Failed to fetch profile data:', error);
@@ -61,6 +63,17 @@ function ProfilePage() {
       setBookmarks(response.data);
     } catch (error) {
       console.error('Failed to fetch bookmarks', error);
+    }
+  }
+
+  const fetchMyListings = async (userID) => {
+    try {
+      console.log(userID);
+      const response = await axios.get(`https://haggle.onrender.com/listings/mylistings/${userID}`);
+      setMyListings(response.data);
+      console.log(response.data, "hello");
+    } catch (error) {
+      console.error('Failed to fetch myListings', error);
     }
   }
 
@@ -140,7 +153,7 @@ function ProfilePage() {
       </Container>
 
       <ProfileCollection title = "My Bookmarks" bookmarks = {bookmarks} userID = {userProfile.userID}/>
-
+      <ProfileCollection title = "My Listings" bookmarks = {listings} userID = {userProfile.userID}/>
       <div className="vertical-center margin">
         <div className="small-container drop-shadow">
         {!showDeleteConfirmation && (

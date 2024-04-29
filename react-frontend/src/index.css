@@ -450,6 +450,34 @@ h5 {
   font-size: 1rem;
 }
 
+.collection-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  overflow-y: auto;
+  max-height: 175px;
+}
+
+.collection-item {
+  margin-bottom: -10px;
+}
+
+.collection-container {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.collection-image {
+  width: 45px;
+  height: 45px;
+  margin-right: 15px;
+}
+
+.collection-text {
+  display: inline-block;
+  vertical-align: middle;
+}
+
 @media (min-width: 600px) {
   h1:not(:first-child),
   h2:not(:first-child),

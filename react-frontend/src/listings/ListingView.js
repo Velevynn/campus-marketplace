@@ -150,13 +150,6 @@ function ListingView() {
     return message;
   }
 
-
-  const handleBuyNow = () => {
-    /* Add logic for handling "Buy Now" action */
-    console.log("Buy Now clicked for listing:", listing);
-    window.location.href = "/listings/:listingID/buy";
-  };
-
   const handleMakeOffer = () => {
     /* Add logic for handling "Make Offer" action */
     console.log("Make Offer clicked for listing:", listing);
@@ -222,6 +215,10 @@ function ListingView() {
 
   const createBookmark = async () => {
     console.log("Entered createBookmark");
+    //TODO: use react router instead of href
+    if (!loggedID) {
+      window.location.href = 'http://localhost:3000/login'
+    }
     try {
       await axios.post(
         `https://haggle.onrender.com/listings/${listingID}/bookmark`, {
@@ -277,7 +274,7 @@ function ListingView() {
     );
   }
 
-  // TODO: Find images for the bookmark toggle
+  // TODO: Only show bookmark count if above certain threshold?
   /* first check if listing data is available, then render */
   return (
     <div className="vertical-center margin">
@@ -297,13 +294,12 @@ function ListingView() {
           <div className="margin" type="text">
             <h1 className="no-margin-top">{listing.title}</h1>
             <p>Posted {TimeAgo(listing.postDate)}</p>
-            <h5 style={{color: "green"}}>${listing.price}</h5>
+            <p>{listing.bookmarkCount === "1" ? "1 person is interested" : listing.bookmarkCount + " people are interested"}</p>
+            <h5 style={{color: "green"}}>{listing.price === "0" || listing.price === 0 ? "FREE" : "$" + listing.price}</h5>
             <p>{listing.description}</p>
           </div>
         </div>
         <div className="vertical-center margin-top">
-        
-            <button className="margin-right" onClick={handleBuyNow}>Buy Now</button>
             <button className="margin-right" onClick={handleMakeOffer}>Make Offer</button>
             <button className="margin-right" onClick={handleStartChat}>Start Chat</button>
             <div className="vertical-center" onClick={toggleBookmark}>
