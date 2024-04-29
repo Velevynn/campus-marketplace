@@ -1,15 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import ProfileCollection from '../components/ProfileCollection'
 import { useNavigate } from 'react-router-dom';
 import profileImagePlaceholder from '../assets/profile-placeholder.png';
+import LoadingSpinner from "../components/LoadingSpinner";
 import { Container, Button, ButtonContainer, ProfileImage, ProfileField, ProfileLabel, ProfileValue, ErrorMessage } from '../authentication/AuthenticationStyling';
 
 function ProfilePage() {
+  const [bookmarks, setBookmarks] = useState([]);
+  const [listings, setMyListings] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [userProfile, setUserProfile] = useState({
     username: '',
     full_name: '',
     email: '',
     phoneNumber: '',
+    userID: ''
   });
 
   const navigate = useNavigate();
@@ -39,15 +45,40 @@ function ProfilePage() {
     try {
       const response = await axios.get(`https://haggle.onrender.com/users/profile`, {
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`,
         }
       });
       setUserProfile(response.data);
+      fetchBookmarks(response.data.userID);
+      fetchMyListings(response.data.userID);
+      console.log(response.data, "my data");
+      setIsLoading(false);
     } catch (error) {
       console.error('Failed to fetch profile data:', error);
       navigate('/login');
     }
   };
+
+  const fetchBookmarks = async (userID) => {
+    try {
+      console.log(userID);
+      const response = await axios.get(`https://haggle.onrender.com/listings/bookmark/${userID}`);
+      setBookmarks(response.data);
+    } catch (error) {
+      console.error('Failed to fetch bookmarks', error);
+    }
+  }
+
+  const fetchMyListings = async (userID) => {
+    try {
+      console.log(userID);
+      const response = await axios.get(`https://haggle.onrender.com/listings/mylistings/${userID}`);
+      setMyListings(response.data);
+      console.log(response.data, "hello");
+    } catch (error) {
+      console.error('Failed to fetch myListings', error);
+    }
+  }
 
   useEffect(() => {
     fetchUserProfile();
@@ -108,61 +139,71 @@ function ProfilePage() {
 
   return (
     <div>
-      <Container>
-        <ProfileImage src={profileImagePlaceholder} alt="Profile" />
-        <form>
-          {Object.entries(userProfile).map(([key, value]) => (
-            <ProfileField key={key}>
-              <ProfileLabel>{key.replace('_', ' ')}:</ProfileLabel>
-              <ProfileValue>{value}</ProfileValue>
-            </ProfileField>
-          ))}
-        </form>
-        <ButtonContainer>
-          <Button onClick={handleChangePassword}>Change Password</Button>
-          <Button onClick={handleSignOut}>Sign Out</Button>
-        </ButtonContainer>
-      </Container>
-      
-      <div className="vertical-center margin">
-        <div className="small-container drop-shadow">
-        {!showDeleteConfirmation && (
-          <button className="span-button" onClick={confirmDelete}>Delete Profile</button>
-        )}
-        {showDeleteConfirmation && (
-            <form className="" onSubmit={handleDelete}>
-              <div className="margin input">
+      {isLoading ? ( // Render loading spinner if isLoading is true
+      <div className="margin">
+        <LoadingSpinner />
+      </div>
+      ) : (
+      <div>
+        <Container>
+          <ProfileImage src={profileImagePlaceholder} alt="Profile" />
+          <form>
+            {Object.entries(userProfile).map(([key, value]) => (
+              key !== 'userID' && <ProfileField key={key}>
+                <ProfileLabel>{key.replace('_', ' ')}:</ProfileLabel>
+                <ProfileValue>{value}</ProfileValue>
+              </ProfileField>
+            ))}
+          </form>
+          <ButtonContainer>
+            <Button onClick={handleChangePassword}>Change Password</Button>
+            <Button onClick={handleSignOut}>Sign Out</Button>
+          </ButtonContainer>
+        </Container>
+
+        <ProfileCollection title = "Bookmarks" bookmarks = {bookmarks} userID = {userProfile.userID}/>
+        <ProfileCollection title = "Listings" bookmarks = {listings} userID = {userProfile.userID}/>
+        <div className="vertical-center margin">
+          <div className="small-container drop-shadow">
+          {!showDeleteConfirmation && (
+            <button className="span-button" onClick={confirmDelete}>Delete Profile</button>
+          )}
+          {showDeleteConfirmation && (
+              <form className="" onSubmit={handleDelete}>
+                <div className="margin input">
+                  <input
+                    type="text"
+                    name="username"
+                    placeholder="Username"
+                    value={deleteConfirmationData.username}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+                <div className="margin input">
                 <input
-                  type="text"
-                  name="username"
-                  placeholder="Username"
-                  value={deleteConfirmationData.username}
+                  type="password"
+                  name="password"
+                  placeholder="Password"
+                  value={deleteConfirmationData.password}
                   onChange={handleInputChange}
                   required
                 />
-              </div>
-              <div className="margin input">
-              <input
-                type="password"
-                name="password"
-                placeholder="Password"
-                value={deleteConfirmationData.password}
-                onChange={handleInputChange}
-                required
-              />
-              </div>
-              <div className="vertical-center flex-column">
-                  <button className={deleteConfirmationData.username.length > 0 
-                    && deleteConfirmationData.password.length > 0 ? "button" : "disabled"}>Confirm Delete</button>
-                  <button onClick={handleCancelDelete}>Cancel</button>
-              </div>
-              {deleteError && <ErrorMessage>{deleteError}</ErrorMessage>}
-            </form>
-          
-        )}
-          </div>
+                </div>
+                <div className="vertical-center flex-column">
+                    <button className={deleteConfirmationData.username.length > 0 
+                      && deleteConfirmationData.password.length > 0 ? "button" : "disabled"}>Confirm Delete</button>
+                    <button onClick={handleCancelDelete}>Cancel</button>
+                </div>
+                {deleteError && <ErrorMessage>{deleteError}</ErrorMessage>}
+              </form>
+            
+          )}
+            </div>
+        </div>
       </div>
-    </div>
+    )}
+  </div>
   );
 }
 

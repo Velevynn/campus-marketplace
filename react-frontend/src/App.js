@@ -2,7 +2,8 @@ import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import SignUpPage from "./authentication/SignUpPage.js";
-import LoginPage from './authentication/LoginPage.js';
+import LoginPage from './backup/LoginPage.js';
+import HandleLogin from './authentication/HandleLogin.js';
 import ProfilePage from './profile/ProfilePage.js';
 import Marketplace from "./pages/Marketplace";
 import AddListing from "./pages/AddListing";
@@ -13,7 +14,7 @@ import TOS from "./pages/TOS";
 import ListingView from "./listings/ListingView.js";
 import ProtectedRoute from "./utils/ProtectedRoute"; // Importing ProtectedRoute
 import BuyNow from "./pages/BuyNow.js";
-import MakeOffer from "./pages/MakeOffer.js";
+import MakeOfferPage from "./pages/MakeOfferPage.js";
 import StartChat from "./pages/Chat.js";
 import EditListing from "./listings/EditListing.js";
 import ForgotPasswordPage from './authentication/ForgotPasswordPage';
@@ -29,6 +30,7 @@ function App() {
         <Routes>
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/handle-login" element={<HandleLogin />} />
           <Route path="/profile" 
                 element={
                 <ProtectedRoute>
@@ -47,7 +49,7 @@ function App() {
           <Route path="/terms-of-service" element={<TOS />} />
           <Route path="/listings/:listingID" element={<ListingView />} />
           <Route path="/listings/:listingID/buy" element={<ProtectedRoute> <BuyNow /></ProtectedRoute> } />
-          <Route path="/listings/:listingID/offer" element={<ProtectedRoute> <MakeOffer /></ProtectedRoute> } />
+          <Route path="/listings/:listingID/offer" element={<ProtectedRoute> <MakeOfferPage /></ProtectedRoute> } />
           <Route path="/listings/:listingID/chat" element={<ProtectedRoute> <StartChat /></ProtectedRoute> } />
           <Route path="/listings/:listingID/edit" element={<ProtectedRoute> <EditListing /></ProtectedRoute> } />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />

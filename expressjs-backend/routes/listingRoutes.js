@@ -50,9 +50,10 @@ router.post("/:listingID/bookmark/", async (req, res) => {
   console.log("Received body when bookmarking listing: ", req.body);
   console.log(".userID: ", req.body.userID);
   console.log(".listingID", req.body.listingID);
+  console.log(".title", req.body.title);
   try {
     // Add new relationship to bookmark table.
-    await addBookmark(req.body.userID, req.body.listingID);
+    await addBookmark(req.body.userID, req.body.listingID, req.body.title);
     res.status(201).send
   }
   catch (error) {
@@ -64,6 +65,7 @@ router.post("/:listingID/bookmark/", async (req, res) => {
 
 // Retrieve listings with pagination and optional query parameters
 router.get("/", async (req, res) => {
+  console.log("retriving all listings");
   try {
     const { q, page } = req.query;
     const itemsPerPage = 30; // Define how many items to return per page
@@ -212,6 +214,46 @@ router.get("/:listingID/bookmark/", async (req, res) => {
   }
 })
 
+router.get("/bookmark/:userID", async (req, res) => {
+  console.log("Get bookmark parameters:", req.params);
+
+  try {
+    const connection = createConnection();
+    const { rows } = await connection.query('SELECT * FROM bookmarks WHERE "userID" = $1',
+      [
+        req.params.userID
+      ]);
+
+    console.log("Returned the bookmarks belonging to a particular user")
+    res.status(200).send(rows);
+    await connection.end();
+  }
+  catch (error) {
+    console.error("An error occurred while checking for a bookmark: ", error);
+    res.status(500).send("An error occurred while checking for a bookmark.");
+  }
+})
+
+// Retrieve listings for given userID.
+router.get("/mylistings/:userID", async (req, res) => {
+  console.log(req.params.userID);
+  try {
+      // Retrieve image list from database if listing exists.
+      const connection = createConnection();
+      const { rows } = await connection.query('SELECT * FROM listings WHERE "userID" = $1', 
+        [
+          req.params.userID
+        ]);
+      
+      res.status(200).send(rows);
+      await connection.end();
+    } 
+    catch (error) {
+      console.error("An error occurred while fetching the images:", error);
+      res.status(500).send("An error occurred while fetching the images");
+    }
+});
+
 router.put("/:listingID", async (req, res) => {
   try {
     const { listingID } = req.params;
@@ -251,17 +293,8 @@ router.put("/images/:listingID", upload.array('image'), async (req, res) => {
     const { listingID } = req.params;
     const images = req.files;
 
-    const connection = createConnection();
-
-    // Delete existing images associated with the listingID
-    await connection.query(
-      `DELETE FROM images WHERE "listingID" = $1`,
-      [listingID]
-    );
-
     // Insert new images into the database using addImages function
     await addImages(listingID, images.length);
-
   
     // Upload all images to S3 under a folder named after the listingID
     let i = 0;
@@ -276,6 +309,25 @@ router.put("/images/:listingID", upload.array('image'), async (req, res) => {
   } catch (error) {
     console.error("An error occurred while updating listing images:", error);
     res.status(500).send("An error occurred while updating listing images");
+  }
+});
+
+router.delete("/images/:listingID/", async (req, res) => {
+  try {
+    const { listingID } = req.params;
+    const { imageURL } = req.query;
+
+    const connection = createConnection();
+
+    await connection.query(
+      `DELETE FROM images WHERE "listingID" = $1 AND "imageURL" = $2`,
+      [listingID, imageURL]
+    );
+
+    res.status(200).send("Image deleted successfully");
+  } catch (error) {
+    console.error("An error occurred while deleting image:", error);
+    res.status(500).send("An error occurred while deleting image");
   }
 });
 
@@ -338,13 +390,21 @@ async function addListing(listing) {
   }
 
 // Function to bookmark a listing.
-async function addBookmark(userID, listingID) {
+async function addBookmark(userID, listingID, title) {
   try {
     const connection = createConnection();
     const { rows } = await connection.query(
-      'INSERT INTO bookmarks ("userID", "listingID") VALUES ($1, $2)',
+      'INSERT INTO bookmarks ("userID", "listingID", title) VALUES ($1, $2, $3)',
       [
         userID,
+        listingID,
+        title,
+      ]
+    )
+
+    const { result } = await connection.query(
+      'UPDATE listings SET "bookmarkCount" = "bookmarkCount" + 1 WHERE "listingID" = $1',
+      [
         listingID
       ]
     )
@@ -357,6 +417,8 @@ async function addBookmark(userID, listingID) {
     throw error;
   }
 }
+
+
 
 
 

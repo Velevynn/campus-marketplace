@@ -92,6 +92,41 @@ function EditListing() {
     }));
   };
 
+  const handleDeleteImage = async (index) => {
+    try {
+      // Construct the imageURL based on the index
+      const baseimageURL = `https://haggleimgs.s3.amazonaws.com/${listingID}/image${index}`;
+      console.log(images);
+      console.log(baseimageURL);
+      // Find the corresponding image to delete
+      const imageToDelete = images.find((image) => image.imageURL.startsWith(baseimageURL));
+      if (!imageToDelete) {
+        console.error("Image not found for deletion");
+        return;
+      }
+      const imageURL = imageToDelete.imageURL;
+      console.log(imageURL);
+      try{
+        // Make DELETE request to backend using the imageURL
+        const response = await axios.delete(`https://haggle.onrender.com/listings/images/${listingID}`, {
+          data: {
+            imageURL: imageURL
+          }
+        });
+        console.log(response.data); // Log success message
+      } catch (error) {
+        console.error("Error deleting image from table:", error);
+      }
+      // Refresh images after deletion
+      const updatedImages = images.filter((image) => image.imageURL !== imageURL);
+      console.log(updatedImages);
+      setImages(updatedImages);
+    } catch (error) {
+      console.error("Error deleting image from array:", error);
+    }
+    
+  };
+
   const submitForm = async () => {
     if (listing.title !== "" && listing.price !== "") {
       try {
@@ -132,7 +167,7 @@ function EditListing() {
             "Content-Type": "multipart/form-data"
           }
         });
-        
+        setImages(listing.images);
         // Redirect to the marketplace page after successful update
         navigate(`/listings/${listingID}`);
       } catch (error) {
@@ -170,20 +205,53 @@ function EditListing() {
             onChange={handleChange}
           />
           <div className="thumbnails">
+            {/*For displaying thumbnails, with hover stuff*/}
             {images.map((image, index) => (
-              <img
+              <div
                 key={index}
-                src={image.imageURL}
-                alt={`Thumbnail ${index}`}
-                style={{ marginRight: '10px' }} // Add inline style to create space between images
-              />
+                style={{ position: 'relative', display: 'inline-block' }}
+                onMouseEnter={(e) => e.currentTarget.querySelector('.delete-overlay').style.visibility = 'visible'}
+                onMouseLeave={(e) => e.currentTarget.querySelector('.delete-overlay').style.visibility = 'hidden'}
+                onClick={() => handleDeleteImage(index)}
+              >
+                <img
+                  src={image.imageURL}
+                  alt={`Thumbnail ${index}`}
+                  style={{ marginRight: '10px', cursor: 'pointer', transition: 'opacity 0.2s ease' }}
+                  onMouseEnter={(e) => e.target.style.opacity = 0.5}
+                  onMouseLeave={(e) => e.target.style.opacity = 1}
+                />
+                <div className="delete-overlay"
+                     style={{
+                       position: 'absolute',
+                       top: '5px',
+                       right: '7px',
+                       visibility: 'hidden',
+                       cursor: 'pointer'
+                     }}
+                     onClick={() => handleDeleteImage(index)}
+                >
+                  {/* Red "X" icon */}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="#e3101a"
+                    style={{ filter: 'drop-shadow(3px 3px 2px rgba(0, 0, 0, 0.5))' }}
+                  >
+                    <path d="M19 6.41l-1.41-1.41-5.59 5.59-5.59-5.59-1.41 1.41 5.59 5.59-5.59 5.59 1.41 1.41 5.59-5.59 5.59 5.59 1.41-1.41-5.59-5.59 5.59-5.59z" />
+                  </svg>
+                </div>
+              </div>
             ))}
-            {listing.images.map((file, index) => (
+             {/*For displaying new selected images*/}
+             {listing.images.map((file, index) => (
               <img
                 key={`new-${index}`}
                 src={URL.createObjectURL(file)}
                 alt={`New Thumbnail ${index}`}
-                style={{ marginRight: '10px' }} // Add inline style to create space between images
+                style={{ marginRight: '10px' }}
               />
           ))}
           </div>
