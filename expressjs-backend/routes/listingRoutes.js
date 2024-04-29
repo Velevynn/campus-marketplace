@@ -299,8 +299,7 @@ router.put("/images/:listingID", upload.array('image'), async (req, res) => {
       `DELETE FROM images WHERE "listingID" = $1`,
       [listingID]
     );
-    // Insert new images into the database using addImages function
-    await addImages(listingID, images.length);
+    
 
   
     // Upload all images to S3 under a folder named after the listingID
@@ -310,6 +309,9 @@ router.put("/images/:listingID", upload.array('image'), async (req, res) => {
       await uploadImageToS3(`${listingID}/image${i}`, image.buffer);
       i++;
     }
+
+    // Insert new images into the database using addImages function
+    await addImages(listingID, images.length);
 
     // Send success response
     res.status(201).send(req.body);
