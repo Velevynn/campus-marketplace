@@ -1,59 +1,55 @@
 import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { Container, Form, OfferGroup, Offer, HeaderLabel, MakeOfferButton } from '../authentication/AuthenticationStyling';
+import { useNavigate, useParams } from 'react-router-dom';
 
 function MakeOfferPage() {
-    const { listingID } = useParams();
-    const navigate = useNavigate();
-    const [offer, setOffer] = useState('');
-    const [comment, setComment] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
+  const [offer, setOffer] = useState("0.00");  // Initial state for the offer input
+  const navigate = useNavigate();
+  const { listingID } = useParams();
 
-    const handleOfferChange = (e) => {
-        setOffer(e.target.value);
-    };
+  const handleInputChange = (event) => {
+    const { value } = event.target;
+    const numbers = value.replace(/[^0-9]/g, ''); // Strip non-numeric characters
+    let newNumber = parseInt(numbers, 10) / 100; // Convert to number and shift decimal place
+    setOffer(newNumber.toFixed(2)); // Format to 2 decimal places and update state
+  };
 
-    const handleCommentChange = (e) => {
-        setComment(e.target.value);
-    };
+  const formatNumber = (number) => {
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(number);
+  };
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        try {
-            const token = localStorage.getItem('token');
-            await axios.post(`https://haggle.onrender.com/listings/${listingID}/offer`, {
-                offer,
-                comment
-            }, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            navigate(`/listings/${listingID}`);
-        } catch (error) {
-            if (error.response) {
-                setErrorMessage(error.response.data.error);
-            } else {
-                setErrorMessage('Failed to submit the offer. Please try again.');
-            }
-        }
-    };
+  const handleGoBack = () => {
+    navigate(`/listings/${listingID}`); 
+  };
 
-    return (
-        <div className="offer-container">
-            <h2>Make an Offer</h2>
-            {errorMessage && <p className="error-message">{errorMessage}</p>}
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="offer">Your Offer ($):</label>
-                    <input type="number" id="offer" value={offer} onChange={handleOfferChange} required />
-                </div>
-                <div>
-                    <label htmlFor="comment">Comment (optional):</label>
-                    <textarea id="comment" value={comment} onChange={handleCommentChange}></textarea>
-                </div>
-                <button type="submit">Submit Offer</button>
-            </form>
-        </div>
-    );
+  return (
+    <>
+      <Container>
+        <HeaderLabel style={{ marginTop: '0px'}}>
+          Enter Your Offer
+        </HeaderLabel>
+        <Form>
+          <OfferGroup>
+            <Offer
+              type="text"
+              name="identifier"
+              id="identifier"
+              required
+              value={formatNumber(offer)}
+              onChange={handleInputChange}
+              maxLength="10"
+            />
+          </OfferGroup>
+          <MakeOfferButton>
+            Make Offer
+          </MakeOfferButton>
+          <MakeOfferButton onClick={handleGoBack} style = {{marginTop: "-10px"}}>
+            Return to Listing
+          </MakeOfferButton>
+        </Form>
+      </Container>
+    </>
+  );
 }
 
 export default MakeOfferPage;

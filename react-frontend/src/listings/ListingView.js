@@ -153,7 +153,7 @@ function ListingView() {
   const handleMakeOffer = () => {
     /* Add logic for handling "Make Offer" action */
     console.log("Make Offer clicked for listing:", listing);
-    window.location.href = "/listings/:listingID/offer";
+    navigate(`/listings/${listingID}/offer`);
   };
 
   const handleStartChat = () => {
@@ -254,13 +254,6 @@ function ListingView() {
       console.error("Error deleting bookmark: ", error);
     }
   }
-
-    
-
-  
-
-  
-  
 
   if (!listing) {
     return (
