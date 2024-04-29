@@ -49,17 +49,15 @@ function ProfilePage() {
         }
       });
       setUserProfile(response.data);
-      fetchBookmarks(response.data.userID);
-      fetchMyListings(response.data.userID);
+      fetchCollections(response.data.userID);
       console.log(response.data, "my data");
-      setIsLoading(false);
     } catch (error) {
       console.error('Failed to fetch profile data:', error);
       navigate('/login');
     }
   };
 
-  const fetchBookmarks = async (userID) => {
+  const fetchCollections = async (userID) => {
     try {
       console.log(userID);
       const response = await axios.get(`https://haggle.onrender.com/listings/bookmark/${userID}`);
@@ -67,17 +65,16 @@ function ProfilePage() {
     } catch (error) {
       console.error('Failed to fetch bookmarks', error);
     }
-  }
-
-  const fetchMyListings = async (userID) => {
     try {
       console.log(userID);
       const response = await axios.get(`https://haggle.onrender.com/listings/mylistings/${userID}`);
       setMyListings(response.data);
       console.log(response.data, "hello");
+      
     } catch (error) {
       console.error('Failed to fetch myListings', error);
     }
+    setIsLoading(false);
   }
 
   useEffect(() => {
