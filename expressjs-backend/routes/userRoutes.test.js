@@ -71,6 +71,7 @@ test('Testing successful login', async () => {
     .post('/login')
     .send(LoginBody)
     .expect(200);
+    console.log("Testing response:", response);
 });
 
 test('should return 500 server error', async () => {

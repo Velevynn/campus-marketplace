@@ -297,7 +297,7 @@ function ListingView() {
             <h1 className="no-margin-top">{listing.title}</h1>
             <p>Posted {TimeAgo(listing.postDate)}</p>
             <p>
-                {isBookmarked ? listing.bookmarkCount + 1 + "bokmark" + " people are watching" : listing.bookmarkCount + " people are watching"}
+                {isBookmarked ? (listing.bookmarkCount + 1) + " people are watching" : (listing.bookmarkCount) + " people are watching"}
             </p>
             <h5 style={{color: "green"}}>{listing.price === "0" || listing.price === 0 ? "FREE" : "$" + listing.price}</h5>
             <p>{listing.description}</p>
