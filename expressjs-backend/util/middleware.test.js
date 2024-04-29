@@ -31,7 +31,7 @@ test('verifyToken middleware - valid token', () => {
   verifyToken(req, res, next);
 
   // Expectations
-  expect(jwt.verify).toHaveBeenCalledWith('validToken', 'YourSecretKey', expect.any(Function));
+  expect(jwt.verify).toHaveBeenCalledWith('validToken', process.env.JWT_SECRET_KEY, expect.any(Function));
   expect(next).toHaveBeenCalled();
   expect(req.user).toEqual({ userId: 1 });
   expect(res.status).not.toHaveBeenCalled();

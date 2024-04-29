@@ -170,15 +170,21 @@ function ListingView() {
 
   const handleDeleteListing = async () => {
     console.log("Delete Listing clicked for listing:", listing);
-    //window.location.href = "/listings/:listingID/delete";
-    try {
-      console.log("listingID deleting: ", listingID);
-      await axios.delete(`https://haggle.onrender.com/listings/${listingID}`,
-      );
-      console.log("listing successfully deleted");
-      window.location.href = '/'; // go back to home page
-    } catch (error){
-      console.error("error deleting listing", error);
+  
+    // Confirm deletion with the user
+    const confirmed = window.confirm("Are you sure you want to delete this listing?");
+    
+    if (confirmed) {
+      try {
+        console.log("listingID deleting: ", listingID);
+        await axios.delete(`https://haggle.onrender.com/listings/${listingID}`);
+        console.log("listing successfully deleted");
+        window.location.href = '/'; // go back to home page
+      } catch (error) {
+        console.error("error deleting listing", error);
+      }
+    } else {
+      console.log("Deletion cancelled by user.");
     }
   };
 
@@ -215,6 +221,10 @@ function ListingView() {
 
   const createBookmark = async () => {
     console.log("Entered createBookmark");
+    //TODO: use react router instead of href
+    if (!loggedID) {
+      window.location.href = 'http://localhost:3000/login'
+    }
     try {
       await axios.post(
         `https://haggle.onrender.com/listings/${listingID}/bookmark`, {
@@ -255,6 +265,8 @@ function ListingView() {
     }
   }
 
+
+
   if (!listing) {
     return (
         <div className="margin">
@@ -263,7 +275,7 @@ function ListingView() {
     );
   }
 
-  // TODO: Find images for the bookmark toggle
+  // TODO: Only show bookmark count if above certain threshold?
   /* first check if listing data is available, then render */
   return (
     <div className="vertical-center margin">
@@ -283,7 +295,10 @@ function ListingView() {
           <div className="margin" type="text">
             <h1 className="no-margin-top">{listing.title}</h1>
             <p>Posted {TimeAgo(listing.postDate)}</p>
-            <h5 style={{color: "green"}}>${listing.price}</h5>
+            <p>
+                {isBookmarked ? parseInt(listing.bookmarkCount + 1) + " people are watching" : parseInt(listing.bookmarkCount) + " people are watching"}
+            </p>
+            <h5 style={{color: "green"}}>{listing.price === "0" || listing.price === 0 ? "FREE" : "$" + listing.price}</h5>
             <p>{listing.description}</p>
           </div>
         </div>

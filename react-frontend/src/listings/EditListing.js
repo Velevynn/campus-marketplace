@@ -106,16 +106,25 @@ function EditListing() {
       }
       const imageURL = imageToDelete.imageURL;
       console.log(imageURL);
-      // Make DELETE request to backend using the imageURL
-      const response = await axios.delete(`https://haggle.onrender.com/listings/images/${listingID}/${index}`);
-      console.log(response.data); // Log success message
-
+      try{
+        // Make DELETE request to backend using the imageURL
+        const response = await axios.delete(`https://haggle.onrender.com/listings/images/${listingID}`, {
+          data: {
+            imageURL: imageURL
+          }
+        });
+        console.log(response.data); // Log success message
+      } catch (error) {
+        console.error("Error deleting image from table:", error);
+      }
       // Refresh images after deletion
       const updatedImages = images.filter((image) => image.imageURL !== imageURL);
+      console.log(updatedImages);
       setImages(updatedImages);
     } catch (error) {
-      console.error("Error deleting image:", error);
+      console.error("Error deleting image from array:", error);
     }
+    
   };
 
   const submitForm = async () => {
@@ -158,8 +167,7 @@ function EditListing() {
             "Content-Type": "multipart/form-data"
           }
         });
-        const updatedImages = [...images, ...listing.images];
-        setImages(updatedImages);
+        setImages(listing.images);
         // Redirect to the marketplace page after successful update
         navigate(`/listings/${listingID}`);
       } catch (error) {

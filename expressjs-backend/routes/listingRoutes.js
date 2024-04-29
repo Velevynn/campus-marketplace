@@ -293,17 +293,8 @@ router.put("/images/:listingID", upload.array('image'), async (req, res) => {
     const { listingID } = req.params;
     const images = req.files;
 
-    const connection = createConnection();
-    /*
-    // Delete existing images associated with the listingID
-    await connection.query(
-      `DELETE FROM images WHERE "listingID" = $1`,
-      [listingID]
-    );
-      */
     // Insert new images into the database using addImages function
     await addImages(listingID, images.length);
-
   
     // Upload all images to S3 under a folder named after the listingID
     let i = 0;
@@ -321,9 +312,10 @@ router.put("/images/:listingID", upload.array('image'), async (req, res) => {
   }
 });
 
-router.delete("/images/:listingID/:imageURL", async (req, res) => {
+router.delete("/images/:listingID/", async (req, res) => {
   try {
-    const { listingID, imageURL } = req.params;
+    const { listingID } = req.params;
+    const { imageURL } = req.query;
 
     const connection = createConnection();
 
@@ -407,6 +399,13 @@ async function addBookmark(userID, listingID, title) {
         userID,
         listingID,
         title,
+      ]
+    )
+
+    const { result } = await connection.query(
+      'UPDATE listings SET "bookmarkCount" = "bookmarkCount" + 1 WHERE "listingID" = $1',
+      [
+        listingID
       ]
     )
 
