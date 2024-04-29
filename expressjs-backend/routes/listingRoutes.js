@@ -410,6 +410,13 @@ async function addBookmark(userID, listingID, title) {
       ]
     )
 
+    const { result } = await connection.query(
+      'UPDATE listings SET "bookmarkCount" = "bookmarkCount" + 1 WHERE listingID = $1',
+      [
+        listingID
+      ]
+    )
+
     await connection.end();
     return;
   }

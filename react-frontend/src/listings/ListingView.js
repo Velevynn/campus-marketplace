@@ -215,6 +215,10 @@ function ListingView() {
 
   const createBookmark = async () => {
     console.log("Entered createBookmark");
+    //TODO: use react router instead of href
+    if (!loggedID) {
+      window.location.href = 'http://localhost:3000/login'
+    }
     try {
       await axios.post(
         `https://haggle.onrender.com/listings/${listingID}/bookmark`, {
@@ -270,7 +274,7 @@ function ListingView() {
     );
   }
 
-  // TODO: Find images for the bookmark toggle
+  // TODO: Only show bookmark count if above certain threshold?
   /* first check if listing data is available, then render */
   return (
     <div className="vertical-center margin">
@@ -290,7 +294,8 @@ function ListingView() {
           <div className="margin" type="text">
             <h1 className="no-margin-top">{listing.title}</h1>
             <p>Posted {TimeAgo(listing.postDate)}</p>
-            <h5 style={{color: "green"}}>${listing.price}</h5>
+            <p>{listing.bookmarkCount === "1" ? "1 person is interested" : listing.bookmarkCount + " people are interested"}</p>
+            <h5 style={{color: "green"}}>{listing.price === "0" || listing.price === 0 ? "FREE" : "$" + listing.price}</h5>
             <p>{listing.description}</p>
           </div>
         </div>
