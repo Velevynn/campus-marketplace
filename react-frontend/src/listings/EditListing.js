@@ -107,8 +107,8 @@ function EditListing() {
       const imageURL = imageToDelete.imageURL;
       console.log(imageURL);
       // Make DELETE request to backend using the imageURL
-      const response = await axios.delete(`https://haggle.onrender.com/listings/images/${listingID}/${index}`);
-      console.log(response.data); // Log success message
+      //const response = await axios.delete(`https://haggle.onrender.com/listings/images/${listingID}/${index}`);
+      //console.log(response.data); // Log success message
 
       // Refresh images after deletion
       const updatedImages = images.filter((image) => image.imageURL !== imageURL);
