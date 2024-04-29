@@ -66,6 +66,8 @@ test('Testing successful login', async () => {
   // Mock bcrypt.compare to always return true
   jest.spyOn(bcrypt, 'compare').mockResolvedValue(true);
 
+  console.log(LoginBody);
+  console.log(app);
   // Send request to login endpoint
   const response = await request(app)
     .post('/login')
