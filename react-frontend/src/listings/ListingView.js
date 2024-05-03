@@ -31,7 +31,7 @@ function ListingView() {
           console.log("Decoded username:", username);
           try {
             // Make a request to the backend to fetch the userID based on the username
-            const userData = await axios.get(`https://haggle.onrender.com/users/userID`, { 
+            const userData = await axios.get(`http://localhost:8000/users/userID`, { 
               params: {
                 'username': username
               }
@@ -62,7 +62,7 @@ function ListingView() {
       try {
         /* get data of listing by its ID */
         const response = await axios.get(
-          `https://haggle.onrender.com/listings/${listingID}`,
+          `http://localhost:8000/listings/${listingID}`,
         );
         
         /* set fetched data to state */
@@ -120,7 +120,7 @@ function ListingView() {
       try {
         /* Fetch images for the listing from the backend */
         const response = await axios.get(
-          `https://haggle.onrender.com/listings/images/${listingID}`,
+          `http://localhost:8000/listings/images/${listingID}`,
         );
         if (response.data.length > 0) {
           setImages(response.data);
@@ -178,7 +178,7 @@ function ListingView() {
     if (confirmed) {
       try {
         console.log("listingID deleting: ", listingID);
-        await axios.delete(`https://haggle.onrender.com/listings/${listingID}`);
+        await axios.delete(`http://localhost:8000/listings/${listingID}`);
         console.log("listing successfully deleted");
         window.location.href = '/'; // go back to home page
       } catch (error) {
@@ -228,7 +228,7 @@ function ListingView() {
     }
     try {
       await axios.post(
-        `https://haggle.onrender.com/listings/${listingID}/bookmark`, {
+        `http://localhost:8000/listings/${listingID}/bookmark`, {
           'userID': loggedID,
           'listingID': listingID,
           'title' : listing.title
@@ -249,7 +249,7 @@ function ListingView() {
     console.log("Entered deleteBookmark");
     try {
       await axios.delete(
-        'https://haggle.onrender.com/listings/${listingID}/bookmark', {
+        'http://localhost:8000/listings/${listingID}/bookmark', {
           params: {
             'userID': loggedID,
             'listingID': listingID
@@ -284,11 +284,11 @@ function ListingView() {
         <div className="listing-layout">
           <div className="margin vertical-center flex-column">
             <ImageCarousel images={images} />
-            <div className="vertical-center">
+            <div className="">
             {isOwner && (
               <>
-                <button className="muted-button margin-right" onClick={handleEditListing}>Edit Listing</button>
-                <button style={{backgroundColor: "red"}}onClick={handleDeleteListing}>Delete Listing</button>
+                <button className="muted-button margin-right" onClick={handleEditListing}>Edit</button>
+                <button style={{backgroundColor: "red"}}onClick={handleDeleteListing}>Delete</button>
               </>
             )}
             </div>
