@@ -319,11 +319,11 @@ router.delete("/images/:listingID/", async (req, res) => {
 
     const connection = createConnection();
 
-    await connection.query(
+    const response = await connection.query(
       `DELETE FROM images WHERE "listingID" = $1 AND "imageURL" = $2`,
       [listingID, imageURL]
     );
-
+    console.log(response.data[0]);
     res.status(200).send("Image deleted successfully");
   } catch (error) {
     console.error("An error occurred while deleting image:", error);
