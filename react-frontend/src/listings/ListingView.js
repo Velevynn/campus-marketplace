@@ -94,7 +94,8 @@ function ListingView() {
         console.log("Fetching initial bookmark status with userID:", loggedID)
         try {
           // Check if a bookmark exists.
-          const bookmarked = await axios.get('https://haggle.onrender.com/listings/${listingID}/bookmark', {
+          console.log(process.env.REACT_APP_BACKEND_LINK)
+          const bookmarked = await axios.get(process.env.REACT_APP_BACKEND_LINK + '/listings/${listingID}/bookmark', {
             params: {
               'userID': loggedID,
               'listingID': listingID
@@ -153,7 +154,7 @@ function ListingView() {
   const handleMakeOffer = () => {
     /* Add logic for handling "Make Offer" action */
     console.log("Make Offer clicked for listing:", listing);
-    window.location.href = "/listings/:listingID/offer";
+    navigate(`/listings/${listingID}/offer`);
   };
 
   const handleStartChat = () => {
@@ -283,11 +284,11 @@ function ListingView() {
         <div className="listing-layout">
           <div className="margin vertical-center flex-column">
             <ImageCarousel images={images} />
-            <div>
+            <div className="vertical-center">
             {isOwner && (
               <>
                 <button className="muted-button margin-right" onClick={handleEditListing}>Edit Listing</button>
-                <button className="margin-right" style={{backgroundColor: "red"}}onClick={handleDeleteListing}>Delete Listing</button>
+                <button style={{backgroundColor: "red"}}onClick={handleDeleteListing}>Delete Listing</button>
               </>
             )}
             </div>
@@ -296,7 +297,7 @@ function ListingView() {
             <h1 className="no-margin-top">{listing.title}</h1>
             <p>Posted {TimeAgo(listing.postDate)}</p>
             <p>
-                {isBookmarked ? parseInt(listing.bookmarkCount + 1) + " people are watching" : parseInt(listing.bookmarkCount) + " people are watching"}
+                {isBookmarked ? (listing.bookmarkCount + 1) + " people are watching" : (listing.bookmarkCount) + " people are watching"}
             </p>
             <h5 style={{color: "green"}}>{listing.price === "0" || listing.price === 0 ? "FREE" : "$" + listing.price}</h5>
             <p>{listing.description}</p>

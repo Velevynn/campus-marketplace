@@ -18,7 +18,7 @@ const secretKey = process.env.JWT_SECRET_KEY; // stores jtw secret key
 const oauth2Client = new google.auth.OAuth2(
   process.env.REACT_APP_GOOGLE_CLIENT_ID,
   process.env.GOOGLE_CLIENT_SECRET,
-  'https://haggle.onrender.com/users/auth/google/callback'
+  process.env.BACKEND_LINK + '/users/auth/google/callback'
 );
 // console.log('OAuth2 client initialized:', oauth2Client);
 // console.log('Google Client ID:', process.env.REACT_APP_GOOGLE_CLIENT_ID);
@@ -185,7 +185,7 @@ router.get('/auth/google', (req, res) => {
   const authUrl = oauth2Client.generateAuthUrl({
     access_type: 'offline', // Indicates that we need to retrieve a refresh token
     scope: 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile',
-    redirect_uri: 'https://haggle.onrender.com/users/auth/google/callback'
+    redirect_uri: process.env.BACKEND_LINK + '/users/auth/google/callback'
   });
   // console.log('Generated Google Auth URL:', authUrl);
   res.redirect(authUrl);
@@ -246,7 +246,7 @@ router.post('/register-google-user', async (req, res) => {
 
       // if the user exists and does not have a password, continue the registration process
       const token = jwt.sign({ username: user.username }, secretKey, { expiresIn: '24h' });
-      return res.status(200).json({ message: 'User logged in successfully via Google', token });
+      res.redirect(`http://localhost:3000/profile?token=${encodeURIComponent(token)}`);
     }
 
     // if the user does not exist in the database, insert new user details

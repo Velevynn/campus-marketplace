@@ -337,4 +337,78 @@ export const Rule = styled.div`
   color: ${props => props.isValid ? 'green' : 'red'};
 `;
 
+/*
 
+Components specific to MakeOfferPage.js
+
+*/
+
+export const OfferGroup = styled.div`
+  position: relative;
+  margin-bottom: 8px;
+  width: 320px;
+`;
+
+export const OfferPrefix = styled.span`
+  position: absolute;
+  left: 10px;
+  font-size: 50px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: black;
+`;
+
+export const Offer = styled.input`
+  width: 100%;
+  line-height: 50px;
+  height: 80px;
+  color: black;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 50px;
+  transition: border 0.3s, box-shadow 0.3s;
+
+  // Styles for when the input is focused
+  &:focus {
+    outline: none;
+    border-color: #007b00;
+    box-shadow: 0 0 8px rgba(0, 183, 0, 0.8);
+  }
+`;
+
+export const MakeOfferButton = styled.button`
+  padding: 8px;
+  background-color: #14A44A;
+  align-items: center;  // Align items vertically
+  justify-content: center;  // Center content horizontally
+  color: white;
+  border: none;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.3s, box-shadow 0.3s; // Added box-shadow to the transition for a smooth effect
+
+  &:hover {
+    background-color: #138A3E; // Darker green on hover
+    border-color: #138A3E;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2); // Subtle shadow for depth, adjust as needed
+  }
+
+  &:focus,
+  &:active {
+    background-color: #14A44A; // Keep the original green color
+    outline: none; // Removes the default focus outline
+    border-color: #14A44A; // Ensures the border color stays consistent
+    box-shadow: 0 0 0 2px rgba(22, 164, 74, 0.5); // Optional: Adds a custom focus glow
+  }
+
+  &:disabled {
+    background-color: #8CCBA1;
+    cursor: not-allowed;
+    border-color: transparent;
+  }
+`;
