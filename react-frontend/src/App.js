@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import SignUpPage from "./authentication/SignUpPage.js";
-import LoginPage from './backup/LoginPage.js';
+import LoginPage from './authentication/LoginPage.js';
 import HandleLogin from './authentication/HandleLogin.js';
 import ProfilePage from './profile/ProfilePage.js';
 import Marketplace from "./pages/Marketplace";

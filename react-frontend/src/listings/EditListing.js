@@ -7,7 +7,8 @@ import { useNavigate } from 'react-router-dom';
 function EditListing() {
   const { listingID } = useParams();
   const navigate = useNavigate();
-  const [images, setImages] = useState([]);
+  const [imageDisplay, setImages] = useState([]);
+  const [imagesToRemove, setImagesToRemove] = useState([]);
   const [listing, setListing] = useState({
     userID: null,
     title: "",
@@ -15,7 +16,7 @@ function EditListing() {
     price: "",
     expirationDate: null,
     quantity: 1,
-    images: []
+    newImages: [],
   });
 
   // Function to fetch and set the existing listing data including images
@@ -45,7 +46,7 @@ function EditListing() {
             price: fetchedListing.price.toString(),
             expirationDate: fetchedListing.expirationDate || null,
             quantity: fetchedListing.quantity || 1,
-            images: fetchedListing.images || []
+            
           }));
         }
       } catch (error) {
@@ -53,7 +54,24 @@ function EditListing() {
       }
     };
 
+    const fetchImages = async () => {
+      try {
+        /* Fetch images for the listing from the backend */
+        const response = await axios.get(
+          `https://haggle.onrender.com/listings/images/${listingID}`,
+        );
+        if (response.data.length > 0) {
+          setImages(response.data);
+
+          console.log(response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching images:", error);
+      }
+    };
+
     fetchListing();
+    fetchImages();
   }, [listingID]);
 
   const handleChange = (event) => {
@@ -64,86 +82,49 @@ function EditListing() {
     }));
   };
 
-    /* Hook to fetch images when listingID changes */
-    useEffect(() => {
-      const fetchImages = async () => {
-        try {
-          /* Fetch images for the listing from the backend */
-          const response = await axios.get(
-            `https://haggle.onrender.com/listings/images/${listingID}`,
-          );
-          if (response.data.length > 0) {
-            setImages(response.data);
-            console.log(response.data);
-          }
-        } catch (error) {
-          console.error("Error fetching images:", error);
-        }
-      };
-  
-      fetchImages();
-    }, [listingID]);
-
   const handleImageChange = (event) => {
     const files = Array.from(event.target.files);
     setListing((prevListing) => ({
       ...prevListing,
-      images: [...prevListing.images, ...files]
+      newImages: [...prevListing.newImages, ...files]
     }));
   };
 
-  const handleDeleteImage = async (index) => {
-    try {
-      // Construct the imageURL based on the index
-      const baseimageURL = `https://haggleimgs.s3.amazonaws.com/${listingID}/image${index}`;
-      console.log(images);
-      console.log(baseimageURL);
-      // Find the corresponding image to delete
-      const imageToDelete = images.find((image) => image.imageURL.startsWith(baseimageURL));
-      if (!imageToDelete) {
-        console.error("Image not found for deletion");
-        return;
-      }
-      const imageURL = imageToDelete.imageURL;
-      console.log(imageURL);
-      try{
-        // Make DELETE request to backend using the imageURL
-        const response = await axios.delete(`https://haggle.onrender.com/listings/images/${listingID}`, {
-          data: {
-            imageURL: imageURL
-          }
-        });
-        console.log(response.data); // Log success message
-      } catch (error) {
-        console.error("Error deleting image from table:", error);
-      }
-      // Refresh images after deletion
-      const updatedImages = images.filter((image) => image.imageURL !== imageURL);
-      console.log(updatedImages);
-      setImages(updatedImages);
-    } catch (error) {
-      console.error("Error deleting image from array:", error);
-    }
-    
+  const handleDeleteOldImage = async (indexToRemove) => {
+    setImagesToRemove((prevImagesToRemove) => {
+      // Create a copy of the previous array to avoid mutation
+      const newImagesToRemove = [...prevImagesToRemove];
+      // Append imageDisplay[indexToRemove] to the new array
+      newImagesToRemove.push(imageDisplay[indexToRemove]);
+      // Return the updated array
+      return newImagesToRemove;
+    });
+    setImages((prevImageDisplay) => {
+      // Create a copy of the previous array to avoid mutation
+      const newImageDisplay = [...prevImageDisplay];
+      // Remove the corresponding item from imageDisplay
+      newImageDisplay.splice(indexToRemove, 1);
+      // Return the updated array
+      return newImageDisplay;
+    });
+  
   };
+  const handleDeleteNewImage = async (indexToRemove) => {
+    setListing(prevListing => ({
+      ...prevListing,
+      newImages: prevListing.newImages.filter((_, index) => index !== indexToRemove)
+    }));
+  };
+
 
   const submitForm = async () => {
     if (listing.title !== "" && listing.price !== "") {
       try {
         const token = localStorage.getItem("token");
   
-        // Update listing details
-        const listingData = {
-          title: listing.title,
-          description: listing.description,
-          price: listing.price,
-          expirationDate: listing.expirationDate,
-          quantity: listing.quantity,
-          images: listing.images
-        };
   
         // Send PUT request to update listing details
-        await axios.put(`https://haggle.onrender.com/listings/${listingID}`, listingData, {
+        await axios.put(`https://haggle.onrender.com/listings/${listingID}`, listing, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json"
@@ -152,22 +133,20 @@ function EditListing() {
         
         
         // Update images for the listing
-        const formData = new FormData();
-        listing.images.forEach((image) => {
-          formData.append("image", image);
+        const newImages = new FormData();
+        listing.newImages.forEach((image) => {
+          newImages.append("image", image);
         });
 
-        const formDataEntries = Array.from(formData.entries());
-        console.log("FormData entries:", formDataEntries);
 
         // Send PUT request to update listing images
-        await axios.put(`https://haggle.onrender.com/listings/images/${listingID}`, formData, {
+        await axios.put(`http://localhost:8000/listings/images/${listingID}`, newImages, {
+          params: { imagesToRemove },
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "multipart/form-data"
           }
         });
-        setImages(listing.images);
         // Redirect to the marketplace page after successful update
         navigate(`/listings/${listingID}`);
       } catch (error) {
@@ -206,13 +185,13 @@ function EditListing() {
           />
           <div className="thumbnails">
             {/*For displaying thumbnails, with hover stuff*/}
-            {images.map((image, index) => (
+            {imageDisplay.map((image, index) => (
               <div
                 key={index}
                 style={{ position: 'relative', display: 'inline-block' }}
                 onMouseEnter={(e) => e.currentTarget.querySelector('.delete-overlay').style.visibility = 'visible'}
                 onMouseLeave={(e) => e.currentTarget.querySelector('.delete-overlay').style.visibility = 'hidden'}
-                onClick={() => handleDeleteImage(index)}
+                onClick={() => handleDeleteOldImage(index)}
               >
                 <img
                   src={image.imageURL}
@@ -229,7 +208,6 @@ function EditListing() {
                        visibility: 'hidden',
                        cursor: 'pointer'
                      }}
-                     onClick={() => handleDeleteImage(index)}
                 >
                   {/* Red "X" icon */}
                   <svg
@@ -246,19 +224,20 @@ function EditListing() {
               </div>
             ))}
              {/*For displaying new selected images*/}
-             {listing.images.map((file, index) => (
+             {listing.newImages.map((file, index) => (
               <img
                 key={`new-${index}`}
                 src={URL.createObjectURL(file)}
                 alt={`New Thumbnail ${index}`}
                 style={{ marginRight: '10px' }}
+                onClick={() => handleDeleteNewImage(index)}
               />
           ))}
           </div>
 
           {/*For displaying how many images have been selected*/}
-          {listing.images.length > 0 && (
-            <p>{listing.images.length} new image(s) selected</p>
+          {listing.newImages.length > 0 && (
+            <p>{listing.newImages.length} new image(s) selected</p>
           )}
 
         </form>

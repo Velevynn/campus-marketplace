@@ -1,10 +1,11 @@
 // listingRoutes.js
 const express = require('express');
+const { indexing_v3 } = require('googleapis');
 const multer = require('multer');
 const upload = multer();
 const router = express.Router();
 const { Pool } = require('pg');
-const { uploadImageToS3 } = require('../util/s3');
+const { uploadImageToS3, deleteFromS3, renameS3Object, listS3Objects } = require('../util/s3');
 require('dotenv').config();
 
 const connectionString = process.env.DB_CONNECTION_STRING;
@@ -292,7 +293,10 @@ router.put("/images/:listingID", upload.array('image'), async (req, res) => {
   try {
     const { listingID } = req.params;
     const images = req.files;
+    const imagesToRemove = req.query.imagesToRemove;
 
+
+    deleteImages(listingID, imagesToRemove);
     // Insert new images into the database using addImages function
     await addImages(listingID, images.length);
   
@@ -312,24 +316,26 @@ router.put("/images/:listingID", upload.array('image'), async (req, res) => {
   }
 });
 
-router.delete("/images/:listingID/", async (req, res) => {
+function deleteImages(listingID, imageUrls) {
   try {
-    const { listingID } = req.params;
-    const { imageURL } = req.query;
+    for(index in imageUrls) {
+      //Delete the image from S3
+      const pattern = /\/image(\d+)\?/;
+      const match = pattern.exec(imageUrls[index].imageURL); //Regex to get imageNum from url
+      deleteFromS3(`${listingID}/image${match[1]}`);
+    }
 
-    const connection = createConnection();
-
-    await connection.query(
-      `DELETE FROM images WHERE "listingID" = $1 AND "imageURL" = $2`,
-      [listingID, imageURL]
-    );
-
-    res.status(200).send("Image deleted successfully");
+    console.log(listS3Objects(listingID));
+  /*    
+    for(index in images) {
+      //Rename all left over images to remove gaps in imageNums
+      renameS3Object(index, images[index].key);
+    }
+  */
   } catch (error) {
     console.error("An error occurred while deleting image:", error);
-    res.status(500).send("An error occurred while deleting image");
   }
-});
+}
 
 // Function to add one or multiple images to database.
 async function addImages(listingID, numImages) {
