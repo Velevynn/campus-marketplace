@@ -94,7 +94,8 @@ function ListingView() {
         console.log("Fetching initial bookmark status with userID:", loggedID)
         try {
           // Check if a bookmark exists.
-          const bookmarked = await axios.get('http://localhost:8000/listings/${listingID}/bookmark', {
+          console.log(process.env.REACT_APP_BACKEND_LINK)
+          const bookmarked = await axios.get(process.env.REACT_APP_BACKEND_LINK + '/listings/${listingID}/bookmark', {
             params: {
               'userID': loggedID,
               'listingID': listingID
@@ -296,7 +297,7 @@ function ListingView() {
             <h1 className="no-margin-top">{listing.title}</h1>
             <p>Posted {TimeAgo(listing.postDate)}</p>
             <p>
-                {isBookmarked ? parseInt(listing.bookmarkCount + 1) + " people are watching" : parseInt(listing.bookmarkCount) + " people are watching"}
+                {isBookmarked ? (listing.bookmarkCount + 1) + " people are watching" : (listing.bookmarkCount) + " people are watching"}
             </p>
             <h5 style={{color: "green"}}>{listing.price === "0" || listing.price === 0 ? "FREE" : "$" + listing.price}</h5>
             <p>{listing.description}</p>

@@ -74,7 +74,7 @@ test('verifyToken middleware - invalid token', () => {
   verifyToken(req, res, next);
 
   // Expectations
-  expect(jwt.verify).toHaveBeenCalledWith('invalidToken', 'YourSecretKey', expect.any(Function));
+  expect(jwt.verify).toHaveBeenCalledWith('invalidToken', process.env.JWT_SECRET_KEY, expect.any(Function));
   expect(next).not.toHaveBeenCalled();
   expect(res.status).toHaveBeenCalledWith(401);
   expect(res.send).toHaveBeenCalledWith({ message: "Invalid Token" });
