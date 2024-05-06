@@ -1,10 +1,11 @@
 // listingRoutes.js
 const express = require('express');
+const { indexing_v3 } = require('googleapis');
 const multer = require('multer');
 const upload = multer();
 const router = express.Router();
 const { Pool } = require('pg');
-const { uploadImageToS3 } = require('../util/s3');
+const { uploadImageToS3, deleteFromS3, renameS3Object, listS3Objects, deleteS3Folder } = require('../util/s3');
 require('dotenv').config();
 
 const connectionString = process.env.DB_CONNECTION_STRING;
@@ -118,6 +119,10 @@ router.delete("/:listingID/", async (req, res) => {
   try {
       // Extract listingID from query parameters.
       const { listingID } = req.params;
+      
+      // Delete images from aws
+      await deleteS3Folder(listingID);
+      
 
       // Retrieve listing details from database if listing exists.
       const connection = createConnection();
@@ -149,9 +154,15 @@ router.delete("/:listingID/bookmark/", async (req, res) => {
       [req.query.userID, req.query.listingID]
     );
 
+  
     if (result.rowCount === 0) {
       return res.status(404).send("Bookmark not found.");
     }
+
+    const rows = await connection.query(
+      'UPDATE bookmarks SET "bookmarkCount" = "bookmarkCount" - 1 WHERE "listingID" = $1',
+      [req.query.listingID]
+    )
 
     // Successful deletion.
     res.status(204).send();
@@ -292,17 +303,12 @@ router.put("/images/:listingID", upload.array('image'), async (req, res) => {
   try {
     const { listingID } = req.params;
     const images = req.files;
+    const imagesToRemove = req.query.imagesToRemove;
 
-    // Insert new images into the database using addImages function
-    await addImages(listingID, images.length);
+
+    await updateImages(listingID, imagesToRemove, images);
   
-    // Upload all images to S3 under a folder named after the listingID
-    let i = 0;
-    for (const image of images) {
-      // Images are labeled image0, image1, etc.
-      await uploadImageToS3(`${listingID}/image${i}`, image.buffer);
-      i++;
-    }
+   
 
     // Send success response
     res.status(201).send(req.body);
@@ -312,24 +318,42 @@ router.put("/images/:listingID", upload.array('image'), async (req, res) => {
   }
 });
 
-router.delete("/images/:listingID/", async (req, res) => {
+async function updateImages(listingID, imageUrls, newImages) {
   try {
-    const { listingID } = req.params;
-    const { imageURL } = req.query;
+    for(index in imageUrls) {
+      //Delete the image from S3
+      const pattern = /\/image(\d+)\?/;
+      const match = pattern.exec(imageUrls[index].imageURL); //Regex to get imageNum from url
+      await deleteFromS3(`${listingID}/image${match[1]}`);
+    }
 
+    let images = await listS3Objects(listingID);
+    for(index in images) {
+      //Rename all left over images to remove gaps in imageNums
+      await renameS3Object(`${listingID}/image${index}`, images[index].Key);
+    }
+
+    // Upload all images to S3 under a folder named after the listingID
+    let i = images.length;
+    for (const newImage of newImages) {
+      // Images are labeled starting from existing image indexes
+      await uploadImageToS3(`${listingID}/image${i}`, newImage.buffer);
+      i++;
+    }
+
+    // Delete all imageURLS with that listingID from table
     const connection = createConnection();
+    await connection.query('DELETE FROM images WHERE "listingID" = $1', [listingID]);
+    
+    // Add new urls to images table
+    images = await listS3Objects(listingID);
+    await addImages(listingID, images.length);
 
-    await connection.query(
-      `DELETE FROM images WHERE "listingID" = $1 AND "imageURL" = $2`,
-      [listingID, imageURL]
-    );
 
-    res.status(200).send("Image deleted successfully");
   } catch (error) {
-    console.error("An error occurred while deleting image:", error);
-    res.status(500).send("An error occurred while deleting image");
+    console.error("An error occurred while updating images:", error);
   }
-});
+}
 
 // Function to add one or multiple images to database.
 async function addImages(listingID, numImages) {

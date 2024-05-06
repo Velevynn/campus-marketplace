@@ -928,7 +928,7 @@ button,
   -webkit-appearance: none;
   display: inline-block;
   border-style: none;
-  border-radius: 8px;
+  border-radius: 25px;
   background: green;
   color: #ffffff;
   font-weight: 600;

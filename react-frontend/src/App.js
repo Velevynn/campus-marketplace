@@ -2,8 +2,8 @@ import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import SignUpPage from "./authentication/SignUpPage.js";
-import LoginPage from './backup/LoginPage.js';
-import HandleLogin from './authentication/HandleLogin.js';
+import LoginPage from './authentication/LoginPage.js';
+import HandleTokenRedirect from './authentication/HandleTokenRedirect.js';
 import ProfilePage from './profile/ProfilePage.js';
 import Marketplace from "./pages/Marketplace";
 import AddListing from "./pages/AddListing";
@@ -30,7 +30,7 @@ function App() {
         <Routes>
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/handle-login" element={<HandleLogin />} />
+          <Route path="/handle-login" element={<HandleTokenRedirect />} />
           <Route path="/profile" 
                 element={
                 <ProtectedRoute>

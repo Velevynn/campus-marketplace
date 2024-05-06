@@ -18,7 +18,7 @@ const secretKey = process.env.JWT_SECRET_KEY; // stores jtw secret key
 const oauth2Client = new google.auth.OAuth2(
   process.env.REACT_APP_GOOGLE_CLIENT_ID,
   process.env.GOOGLE_CLIENT_SECRET,
-  'https://haggle.onrender.com/users/auth/google/callback'
+  process.env.BACKEND_LINK + '/users/auth/google/callback'
 );
 // console.log('OAuth2 client initialized:', oauth2Client);
 // console.log('Google Client ID:', process.env.REACT_APP_GOOGLE_CLIENT_ID);
@@ -185,7 +185,7 @@ router.get('/auth/google', (req, res) => {
   const authUrl = oauth2Client.generateAuthUrl({
     access_type: 'offline', // Indicates that we need to retrieve a refresh token
     scope: 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile',
-    redirect_uri: 'https://haggle.onrender.com/users/auth/google/callback'
+    redirect_uri: process.env.BACKEND_LINK + '/users/auth/google/callback'
   });
   // console.log('Generated Google Auth URL:', authUrl);
   res.redirect(authUrl);
@@ -214,7 +214,7 @@ router.get('/auth/google/callback', async (req, res) => {
     if (existingUsers.length > 0) { // if there is a user returned from the select statement...
       const user = existingUsers[0];
       const token = jwt.sign({ username: user.username }, secretKey, { expiresIn: '24h' });
-      res.json({ message: 'User logged in successfully', token });
+      res.redirect(`http://localhost:3000/handle-login?token=${encodeURIComponent(token)}`);
     } else { // if there isnt a user returned from the select statement...
       res.redirect(`http://localhost:3000/additional-details?email=${encodeURIComponent(email)}&name=${encodeURIComponent(name)}`);
     }

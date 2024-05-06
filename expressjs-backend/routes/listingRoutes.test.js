@@ -59,14 +59,14 @@ const mockFiles = [
       originalname: 'image1.jpg',
       encoding: '7bit',
       mimetype: 'image/jpeg',
-      buffer: fs.readFileSync(path.join(__dirname, 'dummyImage1.png'))
+      buffer: fs.readFileSync(path.join(__dirname, 'dummyImage1.jpg'))
     },
     {
       fieldname: 'image',
       originalname: 'image2.jpg',
       encoding: '7bit',
       mimetype: 'image/jpeg',
-      buffer: fs.readFileSync(path.join(__dirname, 'dummyImage2.png'))
+      buffer: fs.readFileSync(path.join(__dirname, 'dummyImage2.jpg'))
     }
     // Add more mock files as needed
   ];

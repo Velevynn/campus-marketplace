@@ -141,7 +141,7 @@ function AddListing() {
       try {
         setLoading(true);
         // Make a request to the backend to fetch the userID based on the username
-        const response = await axios.get(`https://haggle.onrender.com/users/userID`, { 
+        const response = await axios.get(process.env.REACT_APP_BACKEND_LINK + `/users/userID`, { 
           params: {
             'username': username
           }
@@ -166,7 +166,7 @@ function AddListing() {
         
         try {
           // Send formdata to backend to store in database
-          await axios.post('https://haggle.onrender.com/listings', formData, {
+          await axios.post(process.env.REACT_APP_BACKEND_LINK + '/listings', formData, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }

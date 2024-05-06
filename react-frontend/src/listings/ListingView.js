@@ -32,7 +32,7 @@ function ListingView() {
           console.log("Decoded username:", username);
           try {
             // Make a request to the backend to fetch the userID based on the username
-            const userData = await axios.get(`https://haggle.onrender.com/users/userID`, { 
+            const userData = await axios.get(process.env.REACT_APP_BACKEND_LINK + `/users/userID`, { 
               params: {
                 'username': username
               }
@@ -63,7 +63,7 @@ function ListingView() {
       try {
         /* get data of listing by its ID */
         const response = await axios.get(
-          `https://haggle.onrender.com/listings/${listingID}`,
+          process.env.REACT_APP_BACKEND_LINK + `/listings/${listingID}`,
         );
         
         /* set fetched data to state */
@@ -95,7 +95,8 @@ function ListingView() {
         console.log("Fetching initial bookmark status with userID:", loggedID)
         try {
           // Check if a bookmark exists.
-          const bookmarked = await axios.get(`https://haggle.onrender.com/listings/${listingID}/bookmark`, {
+          console.log(process.env.REACT_APP_BACKEND_LINK)
+          const bookmarked = await axios.get(process.env.REACT_APP_BACKEND_LINK + '/listings/${listingID}/bookmark', {
             params: {
               'userID': loggedID,
               'listingID': listingID
@@ -120,7 +121,7 @@ function ListingView() {
       try {
         /* Fetch images for the listing from the backend */
         const response = await axios.get(
-          `https://haggle.onrender.com/listings/images/${listingID}`,
+          process.env.REACT_APP_BACKEND_LINK + `/listings/images/${listingID}`,
         );
         if (response.data.length > 0) {
           setImages(response.data);
@@ -173,7 +174,7 @@ function ListingView() {
     if (confirmed) {
       try {
         console.log("listingID deleting: ", listingID);
-        await axios.delete(`https://haggle.onrender.com/listings/${listingID}`);
+        await axios.delete(process.env.REACT_APP_BACKEND_LINK + `/listings/${listingID}`);
         console.log("listing successfully deleted");
         window.location.href = '/';
       } catch (error) {
@@ -216,7 +217,7 @@ function ListingView() {
     }
     try {
       await axios.post(
-        `https://haggle.onrender.com/listings/${listingID}/bookmark`, {
+        process.env.REACT_APP_BACKEND_LINK + `/listings/${listingID}/bookmark`, {
           'userID': loggedID,
           'listingID': listingID,
           'title' : listing.title
@@ -235,7 +236,7 @@ function ListingView() {
     console.log("Entered deleteBookmark");
     try {
       await axios.delete(
-        `https://haggle.onrender.com/listings/${listingID}/bookmark`, {
+        process.env.REACT_APP_BACKEND_LINK + `/listings/${listingID}/bookmark`, {
           params: {
             'userID': loggedID,
             'listingID': listingID
@@ -276,11 +277,11 @@ function ListingView() {
         <div className="listing-layout">
           <div className="margin vertical-center flex-column">
             <ImageCarousel images={images} />
-            <div className="vertical-center">
+            <div className="">
             {isOwner && (
               <>
-                <button className="muted-button margin-right" onClick={handleEditListing}>Edit Listing</button>
-                <button style={{backgroundColor: "red"}}onClick={handleDeleteListing}>Delete Listing</button>
+                <button className="muted-button margin-right" onClick={handleEditListing}>Edit</button>
+                <button style={{backgroundColor: "red"}}onClick={handleDeleteListing}>Delete</button>
               </>
             )}
             </div>
@@ -289,7 +290,7 @@ function ListingView() {
             <h1 className="no-margin-top">{listing.title}</h1>
             <p>Posted {TimeAgo(listing.postDate)}</p>
             <p>
-                {isBookmarked ? parseInt(listing.bookmarkCount + 1) + " people are watching" : parseInt(listing.bookmarkCount) + " people are watching"}
+                {isBookmarked ? (listing.bookmarkCount + 1) + " people are watching" : (listing.bookmarkCount) + " people are watching"}
             </p>
             <h5 style={{color: "green"}}>{listing.price === "0" || listing.price === 0 ? "FREE" : "$" + listing.price}</h5>
             <p>{listing.description}</p>

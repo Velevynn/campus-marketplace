@@ -22,7 +22,7 @@ function Marketplace() {
 
   async function fetchEntries() {
     try {
-      const response = await axios.get(`https://haggle.onrender.com/listings?q=${q}&page=${page}`);
+      const response = await axios.get(process.env.REACT_APP_BACKEND_LINK + `/listings?q=${q}&page=${page}`);
       if (response !== "") {
         console.log(response.data);
         setEntries(prevEntries => [...prevEntries, ...response.data]); // Append fetched entries to existing ones

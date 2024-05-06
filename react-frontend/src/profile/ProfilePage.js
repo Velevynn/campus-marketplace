@@ -43,7 +43,7 @@ function ProfilePage() {
     }
 
     try {
-      const response = await axios.get(`https://haggle.onrender.com/users/profile`, {
+      const response = await axios.get(process.env.REACT_APP_BACKEND_LINK + `/users/profile`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         }
@@ -60,14 +60,14 @@ function ProfilePage() {
   const fetchCollections = async (userID) => {
     try {
       console.log(userID);
-      const response = await axios.get(`https://haggle.onrender.com/listings/bookmark/${userID}`);
+      const response = await axios.get(process.env.REACT_APP_BACKEND_LINK + `/listings/bookmark/${userID}`);
       setBookmarks(response.data);
     } catch (error) {
       console.error('Failed to fetch bookmarks', error);
     }
     try {
       console.log(userID);
-      const response = await axios.get(`https://haggle.onrender.com/listings/mylistings/${userID}`);
+      const response = await axios.get(process.env.REACT_APP_BACKEND_LINK + `/listings/mylistings/${userID}`);
       setMyListings(response.data);
       console.log(response.data, "hello");
       
@@ -89,7 +89,7 @@ function ProfilePage() {
     }
 
     try {
-      const response = await axios.delete(`https://haggle.onrender.com/users/delete`, {
+      const response = await axios.delete(process.env.REACT_APP_BACKEND_LINK + `/users/delete`, {
         headers: {
           'Authorization': `Bearer ${token}`
         },
