@@ -29,7 +29,7 @@ function EditListing() {
         console.log("username: ", username);
 
         // Fetch listing details including images
-        const response = await axios.get(`https://haggle.onrender.com/listings/${listingID}`, {
+        const response = await axios.get(process.env.REACT_APP_BACKEND_LINK + `/listings/${listingID}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -58,7 +58,7 @@ function EditListing() {
       try {
         /* Fetch images for the listing from the backend */
         const response = await axios.get(
-          `https://haggle.onrender.com/listings/images/${listingID}`,
+          process.env.REACT_APP_BACKEND_LINK + `/listings/images/${listingID}`,
         );
         if (response.data.length > 0) {
           setImages(response.data);
@@ -124,7 +124,7 @@ function EditListing() {
   
   
         // Send PUT request to update listing details
-        await axios.put(`https://haggle.onrender.com/listings/${listingID}`, listing, {
+        await axios.put(process.env.REACT_APP_BACKEND_LINK + `/listings/${listingID}`, listing, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json"
@@ -140,7 +140,7 @@ function EditListing() {
 
 
         // Send PUT request to update listing images
-        await axios.put(`http://localhost:8000/listings/images/${listingID}`, newImages, {
+        await axios.put(process.env.REACT_APP_BACKEND_LINK + `/listings/images/${listingID}`, newImages, {
           params: { imagesToRemove },
           headers: {
             Authorization: `Bearer ${token}`,
