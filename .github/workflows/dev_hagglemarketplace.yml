@@ -59,7 +59,7 @@ jobs:
         run: ls -lR
 
       - name: unzip artifact for dployment
-        run: Expand-Archive -Path release.zip -DestinationPath .
+        run: unzip release.zip
         working-directory: .
 
       - name: 'Deploy to Azure Web App'
