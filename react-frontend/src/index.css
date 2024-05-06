@@ -452,7 +452,7 @@ h5 {
 
 .collection-list {
   list-style-type: none;
-  padding: 0;
+  padding-left: 0;
   margin-bottom: 0;
   overflow-y: auto;
   max-height: 175px;
@@ -518,6 +518,7 @@ h5 {
 .collection-layout {
   display: flex;
   flex-direction: column;
+  padding-left: 10px;
 }
 
 /* Change color of dropdown links on hover */
@@ -821,6 +822,15 @@ dd {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.vertical-center-left {
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  padding-left: 140px;
+  padding-top: 25px;
+  padding-right: 140px;
 }
 
 .responsive-image {

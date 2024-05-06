@@ -142,7 +142,7 @@ function ProfilePage() {
       </div>
       ) : (
       <div>
-      <div className="vertical-center add-listing-layout margin">
+      <div className="vertical-center-left add-listing-layout margin">
         <div className="small-container drop-shadow">
           <ProfileImage src={"https://haggleimgs.s3.amazonaws.com/user/1214/bruh0.jpg"} alt="Profile" />
           <form>
