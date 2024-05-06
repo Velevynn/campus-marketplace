@@ -8,6 +8,7 @@ import logoImage from '../assets/haggle-horizontal.png';
 import { FaEye, FaEyeSlash  } from 'react-icons/fa';
 import googlepng from '../assets/google.png';
 import "./LoginPage.css"
+import {InputGroup, InputLabel, Input, VisibilityToggle} from './AuthenticationStyling';
 
 
 // LoginPage component for handling user login
@@ -77,7 +78,7 @@ function LoginPage() {
           <img className="logo-img" src={logoImage} alt="Logo"/>
         </div>
         
-        <h5 className="text-center">
+        <h5 className="text-center" style={{fontSize:"18px"}}>
             Log in to buy, sell, and trade
         </h5>
 
@@ -87,41 +88,37 @@ function LoginPage() {
               {errorMessage}
             </p>
           )}
-          <div className="margin input">
-            <input
+
+          <InputGroup>
+            <InputLabel htmlFor="identifier" hasContent={credentials.identifier.length > 0}>Email, Phone, or Username</InputLabel>
+            <Input
               type="text"
               name="identifier"
               id="identifier"
               value={credentials.identifier}
               onChange={handleChange}
-              placeholder="Email, Phone, or Username"
-              autoComplete="on"
+              hasContent={credentials.identifier.length > 0}
               required/>
-          </div>
-          <div className="margin input">
-            <input
+          </InputGroup>
+          <InputGroup>
+            <InputLabel htmlFor="password" hasContent={credentials.password.length > 0}>Password</InputLabel>
+            <Input
               type={passwordVisible ? "text" : "password"}
               name="password"
               id="password"
               value={credentials.password}
               onChange={handleChange}
-              placeholder="Password"
-              autoComplete="current-password"
-              style={{paddingRight: "2.5rem"}}
+              hasContent={credentials.password.length > 0}
               required/>
-          
-            <div className="toggle-icon" onClick={togglePasswordVisibility}>
+            <VisibilityToggle onClick={togglePasswordVisibility}>
                 {passwordVisible ? <FaEye /> : <FaEyeSlash />}
-            </div>
-          </div>
+            </VisibilityToggle>
+          </InputGroup>
 
-
-            
-            
           <div className="margin">
-          <button className={`span-button ${isFormValid ? "" : "disabled"}`} type="submit" disabled={!isFormValid}>
-            Log in
-          </button>
+            <button className={`span-button ${isFormValid ? "" : "disabled"}`} type="submit" disabled={!isFormValid} style = {{marginTop:'10px'}}>
+              Log in
+            </button>
           </div>
 
           <div className="margin">
@@ -133,7 +130,7 @@ function LoginPage() {
             </button>
           </div>
 
-          <p className="text-center margin-bottom" style={{fontSize: '12px'}}>
+          <p className="text-center margin-bottom" style={{fontSize: '12px', marginTop: '20px'}}>
             By logging in you agree to our {}
               <Link to="/terms-of-service" >
                 Terms of Service
@@ -144,7 +141,7 @@ function LoginPage() {
               </Link>
           </p>
 
-          <p className="text-center">
+          <p className="text-center" style = {{marginTop:'-10px', fontSize:'14px'}}>
             <Link to="/forgot-password">
               Forgot password?
             </Link>
@@ -152,8 +149,8 @@ function LoginPage() {
         </form>
       </div>
 
-      <div className="small-container drop-shadow margin-top">
-        <p className="text-center">
+      <div className="small-container drop-shadow" style={{marginTop:'10px'}}>
+        <p className="text-center" style ={{fontSize:'14px'}}>
           Don&apos;t have an account? {}
           <Link to="/signup">
             Sign up
