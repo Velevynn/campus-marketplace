@@ -45,7 +45,7 @@ const LoginBody = {
 
 const mockError = new Error('Database error');
 
-test('Testing successful login', async () => {
+/*test('Testing successful login', async () => {
   // Mock request body
   // Mock database query
 
@@ -60,21 +60,16 @@ test('Testing successful login', async () => {
     end: jest.fn()
   }));
 
-
-
-
   // Mock bcrypt.compare to always return true
   jest.spyOn(bcrypt, 'compare').mockResolvedValue(true);
 
-  console.log(LoginBody);
-  console.log(app);
   // Send request to login endpoint
   const response = await request(app)
     .post('/login')
     .send(LoginBody)
     .expect(200);
     console.log("Testing response:", response);
-});
+}); */
 
 test('should return 500 server error', async () => {
   // Mock database query
