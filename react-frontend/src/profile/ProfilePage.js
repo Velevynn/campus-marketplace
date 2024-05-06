@@ -158,7 +158,7 @@ function ProfilePage() {
             <Button onClick={handleSignOut}>Sign Out</Button>
           </ButtonContainer>
         </div>
-        <div className="collection-layout margin">
+        <div className="collection-layout margin padding-left">
           <ProfileCollection title = "Bookmarks" bookmarks = {bookmarks} userID = {userProfile.userID}/>
           <ProfileCollection title = "Listings" bookmarks = {listings} userID = {userProfile.userID}/>
         </div>

@@ -518,7 +518,6 @@ h5 {
 .collection-layout {
   display: flex;
   flex-direction: column;
-  padding-left: 10px;
 }
 
 /* Change color of dropdown links on hover */
@@ -892,6 +891,14 @@ dd {
 
 .margin {
   margin: 0.5rem;
+}
+
+.padding-left {
+  padding-left: 10px;
+}
+
+.padding-right {
+  padding-left: 10px;
 }
 
 
