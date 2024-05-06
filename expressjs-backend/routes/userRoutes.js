@@ -214,7 +214,7 @@ router.get('/auth/google/callback', async (req, res) => {
     if (existingUsers.length > 0) { // if there is a user returned from the select statement...
       const user = existingUsers[0];
       const token = jwt.sign({ username: user.username }, secretKey, { expiresIn: '24h' });
-      res.redirect(`http://localhost:3000/handle-login?token=${encodeURIComponent(token)}`);
+      res.redirect(`http://localhost:3000/login/google?token=${encodeURIComponent(token)}`);
     } else { // if there isnt a user returned from the select statement...
       res.redirect(`http://localhost:3000/additional-details?email=${encodeURIComponent(email)}&name=${encodeURIComponent(name)}`);
     }
