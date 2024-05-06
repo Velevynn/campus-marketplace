@@ -16,6 +16,7 @@ function ListingView() {
   const [isOwner, setIsOwner] = useState(false);
   const [isBookmarked, setBookmark] = useState(false);
   const [loggedID, setLoggedID] = useState(null);
+  const [dropdownVisible, setDropdownVisible] = useState(false); // State to control dropdown visibility
 
   const navigate = useNavigate();
 
@@ -94,14 +95,14 @@ function ListingView() {
         console.log("Fetching initial bookmark status with userID:", loggedID)
         try {
           // Check if a bookmark exists.
-          const bookmarked = await axios.get('https://haggle.onrender.com/listings/${listingID}/bookmark', {
+          const bookmarked = await axios.get(`https://haggle.onrender.com/listings/${listingID}/bookmark`, {
             params: {
               'userID': loggedID,
               'listingID': listingID
             }
           })
     
-          if (bookmarked.status == 200) {
+          if (bookmarked.status === 200) {
             setBookmark(true);
           }
         }
@@ -113,7 +114,7 @@ function ListingView() {
     }
   }, [loggedID]);
 
-    /* Hook to fetch images when listingID changes */
+  /* Hook to fetch images when listingID changes */
   useEffect(() => {
     const fetchImages = async () => {
       try {
@@ -134,7 +135,6 @@ function ListingView() {
   }, [listingID]);
 
   const TimeAgo = (timestamp) => {
-    
     const string = timestamp.toString().slice(5,7) + '/' + timestamp.toString().slice(8,10) + '/' + timestamp.toString().slice(0,4);
     let currentDate = new Date();
     let postDate = new Date(string);
@@ -151,19 +151,16 @@ function ListingView() {
   }
 
   const handleMakeOffer = () => {
-    /* Add logic for handling "Make Offer" action */
     console.log("Make Offer clicked for listing:", listing);
     navigate(`/listings/${listingID}/offer`);
   };
 
   const handleStartChat = () => {
-    /* Add logic for handling "Start a Chat" action */
     console.log("Start a Chat clicked for listing:", listing);
-    window.location.href = "/listings/:listingID/chat";
+    window.location.href = `/listings/${listingID}/chat`;
   };
 
   const handleEditListing = () => {
-    /* Add logic for handling "Edit Listing" action */
     console.log("Edit Listing clicked for listing:", listing);
     navigate(`/listings/${listingID}/edit`);
   };
@@ -171,7 +168,6 @@ function ListingView() {
   const handleDeleteListing = async () => {
     console.log("Delete Listing clicked for listing:", listing);
   
-    // Confirm deletion with the user
     const confirmed = window.confirm("Are you sure you want to delete this listing?");
     
     if (confirmed) {
@@ -179,7 +175,7 @@ function ListingView() {
         console.log("listingID deleting: ", listingID);
         await axios.delete(`https://haggle.onrender.com/listings/${listingID}`);
         console.log("listing successfully deleted");
-        window.location.href = '/'; // go back to home page
+        window.location.href = '/';
       } catch (error) {
         console.error("error deleting listing", error);
       }
@@ -188,11 +184,9 @@ function ListingView() {
     }
   };
 
-  // Toggle the local bookmark status.
   const toggleBookmark = async () => {
     console.log("Toggle Bookmark clicked for listing: ", listing);
     console.log("Current bookmark status: ", isBookmarked);
-    // If the listing is not currently bookmarked, bookmark it.
     if (!isBookmarked) {
       console.log("Posting bookmark with userID", loggedID, "and listingID", listingID);
       try {
@@ -202,10 +196,7 @@ function ListingView() {
       catch (error) {
         console.log("Error in toggleBookmark.");
       }
-      
-    }
-    // If the listing is currently bookmarked, remove it.
-    else if (isBookmarked) {
+    } else if (isBookmarked) {
       console.log("Deleting bookmark with userID:", loggedID, "and listingID:", listingID);
       try {
         deleteBookmark();
@@ -214,14 +205,12 @@ function ListingView() {
       catch (error) {
         console.log("Error in toggleBookmark.");
       }
-      
     }
     console.log("New bookmark status: ", isBookmarked);
   }
 
   const createBookmark = async () => {
     console.log("Entered createBookmark");
-    //TODO: use react router instead of href
     if (!loggedID) {
       window.location.href = 'http://localhost:3000/login'
     }
@@ -236,9 +225,7 @@ function ListingView() {
       setBookmark(true);
       console.log("Posted bookmark.")
       console.log(isBookmarked);
-    }
-    // Set an error while posting the bookmark data.
-    catch (error) {
+    } catch (error) {
       console.error("Error posting bookmark: ", error)
     }
     console.log("Finished creating bookmark")
@@ -248,7 +235,7 @@ function ListingView() {
     console.log("Entered deleteBookmark");
     try {
       await axios.delete(
-        'https://haggle.onrender.com/listings/${listingID}/bookmark', {
+        `https://haggle.onrender.com/listings/${listingID}/bookmark`, {
           params: {
             'userID': loggedID,
             'listingID': listingID
@@ -258,14 +245,22 @@ function ListingView() {
       setBookmark(false);
       console.log("Deleted bookmark.")
       console.log(isBookmarked);
-    }
-    // Set an error while deleting the bookmark data.
-    catch (error) {
+    } catch (error) {
       console.error("Error deleting bookmark: ", error);
     }
   }
 
-
+  const handleCopyURL = () => {
+    const listingURL = window.location.href; // Get the current URL
+    navigator.clipboard.writeText(listingURL)
+      .then(() => {
+        console.log('Listing URL copied to clipboard:', listingURL);
+        setDropdownVisible(false); // Close the dropdown after copying URL
+      })
+      .catch((error) => {
+        console.error('Failed to copy listing URL to clipboard:', error);
+      });
+  };
 
   if (!listing) {
     return (
@@ -275,8 +270,6 @@ function ListingView() {
     );
   }
 
-  // TODO: Only show bookmark count if above certain threshold?
-  /* first check if listing data is available, then render */
   return (
     <div className="vertical-center margin">
       <div className="medium-container drop-shadow">
@@ -305,11 +298,23 @@ function ListingView() {
         <div className="vertical-center margin-top">
             <button className="margin-right" onClick={handleMakeOffer}>Make Offer</button>
             <button className="margin-right" onClick={handleStartChat}>Start Chat</button>
+
             <div className="vertical-center" onClick={toggleBookmark}>
               {isBookmarked ? 
               (<img className="bookmark" src={filledBookmark}/>) : 
               (<img className="bookmark" src={emptyBookmark}/>)
               }</div>
+
+              {/* Dropdown button */}
+              <div className="dropdown" onClick={() => setDropdownVisible(!dropdownVisible)}>
+                <button className="dropbtn">Share</button>
+                {/* Dropdown content */}
+                {dropdownVisible && (
+                  <div className="dropdown-content" id="myDropdown">
+                    <div className="option" onClick={handleCopyURL}>Copy Listing URL</div>
+                  </div>
+                )}
+              </div>
             
         </div>
       </div>
