@@ -409,7 +409,7 @@ h2,
 h3,
 h4,
 h5 {
-  margin: 1.5rem 0;
+  margin: .8rem 0;
   font-weight: 600;
   font-family: inter;
   line-height: 1.2;
@@ -480,11 +480,7 @@ h5 {
 
 /* Style the button */
 .dropbtn {
-  background-color: #008000;
-  color: white;
-  padding: 16px;
   width: 100px;
-  font-size: 15px;
   border: none;
 }
 
@@ -510,6 +506,18 @@ h5 {
   padding: 12px 16px;
   text-decoration: none;
   display: block;
+}
+
+@media screen and (max-width: 768px) {
+  .profile-page-layout {
+      display: flex;
+      flex-direction: column;
+  }
+}
+
+.collection-layout {
+  display: flex;
+  flex-direction: column;
 }
 
 /* Change color of dropdown links on hover */

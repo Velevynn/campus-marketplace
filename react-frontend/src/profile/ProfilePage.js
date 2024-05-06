@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import ProfileCollection from '../components/ProfileCollection'
 import { useNavigate } from 'react-router-dom';
-import profileImagePlaceholder from '../assets/profile-placeholder.png';
+// import profileImagePlaceholder from '../assets/profile-placeholder.png';
 import LoadingSpinner from "../components/LoadingSpinner";
-import { Container, Button, ButtonContainer, ProfileImage, ProfileField, ProfileLabel, ProfileValue, ErrorMessage } from '../authentication/AuthenticationStyling';
+import { Button, ButtonContainer, ProfileImage, ProfileField, ProfileLabel, ProfileValue, ErrorMessage } from '../authentication/AuthenticationStyling';
 
 function ProfilePage() {
   const [bookmarks, setBookmarks] = useState([]);
@@ -142,8 +142,9 @@ function ProfilePage() {
       </div>
       ) : (
       <div>
-        <Container>
-          <ProfileImage src={profileImagePlaceholder} alt="Profile" />
+      <div className="vertical-center add-listing-layout margin">
+        <div className="small-container drop-shadow">
+          <ProfileImage src={"https://haggleimgs.s3.amazonaws.com/user/1214/bruh0.jpg"} alt="Profile" />
           <form>
             {Object.entries(userProfile).map(([key, value]) => (
               key !== 'userID' && <ProfileField key={key}>
@@ -156,11 +157,16 @@ function ProfilePage() {
             <Button onClick={handleChangePassword}>Change Password</Button>
             <Button onClick={handleSignOut}>Sign Out</Button>
           </ButtonContainer>
-        </Container>
+        </div>
+        <div className="collection-layout margin">
+          <ProfileCollection title = "Bookmarks" bookmarks = {bookmarks} userID = {userProfile.userID}/>
+          <ProfileCollection title = "Listings" bookmarks = {listings} userID = {userProfile.userID}/>
+        </div>
+      </div>
+      </div>
+    )}
 
-        <ProfileCollection title = "Bookmarks" bookmarks = {bookmarks} userID = {userProfile.userID}/>
-        <ProfileCollection title = "Listings" bookmarks = {listings} userID = {userProfile.userID}/>
-        <div className="vertical-center margin">
+<div className="vertical-center margin">
           <div className="small-container drop-shadow">
           {!showDeleteConfirmation && (
             <button className="span-button" onClick={confirmDelete}>Delete Profile</button>
@@ -198,9 +204,9 @@ function ProfilePage() {
           )}
             </div>
         </div>
-      </div>
-    )}
   </div>
+
+  
   );
 }
 
