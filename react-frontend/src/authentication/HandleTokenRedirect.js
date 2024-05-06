@@ -8,9 +8,10 @@ function HandleTokenRedirect() {
     useEffect(() => {
         const params = new URLSearchParams(location.search);
         const token = params.get('token');
+        const decoded_token = decodeURIComponent(token);
 
-        if (token) {
-            localStorage.setItem('token', token);
+        if (decoded_token) {
+            localStorage.setItem('token', decoded_token);
             navigate('/profile'); // Navigate to the profile page
         } else {
             navigate('/login'); // No token found, redirect to login
