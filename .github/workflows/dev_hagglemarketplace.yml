@@ -43,7 +43,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: node-app
-          path: backend.zip
+          path: expressjs-backend/backend.zip
 
   deploy:
     runs-on: ubuntu-latest
@@ -57,13 +57,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: node-app
-
-      - name: list files
-        run: ls -lR
-
-      - name: unzip artifact for dployment
-        run: Expand-Archive -Path backend.zip -DestinationPath .
-        working-directory: .
 
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v2
