@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import ProfileCollection from '../components/ProfileCollection'
+import BookmarksCollection from './BookmarksCollection';
 import { useNavigate } from 'react-router-dom';
 // import profileImagePlaceholder from '../assets/profile-placeholder.png';
 import LoadingSpinner from "../components/LoadingSpinner";
 import { Button, ButtonContainer, ProfileImage, ProfileField, ProfileLabel, ProfileValue, ErrorMessage } from '../authentication/AuthenticationStyling';
+import ProfileDetails from './ProfileDetails';
+import ListingCollection from './ListingCollection'
 
 function ProfilePage() {
   const [bookmarks, setBookmarks] = useState([]);
@@ -17,6 +19,19 @@ function ProfilePage() {
     phoneNumber: '',
     userID: ''
   });
+
+  const [profileImage, setProfileImage] = useState('https://haggleimgs.s3.amazonaws.com/user/1214/bruh0.jpg'); // Initial profile image URL
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+    const formData = new FormData();
+    formData.append('profileImage', file);
+
+    // Send formData to backend using axios or any other method
+    // For now, let's just update the profile image locally
+    setProfileImage(URL.createObjectURL(file));
+  };
 
   const navigate = useNavigate();
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
@@ -134,6 +149,17 @@ function ProfilePage() {
     setDeleteConfirmationData({ ...deleteConfirmationData, [name]: value });
   };
 
+  const formatPhoneNumber = (phoneNumber) => {
+    // Regular expression to match digits only
+    const cleaned = ('' + phoneNumber).replace(/\D/g, '');
+    // Regular expression to match format (xxx)-xxx-xxxx
+    const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+    if (match) {
+      return '(' + match[1] + ') ' + match[2] + '-' + match[3];
+    }
+    return phoneNumber;
+  };
+
   return (
     <div>
       {isLoading ? ( // Render loading spinner if isLoading is true
@@ -142,26 +168,52 @@ function ProfilePage() {
       </div>
       ) : (
       <div>
-      <div className="vertical-center-left add-listing-layout margin">
+      <div className="vertical-center profile-page-layout margin padding-top">
         <div className="small-container drop-shadow">
-          <ProfileImage src={"https://haggleimgs.s3.amazonaws.com/user/1214/bruh0.jpg"} alt="Profile" />
+        <div
+    onMouseEnter={() => setIsHovered(true)}
+    onMouseLeave={() => setIsHovered(false)}
+    style={{ position: 'relative' }}
+  >
+    <ProfileImage src={profileImage} alt="Profile" />
+    {isHovered && (
+      <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <input type="file" accept="image/*" id="imageUpload" onChange={handleImageChange} style={{ display: 'none' }} />
+        <label htmlFor="imageUpload" style={{ cursor: 'pointer' }}>
+          <Button>Change Image</Button>
+        </label>
+      </div>
+    )}
+  </div>
           <form>
-            {Object.entries(userProfile).map(([key, value]) => (
-              key !== 'userID' && <ProfileField key={key}>
-                <ProfileLabel>{key.replace('_', ' ')}:</ProfileLabel>
-                <ProfileValue>{value}</ProfileValue>
+          {Object.entries(userProfile).map(([key, value]) => (
+              key !== 'userID' && 
+              <ProfileField key={key}>
+                  <ProfileLabel>
+                      {key === 'fullName' ? 'Full Name' : key === 'phoneNumber' ? 'Phone Number' : key.replace(/_/g, ' ')
+                          .split(' ')
+                          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                          .join(' ')}:
+                  </ProfileLabel>
+                  <ProfileValue>{key === 'phoneNumber' ? formatPhoneNumber(value) : value}</ProfileValue>
               </ProfileField>
-            ))}
+          ))}
           </form>
           <ButtonContainer>
             <Button onClick={handleChangePassword}>Change Password</Button>
             <Button onClick={handleSignOut}>Sign Out</Button>
           </ButtonContainer>
         </div>
-        <div className="collection-layout margin padding-left">
-          <ProfileCollection title = "Bookmarks" bookmarks = {bookmarks} userID = {userProfile.userID}/>
-          <ProfileCollection title = "Listings" bookmarks = {listings} userID = {userProfile.userID}/>
+
+
+        <div className="collection-layout margin padding-left drop-shadow">
+          <BookmarksCollection title = "Bookmarks" bookmarks = {bookmarks} userID = {userProfile.userID}/>
+          <ListingCollection title = "Listings" bookmarks = {listings} userID = {userProfile.userID}/>
         </div>
+
+        <ProfileDetails>
+          
+        </ProfileDetails>
       </div>
       </div>
     )}
