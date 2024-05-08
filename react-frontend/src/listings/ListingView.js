@@ -95,7 +95,7 @@ function ListingView() {
         try {
           // Check if a bookmark exists.
           console.log(process.env.REACT_APP_BACKEND_LINK)
-          const bookmarked = await axios.get(process.env.REACT_APP_BACKEND_LINK + '/listings/${listingID}/bookmark', {
+          const bookmarked = await axios.get(process.env.REACT_APP_BACKEND_LINK + `/listings/${listingID}/bookmark`, {
             params: {
               'userID': loggedID,
               'listingID': listingID

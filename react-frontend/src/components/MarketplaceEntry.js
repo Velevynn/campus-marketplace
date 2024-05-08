@@ -29,8 +29,6 @@ function Entry({ title, price, listingID }) {
   }, [listingID]);
 
   let source = missing;
-  // const randomNum = (Math.random(2000)).toString();  // generate random num
-  // let source = `https://haggleimgs.s3.amazonaws.com/${listingID}/image0?cc=${randomNum}`;  
 
   if (images.length > 0) {
     source = `https://haggleimgs.s3.amazonaws.com/${listingID}/image0`;  
