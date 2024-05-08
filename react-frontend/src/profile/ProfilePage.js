@@ -3,10 +3,11 @@ import axios from 'axios';
 import BookmarksCollection from './BookmarksCollection';
 import { useNavigate } from 'react-router-dom';
 import LoadingSpinner from "../components/LoadingSpinner";
-import { Button, ButtonContainer, ProfileImage, ProfileField, ProfileLabel, ProfileValue, ErrorMessage } from '../authentication/AuthenticationStyling';
+import { Button, ButtonContainer, ProfileField, ProfileLabel, ProfileValue} from '../authentication/AuthenticationStyling';
 import ProfileDetails from './ProfileDetails';
 import ListingCollection from './ListingCollection';
 import ChangeProfilePicture from './ChangeProfilePicture'; // Import the ChangeProfilePicture component
+import './profile.css';
 
 function ProfilePage() {
   const [bookmarks, setBookmarks] = useState([]);
@@ -19,8 +20,7 @@ function ProfilePage() {
     phoneNumber: '',
     userID: ''
   });
-  const [isHovered, setIsHovered] = useState(false); // Define isHovered state
-  const [profileImage, setProfileImage] = useState(''); // Define profileImage state
+  //const [isHovered, setIsHovered] = useState(false); // Define isHovered state
 
   const navigate = useNavigate(); // Define navigate for routing
 
@@ -98,18 +98,7 @@ function ProfilePage() {
         <div>
           <div className="vertical-center profile-page-layout margin padding-top">
             <div className="small-container drop-shadow">
-              <div
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
-                style={{ position: 'relative' }}
-              >
-                <ProfileImage src={profileImage} alt="Profile" />
-                {isHovered && (
-                  <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <ChangeProfilePicture /> {/* Integrate the ChangeProfilePicture component */}
-                  </div>
-                )}
-              </div>
+              <ChangeProfilePicture />
               <form>
                 {Object.entries(userProfile).map(([key, value]) => (
                   key !== 'userID' && 

@@ -4,7 +4,6 @@ import axios from "axios";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { jwtDecode } from "jwt-decode";
 import "./AddListing.css";
-import ChangeProfilePicture from "./ChangeProfilePicture";
 
 function AddListing() {
   const MINIMUM_IMAGE_WIDTH = 500;
