@@ -1,10 +1,11 @@
 // listingRoutes.js
 const express = require('express');
+const { indexing_v3 } = require('googleapis');
 const multer = require('multer');
 const upload = multer();
 const router = express.Router();
 const { Pool } = require('pg');
-const { uploadImageToS3 } = require('../util/s3');
+const { uploadImageToS3, deleteFromS3, renameS3Object, listS3Objects, deleteS3Folder } = require('../util/s3');
 require('dotenv').config();
 
 const connectionString = process.env.DB_CONNECTION_STRING;
@@ -45,8 +46,27 @@ router.post("/", upload.array('image'), async (req, res) => {
       }
 });
 
+// Bookmark a listing.
+router.post("/:listingID/bookmark/", async (req, res) => {
+  console.log("Received body when bookmarking listing: ", req.body);
+  console.log(".userID: ", req.body.userID);
+  console.log(".listingID", req.body.listingID);
+  console.log(".title", req.body.title);
+  try {
+    // Add new relationship to bookmark table.
+    await addBookmark(req.body.userID, req.body.listingID, req.body.title);
+    res.status(201).send
+  }
+  catch (error) {
+    console.error("Error adding bookmark: ", error);
+    res.status(500).json({ error: "Failed to add bookmark." });
+  }
+});
+
+
 // Retrieve listings with pagination and optional query parameters
 router.get("/", async (req, res) => {
+  console.log("retriving all listings");
   try {
     const { q, page } = req.query;
     const itemsPerPage = 30; // Define how many items to return per page
@@ -99,6 +119,10 @@ router.delete("/:listingID/", async (req, res) => {
   try {
       // Extract listingID from query parameters.
       const { listingID } = req.params;
+      
+      // Delete images from aws
+      await deleteS3Folder(listingID);
+      
 
       // Retrieve listing details from database if listing exists.
       const connection = createConnection();
@@ -120,6 +144,35 @@ router.delete("/:listingID/", async (req, res) => {
     }
 });
 
+router.delete("/:listingID/bookmark/", async (req, res) => {
+  console.log("Delete bookmark paramaters:", req.query)
+
+  try {
+    const connection = createConnection();
+    const result = await connection.query(
+      'DELETE FROM bookmarks WHERE "userID" = $1 AND "listingID" = $2',
+      [req.query.userID, req.query.listingID]
+    );
+
+  
+    if (result.rowCount === 0) {
+      return res.status(404).send("Bookmark not found.");
+    }
+
+    const rows = await connection.query(
+      'UPDATE bookmarks SET "bookmarkCount" = "bookmarkCount" - 1 WHERE "listingID" = $1',
+      [req.query.listingID]
+    )
+
+    // Successful deletion.
+    res.status(204).send();
+  }
+  catch (error) {
+    console.error("An error occurred while deleting the bookmark: ", error);
+    res.status(500).send("An error occurred while deleting the listing.");
+  }
+})
+
 
 // Retrieve images for given listingID.
 router.get("/images/:listingID/", async (req, res) => {
@@ -132,6 +185,76 @@ router.get("/images/:listingID/", async (req, res) => {
       const { rows } = await connection.query('SELECT * FROM images WHERE "listingID" = $1', 
         [listingID]
       );
+      
+      res.status(200).send(rows);
+      await connection.end();
+    } 
+    catch (error) {
+      console.error("An error occurred while fetching the images:", error);
+      res.status(500).send("An error occurred while fetching the images");
+    }
+});
+
+// TODO: Add route for checking if a bookmark exists or not.
+// Check if a bookmark exists between a user and listing.
+router.get("/:listingID/bookmark/", async (req, res) => {
+  console.log("Get bookmark parameters:", req.query);
+
+  try {
+    const connection = createConnection();
+    const { rows } = await connection.query('SELECT * FROM bookmarks WHERE "userID" = $1 AND "listingID" = $2',
+      [
+        req.query.userID,
+        req.query.listingID
+      ])
+
+    console.log("Returned rows from select call in bookmark backend.")
+    if ( rows.length > 0 ) {
+      const bookmarked = true;
+      res.status(200).send(bookmarked);
+    }
+    else {
+      const bookmarked = false;
+      res.status(204).send(bookmarked);
+    }
+    await connection.end();
+  }
+  catch (error) {
+    console.error("An error occurred while checking for a bookmark: ", error);
+    res.status(500).send("An error occurred while checking for a bookmark.");
+  }
+})
+
+router.get("/bookmark/:userID", async (req, res) => {
+  console.log("Get bookmark parameters:", req.params);
+
+  try {
+    const connection = createConnection();
+    const { rows } = await connection.query('SELECT * FROM bookmarks WHERE "userID" = $1',
+      [
+        req.params.userID
+      ]);
+
+    console.log("Returned the bookmarks belonging to a particular user")
+    res.status(200).send(rows);
+    await connection.end();
+  }
+  catch (error) {
+    console.error("An error occurred while checking for a bookmark: ", error);
+    res.status(500).send("An error occurred while checking for a bookmark.");
+  }
+})
+
+// Retrieve listings for given userID.
+router.get("/mylistings/:userID", async (req, res) => {
+  console.log(req.params.userID);
+  try {
+      // Retrieve image list from database if listing exists.
+      const connection = createConnection();
+      const { rows } = await connection.query('SELECT * FROM listings WHERE "userID" = $1', 
+        [
+          req.params.userID
+        ]);
       
       res.status(200).send(rows);
       await connection.end();
@@ -176,41 +299,61 @@ router.put("/:listingID", async (req, res) => {
   }
 });
 
-router.put("/images/:listingID", async (req, res) => {
+router.put("/images/:listingID", upload.array('image'), async (req, res) => {
   try {
     const { listingID } = req.params;
-    const { images } = req.body;
+    const images = req.files;
+    const imagesToRemove = req.query.imagesToRemove;
 
-    // Validate that images array is provided and is an array
-    if (!images || !Array.isArray(images)) {
-      return res.status(400).send("Images array is required for updating the listing images.");
-    }
 
-    const connection = createConnection();
-
-    // Delete existing images associated with the listingID
-    await connection.query(
-      `DELETE FROM images WHERE "listingID" = $1`,
-      [listingID]
-    );
-
-    // Insert new images into the database using addImages function
-    await addImages(listingID, images);
-
-    // Upload all images to S3 under a folder named after the listingID
-    let i = 0;
-    for (const imageUrl of images) {
-      await uploadImageToS3(`${listingID}/image${i}`, imageUrl);
-      i++;
-    }
+    await updateImages(listingID, imagesToRemove, images);
+  
+   
 
     // Send success response
-    res.status(200).send("Listing images updated successfully");
+    res.status(201).send(req.body);
   } catch (error) {
     console.error("An error occurred while updating listing images:", error);
     res.status(500).send("An error occurred while updating listing images");
   }
 });
+
+async function updateImages(listingID, imageUrls, newImages) {
+  try {
+    for(index in imageUrls) {
+      //Delete the image from S3
+      const pattern = /\/image(\d+)\?/;
+      const match = pattern.exec(imageUrls[index].imageURL); //Regex to get imageNum from url
+      await deleteFromS3(`${listingID}/image${match[1]}`);
+    }
+
+    let images = await listS3Objects(listingID);
+    for(index in images) {
+      //Rename all left over images to remove gaps in imageNums
+      await renameS3Object(`${listingID}/image${index}`, images[index].Key);
+    }
+
+    // Upload all images to S3 under a folder named after the listingID
+    let i = images.length;
+    for (const newImage of newImages) {
+      // Images are labeled starting from existing image indexes
+      await uploadImageToS3(`${listingID}/image${i}`, newImage.buffer);
+      i++;
+    }
+
+    // Delete all imageURLS with that listingID from table
+    const connection = createConnection();
+    await connection.query('DELETE FROM images WHERE "listingID" = $1', [listingID]);
+    
+    // Add new urls to images table
+    images = await listS3Objects(listingID);
+    await addImages(listingID, images.length);
+
+
+  } catch (error) {
+    console.error("An error occurred while updating images:", error);
+  }
+}
 
 // Function to add one or multiple images to database.
 async function addImages(listingID, numImages) {
@@ -223,7 +366,7 @@ async function addImages(listingID, numImages) {
         'INSERT INTO images ("listingID", "imageURL") VALUES ($1, $2)',
         [
           listingID,
-          `https://haggleimgs.s3.amazonaws.com/${listingID}/image${i}`,
+          `https://haggleimgs.s3.amazonaws.com/${listingID}/image${i}?rand=${Math.floor(Math.random()*100000)}`,
         ],
       );
     }
@@ -270,7 +413,37 @@ async function addListing(listing) {
     }
   }
 
-  
+// Function to bookmark a listing.
+async function addBookmark(userID, listingID, title) {
+  try {
+    const connection = createConnection();
+    const { rows } = await connection.query(
+      'INSERT INTO bookmarks ("userID", "listingID", title) VALUES ($1, $2, $3)',
+      [
+        userID,
+        listingID,
+        title,
+      ]
+    )
+
+    const { result } = await connection.query(
+      'UPDATE listings SET "bookmarkCount" = "bookmarkCount" + 1 WHERE "listingID" = $1',
+      [
+        listingID
+      ]
+    )
+
+    await connection.end();
+    return;
+  }
+  catch (error) {
+    console.error("An error occured while bookmarking this listing:", error);
+    throw error;
+  }
+}
+
+
+
 
 
 module.exports = router;

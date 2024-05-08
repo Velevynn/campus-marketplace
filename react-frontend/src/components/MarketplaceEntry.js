@@ -8,26 +8,13 @@ import missing from "../assets/missing.jpg"
 function Entry({ title, price, listingID }) {
   const [images, setImages] = useState([]);
 
-  const getTitleFontSize = () => {
-    if (title != undefined) {
-      if (title.length > 21) {
-        return "15px";
-      } else if (title.length > 14) {
-        return "20px";
-      } else {
-        return "25px";
-      }
-    } else {
-      return "10px";
-    }
-  };
 
   useEffect(() => {
     const fetchImages = async () => {
       try {
         /* Fetch images for the listing from the backend */
         const response = await axios.get(
-          `https://haggle.onrender.com/listings/images/${listingID}`,
+          process.env.REACT_APP_BACKEND_LINK + `/listings/images/${listingID}`,
         );
         if (response.data.length > 0) {
           setImages(response.data);
@@ -42,8 +29,6 @@ function Entry({ title, price, listingID }) {
   }, [listingID]);
 
   let source = missing;
-  // const randomNum = (Math.random(2000)).toString();  // generate random num
-  // let source = `https://haggleimgs.s3.amazonaws.com/${listingID}/image0?cc=${randomNum}`;  
 
   if (images.length > 0) {
     source = `https://haggleimgs.s3.amazonaws.com/${listingID}/image0`;  
@@ -58,11 +43,11 @@ function Entry({ title, price, listingID }) {
           <img src = {source} alt="Entry Image" className="entry-image" />
         </div>
 
-        <div className="text-container">
-          <h2 className="title" style={{ fontSize: getTitleFontSize() }}>
+        <div>
+          <h5 className="margin">
             {title}
-          </h2>
-          <p className="price">{price === "0" || price === 0 ? "FREE" : `$${price}`}</p>
+          </h5>
+          <p className="margin"> {price === "0" || price === 0 ? "FREE" : `$${price}`}</p>
         </div>
       </div>
     </Link>

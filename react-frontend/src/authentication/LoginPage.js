@@ -6,7 +6,8 @@ import { Link } from 'react-router-dom';
 // Importing logo, icons, and styled components for UI
 import logoImage from '../assets/haggle-horizontal.png';
 import { FaEye, FaEyeSlash  } from 'react-icons/fa';
-import { Container, Form, InputGroup, Input, InputLabel, VisibilityToggle, Button, LinkedLabel, ForgotPasswordLabel, BottomContainer, BottomLabel } from './AuthenticationStyling';
+import googlepng from '../assets/google.png';
+import "./LoginPage.css"
 
 
 // LoginPage component for handling user login
@@ -38,7 +39,7 @@ function LoginPage() {
         identifier: credentials.identifier,
         password: credentials.password,
       };
-      const response = await axios.post('https://haggle.onrender.com/users/login', requestBody);
+      const response = await axios.post(process.env.REACT_APP_BACKEND_LINK + '/users/login', requestBody);
       localStorage.setItem('token', response.data.token); // Stores the received token in local storage and navigates to the profile page
       window.location.href = '/profile';
     } catch (error) {
@@ -51,6 +52,16 @@ function LoginPage() {
     }
   };
 
+  const handleGoogleLogin = () => {
+    const clientId = '71122616560-tv80mel7fi0s2etitj1enhk192v06h0e.apps.googleusercontent.com';
+
+    const redirectUrl = 'https://haggle.onrender.com/users/auth/google/callback';
+    const scope = encodeURI('email profile');
+    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUrl}&response_type=code&scope=${scope}&access_type=offline&prompt=consent`;
+    window.location.href = authUrl;
+    
+  };
+
   // Effect hook to update the form validity based on the credentials state
   useEffect(() => {
     const isValid = credentials.identifier.length > 0 && credentials.password.length > 0;
@@ -59,74 +70,98 @@ function LoginPage() {
 
   // Renders the login form, providing fields for identifier and password, and displays error messages if any exist
   return (
-    <>
-      <Container>
-        <img src={logoImage} alt="Logo" style={{ display: 'block', margin: '0 auto 20px', maxWidth: '200px', height: 'auto' }} />
-        <Form onSubmit={handleSubmit}>
+    <div className="vertical-center margin-top">
+      <div>
+      <div className="small-container drop-shadow">
+        <div className="vertical-center">
+          <img className="logo-img" src={logoImage} alt="Logo"/>
+        </div>
+        
+        <h5 className="text-center">
+            Log in to buy, sell, and trade
+        </h5>
+
+        <form onSubmit={handleSubmit}>
           {errorMessage && (
-            <div style={{ color: 'red', marginTop: '20px', fontSize: '12px' }}>
+            <p className="margin" style={{color: "red", fontSize: "12px"}}>
               {errorMessage}
-            </div>
+            </p>
           )}
-          <InputGroup>
-            <Input
+          <div className="margin input">
+            <input
               type="text"
               name="identifier"
               id="identifier"
               value={credentials.identifier}
               onChange={handleChange}
-              hasContent={credentials.identifier.length > 0}
+              placeholder="Email, Phone, or Username"
+              autoComplete="on"
               required/>
-            <InputLabel htmlFor="identifier" hasContent={credentials.identifier.length > 0}>Email, Phone, or Username</InputLabel>
-          </InputGroup>
-
-          <InputGroup>
-            <Input
+          </div>
+          <div className="margin input">
+            <input
               type={passwordVisible ? "text" : "password"}
               name="password"
               id="password"
               value={credentials.password}
               onChange={handleChange}
-              hasContent={credentials.password.length > 0}
+              placeholder="Password"
+              autoComplete="current-password"
+              style={{paddingRight: "2.5rem"}}
               required/>
-            <InputLabel htmlFor="password" hasContent={credentials.password.length > 0}>Password</InputLabel>
-            <VisibilityToggle onClick={togglePasswordVisibility}>
+          
+            <div className="toggle-icon" onClick={togglePasswordVisibility}>
                 {passwordVisible ? <FaEye /> : <FaEyeSlash />}
-            </VisibilityToggle>
-          </InputGroup>
+            </div>
+          </div>
 
-          <Button type="submit" disabled={!isFormValid}>
-              Log in
-          </Button>
 
-          <LinkedLabel>
-              By logging in you agree to our {}
-                <Link to="/terms-of-service" style={{ display: 'inline', color: '#0056b3', fontWeight: 'bold'}}>
-                  Terms of Service
-                </Link>
-              {} and acknowledge our {}
-                <Link to="/privacy-policy" style={{ display: 'inline', color: '#0056b3', fontWeight: 'bold'}}>
-                  Privacy Policy
-                </Link>
-            </LinkedLabel>
+            
+            
+          <div className="margin">
+          <button className={`span-button ${isFormValid ? "" : "disabled"}`} type="submit" disabled={!isFormValid}>
+            Log in
+          </button>
+          </div>
 
-            <ForgotPasswordLabel>
-            <Link to="/forgot-password" style={{ display: 'inline', color: '#0056b3'}}>
+          <div className="margin">
+            <button className="span-button" onClick={handleGoogleLogin}>
+              <div className="vertical-center">
+                <img className="google-img" src={googlepng} alt="google"></img>
+                <span className="margin-left">Continue with Google</span>
+              </div>
+            </button>
+          </div>
+
+          <p className="text-center margin-bottom" style={{fontSize: '12px'}}>
+            By logging in you agree to our {}
+              <Link to="/terms-of-service" >
+                Terms of Service
+              </Link>
+            {} and acknowledge our {}
+              <Link to="/privacy-policy">
+                Privacy Policy
+              </Link>
+          </p>
+
+          <p className="text-center">
+            <Link to="/forgot-password">
               Forgot password?
             </Link>
-          </ForgotPasswordLabel>
-        </Form>
-      </Container>
+          </p>
+        </form>
+      </div>
 
-      <BottomContainer>
-        <BottomLabel>
+      <div className="small-container drop-shadow margin-top">
+        <p className="text-center">
           Don&apos;t have an account? {}
-          <Link to="/signup" style={{ display: 'inline', color: '#0056b3', fontWeight: 'bold'}}>
+          <Link to="/signup">
             Sign up
           </Link>
-        </BottomLabel>
-      </BottomContainer>
-    </>
+        </p>
+      </div>
+      </div>
+    </div>
   );
 }
 

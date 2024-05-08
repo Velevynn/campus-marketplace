@@ -10,10 +10,9 @@ function getProfileName() {
   if (token !== null) {
     const decodedToken = jwtDecode(token);
     const username = decodedToken.username;
-    console.log(username);
     return username;
   } else {
-    return "My Profile";
+    return "Profile";
   }
 }
 
@@ -25,18 +24,18 @@ function NavBar() {
   };
 
   return (
-    <div className="flex-container" style={{marginBottom: '20px'}}>
-      <nav className="vertical-center">
+    <div className="flex-container nav-container">
+      <nav className="vertical-center" style={{flexWrap: "wrap"}}>
 
-          <Link className="logo-container" to="/marketplace">
-            <img src={logo} alt="Logo" />
-          </Link>
+        <Link className="logo-container" to="/marketplace">
+          <img src={logo} alt="Logo" />
+        </Link>
 
         <div>
           <SearchBar />
         </div>
 
-        <ul className="flex-row">
+        <div className="flex-row margin">
           <li>
             <Link to="/about">About</Link>
           </li>
@@ -46,9 +45,9 @@ function NavBar() {
           <li>
             <Link to="/profile">{getProfileName()}</Link>
           </li>
-        </ul>
-        <button className="margin" onClick={handlePostListingClick}>
-          Post a Listing
+        </div>
+        <button className="" onClick={handlePostListingClick}>
+          Post
         </button>
       
       </nav>

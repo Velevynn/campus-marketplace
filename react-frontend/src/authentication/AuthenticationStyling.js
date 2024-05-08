@@ -28,11 +28,36 @@ export const Form = styled.form`
   flex-direction: column;
 `;
 
+export const LogoImage = styled.img`
+  display: block;
+  margin: 0 auto 0px;
+  width: 200px;
+  height: auto;
+`;
+
+export const ErrorLabel = styled.label`
+  display: block;
+  color: red;
+  margin-top: -10px;
+  font-size: 12px;
+  text-align: left;
+  font-weight: normal;
+`;
+
+export const SuccessLabel = styled.label`
+  display: block;
+  color: green;
+  margin-top: -10px;
+  font-size: 12px;
+  text-align: left;
+  font-weight: normal;
+`;
+
 // InputGroup styled component for grouping input fields and their labels
 export const InputGroup = styled.div`
   position: relative;
-  margin-bottom: 0px;
-  width: 100%;
+  margin-bottom: 8px;
+  width: 320px;
 `;
 
 // InputLabel styled component for customizing input labels
@@ -58,9 +83,10 @@ export const InputLabel = styled.label`
 // Input styled component for customizing text inputs
 export const Input = styled.input`
   width: 100%;
-  padding-top: ${(props) => (props.hasContent ? "20px" : "12px")};
+  padding-top: ${(props) => (props.hasContent ? "22px" : "14px")};
   padding-bottom: ${(props) => (props.hasContent ? "8px" : "8px")}
-  line-height: ${props => props.hasContent ? "24px" : "18px"};
+  line-height: ${props => props.hasContent ? "22px" : "16px"};
+
   height: 40px;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -98,9 +124,12 @@ export const LinkedLabel = styled.label`
 // Main button styling with hover, focus, and disabled states for visual feedback
 export const Button = styled.button`
   padding: 8px;
-  background-color: #16A44A;
+  background-color: #14A44A;
+  align-items: center;  // Align items vertically
+  justify-content: center;  // Center content horizontally
   color: white;
   border: none;
+  margin-top: 10px;
   border-radius: 4px;
   cursor: pointer;
   width: 100%;
@@ -114,9 +143,9 @@ export const Button = styled.button`
 
   &:focus,
   &:active {
-    background-color: #16A44A; // Keep the original green color
+    background-color: #14A44A; // Keep the original green color
     outline: none; // Removes the default focus outline
-    border-color: #16A44A; // Ensures the border color stays consistent
+    border-color: #14A44A; // Ensures the border color stays consistent
     box-shadow: 0 0 0 2px rgba(22, 164, 74, 0.5); // Optional: Adds a custom focus glow
   }
 
@@ -148,6 +177,13 @@ export const BottomLabel = styled.label`
   font-weight: normal;
 `;
 
+
+export const ErrorMessage = styled.div`
+  color: red;
+  font-size: 14px;
+  margin-top: 5px;
+  text-align: center;
+`;
 /*
 
 Components specific to LoginPage.js
@@ -162,6 +198,15 @@ text-align: center;
 margin-top: 20px;
 margin-bottom: 10px;
 font-weight: normal;
+`;
+
+export const GoogleImage = styled.img`
+  width: 20px;  // Adjusted width for better visual balance
+  height: 20px;  // Keep height and width the same for a square aspect ratio
+  margin-right: 50px;  // Adds spacing between the image and the text
+  margin-left: -60px;  // Moves the image 5px to the left
+  vertical-align: middle;  // Aligns the image vertically with text
+  object-fit: cover;
 `;
 
 /*
@@ -188,13 +233,11 @@ export const ValidationIcon = styled.span`
 
 // also specific to ResetPasswordPage.js
 export const PasswordRules = styled.div`  
-  background-color: #f7f7f7;
   padding: 10px;
   border-radius: 4px;
   font-size: 12px;
   color: #666;
-  position: absolute;
-  right: -350px;
+  position: relative;
   top: 0px;
   width: 300px;
 `;
@@ -292,4 +335,80 @@ export const Rule = styled.div`
   margin-bottom: 5px;
   font-size: 12px;
   color: ${props => props.isValid ? 'green' : 'red'};
+`;
+
+/*
+
+Components specific to MakeOfferPage.js
+
+*/
+
+export const OfferGroup = styled.div`
+  position: relative;
+  margin-bottom: 8px;
+  width: 320px;
+`;
+
+export const OfferPrefix = styled.span`
+  position: absolute;
+  left: 10px;
+  font-size: 50px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: black;
+`;
+
+export const Offer = styled.input`
+  width: 100%;
+  line-height: 50px;
+  height: 80px;
+  color: black;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 50px;
+  transition: border 0.3s, box-shadow 0.3s;
+
+  // Styles for when the input is focused
+  &:focus {
+    outline: none;
+    border-color: #007b00;
+    box-shadow: 0 0 8px rgba(0, 183, 0, 0.8);
+  }
+`;
+
+export const MakeOfferButton = styled.button`
+  padding: 8px;
+  background-color: #14A44A;
+  align-items: center;  // Align items vertically
+  justify-content: center;  // Center content horizontally
+  color: white;
+  border: none;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.3s, box-shadow 0.3s; // Added box-shadow to the transition for a smooth effect
+
+  &:hover {
+    background-color: #138A3E; // Darker green on hover
+    border-color: #138A3E;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2); // Subtle shadow for depth, adjust as needed
+  }
+
+  &:focus,
+  &:active {
+    background-color: #14A44A; // Keep the original green color
+    outline: none; // Removes the default focus outline
+    border-color: #14A44A; // Ensures the border color stays consistent
+    box-shadow: 0 0 0 2px rgba(22, 164, 74, 0.5); // Optional: Adds a custom focus glow
+  }
+
+  &:disabled {
+    background-color: #8CCBA1;
+    cursor: not-allowed;
+    border-color: transparent;
+  }
 `;

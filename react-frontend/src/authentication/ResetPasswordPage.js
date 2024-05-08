@@ -54,7 +54,7 @@ const ResetPasswordPage = () => {
 
     try {
       // Attempts to reset password in db
-      await axios.post('https://haggle.onrender.com/users/reset-password', {
+      await axios.post(process.env.REACT_APP_BACKEND_LINK + '/users/reset-password', {
         token,
         password
       });
@@ -90,7 +90,12 @@ const ResetPasswordPage = () => {
           />
 
           <InputLabel hasContent={passwordHasContent}>New Password</InputLabel> 
-          {passwordFocused && (
+          <VisibilityToggle onClick={togglePasswordVisibility}>
+            {passwordVisible ? <FaEye /> : <FaEyeSlash />}
+          </VisibilityToggle>
+        </InputGroup>
+
+        {passwordFocused && (
             <PasswordRules>
             <div style={{ color: password.length >= 8 ? 'green' : 'red' }}>
               {password.length >= 8 ? <FaCheckCircle style={{ marginRight: '8px', position: 'relative', top: '2px' }} /> : <FaTimesCircle style={{ marginRight: '8px', position: 'relative', top: '2px' }} />}
@@ -106,11 +111,8 @@ const ResetPasswordPage = () => {
             </div>
           </PasswordRules>
           )}
-          <VisibilityToggle onClick={togglePasswordVisibility}>
-            {passwordVisible ? <FaEye /> : <FaEyeSlash />}
-          </VisibilityToggle>
-        </InputGroup>
-        <Button type="submit" disabled={!isPasswordValid} style={{ marginTop: '20px'}}>Reset</Button>
+          
+        <Button type="submit" disabled={!isPasswordValid}>Reset</Button>
       </Form>
     </Container>
   );
