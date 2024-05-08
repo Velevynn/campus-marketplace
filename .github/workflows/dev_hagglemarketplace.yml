@@ -9,6 +9,10 @@ on:
       - dev
   workflow_dispatch:
 
+defaults:
+  run:
+    working-directory: expressjs-backend
+
 jobs:
   build:
     runs-on: windows-latest
@@ -26,18 +30,20 @@ jobs:
 
       - name: npm install, build, and test
         run: |
-          cd expressjs-backend
           npm install
           npm run build --if-present
           npm run test --if-present
         env:
           JWT_SECRET_KEY: ${{ secrets.JWT_SECRET }}
 
+      - name: Zip artifact for deployment
+        run: Compress-Archive -Path * -DestinationPath backend.zip
+        
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
           name: node-app
-          path: .
+          path: backend.zip
 
   deploy:
     runs-on: ubuntu-latest
@@ -51,6 +57,13 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: node-app
+
+      - name: list files
+        run: ls -lR
+
+      - name: unzip artifact for dployment
+        run: Expand-Archive -Path backend.zip -DestinationPath .
+        working-directory: .
 
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v2

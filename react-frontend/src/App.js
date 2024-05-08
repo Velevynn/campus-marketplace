@@ -30,7 +30,7 @@ function App() {
         <Routes>
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/handle-login" element={<HandleTokenRedirect />} />
+          <Route path="/login/google" element={<HandleTokenRedirect />} />c
           <Route path="/profile" 
                 element={
                 <ProtectedRoute>

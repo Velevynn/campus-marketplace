@@ -160,7 +160,7 @@ router.delete("/:listingID/bookmark/", async (req, res) => {
     }
 
     const rows = await connection.query(
-      'UPDATE bookmarks SET "bookmarkCount" = "bookmarkCount" - 1 WHERE "listingID" = $1',
+      'UPDATE listings SET "bookmarkCount" = "bookmarkCount" - 1 WHERE "listingID" = $1',
       [req.query.listingID]
     )
 
