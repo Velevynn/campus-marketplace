@@ -20,9 +20,6 @@ const oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_SECRET,
   process.env.BACKEND_LINK + '/users/auth/google/callback'
 );
-// console.log('OAuth2 client initialized:', oauth2Client);
-// console.log('Google Client ID:', process.env.REACT_APP_GOOGLE_CLIENT_ID);
-// console.log('Google Client Secret:', process.env.GOOGLE_CLIENT_SECRET);
 
 // Create connection pool to connect to the database.
 function createConnection() {
