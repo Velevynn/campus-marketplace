@@ -59,7 +59,7 @@ jobs:
           name: node-app
 
       - name: list files
-        run: ls -lR
+        run: ls
 
       - name: unzip artifact for dployment
         run: Expand-Archive -Path backend.zip -DestinationPath .
