@@ -300,7 +300,7 @@ function ListingView() {
             <button className="margin-right" onClick={handleMakeOffer}>Make Offer</button>
             <button className="margin-right" onClick={handleStartChat}>Start Chat</button>
 
-            <div className="vertical-center" onClick={toggleBookmark}>
+            <div className="vertical-center margin-right" onClick={toggleBookmark}>
               {isBookmarked ? 
               (<img className="bookmark" src={filledBookmark}/>) : 
               (<img className="bookmark" src={emptyBookmark}/>)
