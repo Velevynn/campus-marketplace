@@ -13,6 +13,28 @@
     position: relative;
 }
 
+.input-label-empty {
+    position: absolute;
+    left: 0.75rem;
+    top: 0.68rem;
+    color: gray;
+    font-size: 14px;
+    transition: transform 0.3s ease;
+    pointer-events: none;
+}
+
+.input-label-full {
+    position: absolute;
+    left: 0.75rem;
+    top: 0.75rem;
+    color: gray;
+    font-size: 9px;
+    pointer-events: none;
+    transition: transform 0.3s ease;
+    transform: translateY(-0.7rem);
+}
+
+
 .toggle-icon {
     position: absolute;
     top: 0.75rem;

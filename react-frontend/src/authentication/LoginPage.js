@@ -8,7 +8,6 @@ import logoImage from '../assets/haggle-horizontal.png';
 import { FaEye, FaEyeSlash  } from 'react-icons/fa';
 import googlepng from '../assets/google.png';
 import "./LoginPage.css"
-import {InputGroup, InputLabel, Input, VisibilityToggle} from './AuthenticationStyling';
 
 
 // LoginPage component for handling user login
@@ -89,31 +88,36 @@ function LoginPage() {
             </p>
           )}
 
-          <InputGroup>
-            <InputLabel htmlFor="identifier" hasContent={credentials.identifier.length > 0}>Email, Phone, or Username</InputLabel>
-            <Input
+        <div className="margin input">
+        <p className={credentials.identifier.length > 0 ? "input-label-full" : "input-label-empty unselectable"}>Email, Phone, or Username</p>
+            <input
               type="text"
               name="identifier"
               id="identifier"
               value={credentials.identifier}
               onChange={handleChange}
-              hasContent={credentials.identifier.length > 0}
+              autoComplete="on"
               required/>
-          </InputGroup>
-          <InputGroup>
-            <InputLabel htmlFor="password" hasContent={credentials.password.length > 0}>Password</InputLabel>
-            <Input
+              
+          </div>
+          
+
+          <div className="margin input">
+          <p className={credentials.password.length > 0 ? "input-label-full" : "input-label-empty unselectable"}>Password</p>
+            <input
               type={passwordVisible ? "text" : "password"}
               name="password"
               id="password"
               value={credentials.password}
               onChange={handleChange}
-              hasContent={credentials.password.length > 0}
+              autoComplete="current-password"
+              style={{paddingRight: "2.5rem"}}
               required/>
-            <VisibilityToggle onClick={togglePasswordVisibility}>
+          
+            <div className="toggle-icon" onClick={togglePasswordVisibility}>
                 {passwordVisible ? <FaEye /> : <FaEyeSlash />}
-            </VisibilityToggle>
-          </InputGroup>
+            </div>
+        </div>
 
           <div className="margin">
             <button className={`span-button ${isFormValid ? "" : "disabled"}`} type="submit" disabled={!isFormValid} style = {{marginTop:'10px'}}>
