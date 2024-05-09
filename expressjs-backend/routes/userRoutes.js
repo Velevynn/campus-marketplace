@@ -1,7 +1,7 @@
 // userRoutes.js
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');;
 const { google } = require('googleapis');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
@@ -93,8 +93,8 @@ router.post('/register', async (req, res) => {
       // console.log("Making Null Checks");
       if (username === null || full_name === null || password === null || email === null || phoneNumber === null) {throw Error;} // ensure fields are filled, throw error if not
       // Asynchronously hash the password using bcrypt library. 10 saltrounds = hash password 10 times. the more rounds the longer it takes to finish hashing
-      const bcrypt = require('bcrypt');
-      const hashedPassword = await bcrypt.hash(password, 10); // await pauses execution of async function for bcrypt.hash to run
+      const bcrypt = require('bcryptjs');;
+      const hashedPassword = await bcryptjs.hash(password, 10); // await pauses execution of async function for bcrypt.hash to run
       // console.log("Hashed Password: ", hashedPassword);
       const connection = createConnection();
 
@@ -154,7 +154,7 @@ router.post('/login', async (req, res) => {
     if (users.length > 0) {
       const user = users[0];
       console.log('User found:', user);
-      const validPassword = await bcrypt.compare(password, user.password);
+      const validPassword = await bcryptjs.compare(password, user.password);
       console.log('Password verification result:', validPassword);
 
       if (validPassword) {
@@ -328,7 +328,7 @@ router.delete('/delete', async (req, res) => {
       );
 
       const user = users[0];
-      const validPassword = await bcrypt.compare(password, user.password);
+      const validPassword = await bcryptjs.compare(password, user.password);
 
       if (validPassword) {
         // Delete the user account
@@ -426,7 +426,7 @@ router.post('/reset-password', async (req, res) => {
       return res.status(400).json({ error: 'Invalid or expired token' });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcryptjs.hash(password, 10);
     await connection.query('UPDATE users SET password = $1, "resetPasswordToken" = NULL, "resetPasswordExpires" = NULL WHERE "userID" = $2', [hashedPassword, users[0].userID]);
 
     res.json({ message: 'Password has been reset successfully' });

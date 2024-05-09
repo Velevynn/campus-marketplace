@@ -2,7 +2,7 @@ const express = require('express');
 const request = require('supertest');
 const { Pool } = require('pg');
 const router = require('./userRoutes');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');;
 
 // Mocks
 jest.mock('pg', () => {
