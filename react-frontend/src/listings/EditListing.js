@@ -140,7 +140,7 @@ function EditListing() {
 
 
         // Send PUT request to update listing images
-        await axios.put(`http://localhost:8000/listings/images/${listingID}`, newImages, {
+        await axios.put(`https://haggle.onrender.com/listings/images/${listingID}`, newImages, {
           params: { imagesToRemove },
           headers: {
             Authorization: `Bearer ${token}`,

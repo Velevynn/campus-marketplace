@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
-import { HeaderLabel, Container, Form, LogoImage, ErrorLabel, InputGroup, Input, InputLabel, Button, LinkedLabel } from './AuthenticationStyling';
 import logoImage from '../assets/haggle-horizontal.png';
 
 function AdditionalDetailsPage() {
@@ -51,47 +50,49 @@ function AdditionalDetailsPage() {
 
   return (
     <>
-      <Container>
-        <LogoImage src={logoImage} alt="Haggle Logo"/>
-        <Form onSubmit={handleSubmit}>
-          <HeaderLabel>Complete Your Registration</HeaderLabel>
-          {errorMessage && <ErrorLabel>{errorMessage}</ErrorLabel>}
-          <InputGroup>
-            <InputLabel htmlFor="username" hasContent={userData.username.trim().length > 0}>Username</InputLabel>
-            <Input
+      <div className="vertical-center margin-top">
+        <div className="small-container drop-shadow"> 
+        <div className="vertical-center"> 
+        <img className="logo-img" src={logoImage} alt="Haggle Logo"/>
+        </div>
+        <form onSubmit={handleSubmit}>
+          <h1>Complete Your Registration</h1>
+          {errorMessage && <div>{errorMessage}</div>}
+          <div className="margin input">
+            <input
               type="text"
               name="username"
               id="username"
               value={userData.username}
               onChange={handleChange}
-              hasContent={userData.username.trim().length > 0}
+              placeholder="username"
               required
             />
-          </InputGroup>
+          </div>
 
-          <InputGroup>
-            <InputLabel htmlFor="phoneNumber" hasContent={userData.phoneNumber.trim().length > 0}>Phone Number</InputLabel>
-            <Input
+          <div className="margin input">
+            <input
               type="tel"
               name="phoneNumber"
               id="phoneNumber"
               value={userData.phoneNumber}
               onChange={handleChange}
-              hasContent={userData.phoneNumber.trim().length > 0}
+              placeholder="phone number"
               required
             />
-          </InputGroup>
+          </div>
 
-          <Button type="submit" disabled={!isFormValid}>
+          <button className={`span-button ${isFormValid ? "" : "disabled"}`} type="submit">
             Complete Registration
-          </Button>
+          </button>
 
-          <LinkedLabel>
+          <h6>
             By registering you agree to our <Link to="/terms-of-service">Terms of Service</Link> and acknowledge our <Link to="/privacy-policy">Privacy Policy</Link>.
-          </LinkedLabel>
+          </h6>
 
-        </Form>
-      </Container>
+        </form>
+        </div>
+      </div>
     </>
   );
 }

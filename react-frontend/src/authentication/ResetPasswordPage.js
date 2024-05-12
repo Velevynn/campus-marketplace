@@ -6,18 +6,6 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 // Importing the logo image, icons, and styled components for the layout
 import { FaEye, FaEyeSlash, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 import logoImage from '../assets/haggle-horizontal.png';
-import {
-  Container,
-  Form,
-  HeaderLabel,
-  Description,
-  InputGroup,
-  InputLabel,
-  Input,
-  VisibilityToggle,
-  Button,
-  PasswordRules,
-} from './AuthenticationStyling';
 
 // ResetPasswordPage component for handling password reset functionality
 const ResetPasswordPage = () => {
@@ -30,7 +18,7 @@ const ResetPasswordPage = () => {
   const token = searchParams.get('token');
 
   // Password validity checks
-  const passwordHasContent = password.length > 0;
+  //const passwordHasContent = password.length > 0;
   const isPasswordValid = password.length >= 8 && /[0-9]/.test(password) && /[\W_]/.test(password);
 
   // Toggles the visibility of the password input field
@@ -69,34 +57,35 @@ const ResetPasswordPage = () => {
 
   // Renders the reset password form
   return (
-    <Container>
-      <Form onSubmit={handleSubmit}>
+    <div className="vertical-center" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <div className="small-container drop-shadow margin text-center">
+      <form onSubmit={handleSubmit}>
         <img src={logoImage} alt="Logo" style={{ display: 'block', margin: '0 auto 20px', maxWidth: '200px', height: 'auto' }} />
-        <HeaderLabel style={{ marginTop: '0px'}}>
+        <h1 style={{ marginTop: '0px'}}>
             Reset Password
-        </HeaderLabel>
-        <Description style={{ marginTop: '0px'}}>
+        </h1>
+        <p1 style={{ marginTop: '0px'}}>
             Enter your new password and check it to confirm it&apos;s correct.
-        </Description>
-        <InputGroup>
-          <Input
+        </p1>
+        <div className="margin input">
+          <input
             type={passwordVisible ? "text" : "password"}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
             onFocus={handlePasswordFocus}
             onBlur={handlePasswordBlur}
-            hasContent={passwordHasContent}
+            placeholder="new password"
+            style={{paddingRight: "2.5rem"}}
           />
 
-          <InputLabel hasContent={passwordHasContent}>New Password</InputLabel> 
-          <VisibilityToggle onClick={togglePasswordVisibility}>
+          <div className="input-icon" onClick={togglePasswordVisibility}>
             {passwordVisible ? <FaEye /> : <FaEyeSlash />}
-          </VisibilityToggle>
-        </InputGroup>
+          </div>
+        </div>
 
         {passwordFocused && (
-            <PasswordRules>
+            <div>
             <div style={{ color: password.length >= 8 ? 'green' : 'red' }}>
               {password.length >= 8 ? <FaCheckCircle style={{ marginRight: '8px', position: 'relative', top: '2px' }} /> : <FaTimesCircle style={{ marginRight: '8px', position: 'relative', top: '2px' }} />}
               At least 8 characters
@@ -109,12 +98,13 @@ const ResetPasswordPage = () => {
               {/[\W_]/.test(password) ? <FaCheckCircle style={{ marginRight: '8px', position: 'relative', top: '2px' }} /> : <FaTimesCircle style={{ marginRight: '8px', position: 'relative', top: '2px' }} />}
               At least one special character
             </div>
-          </PasswordRules>
+          </div>
           )}
           
-        <Button type="submit" disabled={!isPasswordValid}>Reset</Button>
-      </Form>
-    </Container>
+        <button className={`span-button ${isPasswordValid ? "" : "disabled"}`} type="submit">Reset</button>
+      </form>
+      </div>
+    </div>
   );
 };
 
