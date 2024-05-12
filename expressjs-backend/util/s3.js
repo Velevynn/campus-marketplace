@@ -27,50 +27,62 @@ const uploadImageToS3 = async (imageName, imageData) => {
       }
 };
 
-const deleteFromS3 = async (imageName) => {
+
+const deleteFromS3 = async (name) => {
   const params = {
     Bucket: "haggleimgs", 
-    Key: imageName
+    Key: name
   };
-
-  await s3.deleteObject(params, (err, data) => {
-    if (err) {
-      console.error('Error deleting object:', err);
-    } else {
-      console.log('Object deleted successfully:', data);
-    }
-  }).promise();
-
+  console.log("deleted: ", name);
+  try {
+    await s3.deleteObject(params).promise();
+  } catch (error) {
+    console.error('Error deleting object: ', error);
+    throw error;
+  }
 };
 
+const deleteS3Folder = async (folderName) => {
+  try {
+    const images = await listS3Objects(folderName);
+    console.log("images: ", images);
+    // Must delete folder contents before able to delete folder
+    for(const image of images) {
+      await deleteFromS3(image.Key);
+    }
+    await deleteFromS3(folderName);
+
+  } catch (error) {
+    console.error('Error deleting folder: ', error);
+    throw error;
+  }
+
+
+}
+
 const renameS3Object = async (newImageName, oldImageName) => {
+  if(newImageName == oldImageName) {
+    // No need to rename if names are already same
+    return;
+  }
+
   const copyParams = {
     Bucket: "haggleimgs",
     CopySource: `haggleimgs/${oldImageName}`,
     Key: newImageName
   };
-  
-  s3.copyObject(copyParams, (err, data) => {
-    if (err) {
-      console.error('Error copying object:', err);
-    } else {
-      console.log('Object copied successfully:', data);
-      
-      // Delete the original object
-      const deleteParams = {
-        Bucket: "haggleimgs",
-        Key: oldImageName
-      };
-  
-      s3.deleteObject(deleteParams, (err, data) => {
-        if (err) {
-          console.error('Error deleting original object:', err);
-        } else {
-          console.log('Original object deleted successfully:', data);
-        }
-      });
-    }
-  });
+
+  // Copy the object with new name then delete old object
+  try {
+    await s3.copyObject(copyParams).promise();
+  } catch (error) {
+    console.error('Error renaming object:', error);
+    throw error;
+  }
+
+  await deleteFromS3(oldImageName);
+
+
 };
 
 const listS3Objects = async (listingID) => {
@@ -80,15 +92,15 @@ const listS3Objects = async (listingID) => {
   };
   
   // Call the listObjectsV2 method with the parameters
-  await s3.listObjectsV2(listParams, (err, data) => {
-    if (err) {
-      console.error('Error listing objects:', err);
-    } else {
-      console.log("data contents: ", data.Contents);
-      return data.Contents;
-    }
-  }).promise();
+  try {
+    const data = await s3.listObjectsV2(listParams).promise();
+    return data.Contents;
+
+  } catch (error) {
+    console.error('Error listing objects:', error);
+    throw error;
+  }
 };
 
 
-module.exports = { s3, uploadImageToS3, deleteFromS3, renameS3Object, listS3Objects };
+module.exports = { s3, uploadImageToS3, deleteFromS3, renameS3Object, listS3Objects, deleteS3Folder };

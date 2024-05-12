@@ -77,7 +77,7 @@ function LoginPage() {
           <img className="logo-img" src={logoImage} alt="Logo"/>
         </div>
         
-        <h5 className="text-center">
+        <h5 className="text-center" style={{fontSize:"18px"}}>
             Log in to buy, sell, and trade
         </h5>
 
@@ -87,25 +87,29 @@ function LoginPage() {
               {errorMessage}
             </p>
           )}
-          <div className="margin input">
+
+        <div className="margin input">
+        <p className={credentials.identifier.length > 0 ? "input-label-full" : "input-label-empty unselectable"}>Email, Phone, or Username</p>
             <input
               type="text"
               name="identifier"
               id="identifier"
               value={credentials.identifier}
               onChange={handleChange}
-              placeholder="Email, Phone, or Username"
               autoComplete="on"
               required/>
+              
           </div>
+          
+
           <div className="margin input">
+          <p className={credentials.password.length > 0 ? "input-label-full" : "input-label-empty unselectable"}>Password</p>
             <input
               type={passwordVisible ? "text" : "password"}
               name="password"
               id="password"
               value={credentials.password}
               onChange={handleChange}
-              placeholder="Password"
               autoComplete="current-password"
               style={{paddingRight: "2.5rem"}}
               required/>
@@ -113,11 +117,8 @@ function LoginPage() {
             <div className="input-icon" onClick={togglePasswordVisibility}>
                 {passwordVisible ? <FaEye /> : <FaEyeSlash />}
             </div>
-          </div>
+        </div>
 
-
-            
-            
           <div className="margin">
           <button className={`span-button ${isFormValid ? "" : "disabled"}`} type="submit">
             Log in
@@ -133,7 +134,7 @@ function LoginPage() {
             </button>
           </div>
 
-          <p className="text-center margin-bottom" style={{fontSize: '12px'}}>
+          <p className="text-center margin-bottom" style={{fontSize: '12px', marginTop: '20px'}}>
             By logging in you agree to our {}
               <Link to="/terms-of-service" >
                 Terms of Service
@@ -144,7 +145,7 @@ function LoginPage() {
               </Link>
           </p>
 
-          <p className="text-center">
+          <p className="text-center" style = {{marginTop:'-10px', fontSize:'14px'}}>
             <Link to="/forgot-password">
               Forgot password?
             </Link>
@@ -152,8 +153,8 @@ function LoginPage() {
         </form>
       </div>
 
-      <div className="small-container drop-shadow margin-top">
-        <p className="text-center">
+      <div className="small-container drop-shadow" style={{marginTop:'10px'}}>
+        <p className="text-center" style ={{fontSize:'14px'}}>
           Don&apos;t have an account? {}
           <Link to="/signup">
             Sign up

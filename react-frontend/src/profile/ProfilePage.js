@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import ProfileCollection from '../components/ProfileCollection'
+import BookmarksCollection from './BookmarksCollection';
 import { useNavigate } from 'react-router-dom';
-import profileImagePlaceholder from '../assets/profile-placeholder.png';
 import LoadingSpinner from "../components/LoadingSpinner";
-import { Container, Button, ButtonContainer, ProfileImage, ProfileField, ProfileLabel, ProfileValue, ErrorMessage } from '../authentication/AuthenticationStyling';
+import { Button, ButtonContainer, ProfileField, ProfileLabel, ProfileValue} from '../authentication/AuthenticationStyling';
+import ProfileDetails from './ProfileDetails';
+import ListingCollection from './ListingCollection';
+import ChangeProfilePicture from './ChangeProfilePicture'; // Import the ChangeProfilePicture component
+import './profile.css';
 
 function ProfilePage() {
   const [bookmarks, setBookmarks] = useState([]);
@@ -17,23 +20,13 @@ function ProfilePage() {
     phoneNumber: '',
     userID: ''
   });
+  //const [isHovered, setIsHovered] = useState(false); // Define isHovered state
 
-  const navigate = useNavigate();
-  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
-  const [deleteConfirmationData, setDeleteConfirmationData] = useState({
-    username: '',
-    password: '',
-  });
-  const [deleteError, setDeleteError] = useState('');
+  const navigate = useNavigate(); // Define navigate for routing
 
-  const handleSignOut = () => {
-    localStorage.removeItem('token');
-    navigate('/login');
-  };
-
-  const handleChangePassword = () => {
-    navigate('/change-password');
-  };
+  useEffect(() => {
+    fetchUserProfile();
+  }, []);
 
   const fetchUserProfile = async () => {
     const token = localStorage.getItem('token');
@@ -43,7 +36,7 @@ function ProfilePage() {
     }
 
     try {
-      const response = await axios.get(`https://haggle.onrender.com/users/profile`, {
+      const response = await axios.get(process.env.REACT_APP_BACKEND_LINK + `/users/profile`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         }
@@ -60,14 +53,14 @@ function ProfilePage() {
   const fetchCollections = async (userID) => {
     try {
       console.log(userID);
-      const response = await axios.get(`https://haggle.onrender.com/listings/bookmark/${userID}`);
+      const response = await axios.get(process.env.REACT_APP_BACKEND_LINK + `/listings/bookmark/${userID}`);
       setBookmarks(response.data);
     } catch (error) {
       console.error('Failed to fetch bookmarks', error);
     }
     try {
       console.log(userID);
-      const response = await axios.get(`https://haggle.onrender.com/listings/mylistings/${userID}`);
+      const response = await axios.get(process.env.REACT_APP_BACKEND_LINK + `/listings/mylistings/${userID}`);
       setMyListings(response.data);
       console.log(response.data, "hello");
       
@@ -77,130 +70,66 @@ function ProfilePage() {
     setIsLoading(false);
   }
 
-  useEffect(() => {
-    fetchUserProfile();
-  }, []);
+  const handleChangePassword = () => {
+    navigate('/change-password');
+  };
 
-  const handleDeleteConfirmation = async () => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      navigate('/login');
-      return;
+  const handleSignOut = () => {
+    localStorage.removeItem('token');
+    navigate('/login');
+  };
+
+  const formatPhoneNumber = (phoneNumber) => {
+    const cleaned = ('' + phoneNumber).replace(/\D/g, '');
+    const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+    if (match) {
+      return '(' + match[1] + ') ' + match[2] + '-' + match[3];
     }
-
-    try {
-      const response = await axios.delete(`https://haggle.onrender.com/users/delete`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
-        data: {
-          username: deleteConfirmationData.username,
-          password: deleteConfirmationData.password
-        }
-      });
-      
-      if (response.status === 200) {
-        // After successful deletion, redirect to login
-        localStorage.removeItem('token');
-        navigate('/login');
-      }
-    } catch (error) {
-      console.error('Failed to delete profile:', error.response);
-      if (error.response && error.response.data && error.response.data.error) {
-        setDeleteError(error.response.data.error);
-      } else {
-        setDeleteError('An error occurred while deleting the profile.');
-      }
-    }
-  };
-
-  const confirmDelete = () => {
-    setShowDeleteConfirmation(true);
-  };
-
-  const handleCancelDelete = () => {
-    setShowDeleteConfirmation(false);
-    setDeleteError('');
-  };
-
-  const handleDelete = (e) => {
-    e.preventDefault();
-    // Perform deletion after confirmation
-    handleDeleteConfirmation();
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setDeleteConfirmationData({ ...deleteConfirmationData, [name]: value });
+    return phoneNumber;
   };
 
   return (
     <div>
-      {isLoading ? ( // Render loading spinner if isLoading is true
-      <div className="margin">
-        <LoadingSpinner />
-      </div>
-      ) : (
-      <div>
-        <Container>
-          <ProfileImage src={profileImagePlaceholder} alt="Profile" />
-          <form>
-            {Object.entries(userProfile).map(([key, value]) => (
-              key !== 'userID' && <ProfileField key={key}>
-                <ProfileLabel>{key.replace('_', ' ')}:</ProfileLabel>
-                <ProfileValue>{value}</ProfileValue>
-              </ProfileField>
-            ))}
-          </form>
-          <ButtonContainer>
-            <Button onClick={handleChangePassword}>Change Password</Button>
-            <Button onClick={handleSignOut}>Sign Out</Button>
-          </ButtonContainer>
-        </Container>
-
-        <ProfileCollection title = "Bookmarks" bookmarks = {bookmarks} userID = {userProfile.userID}/>
-        <ProfileCollection title = "Listings" bookmarks = {listings} userID = {userProfile.userID}/>
-        <div className="vertical-center margin">
-          <div className="small-container drop-shadow">
-          {!showDeleteConfirmation && (
-            <button className="span-button" onClick={confirmDelete}>Delete Profile</button>
-          )}
-          {showDeleteConfirmation && (
-              <form className="" onSubmit={handleDelete}>
-                <div className="margin input">
-                  <input
-                    type="text"
-                    name="username"
-                    placeholder="Username"
-                    value={deleteConfirmationData.username}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-                <div className="margin input">
-                <input
-                  type="password"
-                  name="password"
-                  placeholder="Password"
-                  value={deleteConfirmationData.password}
-                  onChange={handleInputChange}
-                  required
-                />
-                </div>
-                <div className="vertical-center flex-column">
-                    <button className={deleteConfirmationData.username.length > 0 
-                      && deleteConfirmationData.password.length > 0 ? "button" : "disabled"}>Confirm Delete</button>
-                    <button onClick={handleCancelDelete}>Cancel</button>
-                </div>
-                {deleteError && <ErrorMessage>{deleteError}</ErrorMessage>}
-              </form>
-            
-          )}
-            </div>
+      {isLoading ? (
+        <div className="margin">
+          <LoadingSpinner />
         </div>
-      </div>
-    )}
-  </div>
+      ) : (
+        <div>
+          <div className="vertical-center profile-page-layout margin padding-top">
+            <div className="small-container drop-shadow">
+              <ChangeProfilePicture />
+              <form>
+                {Object.entries(userProfile).map(([key, value]) => (
+                  key !== 'userID' && 
+                  <ProfileField key={key}>
+                    <ProfileLabel>
+                      {key === 'fullName' ? 'Full Name' : key === 'phoneNumber' ? 'Phone Number' : key.replace(/_/g, ' ')
+                        .split(' ')
+                        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                        .join(' ')}:
+                    </ProfileLabel>
+                    <ProfileValue>{key === 'phoneNumber' ? formatPhoneNumber(value) : value}</ProfileValue>
+                  </ProfileField>
+                ))}
+              </form>
+              <ButtonContainer>
+                <Button onClick={handleChangePassword}>Change Password</Button>
+                <Button onClick={handleSignOut}>Sign Out</Button>
+              </ButtonContainer>
+            </div>
+
+            <div className="collection-layout margin padding-left drop-shadow">
+              <BookmarksCollection title="Bookmarks" bookmarks={bookmarks} userID={userProfile.userID} />
+              <ListingCollection title="Listings" bookmarks={listings} userID={userProfile.userID} />
+            </div>
+
+            <ProfileDetails>
+            </ProfileDetails>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 

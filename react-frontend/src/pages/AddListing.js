@@ -141,7 +141,7 @@ function AddListing() {
       try {
         setLoading(true);
         // Make a request to the backend to fetch the userID based on the username
-        const response = await axios.get(`https://haggle.onrender.com/users/userID`, { 
+        const response = await axios.get(process.env.REACT_APP_BACKEND_LINK + `/users/userID`, { 
           params: {
             'username': username
           }
