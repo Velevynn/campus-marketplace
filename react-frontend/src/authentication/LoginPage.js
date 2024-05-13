@@ -114,15 +114,15 @@ function LoginPage() {
               style={{paddingRight: "2.5rem"}}
               required/>
           
-            <div className="toggle-icon" onClick={togglePasswordVisibility}>
+            <div className="input-icon" onClick={togglePasswordVisibility}>
                 {passwordVisible ? <FaEye /> : <FaEyeSlash />}
             </div>
         </div>
 
           <div className="margin">
-            <button className={`span-button ${isFormValid ? "" : "disabled"}`} type="submit" disabled={!isFormValid} style = {{marginTop:'10px'}}>
-              Log in
-            </button>
+          <button className={`span-button ${isFormValid ? "" : "disabled"}`} type="submit">
+            Log in
+          </button>
           </div>
 
           <div className="margin">

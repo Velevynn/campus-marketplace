@@ -1,7 +1,7 @@
 // userRoutes.js
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcryptjs');;
+const bcryptjs = require('bcryptjs');;
 const { google } = require('googleapis');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');

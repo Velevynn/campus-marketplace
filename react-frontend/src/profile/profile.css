@@ -1,0 +1,24 @@
+
+
+.profile-picture:hover {
+    filter:brightness(0.5);
+}
+  
+  .profile-picture {
+    width: 150px; /* Adjust the size as needed */
+    height: 150px; /* Adjust the size as needed */
+    border-radius: 50%; 
+  }
+
+  
+
+  
+  .overlay:hover {
+    opacity: 1; /* Show overlay on hover */
+  }
+  
+  .overlay-text {
+    color: white;
+    font-size: 16px;
+  }
+  

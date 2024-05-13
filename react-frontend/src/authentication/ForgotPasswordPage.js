@@ -5,7 +5,6 @@ import axios from 'axios';
 import logoImage from '../assets/haggle-horizontal.png';
 import { Link } from 'react-router-dom';
 import { FaCheckCircle, FaTimesCircle  } from 'react-icons/fa';
-import { Container, ValidationIcon, SuccessLabel, Description, HeaderLabel, Form, InputGroup, Input, InputLabel, Button, BottomContainer, BottomLabel } from './AuthenticationStyling';
 
 // Component for the "Forgot Password" page
 const ForgotPasswordPage = () => {
@@ -40,53 +39,79 @@ const ForgotPasswordPage = () => {
   // Rendering the Forgot Password page
   return (
     <>
-      <Container>
-        <img src={logoImage} alt="Logo" style={{ display: 'block', margin: '0 auto 20px', maxWidth: '200px', height: 'auto' }} />
-        <HeaderLabel style={{ marginTop: '0px'}}>
-            Forgot Password?
-        </HeaderLabel>
-        <Description style={{ marginTop: '0px'}}>
-            Enter your email and we will send you a link to reset your password.
-        </Description>
-
-        <Form onSubmit={handleSubmit}>
-          {message && (
-              <SuccessLabel>
-                  {message}
-              </SuccessLabel>
-          )}
-
-          <InputGroup>
-            <Input
-              type="email"
-              name="email"
-              id="email"
-              value={email}
-              onChange={handleChange}
-              hasContent={email.length > 0}
-              required />
-            <InputLabel htmlFor="email" hasContent={email.length > 0}>Email Address</InputLabel>
-            <ValidationIcon isValid={isValidEmail(email)}>
-                {email.length > 0 ? (isValidEmail(email) ? <FaCheckCircle /> : <FaTimesCircle />) : null}
-              </ValidationIcon>
-          </InputGroup>
-          
-          <Button type="submit" disabled={!isValidEmail(email)} style={{ marginTop: '20px'}}>
-            Send Reset Link
-          </Button>
-        </Form>
-      </Container>
-
-      <BottomContainer>
-        <BottomLabel>
-          Return to {}
-          <Link to="/login" style={{ display: 'inline', color: '#0056b3', fontWeight: 'bold'}}>
-            Log in
-          </Link>
-        </BottomLabel>
-      </BottomContainer>
+      <div className="vertical-center" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <div className="small-container drop-shadow margin text-center">
+          <img
+            src={logoImage}
+            alt="Logo"
+            style={{
+              display: 'block',
+              margin: '0 auto 20px',
+              maxWidth: '200px',
+              height: 'auto'
+            }}
+          />
+          <h3>Forgot Password?</h3>
+          <h5>Enter your email and we will send you a link to reset your password.</h5>
+  
+          <form onSubmit={handleSubmit}>
+            {message && (
+              <h6>
+                {message}
+              </h6>
+            )}
+  
+            <div>
+              <input
+                type="email"
+                name="email"
+                id="email"
+                value={email}
+                onChange={handleChange}
+                placeholder="email"
+                required
+              />
+              <div className="input-icon">
+                {email.length > 0 ? (
+                  isValidEmail(email) ? (
+                    <FaCheckCircle />
+                  ) : (
+                    <FaTimesCircle style={{ color: 'red' }} />
+                  )
+                ) : null}
+              </div>
+            </div>
+  
+            <button
+              className="span-button"
+              type="submit"
+              disabled={!isValidEmail(email)}
+              style={{ marginTop: '20px' }}
+            >
+              Send Reset Link
+            </button>
+          </form>
+        </div>
+  
+        <div className="small-container drop-shadow">
+          <div className="text-center">
+            <label>
+              Return to{' '}
+              <Link
+                to="/login"
+                style={{
+                  color: '#0056b3',
+                  fontWeight: 'bold'
+                }}
+              >
+                Log in
+              </Link>
+            </label>
+          </div>
+        </div>
+      </div>
     </>
   );
-};
+              }  
 
 export default ForgotPasswordPage;
