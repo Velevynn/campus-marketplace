@@ -138,14 +138,15 @@ function SignUpPage() {
   
   // Render the sign-up form with validation feedback and navigation options
   return (
-    <div className="vertical-center">
+    <div className="vertical-center" style = {{marginTop: '15px'}}>
+      <div>
       <div className="small-container drop-shadow">
         <div className="vertical-center">
           <img className="logo-img" src={logoImage} alt="Logo"/>
         </div>      
           <form onSubmit={handleSubmit}>
 
-          <h5 className="text-center">
+          <h5 className="text-center" style={{fontSize:"18px"}}>
             Join our community of Cal Poly students to buy, sell, and trade
           </h5>
 
@@ -164,7 +165,7 @@ function SignUpPage() {
                 maxLength = "50"
                 onChange={handleChange}
                 style={{paddingRight: "2.5rem"}}
-                placeholder="email"
+                placeholder="Email"
                 required />
               <div className="input-icon">
                 {user.email.length > 0 ? (isInputValid('email', user.email) ? <FaCheckCircle /> : <FaTimesCircle style={{color: 'red'}}/>) : null}
@@ -180,7 +181,7 @@ function SignUpPage() {
                     maxLength = "10"
                     onChange={handleChange}
                     style={{paddingRight: "2.5rem"}}
-                    placeholder="mobile number"
+                    placeholder="Mobile number"
                     required />
                 <div className="input-icon">
                     {user.phoneNumber.length > 0 ? (isInputValid('phoneNumber', user.phoneNumber) ? <FaCheckCircle /> : <FaTimesCircle style={{color: 'red'}} />) : null}
@@ -196,7 +197,7 @@ function SignUpPage() {
                     maxLength = "25"
                     onChange={handleChange}
                     style={{paddingRight: "2.5rem"}}
-                    placeholder="username"
+                    placeholder="Username"
                     required />
                 <div className="input-icon">
                     {user.username.length > 0 ? (isInputValid('username', user.username) ? <FaCheckCircle /> : <FaTimesCircle style={{color: 'red'}} />) : null}
@@ -212,7 +213,7 @@ function SignUpPage() {
                     value={user.full_name}
                     onChange={handleChange}
                     style={{paddingRight: "2.5rem"}}
-                    placeholder="full name"
+                    placeholder="Full name"
                     required />
                 <div className="input-icon">
                     {user.full_name.length > 0 ? (isInputValid('full_name', user.full_name) ? <FaCheckCircle /> : <FaTimesCircle style={{color: 'red'}} />) : null}
@@ -230,7 +231,7 @@ function SignUpPage() {
                 onFocus={handlePasswordFocus}
                 onBlur={handlePasswordBlur}
                 style={{paddingRight: "2.5rem"}}
-                placeholder="password"
+                placeholder="Password"
                 required 
                 />
                 <div className="input-icon" onClick={togglePasswordVisibility}>
@@ -256,30 +257,33 @@ function SignUpPage() {
             )}
 
             
-            <div className="margin">
+            <div className="margin" style = {{marginTop: '20px'}}>
               <button className={`span-button ${isFormValid ? "" : "disabled"}`} type="submit" >
                   Sign Up
               </button>
             </div>
-            
-
-            <p className="text-center">
-              Already have an account? {}
-              <Link to="/login" style={{ display: 'inline', color: '#0056b3', fontWeight: 'bold'}}>
-                Log in
+          
+            <p className="text-center margin-bottom" style={{fontSize: '12px', marginTop: '20px', marginBottom: '10px'}}>
+            By registering you agree to our {}
+              <Link to="/terms-of-service" >
+                Terms of Service
               </Link>
-            </p>
-            <h6 className="text-center">
-              By signing up you agree to our {}
-                <Link to="/terms-of-service" style={{ display: 'inline', color: '#0056b3', fontWeight: 'bold'}}>
-                  Terms of Service
-                </Link>
-              {} and acknowledge our {}
-                <Link to="/privacy-policy" style={{ display: 'inline', color: '#0056b3', fontWeight: 'bold'}}>
-                  Privacy Policy
-                </Link>
-            </h6>
+            {} and acknowledge our {}
+              <Link to="/privacy-policy">
+                Privacy Policy
+              </Link>
+          </p>
         </form>
+      </div>
+
+      <div className="small-container drop-shadow" style={{marginTop:'10px'}}>
+        <p className="text-center" style ={{fontSize:'14px'}}>
+          Already have an account? {}
+          <Link to="/login">
+            Log in
+          </Link>
+        </p>
+      </div>
       </div>
     </div>
   );

@@ -50,7 +50,7 @@ function App() {
           <Route path="/listings/:listingID" element={<ListingView />} />
           <Route path="/listings/:listingID/buy" element={<ProtectedRoute> <BuyNow /></ProtectedRoute> } />
           <Route path="/listings/:listingID/offer" element={<ProtectedRoute> <MakeOfferPage /></ProtectedRoute> } />
-          <Route path="/listings/:listingID/chat" element={<ProtectedRoute> <ChatPage /></ProtectedRoute> } />
+          <Route path="/listings/:listingID/chat/:chatID" element={<ProtectedRoute> <ChatPage /></ProtectedRoute> } />
           <Route path="/listings/:listingID/edit" element={<ProtectedRoute> <EditListing /></ProtectedRoute> } />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />

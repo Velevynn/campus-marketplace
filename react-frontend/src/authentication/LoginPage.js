@@ -121,10 +121,10 @@ function LoginPage() {
             </div>
         </div>
 
-          <div className="margin">
-          <button className={`span-button ${isFormValid ? "" : "disabled"}`} type="submit">
-            Log in
-          </button>
+          <div className="margin" style = {{marginTop: '20px'}}>
+            <button className={`span-button ${isFormValid ? "" : "disabled"}`} type="submit">
+              Log in
+            </button>
           </div>
 
           <div className="margin">

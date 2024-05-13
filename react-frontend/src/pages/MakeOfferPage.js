@@ -10,12 +10,16 @@ function MakeOfferPage() {
 
   const handleMakeOffer = async () => {
     try {
-        // API call to create the chat and send the initial offer message
-        const response = await axios.post(`/api/offers/${listingID}`, { offer });
-        const chatID = response.data.chatID;
-        navigate(`/chat/${chatID}`);
+      // API call to create the chat and send the initial offer message
+      const response = await axios.post(`/api/offers/${listingID}`, { offer });
+      const chatID = response.data.chatID;  // Ensure this is the correct path to the chat ID in the response
+      if (chatID) {
+        navigate(`/listings/${listingID}/chat/${chatID}`);  // Correct navigation path
+      } else {
+        console.error('Chat ID not received:', response.data);
+      }
     } catch (error) {
-        console.error('Error making offer:', error);
+      console.error('Error making offer:', error);
     }
   };
 

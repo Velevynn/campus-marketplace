@@ -51,8 +51,8 @@ const ForgotPasswordPage = () => {
               height: 'auto'
             }}
           />
-          <h3>Forgot Password?</h3>
-          <h5>Enter your email and we will send you a link to reset your password.</h5>
+          <h5 className="text-center" style={{fontSize:"18px"}}>Forgot Password?</h5>
+          <p className="text-center" style={{fontSize:"14px"}}>Enter your email and we will send you a link to reset your password.</p>
   
           <form onSubmit={handleSubmit}>
             {message && (
@@ -61,20 +61,20 @@ const ForgotPasswordPage = () => {
               </h6>
             )}
   
-            <div>
+            <div style = {{ marginTop: '20px'}}>
               <input
                 type="email"
                 name="email"
                 id="email"
                 value={email}
                 onChange={handleChange}
-                placeholder="email"
+                placeholder="Email"
                 required
               />
               <div className="input-icon">
                 {email.length > 0 ? (
                   isValidEmail(email) ? (
-                    <FaCheckCircle />
+                    <FaCheckCircle style={{ color: 'green' }} />
                   ) : (
                     <FaTimesCircle style={{ color: 'red' }} />
                   )
@@ -95,18 +95,17 @@ const ForgotPasswordPage = () => {
   
         <div className="small-container drop-shadow">
           <div className="text-center">
-            <label>
+          <p className="text-center" style ={{fontSize:'14px'}}>
               Return to{' '}
               <Link
                 to="/login"
                 style={{
-                  color: '#0056b3',
-                  fontWeight: 'bold'
+                  color: 'green',
                 }}
               >
                 Log in
               </Link>
-            </label>
+            </p>
           </div>
         </div>
       </div>
