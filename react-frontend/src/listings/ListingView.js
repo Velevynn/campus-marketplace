@@ -158,7 +158,9 @@ function ListingView() {
 
   const handleStartChat = () => {
     console.log("Start a Chat clicked for listing:", listing);
-    window.location.href = `/listings/${listingID}/chat`;
+    const url = process.env.REACT_APP_FRONTEND_LINK + `/listings/${listingID}/chat`;
+    window.history.replaceState({}, "", url);
+    window.location.reload();
   };
 
   const handleEditListing = () => {
@@ -176,7 +178,9 @@ function ListingView() {
         console.log("listingID deleting: ", listingID);
         await axios.delete(process.env.REACT_APP_BACKEND_LINK + `/listings/${listingID}`);
         console.log("listing successfully deleted");
-        window.location.href = '/';
+        const url = process.env.REACT_APP_FRONTEND_LINK + `/`
+        window.history.replaceState({}, "", url);
+        window.location.reload();
       } catch (error) {
         console.error("error deleting listing", error);
       }
@@ -213,23 +217,28 @@ function ListingView() {
   const createBookmark = async () => {
     console.log("Entered createBookmark");
     if (!loggedID) {
-      window.location.href = 'http://localhost:3000/login'
+      const url = process.env.REACT_APP_FRONTEND_LINK + `/login`;
+      window.history.replaceState({}, "", url);
+      window.location.reload();
     }
-    try {
-      await axios.post(
-        process.env.REACT_APP_BACKEND_LINK + `/listings/${listingID}/bookmark`, {
-          'userID': loggedID,
-          'listingID': listingID,
-          'title' : listing.title
-        }
-      )
-      setBookmark(true);
-      console.log("Posted bookmark.")
-      console.log(isBookmarked);
-    } catch (error) {
-      console.error("Error posting bookmark: ", error)
+    else {
+      try {
+        await axios.post(
+          process.env.REACT_APP_BACKEND_LINK + `/listings/${listingID}/bookmark`, {
+            'userID': loggedID,
+            'listingID': listingID,
+            'title' : listing.title
+          }
+        )
+        setBookmark(true);
+        console.log("Posted bookmark.")
+        console.log(isBookmarked);
+      } catch (error) {
+        console.error("Error posting bookmark: ", error)
+      }
+      console.log("Finished creating bookmark")
     }
-    console.log("Finished creating bookmark")
+    
   }
 
   const deleteBookmark = async () => {

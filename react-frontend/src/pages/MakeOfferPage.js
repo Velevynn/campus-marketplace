@@ -1,11 +1,23 @@
 import React, { useState } from 'react';
 import { Container, Form, OfferGroup, Offer, HeaderLabel, MakeOfferButton } from '../authentication/AuthenticationStyling';
 import { useNavigate, useParams } from 'react-router-dom';
+import axios from 'axios';
 
 function MakeOfferPage() {
   const [offer, setOffer] = useState("0.00");  // Initial state for the offer input
   const navigate = useNavigate();
   const { listingID } = useParams();
+
+  const handleMakeOffer = async () => {
+    try {
+        // API call to create the chat and send the initial offer message
+        const response = await axios.post(`/api/offers/${listingID}`, { offer });
+        const chatID = response.data.chatID;
+        navigate(`/chat/${chatID}`);
+    } catch (error) {
+        console.error('Error making offer:', error);
+    }
+  };
 
   const handleInputChange = (event) => {
     const { value } = event.target;
@@ -40,7 +52,7 @@ function MakeOfferPage() {
               maxLength="10"
             />
           </OfferGroup>
-          <MakeOfferButton>
+          <MakeOfferButton onClick={handleMakeOffer}>
             Make Offer
           </MakeOfferButton>
           <MakeOfferButton onClick={handleGoBack} style = {{marginTop: "-10px"}}>
