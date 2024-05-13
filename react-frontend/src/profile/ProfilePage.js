@@ -98,7 +98,7 @@ function ProfilePage() {
         <div>
           <div className="vertical-center profile-page-layout margin padding-top">
             <div className="small-container drop-shadow">
-              <ChangeProfilePicture />
+              <ChangeProfilePicture userID = {userProfile.userID}/>
               <form>
                 {Object.entries(userProfile).map(([key, value]) => (
                   key !== 'userID' && 

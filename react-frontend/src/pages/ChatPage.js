@@ -1,12 +1,11 @@
 // ChatPage.js
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams} from 'react-router-dom';
 import axios from 'axios';
 
 function ChatPage() {
     const { chatID } = useParams();
     const [messages, setMessages] = useState([]);
-    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchMessages = async () => {
