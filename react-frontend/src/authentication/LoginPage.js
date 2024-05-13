@@ -41,7 +41,7 @@ function LoginPage() {
       };
       const response = await axios.post(process.env.REACT_APP_BACKEND_LINK + '/users/login', requestBody);
       localStorage.setItem('token', response.data.token); // Stores the received token in local storage and navigates to the profile page
-      window.location.href = process.env.FRONTEND_LINK + '/profile';
+      window.location.href = process.env.REACT_APP_FRONTEND_LINK + '/profile';
     } catch (error) {
       // Sets an error message based on the response from the server or a general failure message
       if (error.response) {
