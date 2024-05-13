@@ -55,9 +55,10 @@ export const SuccessLabel = styled.label`
 
 // InputGroup styled component for grouping input fields and their labels
 export const InputGroup = styled.div`
+  margin-left: 10px;  
   position: relative;
   margin-bottom: 8px;
-  width: 320px;
+  width: 330px;
 `;
 
 // InputLabel styled component for customizing input labels

@@ -1,13 +1,19 @@
 // userRoutes.js
 const express = require('express');
+const multer = require('multer');
 const router = express.Router();
-const bcrypt = require('bcrypt');
+const bcryptjs = require('bcryptjs');;
 const { google } = require('googleapis');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const { verifyToken } = require('../util/middleware');
 const { Pool } = require('pg');
 require('dotenv').config();
+const upload = multer({ dest: 'uploads/' });
+const { uploadImageToS3, listS3Objects, deleteFromS3, renameS3Object } = require('../util/s3');
+const { promisify } = require('util');
+const fs = require('fs');
+const readFileAsync = promisify(fs.readFile);
 
 const connectionString = process.env.DB_CONNECTION_STRING; // stores supabase db connection string, allowing us to connect to supabase db
 
@@ -20,9 +26,6 @@ const oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_SECRET,
   process.env.BACKEND_LINK + '/users/auth/google/callback'
 );
-// console.log('OAuth2 client initialized:', oauth2Client);
-// console.log('Google Client ID:', process.env.REACT_APP_GOOGLE_CLIENT_ID);
-// console.log('Google Client Secret:', process.env.GOOGLE_CLIENT_SECRET);
 
 // Create connection pool to connect to the database.
 function createConnection() {
@@ -96,8 +99,8 @@ router.post('/register', async (req, res) => {
       // console.log("Making Null Checks");
       if (username === null || full_name === null || password === null || email === null || phoneNumber === null) {throw Error;} // ensure fields are filled, throw error if not
       // Asynchronously hash the password using bcrypt library. 10 saltrounds = hash password 10 times. the more rounds the longer it takes to finish hashing
-      const bcrypt = require('bcrypt');
-      const hashedPassword = await bcrypt.hash(password, 10); // await pauses execution of async function for bcrypt.hash to run
+      const bcrypt = require('bcryptjs');;
+      const hashedPassword = await bcryptjs.hash(password, 10); // await pauses execution of async function for bcrypt.hash to run
       // console.log("Hashed Password: ", hashedPassword);
       const connection = createConnection();
 
@@ -157,7 +160,7 @@ router.post('/login', async (req, res) => {
     if (users.length > 0) {
       const user = users[0];
       console.log('User found:', user);
-      const validPassword = await bcrypt.compare(password, user.password);
+      const validPassword = await bcryptjs.compare(password, user.password);
       console.log('Password verification result:', validPassword);
 
       if (validPassword) {
@@ -187,7 +190,7 @@ router.get('/auth/google', (req, res) => {
     scope: 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile',
     redirect_uri: process.env.BACKEND_LINK + '/users/auth/google/callback'
   });
-  // console.log('Generated Google Auth URL:', authUrl);
+  console.log('Generated Google Auth URL:', authUrl);
   res.redirect(authUrl);
 });
 
@@ -214,9 +217,9 @@ router.get('/auth/google/callback', async (req, res) => {
     if (existingUsers.length > 0) { // if there is a user returned from the select statement...
       const user = existingUsers[0];
       const token = jwt.sign({ username: user.username }, secretKey, { expiresIn: '24h' });
-      res.redirect(`http://localhost:3000/handle-login?token=${encodeURIComponent(token)}`);
+      res.redirect(process.env.FRONTEND_LINK + `/login/google?token=${encodeURIComponent(token)}`);
     } else { // if there isnt a user returned from the select statement...
-      res.redirect(`http://localhost:3000/additional-details?email=${encodeURIComponent(email)}&name=${encodeURIComponent(name)}`);
+      res.redirect(process.env.FRONTEND_LINK + `/additional-details?email=${encodeURIComponent(email)}&name=${encodeURIComponent(name)}`);
     }
   } catch (error) {
     console.error('Error in OAuth callback:', error);
@@ -246,7 +249,7 @@ router.post('/register-google-user', async (req, res) => {
 
       // if the user exists and does not have a password, continue the registration process
       const token = jwt.sign({ username: user.username }, secretKey, { expiresIn: '24h' });
-      res.redirect(`http://localhost:3000/profile?token=${encodeURIComponent(token)}`);
+      res.redirect(process.env.FRONTEND_LINK + `/profile?token=${encodeURIComponent(token)}`);
     }
 
     // if the user does not exist in the database, insert new user details
@@ -331,7 +334,7 @@ router.delete('/delete', async (req, res) => {
       );
 
       const user = users[0];
-      const validPassword = await bcrypt.compare(password, user.password);
+      const validPassword = await bcryptjs.compare(password, user.password);
 
       if (validPassword) {
         // Delete the user account
@@ -375,7 +378,7 @@ router.post('/forgot-password', async (req, res) => {
     await connection.query('UPDATE users SET "resetPasswordToken" = $1, "resetPasswordExpires" = $2 WHERE email = $3', [resetToken, resetExpires, email]);
 
     // create the reset password url using the token
-    const resetUrl = `http://localhost:3000/reset-password?token=${resetToken}`;
+    const resetUrl = process.env.FRONTEND_LINK + `/reset-password?token=${resetToken}`;
 
     // use nodemailer 
     const nodemailer = require('nodemailer');
@@ -429,7 +432,7 @@ router.post('/reset-password', async (req, res) => {
       return res.status(400).json({ error: 'Invalid or expired token' });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcryptjs.hash(password, 10);
     await connection.query('UPDATE users SET password = $1, "resetPasswordToken" = NULL, "resetPasswordExpires" = NULL WHERE "userID" = $2', [hashedPassword, users[0].userID]);
 
     res.json({ message: 'Password has been reset successfully' });
@@ -437,6 +440,23 @@ router.post('/reset-password', async (req, res) => {
   } catch (error) {
     console.error('Error resetting password:', error);
     res.status(500).json({ error: 'Failed to reset password' });
+  }
+});
+
+router.post('/change-profile-image', verifyToken, upload.single('file'), async (req, res) => {
+  const { userID } = req.body;
+  console.log("userID", userID);
+
+  try {
+    const image = req.file;
+    console.log("req.file: ", req.file);
+    await deleteFromS3(`user/${userID}/bruh0.jpg`)
+    await uploadImageToS3(`user/${userID}/bruh0.jpg`, image.path);
+    // Return success message
+    res.status(200).json({ message: 'Profile picture changed successfully' });
+  } catch (error) {
+    console.error('Error changing profile picture:', error);
+    res.status(500).json({ error: 'Failed to change profile picture' });
   }
 });
 

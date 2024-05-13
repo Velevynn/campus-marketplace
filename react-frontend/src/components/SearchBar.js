@@ -15,7 +15,9 @@ function Search() {
   const handleSearch = () => {
     console.log("Searching for", searchQuery);
     if (searchQuery !== "") {
-      window.location.href = `/marketplace?q=${searchQuery}`;
+      const url = process.env.REACT_APP_FRONTEND_LINK + `/marketplace?q=${searchQuery}`
+      window.history.replaceState({}, "", url);
+      window.location.reload();
     } else if (showNotification === false){  // check to prevent spamming the notification
       setShowNotification(true);
       setTimeout(() => {
@@ -26,7 +28,9 @@ function Search() {
 
   const handleKeyPress = (event) => {
     if (event.key === "Enter" && searchQuery !== "") {
-      window.location.href = `/marketplace?q=${searchQuery}`;
+      const url = process.env.REACT_APP_FRONTEND_LINK + `/marketplace?q=${searchQuery}`
+      window.history.replaceState({}, "", url);
+      window.location.reload();
     } else if (showNotification === false && event.key === "Enter") {
       setShowNotification(true);
       setTimeout(() => {

@@ -160,7 +160,7 @@ router.delete("/:listingID/bookmark/", async (req, res) => {
     }
 
     const rows = await connection.query(
-      'UPDATE bookmarks SET "bookmarkCount" = "bookmarkCount" - 1 WHERE "listingID" = $1',
+      'UPDATE listings SET "bookmarkCount" = "bookmarkCount" - 1 WHERE "listingID" = $1',
       [req.query.listingID]
     )
 
@@ -441,6 +441,17 @@ async function addBookmark(userID, listingID, title) {
     throw error;
   }
 }
+
+router.post('/api/offers/:listingID', (req, res) => {
+  const { listingID } = req.params;
+  const { offer } = req.body;
+
+  // Pseudocode for creating a chat and sending an initial message
+  const chatID = createChatSession(listingID);
+  sendMessage(chatID, `Offer: ${offer}`);
+
+  res.json({ chatID });
+});
 
 
 

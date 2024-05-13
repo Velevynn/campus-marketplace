@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
-function ProfileCollection(props) {
+function BookmarksCollection(props) {
   console.log(props.bookmarks);
 
   return (
@@ -11,11 +11,11 @@ function ProfileCollection(props) {
         <h4>My {props.title}</h4>
       </div>
       <div className="vertical-center margin">
-        <div className="small-container drop-shadow">
+        <div className="small-container bookmarks-height">
           {props.bookmarks.length === 0 ? (
               <p> There are no {props.title} </p>
             ) : (
-            <ul className="collection-list">
+            <ul className="collection-list collection-list-bookmark">
             {props.bookmarks.map((bookmark) => (
               <div key={bookmark.bookmarkID} className="collection-item">
                   <Link to={`/listings/${bookmark.listingID}`} className="collection-link">
@@ -38,7 +38,7 @@ function ProfileCollection(props) {
   );
 }
 
-ProfileCollection.propTypes = {
+BookmarksCollection.propTypes = {
   title: PropTypes.string.isRequired,
   bookmarks: PropTypes.arrayOf(
     PropTypes.shape({
@@ -49,4 +49,4 @@ ProfileCollection.propTypes = {
   ).isRequired,
 };
 
-export default ProfileCollection;
+export default BookmarksCollection;

@@ -41,7 +41,9 @@ function LoginPage() {
       };
       const response = await axios.post(process.env.REACT_APP_BACKEND_LINK + '/users/login', requestBody);
       localStorage.setItem('token', response.data.token); // Stores the received token in local storage and navigates to the profile page
-      window.location.href = '/profile';
+      const url = process.env.REACT_APP_FRONTEND_LINK + `/profile`;
+      window.history.pushState({}, "", url);
+      window.dispatchEvent(new PopStateEvent('popstate'));
     } catch (error) {
       // Sets an error message based on the response from the server or a general failure message
       if (error.response) {
@@ -55,7 +57,7 @@ function LoginPage() {
   const handleGoogleLogin = () => {
     const clientId = '71122616560-tv80mel7fi0s2etitj1enhk192v06h0e.apps.googleusercontent.com';
 
-    const redirectUrl = 'https://haggle.onrender.com/users/auth/google/callback';
+    const redirectUrl = process.env.REACT_APP_BACKEND_LINK +'/users/auth/google/callback';
     const scope = encodeURI('email profile');
     const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUrl}&response_type=code&scope=${scope}&access_type=offline&prompt=consent`;
     window.location.href = authUrl;
@@ -77,7 +79,7 @@ function LoginPage() {
           <img className="logo-img" src={logoImage} alt="Logo"/>
         </div>
         
-        <h5 className="text-center">
+        <h5 className="text-center" style={{fontSize:"18px"}}>
             Log in to buy, sell, and trade
         </h5>
 
@@ -87,39 +89,40 @@ function LoginPage() {
               {errorMessage}
             </p>
           )}
-          <div className="margin input">
+
+        <div className="margin input">
+        <p className={credentials.identifier.length > 0 ? "input-label-full" : "input-label-empty unselectable"}>Email, Phone, or Username</p>
             <input
               type="text"
               name="identifier"
               id="identifier"
               value={credentials.identifier}
               onChange={handleChange}
-              placeholder="Email, Phone, or Username"
               autoComplete="on"
               required/>
+              
           </div>
+          
+
           <div className="margin input">
+          <p className={credentials.password.length > 0 ? "input-label-full" : "input-label-empty unselectable"}>Password</p>
             <input
               type={passwordVisible ? "text" : "password"}
               name="password"
               id="password"
               value={credentials.password}
               onChange={handleChange}
-              placeholder="Password"
               autoComplete="current-password"
               style={{paddingRight: "2.5rem"}}
               required/>
           
-            <div className="toggle-icon" onClick={togglePasswordVisibility}>
+            <div className="input-icon" onClick={togglePasswordVisibility}>
                 {passwordVisible ? <FaEye /> : <FaEyeSlash />}
             </div>
-          </div>
+        </div>
 
-
-            
-            
           <div className="margin">
-          <button className={`span-button ${isFormValid ? "" : "disabled"}`} type="submit" disabled={!isFormValid}>
+          <button className={`span-button ${isFormValid ? "" : "disabled"}`} type="submit">
             Log in
           </button>
           </div>
@@ -133,7 +136,7 @@ function LoginPage() {
             </button>
           </div>
 
-          <p className="text-center margin-bottom" style={{fontSize: '12px'}}>
+          <p className="text-center margin-bottom" style={{fontSize: '12px', marginTop: '20px'}}>
             By logging in you agree to our {}
               <Link to="/terms-of-service" >
                 Terms of Service
@@ -144,7 +147,7 @@ function LoginPage() {
               </Link>
           </p>
 
-          <p className="text-center">
+          <p className="text-center" style = {{marginTop:'-10px', fontSize:'14px'}}>
             <Link to="/forgot-password">
               Forgot password?
             </Link>
@@ -152,8 +155,8 @@ function LoginPage() {
         </form>
       </div>
 
-      <div className="small-container drop-shadow margin-top">
-        <p className="text-center">
+      <div className="small-container drop-shadow" style={{marginTop:'10px'}}>
+        <p className="text-center" style ={{fontSize:'14px'}}>
           Don&apos;t have an account? {}
           <Link to="/signup">
             Sign up
