@@ -1,22 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Notify from '../components/ErrorNotification';
 import axios from 'axios';
 import PropTypes from "prop-types";
 import LoadingSpinner from '../components/LoadingSpinner';
+import DefaultPfp from '../assets/profile-placeholder.png';
 
 function ChangeProfilePicture(props) {
-  const [profileImage, setProfileImage] = useState(`https://haggleimgs.s3.amazonaws.com/user/${props.userID}/bruh0.jpg`);
+  const [profileImage, setProfileImage] = useState('');
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMsg, setNotificationMsg] = useState('');
   const [loading, setLoading] = useState(false);
 
-  function displayNotification(message) {
-    setNotificationMsg(message);
-    setShowNotification(true);
-    setTimeout(() => {
-      setShowNotification(false);
-    }, 3300);
-  }
+  useEffect(() => {
+    // Fetch isProfilePicture value when the component mounts
+    fetchIsProfilePicture();
+  }, []);
+
+  const fetchIsProfilePicture = async () => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND_LINK}/users/is-profile-picture/${props.userID}`);
+      const { isProfilePicture } = response.data;
+      // If isProfilePicture is true, set the profile image to the uploaded image
+      if (isProfilePicture) {
+        setProfileImage(`https://haggleimgs.s3.amazonaws.com/user/${props.userID}/bruh0.jpg`);
+      } else {
+        // If isProfilePicture is false, set the profile image to the default placeholder image
+        setProfileImage(DefaultPfp);
+      }
+    } catch (error) {
+      console.error('Error fetching isProfilePicture:', error);
+    }
+  };
 
   const handleFileChange = async (event) => {
     const file = event.target.files[0];
@@ -50,6 +64,14 @@ function ChangeProfilePicture(props) {
     } finally {
       setLoading(false);
     }
+  };
+
+  const displayNotification = (message) => {
+    setNotificationMsg(message);
+    setShowNotification(true);
+    setTimeout(() => {
+      setShowNotification(false);
+    }, 3300);
   };
 
   return (

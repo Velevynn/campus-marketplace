@@ -448,10 +448,13 @@ router.post('/change-profile-image', verifyToken, upload.single('file'), async (
   console.log("userID", userID);
 
   try {
+    const connection = createConnection();
     const image = req.file;
     console.log("req.file: ", req.file);
     await deleteFromS3(`user/${userID}/bruh0.jpg`)
     await uploadImageToS3(`user/${userID}/bruh0.jpg`, image.path);
+    const query = 'UPDATE users SET "isProfilePicture" = true WHERE "userID" = $1';
+    await connection.query(query, [userID]);
     // Return success message
     res.status(200).json({ message: 'Profile picture changed successfully' });
   } catch (error) {
@@ -460,6 +463,32 @@ router.post('/change-profile-image', verifyToken, upload.single('file'), async (
   }
 });
 
+router.get('/is-profile-picture/:userID', async (req, res) => {
+  try {
+    // Extract user ID from request parameters
+    const { userID } = req.params;
 
+    const connection = createConnection();
+    // Query to fetch the isProfilePicture value from the users table
+    const query = 'SELECT "isProfilePicture" FROM users WHERE "userID" = $1';
+
+    // Execute the query
+    const { rows } = await connection.query(query, [userID]);
+
+    // Check if any rows were returned
+    if (rows.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Extract the isProfilePicture value from the first row
+    const { isProfilePicture } = rows[0];
+
+    // Return the isProfilePicture value
+    res.json({ isProfilePicture });
+  } catch (error) {
+    console.error('Error fetching isProfilePicture:', error);
+    res.status(500).json({ error: 'Failed to fetch isProfilePicture' });
+  }
+});
 
 module.exports = router;
