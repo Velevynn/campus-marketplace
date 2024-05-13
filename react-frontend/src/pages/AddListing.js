@@ -172,7 +172,7 @@ function AddListing() {
             }
           });
           // Send to marketplace
-          window.location.href = '/marketplace';
+          window.location.href = process.env.REACT_APP_FRONTEND_LINK + '/marketplace';
         } catch (error) {
           console.log(error);
         }

@@ -158,7 +158,7 @@ function ListingView() {
 
   const handleStartChat = () => {
     console.log("Start a Chat clicked for listing:", listing);
-    window.location.href = `/listings/${listingID}/chat`;
+    window.location.href = process.env.REACT_APP_FRONTEND_LINK + `/listings/${listingID}/chat`;
   };
 
   const handleEditListing = () => {
@@ -213,7 +213,7 @@ function ListingView() {
   const createBookmark = async () => {
     console.log("Entered createBookmark");
     if (!loggedID) {
-      window.location.href = `/login`;
+      window.location.href = process.env.REACT_APP_FRONTEND_LINK + `/login`;
     }
     try {
       await axios.post(
