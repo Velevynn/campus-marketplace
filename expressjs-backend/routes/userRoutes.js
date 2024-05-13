@@ -184,7 +184,7 @@ router.get('/auth/google', (req, res) => {
     scope: 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile',
     redirect_uri: process.env.BACKEND_LINK + '/users/auth/google/callback'
   });
-  // console.log('Generated Google Auth URL:', authUrl);
+  console.log('Generated Google Auth URL:', authUrl);
   res.redirect(authUrl);
 });
 

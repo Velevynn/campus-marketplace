@@ -442,7 +442,7 @@ async function addBookmark(userID, listingID, title) {
   }
 }
 
-app.post('/api/offers/:listingID', (req, res) => {
+router.post('/api/offers/:listingID', (req, res) => {
   const { listingID } = req.params;
   const { offer } = req.body;
 
