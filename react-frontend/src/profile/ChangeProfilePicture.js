@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import Notify from '../components/ErrorNotification';
 import axios from 'axios';
+import PropTypes from "prop-types";
 import LoadingSpinner from '../components/LoadingSpinner';
 
-function ChangeProfilePicture() {
-  const [profileImage, setProfileImage] = useState("https://haggleimgs.s3.amazonaws.com/user/1214/bruh0.jpg");
+function ChangeProfilePicture(props) {
+  const [profileImage, setProfileImage] = useState(`https://haggleimgs.s3.amazonaws.com/user/${props.userID}/bruh0.jpg`);
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMsg, setNotificationMsg] = useState('');
   const [loading, setLoading] = useState(false);
@@ -19,12 +20,17 @@ function ChangeProfilePicture() {
 
   const handleFileChange = async (event) => {
     const file = event.target.files[0];
+    const userID = props.userID;
     if (!file) return;
-
+    console.log(file);
     try {
       setLoading(true);
       const formData = new FormData();
-      formData.append('profileImage', file);
+      formData.append('file', file);
+      formData.append('userID', userID);
+      console.log(userID);
+
+      console.log('FormData:', formData);
 
       // Send formData to backend to store in database
       // Replace the endpoint below with your backend API endpoint for changing profile picture
@@ -53,9 +59,11 @@ function ChangeProfilePicture() {
           <LoadingSpinner />
         </div>
       )}
-      <img src={profileImage} alt="Profile" className="profile-picture" />
-      <label className="overlay" htmlFor="profileImage">
-        <div className="overlay-text">Change Image</div>
+      <div className="profile-picture-wrapper">
+        <img src={profileImage} alt="Profile" className="profile-picture" />
+        <label htmlFor="profileImage" className="overlay">
+          <span className="overlay-text">Change Image</span>
+        </label>
         <input
           type="file"
           id="profileImage"
@@ -63,10 +71,14 @@ function ChangeProfilePicture() {
           style={{ display: 'none' }}
           onChange={handleFileChange}
         />
-      </label>
+      </div>
       {showNotification && <Notify message={notificationMsg} />}
     </div>
   );
 }
+
+ChangeProfilePicture.propTypes = {
+  userID: PropTypes.string.isRequired,
+};
 
 export default ChangeProfilePicture;

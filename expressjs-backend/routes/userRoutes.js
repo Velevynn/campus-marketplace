@@ -1,5 +1,6 @@
 // userRoutes.js
 const express = require('express');
+const multer = require('multer');
 const router = express.Router();
 const bcryptjs = require('bcryptjs');;
 const { google } = require('googleapis');
@@ -8,6 +9,11 @@ const crypto = require('crypto');
 const { verifyToken } = require('../util/middleware');
 const { Pool } = require('pg');
 require('dotenv').config();
+const upload = multer({ dest: 'uploads/' });
+const { uploadImageToS3, listS3Objects, deleteFromS3, renameS3Object } = require('../util/s3');
+const { promisify } = require('util');
+const fs = require('fs');
+const readFileAsync = promisify(fs.readFile);
 
 const connectionString = process.env.DB_CONNECTION_STRING; // stores supabase db connection string, allowing us to connect to supabase db
 
@@ -434,6 +440,23 @@ router.post('/reset-password', async (req, res) => {
   } catch (error) {
     console.error('Error resetting password:', error);
     res.status(500).json({ error: 'Failed to reset password' });
+  }
+});
+
+router.post('/change-profile-image', verifyToken, upload.single('file'), async (req, res) => {
+  const { userID } = req.body;
+  console.log("userID", userID);
+
+  try {
+    const image = req.file;
+    console.log("req.file: ", req.file);
+    await deleteFromS3(`user/${userID}/bruh0.jpg`)
+    await uploadImageToS3(`user/${userID}/bruh0.jpg`, image.path);
+    // Return success message
+    res.status(200).json({ message: 'Profile picture changed successfully' });
+  } catch (error) {
+    console.error('Error changing profile picture:', error);
+    res.status(500).json({ error: 'Failed to change profile picture' });
   }
 });
 

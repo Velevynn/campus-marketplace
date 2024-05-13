@@ -27,7 +27,6 @@ const uploadImageToS3 = async (imageName, imageData) => {
       }
 };
 
-
 const deleteFromS3 = async (name) => {
   const params = {
     Bucket: "haggleimgs", 
