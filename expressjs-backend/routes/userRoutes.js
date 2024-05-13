@@ -211,9 +211,9 @@ router.get('/auth/google/callback', async (req, res) => {
     if (existingUsers.length > 0) { // if there is a user returned from the select statement...
       const user = existingUsers[0];
       const token = jwt.sign({ username: user.username }, secretKey, { expiresIn: '24h' });
-      res.redirect(`http://localhost:3000/login/google?token=${encodeURIComponent(token)}`);
+      res.redirect(process.env.FRONTEND_LINK + `/login/google?token=${encodeURIComponent(token)}`);
     } else { // if there isnt a user returned from the select statement...
-      res.redirect(`http://localhost:3000/additional-details?email=${encodeURIComponent(email)}&name=${encodeURIComponent(name)}`);
+      res.redirect(process.env.FRONTEND_LINK + `/additional-details?email=${encodeURIComponent(email)}&name=${encodeURIComponent(name)}`);
     }
   } catch (error) {
     console.error('Error in OAuth callback:', error);
@@ -243,7 +243,7 @@ router.post('/register-google-user', async (req, res) => {
 
       // if the user exists and does not have a password, continue the registration process
       const token = jwt.sign({ username: user.username }, secretKey, { expiresIn: '24h' });
-      res.redirect(`http://localhost:3000/profile?token=${encodeURIComponent(token)}`);
+      res.redirect(process.env.FRONTEND_LINK + `/profile?token=${encodeURIComponent(token)}`);
     }
 
     // if the user does not exist in the database, insert new user details
@@ -372,7 +372,7 @@ router.post('/forgot-password', async (req, res) => {
     await connection.query('UPDATE users SET "resetPasswordToken" = $1, "resetPasswordExpires" = $2 WHERE email = $3', [resetToken, resetExpires, email]);
 
     // create the reset password url using the token
-    const resetUrl = `http://localhost:3000/reset-password?token=${resetToken}`;
+    const resetUrl = process.env.FRONTEND_LINK + `/reset-password?token=${resetToken}`;
 
     // use nodemailer 
     const nodemailer = require('nodemailer');

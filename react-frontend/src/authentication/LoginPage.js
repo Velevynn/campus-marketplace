@@ -41,7 +41,7 @@ function LoginPage() {
       };
       const response = await axios.post(process.env.REACT_APP_BACKEND_LINK + '/users/login', requestBody);
       localStorage.setItem('token', response.data.token); // Stores the received token in local storage and navigates to the profile page
-      window.location.href = '/profile';
+      window.location.href = process.env.REACT_APP_BACKEND_LINK + '/profile';
     } catch (error) {
       // Sets an error message based on the response from the server or a general failure message
       if (error.response) {
@@ -55,7 +55,7 @@ function LoginPage() {
   const handleGoogleLogin = () => {
     const clientId = '71122616560-tv80mel7fi0s2etitj1enhk192v06h0e.apps.googleusercontent.com';
 
-    const redirectUrl = 'https://haggle.onrender.com/users/auth/google/callback';
+    const redirectUrl = process.env.REACT_APP_BACKEND_LINK +'/users/auth/google/callback';
     const scope = encodeURI('email profile');
     const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUrl}&response_type=code&scope=${scope}&access_type=offline&prompt=consent`;
     window.location.href = authUrl;

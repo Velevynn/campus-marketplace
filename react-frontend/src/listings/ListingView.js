@@ -213,7 +213,7 @@ function ListingView() {
   const createBookmark = async () => {
     console.log("Entered createBookmark");
     if (!loggedID) {
-      window.location.href = 'http://localhost:3000/login'
+      window.location.href = `/login`;
     }
     try {
       await axios.post(
