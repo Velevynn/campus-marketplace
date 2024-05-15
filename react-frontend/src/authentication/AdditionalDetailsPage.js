@@ -56,16 +56,18 @@ function AdditionalDetailsPage() {
         <img className="logo-img" src={logoImage} alt="Haggle Logo"/>
         </div>
         <form onSubmit={handleSubmit}>
-          <h1>Complete Your Registration</h1>
+          <h5 className="text-center" style={{fontSize:'18px', marginTop: '20px'}}>
+            Complete Your Registration
+          </h5>
           {errorMessage && <div>{errorMessage}</div>}
-          <div className="margin input">
+          <div className="margin input" style={{marginTop: '20px'}}>
             <input
               type="text"
               name="username"
               id="username"
               value={userData.username}
               onChange={handleChange}
-              placeholder="username"
+              placeholder="Username"
               required
             />
           </div>
@@ -77,18 +79,25 @@ function AdditionalDetailsPage() {
               id="phoneNumber"
               value={userData.phoneNumber}
               onChange={handleChange}
-              placeholder="phone number"
+              placeholder="Phone number"
               required
             />
           </div>
 
-          <button className={`span-button ${isFormValid ? "" : "disabled"}`} type="submit">
+          <button className={`span-button ${isFormValid ? "" : "disabled"}`} type="submit" style={{marginTop: '10px'}}>
             Complete Registration
           </button>
 
-          <h6>
-            By registering you agree to our <Link to="/terms-of-service">Terms of Service</Link> and acknowledge our <Link to="/privacy-policy">Privacy Policy</Link>.
-          </h6>
+          <p className="text-center" style={{fontSize: '12px', marginTop: '20px'}}>
+            By registering you agree to our {}
+              <Link to="/terms-of-service" >
+                Terms of Service
+              </Link>
+            {} and acknowledge our {}
+              <Link to="/privacy-policy">
+                Privacy Policy
+              </Link>
+          </p>
 
         </form>
         </div>
