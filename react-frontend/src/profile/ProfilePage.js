@@ -3,7 +3,6 @@ import axios from 'axios';
 import BookmarksCollection from './BookmarksCollection';
 import { useNavigate } from 'react-router-dom';
 import LoadingSpinner from "../components/LoadingSpinner";
-import { Button, ButtonContainer, ProfileField, ProfileLabel, ProfileValue} from '../authentication/AuthenticationStyling';
 import ProfileDetails from './ProfileDetails';
 import ListingCollection from './ListingCollection';
 import ChangeProfilePicture from './ChangeProfilePicture'; // Import the ChangeProfilePicture component
@@ -96,27 +95,27 @@ function ProfilePage() {
         </div>
       ) : (
         <div>
-          <div className="vertical-center profile-page-layout margin padding-top">
+          <div className="vertical-center profile-page-layout">
             <div className="small-container drop-shadow">
               <ChangeProfilePicture userID = {userProfile.userID}/>
               <form>
                 {Object.entries(userProfile).map(([key, value]) => (
                   key !== 'userID' && 
-                  <ProfileField key={key}>
-                    <ProfileLabel>
+                  <div key={key}>
+                    <label>
                       {key === 'fullName' ? 'Full Name' : key === 'phoneNumber' ? 'Phone Number' : key.replace(/_/g, ' ')
                         .split(' ')
                         .map(word => word.charAt(0).toUpperCase() + word.slice(1))
                         .join(' ')}:
-                    </ProfileLabel>
-                    <ProfileValue>{key === 'phoneNumber' ? formatPhoneNumber(value) : value}</ProfileValue>
-                  </ProfileField>
+                    </label>
+                    <div>{key === 'phoneNumber' ? formatPhoneNumber(value) : value}</div>
+                  </div>
                 ))}
               </form>
-              <ButtonContainer>
-                <Button onClick={handleChangePassword}>Change Password</Button>
-                <Button onClick={handleSignOut}>Sign Out</Button>
-              </ButtonContainer>
+              <div>
+                <button className="margin" onClick={handleChangePassword}>Change Password</button>
+                <button onClick={handleSignOut}>Sign Out</button>
+              </div>
             </div>
 
             <div className="collection-layout margin padding-left drop-shadow">

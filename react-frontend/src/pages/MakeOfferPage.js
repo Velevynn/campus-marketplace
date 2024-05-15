@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Container, Form, OfferGroup, Offer, HeaderLabel, MakeOfferButton } from '../authentication/AuthenticationStyling';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 
@@ -45,13 +44,14 @@ function MakeOfferPage() {
 
   return (
     <>
-      <Container>
-        <HeaderLabel style={{ marginTop: '0px' }}>
+      <div className="vertical-center" style={{marginTop: "10%", marginBottom: "auto"}}>
+      <div className="small-container drop-shadow">
+        <h1 className="text-center" style={{ marginTop: '10px'}}>
           Enter Your Offer
-        </HeaderLabel>
-        <Form>
-          <OfferGroup>
-            <Offer
+        </h1>
+        <form>
+          <div className="margin input" style={{ marginTop: '20px', marginBottom: "20px"}}>
+            <input
               type="text"
               name="identifier"
               id="identifier"
@@ -60,15 +60,20 @@ function MakeOfferPage() {
               onChange={handleInputChange}
               maxLength="10"
             />
-          </OfferGroup>
-          <MakeOfferButton onClick={handleMakeOffer}>
+          </div>
+          <div className="margin">
+          <button className="span-button" onClick={handleMakeOffer}>
             Make Offer
-          </MakeOfferButton>
-          <MakeOfferButton onClick={handleGoBack} style={{marginTop: "-10px"}}>
+          </button>
+          </div>
+          <div className="margin">
+          <button className="span-button" onClick={handleGoBack}>
             Return to Listing
-          </MakeOfferButton>
-        </Form>
-      </Container>
+          </button>
+          </div>
+        </form>
+      </div>
+      </div>
     </>
   );
 }
