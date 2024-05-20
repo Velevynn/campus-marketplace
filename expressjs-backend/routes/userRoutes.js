@@ -444,14 +444,10 @@ router.post('/reset-password', async (req, res) => {
 
 router.post('/change-profile-image', verifyToken, upload.single('image'), async (req, res) => {
   const { userID } = req.body;
-  console.log("userID", userID);
-  console.log(req);
-
   try {
     const connection = createConnection();
     const image = req.file;
 
-    console.log("req.file: ", req.file);
     await deleteFromS3(`user/${userID}/bruh0.jpg`);
     await uploadImageToS3(`user/${userID}/bruh0.jpg`, image.buffer);
     const query = 'UPDATE users SET "isProfilePicture" = true WHERE "userID" = $1';
