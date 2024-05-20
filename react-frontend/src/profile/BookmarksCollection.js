@@ -91,12 +91,12 @@ function BookmarksCollection(props) {
                         alt={`Listing ${bookmark.title}`}
                       />
                     </div>
-                    <div className="collection-container">
+                    <div className="collection-container margin-right">
                       <h5 className="collection-text">{bookmark.title}</h5>
                     </div>
                     </Link>
                     <div
-                      className="vertical-center margin-right"
+                      className="collection-container margin-left padding-left"
                       onClick={() => toggleBookmark(bookmark.listingID, bookmark.title, bookmark.userID)}
                     >
                       {bookmarkStatus[bookmark.listingID] ? (
