@@ -479,4 +479,20 @@ router.get('/is-profile-picture/:userID', async (req, res) => {
   }
 });
 
+router.post('/set-bio', verifyToken, async (req, res) => {
+  const { userID } = req.body;
+  const { bio } = req.body;
+  try {
+    console.log("reached");
+    const connection = createConnection();
+    console.log(bio, " ", userID)
+    const query = 'UPDATE users SET bio = $1 WHERE "userID" = $2';
+    await connection.query(query, [bio, userID]);
+    res.status(200).json({ message: 'Bio changed successfully' });
+  } catch (error) {
+    console.error('Error saving bio:', error);
+    res.status(500).json({error: 'Failed to post bio'});
+  }
+});
+
 module.exports = router;
