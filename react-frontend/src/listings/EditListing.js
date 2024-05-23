@@ -9,6 +9,7 @@ function EditListing() {
   const navigate = useNavigate();
   const [imageDisplay, setImages] = useState([]);
   const [imagesToRemove, setImagesToRemove] = useState([]);
+  const [errorMessage, setErrorMessage] = useState('');
   const [listing, setListing] = useState({
     userID: null,
     title: "",
@@ -80,6 +81,13 @@ function EditListing() {
       ...prevListing,
       [name]: value
     }));
+    if(name === "title" && value === ""){
+      setErrorMessage('Title is required.');
+    } else if(name === "price" && value === ""){
+      setErrorMessage('Price is required.');
+    } else{
+      setErrorMessage('');
+    }
   };
 
   const handleImageChange = (event) => {
@@ -88,6 +96,9 @@ function EditListing() {
       ...prevListing,
       newImages: [...prevListing.newImages, ...files]
     }));
+    if(!(listing.newImages.length + imageDisplay.length) !== 0){
+      setErrorMessage('');
+    }
   };
 
   const handleDeleteOldImage = async (indexToRemove) => {
@@ -107,18 +118,27 @@ function EditListing() {
       // Return the updated array
       return newImageDisplay;
     });
-  
+    if((listing.newImages.length + imageDisplay.length) !== 0){
+      setErrorMessage('At least one image is required.');
+    }
   };
   const handleDeleteNewImage = async (indexToRemove) => {
     setListing(prevListing => ({
       ...prevListing,
       newImages: prevListing.newImages.filter((_, index) => index !== indexToRemove)
     }));
+    if((listing.newImages.length + imageDisplay.length) !== 0){
+      setErrorMessage('At least one image is required.');
+    }
   };
 
+  const handleCancel = () => {
+    navigate(-1);
+  };
 
   const submitForm = async () => {
-    if (listing.title !== "" && listing.price !== "") {
+    setErrorMessage('');
+    if (listing.title !== "" && listing.price !== "" && (listing.newImages.length + imageDisplay.length) !== 0) {
       try {
         const token = localStorage.getItem("token");
   
@@ -137,7 +157,6 @@ function EditListing() {
         listing.newImages.forEach((image) => {
           newImages.append("image", image);
         });
-
 
         // Send PUT request to update listing images
         await axios.put(process.env.REACT_APP_BACKEND_LINK + `/listings/images/${listingID}`, newImages, {
@@ -158,7 +177,43 @@ function EditListing() {
   return (
     <div className="vertical-center margin">
       <div className="small-container drop-shadow">
-        <h2>Edit Listing</h2>
+      <div className="vertical-center" style={{ display: 'flex', alignItems: 'center', marginRight: "1.5em" }}>
+  <button
+    onClick={handleCancel}
+    style={{
+      background: 'grey',
+      border: 'none',
+      cursor: 'pointer',
+      marginRight: '1em',
+      padding: '0',
+      borderRadius: '50%',
+      width: '2em',
+      height: '2em',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: '#f0f0f0',
+      marginTop: '1em'
+    }}
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="white"
+      strokeWidth="0.15em"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      style={{ width: '1.5em', height: '1.5em' }}
+    >
+      <line x1="19" y1="12" x2="5" y2="12"></line>
+      <polyline points="12 19 5 12 12 5"></polyline>
+    </svg>
+  </button>
+  <h2 style={{fontSize: '2rem' }}>Edit Listing</h2>
+</div>
         <form>
           <label htmlFor="title">New Title</label>
           <input
@@ -168,6 +223,13 @@ function EditListing() {
             value={listing.title}
             onChange={handleChange}
           />
+          {(
+            errorMessage === 'Title is required.' && (
+            <div className="margin" style={{ color: 'red', fontWeight: 'bold'}}>
+              {errorMessage}
+            </div>
+            )
+          )}
           <label htmlFor="description">New Description</label>
           <textarea
             name="description"
@@ -183,6 +245,13 @@ function EditListing() {
             value={listing.price}
             onChange={handleChange}
           />
+          {(
+            errorMessage === 'Price is required.' && (
+            <div className="margin" style={{ color: 'red', fontWeight: 'bold'}}>
+              {errorMessage}
+            </div>
+            )
+          )}
           <div className="thumbnails">
             {/*For displaying thumbnails, with hover stuff*/}
             {imageDisplay.map((image, index) => (
@@ -240,6 +309,13 @@ function EditListing() {
             <p>{listing.newImages.length} new image(s) selected</p>
           )}
 
+          {(
+            errorMessage === 'At least one image is required.' && (
+            <div className="margin" style={{ color: 'red', fontWeight: 'bold'}}>
+              {errorMessage}
+            </div>
+            )
+          )}
         </form>
         <div className="vertical-center">
           <div className="margin-top">
