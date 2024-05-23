@@ -11,13 +11,12 @@ function ProfileDetails(props) {
 
     const saveBio = async() => {
         try {
-            const formData = new FormData();
-            formData.append('userID', props.userID);
-            formData.append('bio', bio);
-            console.log(formData.get('userID'), formData.get('bio'));
-            const response = await axios.post(`${process.env.REACT_APP_BACKEND_LINK}/users/set-bio`, formData, {
+            //console.log(formData.get('userID'), formData.get('bio'));
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_LINK}/users/set-bio`, {
+                userID: props.userID,
+                bio: bio
+            }, {
                 headers: {
-                    'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                   }
             });

@@ -444,6 +444,7 @@ router.post('/reset-password', async (req, res) => {
 
 router.post('/change-profile-image', verifyToken, upload.single('image'), async (req, res) => {
   const { userID } = req.body;
+  console.log(req.body);
   try {
     const connection = createConnection();
     const image = req.file;
@@ -483,7 +484,7 @@ router.post('/set-bio', verifyToken, async (req, res) => {
   const { userID } = req.body;
   const { bio } = req.body;
   try {
-    console.log("reached");
+    console.log(req.body);
     const connection = createConnection();
     console.log(bio, " ", userID)
     const query = 'UPDATE users SET bio = $1 WHERE "userID" = $2';
