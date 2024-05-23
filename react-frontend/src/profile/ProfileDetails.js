@@ -1,9 +1,13 @@
 import React, {useState} from "react";
 import axios from 'axios';
 import PropTypes from "prop-types";
+import Notify from '../components/ErrorNotification';
 
 function ProfileDetails(props) {
     const [bio, setBio] = useState("");
+    const [showNotification, setShowNotification] = useState(false);
+    const [notificationMsg, setNotificationMsg] = useState("");
+    const [isSuccessful, setIsSuccessful] = useState(false);
 
     function handleChange(event) {
         setBio(event.target.value);
@@ -11,8 +15,7 @@ function ProfileDetails(props) {
 
     const saveBio = async() => {
         try {
-            //console.log(formData.get('userID'), formData.get('bio'));
-            const response = await axios.post(`${process.env.REACT_APP_BACKEND_LINK}/users/set-bio`, {
+            await axios.post(`${process.env.REACT_APP_BACKEND_LINK}/users/set-bio`, {
                 userID: props.userID,
                 bio: bio
             }, {
@@ -20,18 +23,16 @@ function ProfileDetails(props) {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                   }
             });
-            console.log(response);
+            setNotificationMsg("Bio Saved Successfully");
+            setIsSuccessful(true);
+            setShowNotification(true);
         } catch (error) {
             console.error("Error:", error);
+            setIsSuccessful(false);
+            setNotificationMsg("Save Unsuccessful");
+            setShowNotification(true);
         }
     }
-
-    /*      const response = await axios.post(`${process.env.REACT_APP_BACKEND_LINK}/users/change-profile-image`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      }); */
 
     return (
         <div className = "padding-left">
@@ -40,6 +41,7 @@ function ProfileDetails(props) {
             <textarea className="vertical-form" placeholder = "Add your bio here.." value ={bio} onChange={handleChange}></textarea>
             <button className = "small-button" onClick={saveBio}>Save Bio</button>
         </div>
+        {showNotification && <Notify message={notificationMsg} isSuccessful={isSuccessful}/>}
         </div>
 
     );

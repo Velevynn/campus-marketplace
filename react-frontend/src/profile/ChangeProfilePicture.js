@@ -8,6 +8,7 @@ import DefaultPfp from '../assets/profile-placeholder.png';
 function ChangeProfilePicture(props) {
   const [profileImage, setProfileImage] = useState('');
   const [showNotification, setShowNotification] = useState(false);
+  const [isSuccessful, setIsSuccessful] = useState(false);
   const [notificationMsg, setNotificationMsg] = useState('');
   const [loading, setLoading] = useState(false);
   const [timestamp, setTimestamp] = useState(Date.now());
@@ -74,9 +75,11 @@ function ChangeProfilePicture(props) {
 
       setTimestamp(Date.now());
       setProfileImage(URL.createObjectURL(validatedFile));
+      setIsSuccessful(true);
       displayNotification(response.data.message);
     } catch (error) {
       console.error('Error changing profile picture:', error);
+      setIsSuccessful(false);
       displayNotification(error.message || 'Failed to change profile picture');
     } finally {
       setLoading(false);
@@ -111,7 +114,7 @@ function ChangeProfilePicture(props) {
           onChange={handleFileChange}
         />
       </div>
-      {showNotification && <Notify message={notificationMsg} />}
+      {showNotification && <Notify message={notificationMsg} isSuccessful = {isSuccessful}/>}
     </div>
   );
 }
