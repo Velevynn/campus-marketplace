@@ -75,7 +75,7 @@ router.get("/", async (req, res) => {
 
     // If there is a search query, modify the SQL query to include a WHERE clause
     if (q) {
-      query += ` WHERE "title" LIKE '%${q}%' OR "description" LIKE '%${q}%' OR "category" LIKE '%${q}%'`;
+      query += ` WHERE "title" ILIKE '%${q}%' OR "description" ILIKE '%${q}%' OR "category"::text ILIKE '%${q}%'`;
     }
 
     // Calculate offset based on the requested page
