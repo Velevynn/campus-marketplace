@@ -281,14 +281,10 @@ function ListingView() {
   }
 
   const getBookmarkCount = () => {
-    let bookmarkCount;
+    const bookmarkCount = (isBookmarked) ? Number(listing.bookmarkCount) + 1 : listing.bookmarkCount;
 
-    if (isBookmarked) {
-      bookmarkCount = (Number(listing.bookmarkCount) + 1);
-    } else {
-      bookmarkCount = listing.bookmarkCount;
-    }
     if (bookmarkCount == 1) {
+      // If it's only 1 bookmark count, change to "person is watching"
       return bookmarkCount + " person is watching";
     } else {
       return bookmarkCount + " people are watching";
