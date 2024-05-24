@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import "./ImageCarousel.css"
 import PropTypes from "prop-types";
 import LoadingSpinner from "./LoadingSpinner";
+import ArrowButton from "./ArrowButton";
 
 function ImageCarousel({ images }) {
-  const [currentImage, setCurrentImage] = useState(0);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useEffect(() => {
-    setCurrentImage(0); // Reset currentImage when images prop changes
+    setCurrentImageIndex(0); // Reset currentImage when images prop changes
   }, [images]);
 
   // Render the ImageCarousel component only if images is defined
@@ -20,13 +21,40 @@ function ImageCarousel({ images }) {
   }
 
   function selectImage(index) {
-    setCurrentImage(index);
+    setCurrentImageIndex(index);
+  }
+
+  function nextImage() {
+    if (currentImageIndex < images.length - 1) {
+      setCurrentImageIndex(currentImageIndex + 1);
+    } else {
+      setCurrentImageIndex(0);
+    }
+  }
+
+  function prevImage() {
+    if (currentImageIndex > 0) {
+      setCurrentImageIndex(currentImageIndex - 1);
+    } else {
+      setCurrentImageIndex(images.length - 1);
+    }
   }
 
   return (
     <div>
       <div className="image-carousel">
-        <img src={images[currentImage].imageURL} alt={`Image ${currentImage}`} />
+      {images.length > 1 && (
+        <>
+        <div className="next-button" onClick={() => nextImage()}>
+          <ArrowButton></ArrowButton>
+        </div>
+        <div className="prev-button" onClick={() => prevImage()}>
+          <ArrowButton></ArrowButton>
+        </div>
+        </>
+      )}
+        
+        <img src={images[currentImageIndex].imageURL} alt={`Image ${currentImageIndex}`} />
       </div>
       <div className="thumbnails">
         {images.map((image, index) => (
@@ -34,7 +62,7 @@ function ImageCarousel({ images }) {
             key={index}
             src={image.imageURL}
             alt={`Thumbnail ${index}`}
-            className={currentImage === index ? "" : "inactive"}
+            className={currentImageIndex === index ? "" : "inactive"}
             onClick={() => selectImage(index)}
           />
         ))}

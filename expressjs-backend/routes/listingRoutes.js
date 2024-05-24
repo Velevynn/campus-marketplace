@@ -23,6 +23,8 @@ router.post("/", upload.array('image'), async (req, res) => {
     try {
         // Access uploaded images.
         const images = req.files;
+        console.log(req.files);
+        console.log(images[0]);
     
         // Add listing to the database, returning the new listingID.
         const listingID = await addListing(req.body);
@@ -68,7 +70,12 @@ router.post("/:listingID/bookmark/", async (req, res) => {
 router.get("/", async (req, res) => {
   console.log("retriving all listings");
   try {
-    const { q, page } = req.query;
+    let { q, page } = req.query;
+
+    if (page == null) {
+      page = 1;
+    }
+
     const itemsPerPage = 30; // Define how many items to return per page
 
     let query = "SELECT * FROM listings";
@@ -83,7 +90,6 @@ router.get("/", async (req, res) => {
 
     // Append LIMIT and OFFSET to the query for pagination
     query += ` LIMIT ${itemsPerPage} OFFSET ${offset}`;
-
     const connection = createConnection();
     const { rows } = await connection.query(query);
     res.status(200).send(rows);

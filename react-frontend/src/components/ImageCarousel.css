@@ -1,4 +1,5 @@
 .image-carousel {
+  position: relative;
   width: 385px;
   height: 385px;
   background-color: rgb(222, 222, 222);
@@ -8,6 +9,21 @@
   justify-content: center;
   border-radius: 20px;
   overflow: hidden;
+}
+
+.next-button,
+.prev-button {
+  position: absolute;
+}
+
+.next-button {
+  right: 0;
+  rotate: 90deg;
+}
+
+.prev-button {
+  left: 0;
+  rotate: -90deg;
 }
 
 .thumbnails {

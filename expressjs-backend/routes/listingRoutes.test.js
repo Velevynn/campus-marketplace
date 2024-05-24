@@ -145,12 +145,11 @@ test('POST / should return 500 if an error occurs', async () => {
 test('GET / should return listings', async () => {
   // Mock database query
   Pool.mockImplementationOnce(() => ({
-    query: jest.fn().mockResolvedValue(mockGetQueryResponse),
+    query: jest.fn().mockQueryResponse(mockGetQueryResponse),
     end: jest.fn()
   }));
-
+  
   const response = await request(app).get('/').expect(200);
-  console.log(response.body);
   expect(response.body).toEqual(mockGetQueryResponse.rows);
   expect(Pool).toHaveBeenCalled();
 });
