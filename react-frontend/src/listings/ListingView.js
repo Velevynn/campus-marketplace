@@ -17,6 +17,7 @@ function ListingView() {
   const [isBookmarked, setBookmark] = useState(false);
   const [loggedID, setLoggedID] = useState(null);
   const [dropdownVisible, setDropdownVisible] = useState(false); // State to control dropdown visibility
+  const [category, setCategory] = useState(null);
 
   const navigate = useNavigate();
 
@@ -65,10 +66,13 @@ function ListingView() {
         const response = await axios.get(
           process.env.REACT_APP_BACKEND_LINK + `/listings/${listingID}`,
         );
+        (console.log(response.data[0].category))
         
         /* set fetched data to state */
         if (response.data.length > 0) {
           setListing(response.data[0]);
+          setCategory(response.data[0].category);
+          (console.log(category));
           /* check currently logged-in userID */
           if(loggedID){
               setIsOwner(response.data[0].userID === loggedID); // If userIDs are the same, we know this user owns this listing
@@ -296,7 +300,8 @@ function ListingView() {
             </div>
           </div>
           <div className="margin" type="text">
-            <h1 className="no-margin-top">{listing.title}</h1>
+            <h1 className="no-margin-top no-margin-bottom">{listing.title}</h1>
+            <h5 style={{margin: "0"}}>{category ? "text" : null}</h5>
             <p>Posted {TimeAgo(listing.postDate)}</p>
             <p>
                 {isBookmarked ? (Number(listing.bookmarkCount) + 1) + " people are watching" : (listing.bookmarkCount) + " people are watching"}

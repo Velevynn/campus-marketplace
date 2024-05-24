@@ -15,7 +15,8 @@ function AddListing() {
     price: "",
     expirationDate: null,
     quantity: 1,
-    images: []
+    images: [],
+    category: null
   });
   const [showNotification, setShowNotification] = useState(false); // Shows notification
   const [notificationMsg, setNotificationMsg] = useState(""); // Sets notification msg
@@ -160,6 +161,7 @@ function AddListing() {
         formData.append('price', listing.price);
         formData.append('expirationDate', listing.expirationDate);
         formData.append('quantity', listing.quantity);
+        formData.append('category', listing.category);
         listing.images.forEach((image) => {
           formData.append(`image`, image);
         });
