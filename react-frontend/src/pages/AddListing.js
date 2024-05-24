@@ -211,9 +211,8 @@ function AddListing() {
           />
           <label htmlFor="category">Category</label>
           <select
-          id="dropdown"
-          name="options"
-          value={listing.category}
+          id="category"
+          name="category"
           onChange={handleChange}>
             <option value="Other">Other</option>
             <option value="Vehicles">Vehicles</option>
