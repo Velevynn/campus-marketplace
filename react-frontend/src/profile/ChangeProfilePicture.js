@@ -12,6 +12,7 @@ function ChangeProfilePicture(props) {
   const [notificationMsg, setNotificationMsg] = useState('');
   const [loading, setLoading] = useState(false);
   const [timestamp, setTimestamp] = useState(Date.now());
+  
 
   useEffect(() => {
     fetchIsProfilePicture();

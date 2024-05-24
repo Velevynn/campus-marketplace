@@ -6,7 +6,7 @@ import emptyBookmark from "../assets/empty-bookmark.png";
 import filledBookmark from "../assets/filled-bookmark.png";
 
 function BookmarksCollection(props) {
-  const { title, bookmarks} = props;
+  const { title, bookmarks } = props;
   const [bookmarkStatus, setBookmarkStatus] = useState(
     bookmarks.reduce((acc, bookmark) => {
       acc[bookmark.listingID] = true; // All items are initially bookmarked
@@ -38,7 +38,6 @@ function BookmarksCollection(props) {
       }
     }
   };
-  
 
   const createBookmark = async (listingID, listingTitle, userID) => {
     try {
@@ -46,7 +45,7 @@ function BookmarksCollection(props) {
         process.env.REACT_APP_BACKEND_LINK + `/listings/${listingID}/bookmark`, {
           'userID': userID,
           'listingID': listingID,
-          'title' : listingTitle
+          'title': listingTitle
         }
       );
     } catch (error) {
@@ -94,18 +93,17 @@ function BookmarksCollection(props) {
                     <div className="collection-container margin-right">
                       <h5 className="collection-text">{bookmark.title}</h5>
                     </div>
-                    </Link>
-                    <div
-                      className="collection-container margin-left padding-left"
-                      onClick={() => toggleBookmark(bookmark.listingID, bookmark.title, bookmark.userID)}
-                    >
-                      {bookmarkStatus[bookmark.listingID] ? (
-                        <img className="bookmark" src={filledBookmark}/>
-                      ) : (
-                        <img className="bookmark" src={emptyBookmark}/>
-                      )}
-                    </div>
-                  
+                  </Link>
+                  <div
+                    className="bookmark-container"
+                    onClick={() => toggleBookmark(bookmark.listingID, bookmark.title, bookmark.userID)}
+                  >
+                    {bookmarkStatus[bookmark.listingID] ? (
+                      <img className="bookmark" src={filledBookmark} alt="Filled Bookmark"/>
+                    ) : (
+                      <img className="bookmark" src={emptyBookmark} alt="Empty Bookmark"/>
+                    )}
+                  </div>
                 </div>
               ))}
             </ul>
