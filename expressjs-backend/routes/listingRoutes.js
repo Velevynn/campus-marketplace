@@ -75,7 +75,7 @@ router.get("/", async (req, res) => {
 
     // If there is a search query, modify the SQL query to include a WHERE clause
     if (q) {
-      query += ` WHERE "title" LIKE '%${q}%' OR "description" LIKE '%${q}%'`;
+      query += ` WHERE "title" LIKE '%${q}%' OR "description" LIKE '%${q}%' OR "category" LIKE '%${q}%'`;
     }
 
     // Calculate offset based on the requested page
@@ -198,7 +198,6 @@ router.get("/images/:listingID/", async (req, res) => {
 // TODO: Add route for checking if a bookmark exists or not.
 // Check if a bookmark exists between a user and listing.
 router.get("/:listingID/bookmark/", async (req, res) => {
-  console.log("Get bookmark parameters:", req.query);
 
   try {
     const connection = createConnection();
@@ -208,7 +207,6 @@ router.get("/:listingID/bookmark/", async (req, res) => {
         req.query.listingID
       ])
 
-    console.log("Returned rows from select call in bookmark backend.")
     if ( rows.length > 0 ) {
       const bookmarked = true;
       res.status(200).send(bookmarked);
@@ -226,8 +224,6 @@ router.get("/:listingID/bookmark/", async (req, res) => {
 })
 
 router.get("/bookmark/:userID", async (req, res) => {
-  console.log("Get bookmark parameters:", req.params);
-
   try {
     const connection = createConnection();
     const { rows } = await connection.query('SELECT * FROM bookmarks WHERE "userID" = $1',
@@ -267,8 +263,9 @@ router.get("/mylistings/:userID", async (req, res) => {
 
 router.put("/:listingID", async (req, res) => {
   try {
+    console.log("received", req.body)
     const { listingID } = req.params;
-    const { title, description, price, expirationDate, quantity } = req.body;
+    const { title, description, price, expirationDate, quantity, category } = req.body;
 
     if (!title || !price) {
       return res.status(400).send("Title and price are required for updating the listing.");
@@ -281,9 +278,10 @@ router.put("/:listingID", async (req, res) => {
            "description" = $2, 
            "price" = $3, 
            "expirationDate" = $4, 
-           "quantity" = $5
-       WHERE "listingID" = $6`,
-      [title, description, price, expirationDate, quantity, listingID]
+           "quantity" = $5,
+           "category" = $6
+       WHERE "listingID" = $7`,
+      [title, description, price, expirationDate, quantity, category, listingID]
     );
 
     // Check if the listing was updated successfully.
