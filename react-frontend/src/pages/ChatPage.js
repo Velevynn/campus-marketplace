@@ -1,32 +1,16 @@
-// ChatPage.js
-import React, { useState, useEffect } from 'react';
-import { useParams} from 'react-router-dom';
-import axios from 'axios';
+import React from 'react';
+import { useLocation } from 'react-router-dom';
 
 function ChatPage() {
-    const { chatID } = useParams();
-    const [messages, setMessages] = useState([]);
-
-    useEffect(() => {
-        const fetchMessages = async () => {
-            try {
-                const response = await axios.get(`/api/chats/${chatID}`);
-                setMessages(response.data);
-            } catch (error) {
-                console.error('Failed to fetch messages:', error);
-            }
-        };
-        fetchMessages();
-    }, [chatID]);
+    const { state } = useLocation();  // Using location state to receive listing, seller, and buyer data
+    const { listing, seller, buyer } = state;
 
     return (
         <div>
-            <h1>Chat</h1>
-            <div>
-                {messages.map((msg, index) => (
-                    <p key={index}>{msg}</p>
-                ))}
-            </div>
+            <h1>Chat for {listing.title}</h1>
+            <p>Selling by: {seller.name}</p>
+            <p>Contacting: {buyer.name}</p>
+            <div id="talkjs-container" style={{ height: "400px", width: "600px" }}></div>  // Container for the chat
         </div>
     );
 }

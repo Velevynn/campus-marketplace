@@ -22,9 +22,9 @@ const secretKey = process.env.JWT_SECRET_KEY; // stores jtw secret key
 
 
 const oauth2Client = new google.auth.OAuth2(
-  process.env.REACT_APP_GOOGLE_CLIENT_ID,
+  process.env.GOOGLE_CLIENT_ID,
   process.env.GOOGLE_CLIENT_SECRET,
-  process.env.BACKEND_LINK + '/users/auth/google/callback'
+  process.env.REACT_APP_BACKEND_LINK + '/users/auth/google/callback'
 );
 
 // Create connection pool to connect to the database.
@@ -188,7 +188,7 @@ router.get('/auth/google', (req, res) => {
   const authUrl = oauth2Client.generateAuthUrl({
     access_type: 'offline', // Indicates that we need to retrieve a refresh token
     scope: 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile',
-    redirect_uri: process.env.BACKEND_LINK + '/users/auth/google/callback'
+    redirect_uri: process.env.REACT_APP_BACKEND_LINK + '/users/auth/google/callback'
   });
   console.log('Generated Google Auth URL:', authUrl);
   res.redirect(authUrl);
@@ -217,9 +217,9 @@ router.get('/auth/google/callback', async (req, res) => {
     if (existingUsers.length > 0) { // if there is a user returned from the select statement...
       const user = existingUsers[0];
       const token = jwt.sign({ username: user.username }, secretKey, { expiresIn: '24h' });
-      res.redirect(process.env.FRONTEND_LINK + `/login/google?token=${encodeURIComponent(token)}`);
+      res.redirect(process.env.REACT_APP_FRONTEND_LINK + `/login/google?token=${encodeURIComponent(token)}`);
     } else { // if there isnt a user returned from the select statement...
-      res.redirect(process.env.FRONTEND_LINK + `/additional-details?email=${encodeURIComponent(email)}&name=${encodeURIComponent(name)}`);
+      res.redirect(process.env.REACT_APP_FRONTEND_LINK + `/additional-details?email=${encodeURIComponent(email)}&name=${encodeURIComponent(name)}`);
     }
   } catch (error) {
     console.error('Error in OAuth callback:', error);
@@ -249,7 +249,7 @@ router.post('/register-google-user', async (req, res) => {
 
       // if the user exists and does not have a password, continue the registration process
       const token = jwt.sign({ username: user.username }, secretKey, { expiresIn: '24h' });
-      res.redirect(process.env.FRONTEND_LINK + `/profile?token=${encodeURIComponent(token)}`);
+      res.redirect(process.env.REACT_APP_FRONTEND_LINK + `/profile?token=${encodeURIComponent(token)}`);
     }
 
     // if the user does not exist in the database, insert new user details
@@ -378,7 +378,7 @@ router.post('/forgot-password', async (req, res) => {
     await connection.query('UPDATE users SET "resetPasswordToken" = $1, "resetPasswordExpires" = $2 WHERE email = $3', [resetToken, resetExpires, email]);
 
     // create the reset password url using the token
-    const resetUrl = process.env.FRONTEND_LINK + `/reset-password?token=${resetToken}`;
+    const resetUrl = process.env.REACT_APP_FRONTEND_LINK + `/reset-password?token=${resetToken}`;
 
     // use nodemailer 
     const nodemailer = require('nodemailer');
@@ -457,6 +457,29 @@ router.post('/change-profile-image', verifyToken, upload.single('file'), async (
   } catch (error) {
     console.error('Error changing profile picture:', error);
     res.status(500).json({ error: 'Failed to change profile picture' });
+  }
+});
+
+router.get('/api/users/:userId', async (req, res) => {
+  const { userId } = req.params;
+  const connection = createConnection();
+
+  try {
+      const { rows } = await connection.query(
+          'SELECT * FROM users WHERE "userID" = $1',
+          [userId]
+      );
+      if (rows.length > 0) {
+          res.status(200).json(rows[0]);
+      } else {
+          res.status(404).send('User not found');
+      }
+      console.log(userId);
+  } catch (error) {
+      console.error('Error fetching user:', error);
+      res.status(500).send('Failed to fetch user');
+  } finally {
+      connection.end();
   }
 });
 

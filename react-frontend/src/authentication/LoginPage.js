@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import logoImage from '../assets/haggle-horizontal.png';
 import { FaEye, FaEyeSlash  } from 'react-icons/fa';
 import googlepng from '../assets/google.png';
-import "./LoginPage.css"
+import "./AuthenticationStyling.css"
 
 
 // LoginPage component for handling user login
@@ -74,95 +74,103 @@ function LoginPage() {
   return (
     <div className="vertical-center margin-top">
       <div>
-      <div className="small-container drop-shadow">
-        <div className="vertical-center">
-          <img className="logo-img" src={logoImage} alt="Logo"/>
-        </div>
-        
-        <h5 className="text-center" style={{fontSize:"18px"}}>
-            Log in to buy, sell, and trade
-        </h5>
-
-        <form onSubmit={handleSubmit}>
-          {errorMessage && (
-            <p className="margin" style={{color: "red", fontSize: "12px"}}>
-              {errorMessage}
-            </p>
-          )}
-
-        <div className="margin input">
-        <p className={credentials.identifier.length > 0 ? "input-label-full" : "input-label-empty unselectable"}>Email, Phone, or Username</p>
-            <input
-              type="text"
-              name="identifier"
-              id="identifier"
-              value={credentials.identifier}
-              onChange={handleChange}
-              autoComplete="on"
-              required/>
-              
+        <div className="small-container drop-shadow" >
+          <div className="vertical-center">
+            <img className="logo-img" src={logoImage} alt="Logo"/>
           </div>
           
+          <h5 className="text-center" style={{fontSize:"18px", marginTop:"20px"}}>
+              Log in to buy, sell, and trade
+          </h5>
 
-          <div className="margin input">
-          <p className={credentials.password.length > 0 ? "input-label-full" : "input-label-empty unselectable"}>Password</p>
-            <input
-              type={passwordVisible ? "text" : "password"}
-              name="password"
-              id="password"
-              value={credentials.password}
-              onChange={handleChange}
-              autoComplete="current-password"
-              style={{paddingRight: "2.5rem"}}
-              required/>
-          
-            <div className="input-icon" onClick={togglePasswordVisibility}>
-                {passwordVisible ? <FaEye /> : <FaEyeSlash />}
+          <form onSubmit={handleSubmit}>
+            {errorMessage && (
+              <p className="margin" style={{color: "red", fontSize: "12px"}}>
+                {errorMessage}
+              </p>
+            )}
+
+            <div className="margin input">
+              <p className={credentials.identifier.length > 0 ? "input-label-full" : "input-label-empty unselectable"}>
+                Email, Phone, or Username
+              </p>
+
+              <input
+                type="text"
+                name="identifier"
+                id="identifier"
+                value={credentials.identifier}
+                onChange={handleChange}
+                autoComplete="on"
+                required
+                style={{fontSize:"14px", paddingTop:"14px", paddingBottom:"8px"}}
+                />  
             </div>
+            
+
+            <div className="margin input">
+              <p className={credentials.password.length > 0 ? "input-label-full" : "input-label-empty unselectable"}>
+                Password
+              </p>
+
+              <input
+                type={passwordVisible ? "text" : "password"}
+                name="password"
+                id="password"
+                value={credentials.password}
+                onChange={handleChange}
+                autoComplete="current-password"
+                required
+                style={{fontSize:"14px", paddingTop:"14px", paddingBottom:"8px"}}
+              />
+
+              <div className="input-icon" onClick={togglePasswordVisibility}>
+                  {passwordVisible ? <FaEye /> : <FaEyeSlash />}
+              </div>
+            </div>
+
+            <div className="margin" style={{marginTop: '20px'}}>
+              <button className={`span-button ${isFormValid ? "" : "disabled"}`} type="submit">
+                Log in
+              </button>
+            </div>
+
+            <div className="margin">
+              <button className="span-button" onClick={handleGoogleLogin}>
+                <div className="vertical-center">
+                  <img className="google-img" src={googlepng} alt="google"></img>
+                  <span className="margin-left">Continue with Google</span>
+                </div>
+              </button>
+            </div>
+
+            <p className="text-center margin-bottom" style={{fontSize: '12px', marginTop: '20px'}}>
+              By logging in you agree to our {}
+                <Link to="/terms-of-service" >
+                  Terms of Service
+                </Link>
+              {} and acknowledge our {}
+                <Link to="/privacy-policy">
+                  Privacy Policy
+                </Link>
+            </p>
+
+            <p className="text-center" style = {{marginTop:'-10px', fontSize:'14px'}}>
+              <Link to="/forgot-password">
+                Forgot password?
+              </Link>
+            </p>
+          </form>
         </div>
 
-          <div className="margin">
-          <button className={`span-button ${isFormValid ? "" : "disabled"}`} type="submit">
-            Log in
-          </button>
-          </div>
-
-          <div className="margin">
-            <button className="span-button" onClick={handleGoogleLogin}>
-              <div className="vertical-center">
-                <img className="google-img" src={googlepng} alt="google"></img>
-                <span className="margin-left">Continue with Google</span>
-              </div>
-            </button>
-          </div>
-
-          <p className="text-center margin-bottom" style={{fontSize: '12px', marginTop: '20px'}}>
-            By logging in you agree to our {}
-              <Link to="/terms-of-service" >
-                Terms of Service
-              </Link>
-            {} and acknowledge our {}
-              <Link to="/privacy-policy">
-                Privacy Policy
-              </Link>
-          </p>
-
-          <p className="text-center" style = {{marginTop:'-10px', fontSize:'14px'}}>
-            <Link to="/forgot-password">
-              Forgot password?
+        <div className="small-container drop-shadow" style={{marginTop:'10px'}}>
+          <p className="text-center" style ={{fontSize:'14px'}}>
+            Don&apos;t have an account? {}
+            <Link to="/signup">
+              Sign up
             </Link>
           </p>
-        </form>
-      </div>
-
-      <div className="small-container drop-shadow" style={{marginTop:'10px'}}>
-        <p className="text-center" style ={{fontSize:'14px'}}>
-          Don&apos;t have an account? {}
-          <Link to="/signup">
-            Sign up
-          </Link>
-        </p>
-      </div>
+        </div>
       </div>
     </div>
   );

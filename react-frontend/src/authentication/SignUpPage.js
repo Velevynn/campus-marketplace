@@ -6,6 +6,7 @@ import logoImage from '../assets/haggle-horizontal.png';
 import { FaCheckCircle, FaTimesCircle, FaEye, FaEyeSlash  } from 'react-icons/fa';
 // Importing navigation hooks and components for routing
 import { Link, useNavigate } from 'react-router-dom';
+import "./AuthenticationStyling.css"
 
 
 // SignUpPage component for the user registration process
@@ -138,24 +139,29 @@ function SignUpPage() {
   
   // Render the sign-up form with validation feedback and navigation options
   return (
-    <div className="vertical-center">
-      <div className="small-container drop-shadow">
-        <div className="vertical-center">
-          <img className="logo-img" src={logoImage} alt="Logo"/>
-        </div>      
-          <form onSubmit={handleSubmit}>
+    <div className="vertical-center margin-top">
+      <div>
+        <div className="small-container drop-shadow" style ={{paddingBottom:'5px'}}>
+          <div className="vertical-center">
+            <img className="logo-img" src={logoImage} alt="Logo"/>
+          </div>
 
-          <h5 className="text-center">
+          <h5 className="text-center" style={{fontSize:"18px", marginTop:"20px"}}>
             Join our community of Cal Poly students to buy, sell, and trade
           </h5>
 
-          {errorMessage && (
-            <div>
-              {errorMessage}
-            </div>
-          )}
+          <form onSubmit={handleSubmit}>
+            {errorMessage && (
+              <div>
+                {errorMessage}
+              </div>
+            )}
 
-          <div className="input margin">
+            <div className="input margin" style={{marginTop: '20px'}}>
+              <p className={user.email.length > 0 ? "input-label-full" : "input-label-empty unselectable"}>
+                Email
+              </p>
+
               <input
                 type="email"
                 name="email"
@@ -163,123 +169,152 @@ function SignUpPage() {
                 value={user.email}
                 maxLength = "50"
                 onChange={handleChange}
-                style={{paddingRight: "2.5rem"}}
-                placeholder="email"
-                required />
+                required 
+                style={{fontSize:"14px", paddingTop:"14px", paddingBottom:"8px"}}
+              />
+
               <div className="input-icon">
-                {user.email.length > 0 ? (isInputValid('email', user.email) ? <FaCheckCircle /> : <FaTimesCircle style={{color: 'red'}}/>) : null}
+                {user.email.length > 0 ? (isInputValid('email', user.email) ? <FaCheckCircle style={{color: 'green'}}/> : <FaTimesCircle style={{color: 'red'}}/>) : null}
               </div>
             </div>
 
             <div className="input margin">
-                <input
-                    type="tel"
-                    name="phoneNumber"
-                    id="phoneNumber"
-                    value={user.phoneNumber}
-                    maxLength = "10"
-                    onChange={handleChange}
-                    style={{paddingRight: "2.5rem"}}
-                    placeholder="mobile number"
-                    required />
-                <div className="input-icon">
-                    {user.phoneNumber.length > 0 ? (isInputValid('phoneNumber', user.phoneNumber) ? <FaCheckCircle /> : <FaTimesCircle style={{color: 'red'}} />) : null}
-                </div>
-            </div>
+              <p className={user.phoneNumber.length > 0 ? "input-label-full" : "input-label-empty unselectable"}>
+                Phone Number
+              </p>
 
-            <div className="input margin">
-                <input
-                    type="text"
-                    name="username"
-                    id="username"
-                    value={user.username}
-                    maxLength = "25"
-                    onChange={handleChange}
-                    style={{paddingRight: "2.5rem"}}
-                    placeholder="username"
-                    required />
-                <div className="input-icon">
-                    {user.username.length > 0 ? (isInputValid('username', user.username) ? <FaCheckCircle /> : <FaTimesCircle style={{color: 'red'}} />) : null}
-                </div>
-            </div>
-
-            <div className="input margin">
-                <input
-                    type="text"
-                    name="full_name"
-                    id="full_name"
-                    maxLength = "40"
-                    value={user.full_name}
-                    onChange={handleChange}
-                    style={{paddingRight: "2.5rem"}}
-                    placeholder="full name"
-                    required />
-                <div className="input-icon">
-                    {user.full_name.length > 0 ? (isInputValid('full_name', user.full_name) ? <FaCheckCircle /> : <FaTimesCircle style={{color: 'red'}} />) : null}
-                </div>
-            </div>
-
-            <div className="input margin">
               <input
-                type={passwordVisible ? "text" : "password"}
-                name="password"
-                id="password"
-                minLength = "8"
-                value={user.password}
-                onChange={handleChange}
-                onFocus={handlePasswordFocus}
-                onBlur={handlePasswordBlur}
-                style={{paddingRight: "2.5rem"}}
-                placeholder="password"
-                required 
+                  type="tel"
+                  name="phoneNumber"
+                  id="phoneNumber"
+                  value={user.phoneNumber}
+                  maxLength = "10"
+                  onChange={handleChange}
+                  placeholder="mobile number"
+                  required 
+                  style={{fontSize:"14px", paddingTop:"14px", paddingBottom:"8px"}}
                 />
-                <div className="input-icon" onClick={togglePasswordVisibility}>
-                  {passwordVisible ? <FaEye /> : <FaEyeSlash />}
-                </div>
+
+              <div className="input-icon">
+                  {user.phoneNumber.length > 0 ? (isInputValid('phoneNumber', user.phoneNumber) ? <FaCheckCircle style={{color: 'green'}}/> : <FaTimesCircle style={{color: 'red'}} />) : null}
+              </div>
             </div>
 
-            {passwordFocused && (
-                <div className="margin">
-                  <div className="margin" style={{ color: user.password.length >= 8 ? 'green' : 'red' }}>
-                    {user.password.length >= 8 ? <FaCheckCircle /> : <FaTimesCircle />}
-                    <span style={{ marginLeft: '5px' }}>At least 8 characters</span>
-                  </div>
-                  <div className="margin" style={{ color: /[0-9]/.test(user.password) ? 'green' : 'red' }}>
-                    {/[0-9]/.test(user.password) ? <FaCheckCircle /> : <FaTimesCircle />}
-                    <span style={{ marginLeft: '5px' }}>At least one number</span>
-                  </div>
-                  <div className="margin" style={{ color: /[\W_]/.test(user.password) ? 'green' : 'red' }}>
-                    {/[\W_]/.test(user.password) ? <FaCheckCircle /> : <FaTimesCircle />}
-                    <span style={{ marginLeft: '5px' }}>At least one special character</span>
-                  </div>
-                </div>
-            )}
-
-            
-            <div className="margin">
-              <button className={`span-button ${isFormValid ? "" : "disabled"}`} type="submit" >
-                  Sign Up
-              </button>
-            </div>
-            
-
-            <p className="text-center">
-              Already have an account? {}
-              <Link to="/login" style={{ display: 'inline', color: '#0056b3', fontWeight: 'bold'}}>
-                Log in
-              </Link>
+          <div className="input margin">
+            <p className={user.username.length > 0 ? "input-label-full" : "input-label-empty unselectable"}>
+              Username
             </p>
-            <h6 className="text-center">
-              By signing up you agree to our {}
-                <Link to="/terms-of-service" style={{ display: 'inline', color: '#0056b3', fontWeight: 'bold'}}>
+
+            <input
+                type="text"
+                name="username"
+                id="username"
+                value={user.username}
+                maxLength = "25"
+                onChange={handleChange}
+                required 
+                style={{fontSize:"14px", paddingTop:"14px", paddingBottom:"8px"}}
+              />
+
+            <div className="input-icon">
+                {user.username.length > 0 ? (isInputValid('username', user.username) ? <FaCheckCircle style={{color: 'green'}}/> : <FaTimesCircle style={{color: 'red'}} />) : null}
+            </div>
+          </div>
+
+          <div className="input margin">
+            <p className={user.full_name.length > 0 ? "input-label-full" : "input-label-empty unselectable"}>
+              Full Name
+            </p>
+
+            <input
+                type="text"
+                name="full_name"
+                id="full_name"
+                maxLength = "40"
+                value={user.full_name}
+                onChange={handleChange}
+                required 
+                style={{fontSize:"14px", paddingTop:"14px", paddingBottom:"8px"}}
+              />
+
+            <div className="input-icon">
+                {user.full_name.length > 0 ? (isInputValid('full_name', user.full_name) ? <FaCheckCircle style={{color: 'green'}}/> : <FaTimesCircle style={{color: 'red'}} />) : null}
+            </div>
+          </div>
+
+          <div className="input margin">
+            <p className={user.password.length > 0 ? "input-label-full" : "input-label-empty unselectable"}>
+              Password
+            </p>
+
+            <input
+              type={passwordVisible ? "text" : "password"}
+              name="password"
+              id="password"
+              minLength = "8"
+              value={user.password}
+              onChange={handleChange}
+              onFocus={handlePasswordFocus}
+              onBlur={handlePasswordBlur}
+              required 
+              style={{fontSize:"14px", paddingTop:"14px", paddingBottom:"8px"}}
+              />
+
+              <div className="input-icon" onClick={togglePasswordVisibility}>
+                {passwordVisible ? <FaEye /> : <FaEyeSlash />}
+              </div>
+          </div>
+
+          {passwordFocused && (
+            <div className="margin">
+                <div className="validation-row">
+                  <p style = {{fontSize: '12px', fontWeight: 'bold'}}>Password Rules</p>
+                </div>
+                <div className="validation-row" style={{ color: user.password.length >= 8 ? 'green' : 'red' }}>
+                    <FaCheckCircle className="validation-icon" style={{color: user.password.length >= 8 ? 'green' : 'red'}}/>
+                    <span style={{ fontSize:'12px'}}>At least 8 characters</span>
+                </div>
+                <div className="validation-row" style={{ color: /[0-9]/.test(user.password) ? 'green' : 'red' }}>
+                    <FaCheckCircle className="validation-icon" style={{color: /[0-9]/.test(user.password) ? 'green' : 'red'}}/>
+                    <span style={{ fontSize:'12px' }}>At least one number</span>
+                </div>
+                <div className="validation-row" style={{ color: /[\W_]/.test(user.password) ? 'green' : 'red' }}>
+                    <FaCheckCircle className="validation-icon" style={{color: /[\W_]/.test(user.password) ? 'green' : 'red'}}/>
+                    <span style={{ fontSize:'12px'}}>At least one special character</span>
+                </div>
+            </div>
+          )}
+
+              
+              <div className="margin" style={{marginTop: '20px'}}>
+                <button className={`span-button ${isFormValid ? "" : "disabled"}`} type="submit" >
+                    Sign Up
+                </button>
+              </div>
+              
+              <p className="text-center margin-bottom" style={{fontSize: '12px', marginTop: '20px'}}>
+              By logging in you agree to our {}
+                <Link to="/terms-of-service" >
                   Terms of Service
                 </Link>
               {} and acknowledge our {}
-                <Link to="/privacy-policy" style={{ display: 'inline', color: '#0056b3', fontWeight: 'bold'}}>
+                <Link to="/privacy-policy">
                   Privacy Policy
                 </Link>
-            </h6>
-        </form>
+              </p>
+
+          </form>
+        </div>
+        
+        <div className="small-container drop-shadow" style={{marginTop:'10px'}}>
+          <p className="text-center" style ={{fontSize:'14px'}}>
+            Already have an account? {}
+            <Link to="/login">
+              Log in
+            </Link>
+          </p>
+        </div>
+
       </div>
     </div>
   );

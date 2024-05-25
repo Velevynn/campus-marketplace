@@ -15,8 +15,8 @@
 
 .input-label-empty {
     position: absolute;
-    left: 0.75rem;
-    top: 0.68rem;
+    left: 0.85rem;
+    top: 0.5rem;
     color: gray;
     font-size: 14px;
     transition: transform 0.3s ease;
@@ -25,13 +25,13 @@
 
 .input-label-full {
     position: absolute;
-    left: 0.75rem;
-    top: 0.75rem;
+    left: 0.8rem;
+    top: 0.72rem;
     color: gray;
     font-size: 9px;
     pointer-events: none;
     transition: transform 0.3s ease;
-    transform: translateY(-0.7rem);
+    transform: translateY(-0.6rem);
 }
 
 
@@ -45,3 +45,13 @@
 .span-button {
     transition: opacity 0.5s ease;
 }
+
+.validation-row {
+    display: flex;
+    align-items: center; /* Aligns items vertically in the center */
+    margin-bottom: 5px; /* Adds a 5px gap between each validation row */
+  }
+  
+  .validation-icon {
+    margin-right: 5px; /* Ensures space between the icon and the text */
+  }
