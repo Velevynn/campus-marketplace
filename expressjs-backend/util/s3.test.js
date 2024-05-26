@@ -47,7 +47,7 @@ test("Test Successful listing of objects", async () => {
     await s3.uploadImageToS3(imageName, imageData);
 
     const testFiles = await s3.listS3Objects("testing");
-    expect(testFiles.length > 0).toEqual(true);
+    expect(testFiles.length === 1).toEqual(true);
 });
 
 })
