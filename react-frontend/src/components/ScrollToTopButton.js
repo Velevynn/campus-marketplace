@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import './ScrollToTopButton.css'; // Import your CSS file
+import ArrowButton from './ArrowButton';
 
 const ScrollToTopButton = ({ onClick }) => {
   const [isVisible, setIsVisible] = useState(false);
@@ -27,13 +28,12 @@ const ScrollToTopButton = ({ onClick }) => {
   };
 
   return (
-    <button
+    <div
       className={`scrollToTopButton ${isVisible ? 'show' : ''}`}
       onClick={handleClick}
-      style={{ pointerEvents: isVisible ? 'auto' : 'none' }} // Control clickability based on visibility
     >
-      <p>^</p>
-    </button>
+      <ArrowButton></ArrowButton>
+    </div>
   );
 };
 

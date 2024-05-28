@@ -148,9 +148,8 @@ test('GET / should return listings', async () => {
     query: jest.fn().mockResolvedValue(mockGetQueryResponse),
     end: jest.fn()
   }));
-
+  
   const response = await request(app).get('/').expect(200);
-  console.log(response.body);
   expect(response.body).toEqual(mockGetQueryResponse.rows);
   expect(Pool).toHaveBeenCalled();
 });

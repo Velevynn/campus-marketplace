@@ -280,6 +280,18 @@ function ListingView() {
     );
   }
 
+  const getBookmarkCount = () => {
+    const bookmarkCount = (isBookmarked) ? Number(listing.bookmarkCount) + 1 : listing.bookmarkCount;
+
+    if (bookmarkCount == 1) {
+      // If it's only 1 bookmark count, change to "person is watching"
+      return bookmarkCount + " person is watching";
+    } else {
+      return bookmarkCount + " people are watching";
+    }
+
+  }
+
   return (
     <div className="vertical-center margin">
       <div className="medium-container drop-shadow">
@@ -299,7 +311,7 @@ function ListingView() {
             <h1 className="no-margin-top">{listing.title}</h1>
             <p>Posted {TimeAgo(listing.postDate)}</p>
             <p>
-                {isBookmarked ? (Number(listing.bookmarkCount) + 1) + " people are watching" : (listing.bookmarkCount) + " people are watching"}
+                {getBookmarkCount()}
             </p>
             <h5 style={{color: "green"}}>{listing.price === "0" || listing.price === 0 ? "FREE" : "$" + listing.price}</h5>
             <p>{listing.description}</p>

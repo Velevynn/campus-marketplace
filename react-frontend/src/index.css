@@ -72,7 +72,6 @@ hr {
  * 2. Correct the odd `em` font sizing in all browsers.
  */
 pre {
-  font-family: monospace, monospace;
   /* 1 */
   font-size: 1em;
   /* 2 */
@@ -115,7 +114,6 @@ strong {
 code,
 kbd,
 samp {
-  font-family: monospace, monospace;
   /* 1 */
   font-size: 1em;
   /* 2 */
@@ -384,6 +382,7 @@ body {
   color: #404040;
   background: white;
   font-size: 1rem;
+  font-family: Inter, sans-serif
 }
 
 p,
@@ -582,7 +581,6 @@ pre {
 }
 
 pre code {
-  font-family: Menlo, monospace;
   line-height: 1.2;
 }
 
@@ -593,7 +591,6 @@ kbd {
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 2px #fff inset;
   color: #333;
   display: inline-block;
-  font-family: Helvetica, Arial, sans-serif;
   font-size: 13px;
   line-height: 1.4;
   margin: 0 0.1em;
@@ -796,15 +793,6 @@ dd {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.vertical-center-left {
-  display: flex;
-  align-items: center;
-  justify-content: left;
-  padding-left: 140px;
-  padding-top: 25px;
-  padding-right: 140px;
 }
 
 .responsive-image {

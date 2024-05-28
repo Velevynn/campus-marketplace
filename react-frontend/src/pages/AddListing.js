@@ -162,6 +162,7 @@ function AddListing() {
         formData.append('quantity', listing.quantity);
         listing.images.forEach((image) => {
           formData.append(`image`, image);
+          console.log(image);
         });
         
         try {
@@ -172,6 +173,7 @@ function AddListing() {
             }
           });
           // Send to marketplace
+
           const url = process.env.REACT_APP_FRONTEND_LINK + `/marketplace`
           window.history.replaceState({}, "", url);
           window.location.reload();
@@ -188,7 +190,7 @@ function AddListing() {
 
   return (
     <div className="vertical-center add-listing-layout margin">
-    <div className="small-container drop-shadow" style={{fontFamily: "inter"}}>
+    <div className="small-container drop-shadow">
       {loading? (
         <>
           <h3 className="vertical-center">Posting your listing</h3>
