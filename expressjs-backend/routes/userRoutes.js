@@ -233,26 +233,27 @@ router.post('/register-google-user', async (req, res) => {
   try {
     const connection = createConnection();
 
-    // check if the user already exists in the database
-    const existingUser = await connection.query(
+    // Check if the email already exists in the database
+    const existingEmail = await connection.query(
       'SELECT * FROM users WHERE email = $1',
       [email]
     );
 
-    if (existingUser.rows.length > 0) {
-      const user = existingUser.rows[0];
-      
-      // if the user exists and has a password, they should use their Haggle credentials to log in
-      if (user.password) {
-        return res.status(409).json({ error: 'User exists with a password. Please use Haggle credentials to log in.' });
-      }
-
-      // if the user exists and does not have a password, continue the registration process
-      const token = jwt.sign({ username: user.username }, secretKey, { expiresIn: '24h' });
-      res.redirect(process.env.REACT_APP_FRONTEND_LINK + `/profile?token=${encodeURIComponent(token)}`);
+    if (existingEmail.rows.length > 0) {
+      return res.status(409).json({ error: 'email is already taken.' });
     }
 
-    // if the user does not exist in the database, insert new user details
+    // Check if the phone number already exists in the database
+    const existingPhone = await connection.query(
+      'SELECT * FROM users WHERE "phoneNumber" = $1',
+      [phoneNumber]
+    );
+
+    if (existingPhone.rows.length > 0) {
+      return res.status(409).json({ error: 'phone number is already taken.' });
+    }
+
+    // If neither email nor phone number exists, proceed to register the user
     const result = await connection.query(
       'INSERT INTO users (email, "fullName", username, "phoneNumber") VALUES ($1, $2, $3, $4) RETURNING *',
       [email, name, username, phoneNumber]

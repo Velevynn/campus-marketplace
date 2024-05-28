@@ -53,8 +53,8 @@ function AdditionalDetailsPage() {
       navigate('/profile'); // Redirect to profile page after registration
     } catch (error) {
       const errorText = error.response ? error.response.data.error : error.message;
-      setErrorMessage(`Registration failed: ${errorText}`);
-      console.error('Registration failed:', error);
+      setErrorMessage(`Error: ${errorText}`);
+      console.error('Error:', error);
     }
   };
 
@@ -70,7 +70,7 @@ function AdditionalDetailsPage() {
         </h5>
 
         <form onSubmit={handleSubmit} >
-          {errorMessage && <div style={{color: "red", fontSize: "12px"}}>{errorMessage}</div>}
+          {errorMessage && <div style={{color: "red", fontSize: "12px", marginLeft: "10px"}}>{errorMessage}</div>}
           <div className="margin input">
             <p className={userData.username.length > 0 ? "input-label-full" : "input-label-empty unselectable"}> Username </p>
             <input

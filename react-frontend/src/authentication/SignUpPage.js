@@ -190,7 +190,6 @@ function SignUpPage() {
                   value={user.phoneNumber}
                   maxLength = "10"
                   onChange={handleChange}
-                  placeholder="mobile number"
                   required 
                   style={{fontSize:"14px", paddingTop:"14px", paddingBottom:"8px"}}
                 />
