@@ -8,11 +8,13 @@ import DefaultPfp from '../assets/profile-placeholder.png';
 function ChangeProfilePicture(props) {
   const [profileImage, setProfileImage] = useState('');
   const [showNotification, setShowNotification] = useState(false);
+  const [isSuccessful, setIsSuccessful] = useState(false);
   const [notificationMsg, setNotificationMsg] = useState('');
   const [loading, setLoading] = useState(false);
+  const [timestamp, setTimestamp] = useState(Date.now());
+  
 
   useEffect(() => {
-    // Fetch isProfilePicture value when the component mounts
     fetchIsProfilePicture();
   }, []);
 
@@ -20,47 +22,66 @@ function ChangeProfilePicture(props) {
     try {
       const response = await axios.get(`${process.env.REACT_APP_BACKEND_LINK}/users/is-profile-picture/${props.userID}`);
       const { isProfilePicture } = response.data;
-      // If isProfilePicture is true, set the profile image to the uploaded image
-      if (isProfilePicture) {
-        setProfileImage(`https://haggleimgs.s3.amazonaws.com/user/${props.userID}/bruh0.jpg`);
-      } else {
-        // If isProfilePicture is false, set the profile image to the default placeholder image
-        setProfileImage(DefaultPfp);
-      }
+      setProfileImage(isProfilePicture ? `https://haggleimgs.s3.amazonaws.com/user/${props.userID}/bruh0.jpg?${timestamp}` : DefaultPfp);
     } catch (error) {
       console.error('Error fetching isProfilePicture:', error);
     }
   };
 
   const handleFileChange = async (event) => {
+    const MINIMUM_IMAGE_WIDTH = 100;
+    const MINIMUM_IMAGE_HEIGHT = 100;
     const file = event.target.files[0];
     const userID = props.userID;
-    if (!file) return;
-    console.log(file);
+
+    if (!file || event.target.files.length > 1) {
+      displayNotification("Please submit one image");
+      return;
+    }
+
     try {
       setLoading(true);
       const formData = new FormData();
-      formData.append('file', file);
       formData.append('userID', userID);
-      console.log(userID);
 
-      console.log('FormData:', formData);
+      const validateImage = (file) => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const img = new Image();
+            img.src = e.target.result;
+            img.onload = () => {
+              if (img.width < MINIMUM_IMAGE_WIDTH || img.height < MINIMUM_IMAGE_HEIGHT) {
+                reject(new Error(`Minimum image resolution: ${MINIMUM_IMAGE_WIDTH}x${MINIMUM_IMAGE_HEIGHT}px`));
+              } else {
+                resolve(file);
+              }
+            };
+            img.onerror = () => reject(new Error("Failed to load image"));
+          };
+          reader.readAsDataURL(file);
+        });
+      };
 
-      // Send formData to backend to store in database
-      // Replace the endpoint below with your backend API endpoint for changing profile picture
-      const response = await axios.post(process.env.REACT_APP_BACKEND_LINK + '/users/change-profile-image', formData, {
+      const validatedFile = await validateImage(file);
+      formData.append('image', validatedFile);  // Match the field name expected by Multer
+      console.log(validatedFile);
+
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_LINK}/users/change-profile-image`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
       });
 
-      // Update profile image URL
-      setProfileImage(URL.createObjectURL(file));
+      setTimestamp(Date.now());
+      setProfileImage(URL.createObjectURL(validatedFile));
+      setIsSuccessful(true);
       displayNotification(response.data.message);
     } catch (error) {
       console.error('Error changing profile picture:', error);
-      displayNotification('Failed to change profile picture');
+      setIsSuccessful(false);
+      displayNotification(error.message || 'Failed to change profile picture');
     } finally {
       setLoading(false);
     }
@@ -94,7 +115,7 @@ function ChangeProfilePicture(props) {
           onChange={handleFileChange}
         />
       </div>
-      {showNotification && <Notify message={notificationMsg} />}
+      {showNotification && <Notify message={notificationMsg} isSuccessful = {isSuccessful}/>}
     </div>
   );
 }

@@ -1146,12 +1146,6 @@ textarea {
   line-height: 1;
 }
 
-.vertical-form {
-  min-height: 110px;
-  max-height: 110px;
-  min-width: 360px;
-}
-
 [type="color"]:hover,
 [type="date"]:hover,
 [type="datetime"]:hover,

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import "./error.css"; // Import CSS file for styling
 
-function Notification({ message }) {
+function Notification({ message, isSuccessful }) {
   const [isVisible, setIsVisible] = useState(true);
 
   // Hide the notification after 3 seconds
@@ -18,7 +18,8 @@ function Notification({ message }) {
   }, []);
 
   return (
-    <div className={`notification ${isVisible ? "visible" : "hidden"}`}>
+    <div className={`notification ${isVisible ? "visible" : "hidden"}
+                    ${isSuccessful ? "success" : "error"}`}>
       <p className="notif-text">{message}</p>
     </div>
   );
@@ -26,6 +27,7 @@ function Notification({ message }) {
 
 Notification.propTypes = {
   message: PropTypes.string.isRequired,
+  isSuccessful: PropTypes.bool
 };
 
 export default Notification;

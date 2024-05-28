@@ -21,6 +21,7 @@ import ResetPasswordPage from './authentication/ResetPasswordPage';
 import ChangePasswordPage from './authentication/ChangePasswordPage';
 import AdditionalDetailsPage from './authentication/AdditionalDetailsPage';
 import ChatPage from './pages/ChatPage.js';
+import PublicPage from "./profile/ProfilePage.js";
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
                   <ProfilePage/>
                 </ProtectedRoute>
                 } />
+          <Route path="/profile/:userID" element={<PublicPage/>}/>
           <Route path="/about" element={<About />} />
           <Route path="/" element={<Marketplace />} />
           <Route path="/marketplace/" element={<Marketplace />} />

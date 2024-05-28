@@ -9,11 +9,10 @@ const crypto = require('crypto');
 const { verifyToken } = require('../util/middleware');
 const { Pool } = require('pg');
 require('dotenv').config();
-const upload = multer({ dest: 'uploads/' });
-const { uploadImageToS3, listS3Objects, deleteFromS3, renameS3Object } = require('../util/s3');
-const { promisify } = require('util');
-const fs = require('fs');
-const readFileAsync = promisify(fs.readFile);
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+const { uploadImageToS3} = require('../util/s3');
+
 
 const connectionString = process.env.DB_CONNECTION_STRING; // stores supabase db connection string, allowing us to connect to supabase db
 
@@ -443,19 +442,17 @@ router.post('/reset-password', async (req, res) => {
   }
 });
 
-router.post('/change-profile-image', verifyToken, upload.single('file'), async (req, res) => {
+router.post('/change-profile-image', verifyToken, upload.single('image'), async (req, res) => {
   const { userID } = req.body;
-  console.log("userID", userID);
-
+  console.log(req.body);
   try {
     const connection = createConnection();
     const image = req.file;
-    console.log("req.file: ", req.file);
-    await deleteFromS3(`user/${userID}/bruh0.jpg`)
-    await uploadImageToS3(`user/${userID}/bruh0.jpg`, image.path);
+
+    await uploadImageToS3(`user/${userID}/bruh0.jpg`, image.buffer);
     const query = 'UPDATE users SET "isProfilePicture" = true WHERE "userID" = $1';
     await connection.query(query, [userID]);
-    // Return success message
+    
     res.status(200).json({ message: 'Profile picture changed successfully' });
   } catch (error) {
     console.error('Error changing profile picture:', error);
@@ -465,29 +462,36 @@ router.post('/change-profile-image', verifyToken, upload.single('file'), async (
 
 router.get('/is-profile-picture/:userID', async (req, res) => {
   try {
-    // Extract user ID from request parameters
-    const { userID } = req.params;
-
+    const { userID } = req.params;  // extract userID from request parameters
     const connection = createConnection();
-    // Query to fetch the isProfilePicture value from the users table
     const query = 'SELECT "isProfilePicture" FROM users WHERE "userID" = $1';
-
-    // Execute the query
     const { rows } = await connection.query(query, [userID]);
 
-    // Check if any rows were returned
-    if (rows.length === 0) {
-      return res.status(404).json({ error: 'User not found' });
+    if (rows.length === 0) {  // check if any rows were returned
+      return res.status(404).json({ error: 'User not found' });  // if no such user found there is an error
     }
 
-    // Extract the isProfilePicture value from the first row
-    const { isProfilePicture } = rows[0];
-
-    // Return the isProfilePicture value
-    res.json({ isProfilePicture });
+    const { isProfilePicture } = rows[0];  // extract bool val from first row
+    res.json({ isProfilePicture });  // return true
   } catch (error) {
     console.error('Error fetching isProfilePicture:', error);
     res.status(500).json({ error: 'Failed to fetch isProfilePicture' });
+  }
+});
+
+router.post('/set-bio', verifyToken, async (req, res) => {
+  const { userID } = req.body;
+  const { bio } = req.body;
+  try {
+    console.log(req.body);
+    const connection = createConnection();
+    console.log(bio, " ", userID)
+    const query = 'UPDATE users SET bio = $1 WHERE "userID" = $2';
+    await connection.query(query, [bio, userID]);
+    res.status(200).json({ message: 'Bio changed successfully' });
+  } catch (error) {
+    console.error('Error saving bio:', error);
+    res.status(500).json({error: 'Failed to post bio'});
   }
 });
 
