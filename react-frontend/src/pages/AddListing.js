@@ -16,7 +16,7 @@ function AddListing() {
     expirationDate: null,
     quantity: 1,
     images: [],
-    category: null
+    category: "Other"
   });
   const [showNotification, setShowNotification] = useState(false); // Shows notification
   const [notificationMsg, setNotificationMsg] = useState(""); // Sets notification msg
