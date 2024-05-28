@@ -69,8 +69,8 @@ function AdditionalDetailsPage() {
             Complete your registration
         </h5>
 
-        <form onSubmit={handleSubmit}>
-          {errorMessage && <div>{errorMessage}</div>}
+        <form onSubmit={handleSubmit} >
+          {errorMessage && <div style={{color: "red", fontSize: "12px"}}>{errorMessage}</div>}
           <div className="margin input">
             <p className={userData.username.length > 0 ? "input-label-full" : "input-label-empty unselectable"}> Username </p>
             <input
