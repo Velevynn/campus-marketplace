@@ -23,8 +23,6 @@ router.post("/", upload.array('image'), async (req, res) => {
     try {
         // Access uploaded images.
         const images = req.files;
-        console.log(req.files);
-        console.log(images[0]);
     
         // Add listing to the database, returning the new listingID.
         const listingID = await addListing(req.body);
