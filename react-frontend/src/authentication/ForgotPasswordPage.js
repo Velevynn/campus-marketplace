@@ -38,48 +38,53 @@ const ForgotPasswordPage = () => {
 
   // Rendering the Forgot Password page
   return (
-    <>
-      <div className="vertical-center" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <div className="small-container drop-shadow margin text-center">
-          <img
-            src={logoImage}
-            alt="Logo"
-            style={{
-              display: 'block',
-              margin: '0 auto 20px',
-              maxWidth: '200px',
-              height: 'auto'
-            }}
-          />
-          <h3>Forgot Password?</h3>
-          <h5>Enter your email and we will send you a link to reset your password.</h5>
+    <div className="vertical-center margin-top">
+      <div>
+        <div className="small-container drop-shadow" >
+        <div className="vertical-center">
+            <img className="logo-img" src={logoImage} alt="Logo"/>
+          </div>
+
+          <h5 className="text-center" style={{fontSize:"18px", marginTop:"20px"}}>
+              Forgot Password?
+          </h5>
+
+          <h5 className="text-center" style={{fontSize:"16px", marginTop:"20px", fontWeight:"normal"}}>
+            Enter your email and we will send you a link to reset your password.</h5>
   
-          <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit}>
             {message && (
-              <h6>
+              <p className="margin" style={{color: "red", fontSize: "12px"}}>
                 {message}
-              </h6>
+              </p>
             )}
   
-            <div>
+             <div className="margin input">
+              <p className={email.length > 0 ? "input-label-full" : "input-label-empty unselectable"}>
+                Email
+              </p>
+
               <input
-                type="email"
-                name="email"
-                id="email"
+                type="text"
+                name="identifier"
+                id="identifier"
                 value={email}
                 onChange={handleChange}
-                placeholder="email"
+                autoComplete="on"
                 required
-              />
+                style={{fontSize:"14px", paddingTop:"14px", paddingBottom:"8px"}}
+              />  
+
               <div className="input-icon">
                 {email.length > 0 ? (
                   isValidEmail(email) ? (
-                    <FaCheckCircle />
+                    <FaCheckCircle  style={{ color: 'green' }}/>
                   ) : (
                     <FaTimesCircle style={{ color: 'red' }} />
                   )
                 ) : null}
               </div>
+
             </div>
   
             <button
@@ -93,24 +98,17 @@ const ForgotPasswordPage = () => {
           </form>
         </div>
   
-        <div className="small-container drop-shadow">
-          <div className="text-center">
-            <label>
-              Return to{' '}
-              <Link
-                to="/login"
-                style={{
-                  color: '#0056b3',
-                  fontWeight: 'bold'
-                }}
-              >
-                Log in
-              </Link>
-            </label>
-          </div>
+        <div className="small-container drop-shadow" style={{marginTop:'10px'}}>
+          <p className="text-center" style ={{fontSize:'14px'}}>
+            Return to {}
+            <Link to="/signup">
+              Login
+            </Link>
+          </p>
         </div>
+        
       </div>
-    </>
+    </div>
   );
               }  
 
