@@ -17,6 +17,7 @@ function EditListing() {
     expirationDate: null,
     quantity: 1,
     newImages: [],
+    category: null
   });
 
   // Function to fetch and set the existing listing data including images
@@ -46,6 +47,7 @@ function EditListing() {
             price: fetchedListing.price.toString(),
             expirationDate: fetchedListing.expirationDate || null,
             quantity: fetchedListing.quantity || 1,
+            category: fetchedListing.category
             
           }));
         }
@@ -155,6 +157,8 @@ function EditListing() {
     }
   };
 
+
+  //TODO: how to set selected category to existing category
   return (
     <div className="vertical-center margin">
       <div className="small-container drop-shadow">
@@ -168,6 +172,35 @@ function EditListing() {
             value={listing.title}
             onChange={handleChange}
           />
+          <label htmlFor="category">New Category</label>
+          <select
+          id="category"
+          name="category"
+          onChange={handleChange}>
+            <option value={listing.category}>No Change</option>
+            <option value="Other">Other</option>
+            <option value="Vehicles">Vehicles</option>
+            <option value="Property Rentals">Property Rentals</option>
+            <option value="Apparel">Apparel</option>
+            <option value="Classifieds">Classifieds</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Entertainment">Entertainment</option>
+            <option value="Family">Family</option>
+            <option value="Free Stuff">Free Stuff</option>
+            <option value="Garden & Outdoor">Garden & Outdoor</option>
+            <option value="Hobbies">Hobbies</option>
+            <option value="Home Goods">Home Goods</option>
+            <option value="Home Improvement">Home Improvement</option>
+            <option value="Supplies">Supplies</option>
+            <option value="Home Improvement Supplies">Home Improvement Supplies</option>
+            <option value="Home Sales">Home Sales</option>
+            <option value="Musical Instruments">Musical Instruments</option>
+            <option value="Office Supplies">Office Supplies</option>
+            <option value="Pet Supplies">Pet Supplies</option>
+            <option value="Sporting Goods">Sporting Goods</option>
+            <option value="Toys & Games">Toys & Games</option>
+            <option value="Buy and Sell Groups">Buy and Sell Groups</option>
+          </select>
           <label htmlFor="description">New Description</label>
           <textarea
             name="description"

@@ -15,7 +15,8 @@ function AddListing() {
     price: "",
     expirationDate: null,
     quantity: 1,
-    images: []
+    images: [],
+    category: null
   });
   const [showNotification, setShowNotification] = useState(false); // Shows notification
   const [notificationMsg, setNotificationMsg] = useState(""); // Sets notification msg
@@ -160,6 +161,7 @@ function AddListing() {
         formData.append('price', listing.price);
         formData.append('expirationDate', listing.expirationDate);
         formData.append('quantity', listing.quantity);
+        formData.append('category', listing.category);
         listing.images.forEach((image) => {
           formData.append(`image`, image);
           console.log(image);
@@ -209,6 +211,34 @@ function AddListing() {
             value={listing.title}
             onChange={handleChange}
           />
+          <label htmlFor="category">Category</label>
+          <select
+          id="category"
+          name="category"
+          onChange={handleChange}>
+            <option value="Other">Other</option>
+            <option value="Vehicles">Vehicles</option>
+            <option value="Property Rentals">Property Rentals</option>
+            <option value="Apparel">Apparel</option>
+            <option value="Classifieds">Classifieds</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Entertainment">Entertainment</option>
+            <option value="Family">Family</option>
+            <option value="Free Stuff">Free Stuff</option>
+            <option value="Garden & Outdoor">Garden & Outdoor</option>
+            <option value="Hobbies">Hobbies</option>
+            <option value="Home Goods">Home Goods</option>
+            <option value="Home Improvement">Home Improvement</option>
+            <option value="Supplies">Supplies</option>
+            <option value="Home Improvement Supplies">Home Improvement Supplies</option>
+            <option value="Home Sales">Home Sales</option>
+            <option value="Musical Instruments">Musical Instruments</option>
+            <option value="Office Supplies">Office Supplies</option>
+            <option value="Pet Supplies">Pet Supplies</option>
+            <option value="Sporting Goods">Sporting Goods</option>
+            <option value="Toys & Games">Toys & Games</option>
+            <option value="Buy and Sell Groups">Buy and Sell Groups</option>
+          </select>
           <label htmlFor="description">Description</label>
           <textarea
             type="text"

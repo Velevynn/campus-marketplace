@@ -17,7 +17,6 @@ function ListingView() {
   const [isBookmarked, setBookmark] = useState(false);
   const [loggedID, setLoggedID] = useState(null);
   const [dropdownVisible, setDropdownVisible] = useState(false); // State to control dropdown visibility
-
   const navigate = useNavigate();
 
   // Hook to retrieve logged in userID from jwt token
@@ -65,6 +64,7 @@ function ListingView() {
         const response = await axios.get(
           process.env.REACT_APP_BACKEND_LINK + `/listings/${listingID}`,
         );
+        (console.log(response.data[0].category))
         
         /* set fetched data to state */
         if (response.data.length > 0) {
@@ -308,7 +308,8 @@ function ListingView() {
             </div>
           </div>
           <div className="margin" type="text">
-            <h1 className="no-margin-top">{listing.title}</h1>
+            <h1 className="no-margin-top no-margin-bottom">{listing.title}</h1>
+            <h5 style={{margin: "0"}}>{listing.category}</h5>
             <p>Posted {TimeAgo(listing.postDate)}</p>
             <p>
                 {getBookmarkCount()}
