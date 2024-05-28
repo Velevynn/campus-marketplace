@@ -10,7 +10,7 @@ import deletePic from "../assets/delete-button.png";
 function ListingCollection(props) {
   const [showNotification, setShowNotification] = useState(false);
   const [isSuccessful, setIsSuccessful] = useState(false);
-  const [bookmarks, setBookmarks] = useState(props.bookmarks);
+  const [listings, setBookmarks] = useState(props.bookmarks);
   const [notificationMsg, setNotificationMsg] = useState('');
   console.log(props.bookmarks);
 
@@ -38,25 +38,25 @@ function ListingCollection(props) {
   return (
     <div>
       <div className="vertical-center margin">
-        <h4>My {props.title}</h4>
+        <h4>My Listings</h4>
       </div>
       <div className="vertical-center margin">
         <div className="small-container listing-height">
           {props.bookmarks.length === 0 ? (
-              <p> There are no {props.title} </p>
+              <p> There are no Listings </p>
             ) : (
             <ul className="collection-list collection-list-listing">
-            {bookmarks.map((bookmark) => (
-              <div key={bookmark.bookmarkID} className="collection-item">
-                  <Link to={`/listings/${bookmark.listingID}`} className="collection-link">
+            {listings.map((listing) => (
+              <div key={listing.bookmarkID} className="collection-item">
+                  <Link to={`/listings/${listing.listingID}`} className="collection-link">
                   <div className="collection-container">
-                      <img src={`https://haggleimgs.s3.amazonaws.com/${bookmark.listingID}/image0`} className="collection-image" alt={`Listing ${bookmark.title}`} />
+                      <img src={`https://haggleimgs.s3.amazonaws.com/${listing.listingID}/image0`} className="collection-image" alt={`Listing ${listing.title}`} />
                   </div>
                   <div className="collection-container">
-                      <h5 className="collection-text">{bookmark.title}</h5>
+                      <h5 className="collection-text">{listing.title}</h5>
                   </div>
                   </Link>
-                  <Link to={`/listings/${bookmark.listingID}/edit`}>
+                  <Link to={`/listings/${listing.listingID}/edit`}>
                   <div className="edit-container">
                     <img
                       className="edit-neutral"
@@ -69,7 +69,7 @@ function ListingCollection(props) {
                   </Link>
                   <div
                       className="edit-container"
-                      onClick={() => handleDeleteListing(bookmark.listingID)}
+                      onClick={() => handleDeleteListing(listing.listingID)}
                     >
                       <img
                         className="edit-neutral"
@@ -89,7 +89,6 @@ function ListingCollection(props) {
 }
 
 ListingCollection.propTypes = {
-  title: PropTypes.string.isRequired,
   bookmarks: PropTypes.arrayOf(
     PropTypes.shape({
       bookmarkID: PropTypes.string.isRequired,

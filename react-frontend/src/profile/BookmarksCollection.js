@@ -6,7 +6,7 @@ import emptyBookmark from "../assets/empty-bookmark.png";
 import filledBookmark from "../assets/filled-bookmark.png";
 
 function BookmarksCollection(props) {
-  const { title, bookmarks } = props;
+  const { bookmarks } = props;
   const [bookmarkStatus, setBookmarkStatus] = useState(
     bookmarks.reduce((acc, bookmark) => {
       acc[bookmark.listingID] = true; // All items are initially bookmarked
@@ -72,12 +72,12 @@ function BookmarksCollection(props) {
   return (
     <div>
       <div className="vertical-center margin">
-        <h4>My {title}</h4>
+        <h4>My Bookmarks</h4>
       </div>
       <div className="vertical-center margin">
         <div className="small-container bookmarks-height">
           {bookmarks.length === 0 ? (
-            <p> There are no {title} </p>
+            <p> There are no Bookmarks </p>
           ) : (
             <ul className="collection-list collection-list-bookmark">
               {bookmarks.map((bookmark) => (
@@ -115,7 +115,6 @@ function BookmarksCollection(props) {
 }
 
 BookmarksCollection.propTypes = {
-  title: PropTypes.string.isRequired,
   bookmarks: PropTypes.arrayOf(
     PropTypes.shape({
       bookmarkID: PropTypes.string.isRequired,

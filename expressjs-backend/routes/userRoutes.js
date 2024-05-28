@@ -11,7 +11,7 @@ const { Pool } = require('pg');
 require('dotenv').config();
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
-const { uploadImageToS3, deleteFromS3} = require('../util/s3');
+const { uploadImageToS3} = require('../util/s3');
 
 
 const connectionString = process.env.DB_CONNECTION_STRING; // stores supabase db connection string, allowing us to connect to supabase db
@@ -449,7 +449,6 @@ router.post('/change-profile-image', verifyToken, upload.single('image'), async 
     const connection = createConnection();
     const image = req.file;
 
-    await deleteFromS3(`user/${userID}/bruh0.jpg`);
     await uploadImageToS3(`user/${userID}/bruh0.jpg`, image.buffer);
     const query = 'UPDATE users SET "isProfilePicture" = true WHERE "userID" = $1';
     await connection.query(query, [userID]);
@@ -463,17 +462,17 @@ router.post('/change-profile-image', verifyToken, upload.single('image'), async 
 
 router.get('/is-profile-picture/:userID', async (req, res) => {
   try {
-    const { userID } = req.params;
+    const { userID } = req.params;  // extract userID from request parameters
     const connection = createConnection();
     const query = 'SELECT "isProfilePicture" FROM users WHERE "userID" = $1';
     const { rows } = await connection.query(query, [userID]);
 
-    if (rows.length === 0) {
-      return res.status(404).json({ error: 'User not found' });
+    if (rows.length === 0) {  // check if any rows were returned
+      return res.status(404).json({ error: 'User not found' });  // if no such user found there is an error
     }
 
-    const { isProfilePicture } = rows[0];
-    res.json({ isProfilePicture });
+    const { isProfilePicture } = rows[0];  // extract bool val from first row
+    res.json({ isProfilePicture });  // return true
   } catch (error) {
     console.error('Error fetching isProfilePicture:', error);
     res.status(500).json({ error: 'Failed to fetch isProfilePicture' });
