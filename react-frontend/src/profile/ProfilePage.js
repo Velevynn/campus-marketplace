@@ -3,7 +3,6 @@ import axios from 'axios';
 import BookmarksCollection from './BookmarksCollection';
 import { useNavigate } from 'react-router-dom';
 import LoadingSpinner from "../components/LoadingSpinner";
-import { Button, ButtonContainer, ProfileField, ProfileLabel, ProfileValue, ErrorMessage} from '../authentication/AuthenticationStyling';
 import ProfileDetails from './ProfileDetails';
 import ListingCollection from './ListingCollection';
 import ChangeProfilePicture from './ChangeProfilePicture'; // Import the ChangeProfilePicture component
@@ -157,14 +156,14 @@ function ProfilePage() {
         </div>
       ) : (
         <div>
-          <div className="vertical-center profile-page-layout">
+          <div className="vertical-center profile-page-layout margin padding-top">
             <div className="small-container drop-shadow">
               <ChangeProfilePicture userID = {userProfile.userID}/>
               <form>
                 {Object.entries(userProfile).map(([key, value]) => (
                   key !== 'userID' && 
                   <div key={key}>
-                    <label>
+                    <label className='compact'>
                       {key === 'fullName' ? 'Full Name' : key === 'phoneNumber' ? 'Phone Number' : key.replace(/_/g, ' ')
                         .split(' ')
                         .map(word => word.charAt(0).toUpperCase() + word.slice(1))
@@ -221,12 +220,11 @@ function ProfilePage() {
                       && deleteConfirmationData.password.length > 0 ? "button" : "disabled"}>Confirm Delete</button>
                     <button onClick={handleCancelDelete}>Cancel</button>
                 </div>
-                {deleteError && <ErrorMessage>{deleteError}</ErrorMessage>}
+                {deleteError && {deleteError , className : "error-message"}}
               </form>
           )}
             </div>
         </div>
-
         </div>
       )}
     </div>
