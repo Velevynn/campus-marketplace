@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import Notify from '../components/ErrorNotification';
 import axios from 'axios';
 import PropTypes from "prop-types";
-import LoadingSpinner from '../components/LoadingSpinner';
 import DefaultPfp from '../assets/profile-placeholder.png';
 
 function ChangeProfilePicture(props) {
@@ -10,7 +9,6 @@ function ChangeProfilePicture(props) {
   const [showNotification, setShowNotification] = useState(false);
   const [isSuccessful, setIsSuccessful] = useState(false);
   const [notificationMsg, setNotificationMsg] = useState('');
-  const [loading, setLoading] = useState(false);
   const [timestamp, setTimestamp] = useState(Date.now());
   
 
@@ -40,7 +38,6 @@ function ChangeProfilePicture(props) {
     }
 
     try {
-      setLoading(true);
       const formData = new FormData();
       formData.append('userID', userID);
 
@@ -82,8 +79,6 @@ function ChangeProfilePicture(props) {
       console.error('Error changing profile picture:', error);
       setIsSuccessful(false);
       displayNotification(error.message || 'Failed to change profile picture');
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -97,11 +92,6 @@ function ChangeProfilePicture(props) {
 
   return (
     <div className="profile-picture-container">
-      {loading && (
-        <div className="loading-spinner">
-          <LoadingSpinner />
-        </div>
-      )}
       <div className="profile-picture-wrapper">
         <img src={profileImage} alt="Profile" className="profile-picture" />
         <label htmlFor="profileImage" className="overlay">
