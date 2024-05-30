@@ -4,7 +4,7 @@ import axios from "axios";
 import ImageCarousel from "../components/ImageCarousel.js";
 import LoadingSpinner from "../components/LoadingSpinner.js";
 import { jwtDecode } from "jwt-decode";
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import emptyBookmark from "../assets/empty-bookmark.png";
 import filledBookmark from "../assets/filled-bookmark.png";
 import './ListingView.css';
@@ -17,6 +17,8 @@ function ListingView() {
   const [isBookmarked, setBookmark] = useState(false);
   const [loggedID, setLoggedID] = useState(null);
   const [dropdownVisible, setDropdownVisible] = useState(false); // State to control dropdown visibility
+  const facebookLink = "https://facebook.com/sharer/sharer.php?u=" + 
+  process.env.REACT_APP_FRONTEND_LINK + "/listings/" + listingID;  // does not work with local host (invalid HTTPS URL)
   const navigate = useNavigate();
 
   // Hook to retrieve logged in userID from jwt token
@@ -328,13 +330,14 @@ function ListingView() {
               (<img className="bookmark" src={emptyBookmark}/>)
               }</div>
 
-              {/* Dropdown button */}
               <div className="dropdown" onClick={() => setDropdownVisible(!dropdownVisible)}>
                 <button className="dropbtn">Share</button>
-                {/* Dropdown content */}
                 {dropdownVisible && (
                   <div className="dropdown-content" id="myDropdown">
                     <div className="option" onClick={handleCopyURL}>Copy Listing URL</div>
+                    <Link to = {facebookLink}>
+                      <div className="option">Share to Facebook</div>
+                    </Link>
                   </div>
                 )}
               </div>
