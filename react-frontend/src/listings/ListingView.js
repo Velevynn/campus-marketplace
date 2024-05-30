@@ -21,7 +21,7 @@ function ListingView() {
   process.env.REACT_APP_FRONTEND_LINK + "/listings/" + listingID;  // does not work with local host (invalid HTTPS URL)
   const navigate = useNavigate();
 
-  // Hook to retrieve logged in userID from jwt token
+  // hook to retrieve logged in userID from jwt token
   useEffect(() => {
     const fetchUserID = async () => {
       if (!loggedID) {
