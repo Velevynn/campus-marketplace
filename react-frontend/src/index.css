@@ -636,6 +636,13 @@ dd {
   text-align: center;
 }
 
+.left-container {
+  padding: 1rem 1rem;
+  margin-left: 5rem;
+  max-width: 100%;
+  text-align: left;
+}
+
 .container,
 .small-container,
 .medium-container {
