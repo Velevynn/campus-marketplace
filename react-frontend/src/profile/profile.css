@@ -115,12 +115,11 @@
 }
 
 .collection-list-bookmark {
-  max-height: 100px;
+  max-height: 140px;
 }
 
-
 .collection-list-listing {
-  max-height: 135px;
+  max-height: 155px;
 }
 
 .collection-list::-webkit-scrollbar {
@@ -161,10 +160,12 @@
 }
 
 .listing-height {
+  margin-top: -15px;
   height: 187px;
 }
 
 .bookmarks-height {
+  margin-top: -15px;
   height: 180px;
 }
 
