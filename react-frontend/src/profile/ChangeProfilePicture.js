@@ -3,9 +3,10 @@ import Notify from '../components/ErrorNotification';
 import axios from 'axios';
 import PropTypes from "prop-types";
 import DefaultPfp from '../assets/profile-placeholder.png';
+import WhitePfp from '../assets/white-placeholder.png'
 
 function ChangeProfilePicture(props) {
-  const [profileImage, setProfileImage] = useState('');
+  const [profileImage, setProfileImage] = useState(WhitePfp);
   const [showNotification, setShowNotification] = useState(false);
   const [isSuccessful, setIsSuccessful] = useState(false);
   const [notificationMsg, setNotificationMsg] = useState('');

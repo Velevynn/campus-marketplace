@@ -37,6 +37,8 @@
   height: 150px;
   border-radius: 50%;
   transition: filter 0.3s ease;
+  object-fit: cover;
+  object-position: center;
 }
 
 .profile-picture:hover {
