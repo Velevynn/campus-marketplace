@@ -132,10 +132,6 @@ function EditListing() {
     }
   };
 
-  const handleCancel = () => {
-    navigate(-1);
-  };
-
   const submitForm = async () => {
     setErrorMessage('');
     if (listing.title !== "" && listing.price !== "" && (listing.newImages.length + imageDisplay.length) !== 0) {
@@ -179,13 +175,13 @@ function EditListing() {
       <div className="small-container drop-shadow">
       <div className="vertical-center" style={{ display: 'flex', alignItems: 'center', marginRight: "1.5em" }}>
   <button
-    onClick={handleCancel}
+    onClick={() => navigate(-1)}
     style={{
       background: 'grey',
-      border: 'none',
       cursor: 'pointer',
-      marginRight: '1em',
+      border: 'none',
       padding: '0',
+      marginRight: '1em',
       borderRadius: '50%',
       width: '2em',
       height: '2em',
