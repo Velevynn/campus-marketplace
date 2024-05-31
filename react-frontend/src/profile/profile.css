@@ -179,3 +179,16 @@
 .compact {
   margin-bottom: -5px;
 }
+
+.text-link {
+  color: black;
+  text-decoration: none;
+  font-size: 16px;
+  transition: color 0.3s, text-decoration 0.3s;
+  cursor: pointer;
+}
+
+.text-link:hover {
+  color: blue;
+  text-decoration: underline;
+}
