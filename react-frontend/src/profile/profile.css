@@ -41,6 +41,13 @@
   object-position: center;
 }
 
+@media screen and (max-width: 1175px) {
+  .profile-page-layout {
+      display: flex;
+      flex-direction: column;
+  }
+}
+
 .profile-picture:hover {
   filter: brightness(0.5); 
 }

@@ -487,13 +487,6 @@ h5 {
   display: block;
 }
 
-@media screen and (max-width: 1175px) {
-  .profile-page-layout {
-      display: flex;
-      flex-direction: column;
-  }
-}
-
 /* Change color of dropdown links on hover */
 .dropdown-content a:hover {background-color: #f1f1f1;}
 
