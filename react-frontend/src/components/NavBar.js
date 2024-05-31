@@ -23,13 +23,18 @@ function NavBar() {
     navigate("/new-listing"); 
   };
 
+  const handleMarketplaceClick = () => {
+    navigate("/marketplace");
+    window.location.reload();
+  };
+
   return (
     <div className="flex-container nav-container">
       <nav className="vertical-center" style={{flexWrap: "wrap"}}>
 
-        <Link className="logo-container" to="/marketplace">
+        <div className="logo-container" onClick={handleMarketplaceClick}>
           <img src={logo} alt="Logo" />
-        </Link>
+        </div>
 
         <div>
           <SearchBar />
