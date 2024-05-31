@@ -12,21 +12,19 @@ function PublicPage() {
   const timestamp = Date.now();
   const { userID } = useParams();
   const [userProfile, setUserProfile] = useState({
-    username: 'Name',
-    full_name: 'Full Name',
-    bio: 'bio'
+    username: '',
+    fullName: '',
+    bio: ''
   });
 
-  useEffect(() => {
-    fetchUserProfile(userID);
-    fetchProfilePicture(userID);
-  }, []);
-
-  const fetchUserProfile = async (userID) => {
+  const fetchUserProfile = async(userID) => {
     try {
-      const response = await axios.get(process.env.REACT_APP_BACKEND_LINK + `/users/public-profile${userID}`);
-      setUserProfile(response);
+      console.log(process.env.REACT_APP_BACKEND_LINK + `/users/public-profile/${userID}`);
+      const response = await axios.get(process.env.REACT_APP_BACKEND_LINK + `/users/public-profile/${userID}`);
+      setUserProfile(response.data);
+      console.log(response.data);
       console.log(userProfile);
+      //console.log("reached");
     } catch (error) {
       console.log("Error encountered: ", error);
     }
@@ -40,13 +38,19 @@ function PublicPage() {
       console.log("Error encountered: ", error);
     }
   }
+  
+  useEffect(() => {
+    fetchUserProfile(userID);
+    fetchProfilePicture(userID);
+  }, []);
+
 
   return (
     <div className = "vertical-center margin padding-top">
       <div className = "small-container drop-shadow">
-        <h1>{userProfile.full_name}</h1>
+        <h1>{userProfile.fullName}</h1>
         <img src={profileImage} alt="Profile" className="profile-picture"></img>
-        <p>bio</p>
+        {userProfile.bio.length > 0 ? <p>{userProfile.bio}</p> : <p>No bio provided.</p>}
       </div>
     </div>
   );
