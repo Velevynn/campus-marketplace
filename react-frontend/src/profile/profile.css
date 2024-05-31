@@ -122,11 +122,11 @@
 }
 
 .collection-list-bookmark {
-  max-height: 140px;
+  max-height: 180px;
 }
 
 .collection-list-listing {
-  max-height: 155px;
+  max-height: 175px;
 }
 
 .collection-list::-webkit-scrollbar {
@@ -167,13 +167,14 @@
 }
 
 .listing-height {
-  margin-top: -15px;
+  margin-top: -25px;
   height: 187px;
 }
 
 .bookmarks-height {
-  margin-top: -15px;
+  margin-top: -25px;
   height: 180px;
+  margin-bottom: 20px;
 }
 
 .compact {
@@ -191,4 +192,12 @@
 .text-link:hover {
   color: blue;
   text-decoration: underline;
+}
+
+.vertical-left {
+  display: flex;
+  align-items: left;
+  justify-content: left;
+  padding-left: 26px;
+  padding-top: 16px;
 }
