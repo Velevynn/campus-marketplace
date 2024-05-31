@@ -4,7 +4,6 @@ import axios from 'axios';
 import PropTypes from "prop-types";
 import DefaultPfp from '../assets/profile-placeholder.png';
 import WhitePfp from '../assets/white-placeholder.png';
-import LoadingSpinner from "../components/LoadingSpinner";
 
 function ChangeProfilePicture(props) {
   const [profileImage, setProfileImage] = useState(WhitePfp);
@@ -12,7 +11,6 @@ function ChangeProfilePicture(props) {
   const [isSuccessful, setIsSuccessful] = useState(false);
   const [notificationMsg, setNotificationMsg] = useState('');
   const [timestamp, setTimestamp] = useState(Date.now());
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     fetchIsProfilePicture();
@@ -23,7 +21,6 @@ function ChangeProfilePicture(props) {
       const response = await axios.get(`${process.env.REACT_APP_BACKEND_LINK}/users/is-profile-picture/${props.userID}`);
       const { isProfilePicture } = response.data;
       setProfileImage(isProfilePicture ? `https://haggleimgs.s3.amazonaws.com/user/${props.userID}/bruh0.jpg?${timestamp}` : DefaultPfp);
-      setIsLoading(false);
     } catch (error) {
       console.error('Error fetching isProfilePicture:', error);
     }
@@ -96,11 +93,6 @@ function ChangeProfilePicture(props) {
   return (
     <div className="profile-picture-container">
       <div className="profile-picture-wrapper">
-      {isLoading ? (
-        <div className="margin">
-          <LoadingSpinner />
-        </div>
-      ) : (
         <div>
         <img src={profileImage} alt="Profile" className="profile-picture" />
         <label htmlFor="profileImage" className="overlay">
@@ -114,7 +106,6 @@ function ChangeProfilePicture(props) {
           onChange={handleFileChange}
         />
         </div>
-      )}
       </div>
       {showNotification && <Notify message={notificationMsg} isSuccessful = {isSuccessful}/>}
     </div>
