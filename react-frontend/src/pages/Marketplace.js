@@ -4,7 +4,6 @@ import { useSearchParams, useLocation } from "react-router-dom";
 import Entry from "../components/MarketplaceEntry";
 import ScrollToTopButton from "../components/ScrollToTopButton";
 import LoadingSpinner from "../components/LoadingSpinner"; // Import the loading spinner component
-import { MdNightlightRound } from 'react-icons/md';
 
 function Marketplace() {
   const [searchParams] = useSearchParams();
@@ -78,10 +77,11 @@ function Marketplace() {
           </div>
         ) : entries.length === 0 ? (
           <div>
-          <MdNightlightRound style={{ marginBottom: '-30px', color: 'black', marginTop:'10px'}} size={40}/>
+          
           <h2>
-            No Search Results  
+            No Search Results
           </h2>
+          <h1>💀</h1>
         </div>
         ) : (
           entries.map((entry) => (

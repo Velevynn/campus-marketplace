@@ -12,7 +12,7 @@ import NavBar from "./components/NavBar";
 import About from "./pages/About";
 import TOS from "./pages/TOS";
 import ListingView from "./listings/ListingView.js";
-import ProtectedRoute from "./utils/ProtectedRoute"; // Importing ProtectedRoute
+import ProtectedRoute from "./utils/ProtectedRoute";
 import BuyNow from "./pages/BuyNow.js";
 import MakeOfferPage from "./pages/MakeOfferPage.js";
 import EditListing from "./listings/EditListing.js";
