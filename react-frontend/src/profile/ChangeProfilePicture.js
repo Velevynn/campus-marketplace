@@ -10,7 +10,6 @@ function ChangeProfilePicture(props) {
   const [showNotification, setShowNotification] = useState(false);
   const [isSuccessful, setIsSuccessful] = useState(false);
   const [notificationMsg, setNotificationMsg] = useState('');
-  const [timestamp, setTimestamp] = useState(Date.now());
 
   useEffect(() => {
     fetchIsProfilePicture();
@@ -20,7 +19,7 @@ function ChangeProfilePicture(props) {
     try {
       const response = await axios.get(`${process.env.REACT_APP_BACKEND_LINK}/users/is-profile-picture/${props.userID}`);
       const { isProfilePicture } = response.data;
-      setProfileImage(isProfilePicture ? `https://haggleimgs.s3.amazonaws.com/user/${props.userID}/bruh0.jpg?${timestamp}` : DefaultPfp);
+      setProfileImage(isProfilePicture ? `https://haggleimgs.s3.amazonaws.com/user/${props.userID}/bruh0.jpg?${props.time}` : DefaultPfp);
     } catch (error) {
       console.error('Error fetching isProfilePicture:', error);
     }
@@ -71,7 +70,6 @@ function ChangeProfilePicture(props) {
         }
       });
 
-      setTimestamp(Date.now());
       setProfileImage(URL.createObjectURL(validatedFile));
       setIsSuccessful(true);
       displayNotification(response.data.message);
@@ -114,6 +112,7 @@ function ChangeProfilePicture(props) {
 
 ChangeProfilePicture.propTypes = {
   userID: PropTypes.string.isRequired,
+  time: PropTypes.string.isRequired
 };
 
 export default ChangeProfilePicture;

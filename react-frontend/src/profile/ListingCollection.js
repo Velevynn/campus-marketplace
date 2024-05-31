@@ -50,7 +50,7 @@ function ListingCollection(props) {
               <div key={listing.bookmarkID} className="collection-item">
                   <Link to={`/listings/${listing.listingID}`} className="collection-link">
                   <div className="collection-container">
-                      <img src={`https://haggleimgs.s3.amazonaws.com/${listing.listingID}/image0`} className="collection-image" alt={`Listing ${listing.title}`} />
+                      <img src={`https://haggleimgs.s3.amazonaws.com/${listing.listingID}/image0?${props.time}`} className="collection-image" alt={`Listing ${listing.title}`} />
                   </div>
                   <div className="collection-container">
                       <h5 className="collection-text">{listing.title}</h5>
@@ -94,9 +94,10 @@ ListingCollection.propTypes = {
       bookmarkID: PropTypes.string.isRequired,
       listingID: PropTypes.string.isRequired,
       title: PropTypes.string.isRequired,
-      userID: PropTypes.string.isRequired
+      userID: PropTypes.string.isRequired,
     })
   ).isRequired,
+  time: PropTypes.string.isRequired
 };
 
 export default ListingCollection;

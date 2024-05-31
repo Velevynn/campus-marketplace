@@ -85,7 +85,7 @@ function BookmarksCollection(props) {
                   <Link to={`/listings/${bookmark.listingID}`} className="collection-link">
                     <div className="collection-container">
                       <img
-                        src={`https://haggleimgs.s3.amazonaws.com/${bookmark.listingID}/image0`}
+                        src={`https://haggleimgs.s3.amazonaws.com/${bookmark.listingID}/image0?${props.time}`}
                         className="collection-image"
                         alt={`Listing ${bookmark.title}`}
                       />
@@ -122,6 +122,7 @@ BookmarksCollection.propTypes = {
       title: PropTypes.string.isRequired,
     })
   ).isRequired,
+  time: PropTypes.string.isRequired
 };
 
 export default BookmarksCollection;

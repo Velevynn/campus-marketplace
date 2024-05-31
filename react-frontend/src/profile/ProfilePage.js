@@ -12,6 +12,7 @@ function ProfilePage() {
   const [bookmarks, setBookmarks] = useState([]);
   const [listings, setMyListings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const timestamp = useState(Date.now());
   const [userProfile, setUserProfile] = useState({
     username: '',
     full_name: '',
@@ -158,7 +159,7 @@ function ProfilePage() {
         <div>
           <div className="vertical-center profile-page-layout margin padding-top">
             <div className="small-container drop-shadow">
-              <ChangeProfilePicture userID = {userProfile.userID}/>
+              <ChangeProfilePicture userID = {userProfile.userID} time = {timestamp}/>
               <form>
                 {Object.entries(userProfile).map(([key, value]) => (
                   key !== 'userID' && 
@@ -180,8 +181,8 @@ function ProfilePage() {
             </div>
 
             <div className="collection-layout margin padding-left drop-shadow">
-              <BookmarksCollection title="Bookmarks" bookmarks={bookmarks} userID={userProfile.userID} />
-              <ListingCollection title="Listings" bookmarks={listings} userID={userProfile.userID} />
+              <BookmarksCollection title="Bookmarks" bookmarks={bookmarks} userID={userProfile.userID} time = {timestamp} />
+              <ListingCollection title="Listings" bookmarks={listings} userID={userProfile.userID} time = {timestamp} />
             </div>
 
             <ProfileDetails userID = {userProfile.userID}>
