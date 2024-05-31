@@ -6,6 +6,7 @@ import axios from "axios";
 import editHover from "../assets/edit-hover.png";
 import editNeutral from "../assets/edit-neutral.png";
 import deletePic from "../assets/delete-button.png";
+import truncateString from "../utils/Functions";
 
 function ListingCollection(props) {
   const [showNotification, setShowNotification] = useState(false);
@@ -37,7 +38,7 @@ function ListingCollection(props) {
 
   return (
     <div>
-      <div className="vertical-center margin">
+      <div className="vertical-left margin">
         <h4>My Listings</h4>
       </div>
       <div className="vertical-center margin">
@@ -53,7 +54,7 @@ function ListingCollection(props) {
                       <img src={`https://haggleimgs.s3.amazonaws.com/${listing.listingID}/image0?${props.time}`} className="collection-image" alt={`Listing ${listing.title}`} />
                   </div>
                   <div className="collection-container">
-                      <h5 className="collection-text">{listing.title}</h5>
+                      <h5 className="collection-text">{truncateString(listing.title, 18)}</h5>
                   </div>
                   </Link>
                   <Link to={`/listings/${listing.listingID}/edit`}>

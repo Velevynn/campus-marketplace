@@ -3,6 +3,7 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from 'react-router-dom';
+import ArrowButton from "../components/ArrowButton"
 
 function EditListing() {
   const { listingID } = useParams();
@@ -162,7 +163,12 @@ function EditListing() {
   return (
     <div className="vertical-center margin">
       <div className="small-container drop-shadow">
-        <h2>Edit Listing</h2>
+      <div className="vertical-center" style={{ display: 'flex', alignItems: 'center', marginRight: "1.5em" }}>
+        <div onClick={() => {navigate(-1)}} style={{ rotate: '-90deg'}}>
+          <ArrowButton></ArrowButton>
+        </div>
+        <h2 style={{fontSize: '2rem', margin: "0", marginLeft: "5px" }}>Edit Listing</h2>
+      </div>
         <form>
           <label htmlFor="title">New Title</label>
           <input
