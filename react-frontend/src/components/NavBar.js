@@ -7,7 +7,8 @@ import { jwtDecode } from "jwt-decode";
 
 function getProfileName() {
   const token = localStorage.getItem("token");
-  if (token !== null) {
+  const decodedToken = jwtDecode(token);
+  if (token !== null && (decodedToken.exp && decodedToken.exp > (Date.now() / 1000))) {
     const decodedToken = jwtDecode(token);
     const username = decodedToken.username;
     return username;
