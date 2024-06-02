@@ -43,46 +43,50 @@ function ListingCollection(props) {
       </div>
       <div className="vertical-center margin">
         <div className="small-container listing-height">
-          {props.bookmarks.length === 0 ? (
-              <p> There are no Listings </p>
+          <ul className="collection-list collection-list-listing">
+            {props.bookmarks.length === 0 ? (
+              <p>There are no Listings</p>
             ) : (
-            <ul className="collection-list collection-list-listing">
-            {listings.map((listing) => (
-              <div key={listing.bookmarkID} className="collection-item">
+              listings.map((listing) => (
+                <div key={listing.bookmarkID} className="collection-item">
                   <Link to={`/listings/${listing.listingID}`} className="collection-link">
-                  <div className="collection-container">
+                    <div className="collection-container">
                       <img src={`https://haggleimgs.s3.amazonaws.com/${listing.listingID}/image0?${props.time}`} className="collection-image" alt={`Listing ${listing.title}`} />
-                  </div>
-                  <div className="collection-container">
+                    </div>
+                    <div className="collection-container">
                       <h5 className="collection-text">{truncateString(listing.title, 18)}</h5>
-                  </div>
+                    </div>
                   </Link>
-                  <Link to={`/listings/${listing.listingID}/edit`}>
-                  <div className="edit-container">
-                    <img
-                      className="edit-neutral"
-                      src={editNeutral}
-                      alt="Edit"
-                      onMouseOver={(e) => e.currentTarget.src = editHover}
-                      onMouseOut={(e) => e.currentTarget.src = editNeutral}
-                    />
-                  </div>
-                  </Link>
-                  <div
-                      className="edit-container"
-                      onClick={() => handleDeleteListing(listing.listingID)}
-                    >
-                      <img
-                        className="edit-neutral"
-                        src={deletePic}
-                        alt="Delete"
-                      />
-                  </div>
-                {showNotification && <Notify message={notificationMsg} isSuccessful = {isSuccessful}/>}
-              </div>
-              ))}  
-            </ul>
-          )}
+                  {props.custom && (
+                    <div className="collection-item">
+                      <Link to={`/listings/${listing.listingID}/edit`}>
+                        <div className="edit-container">
+                          <img
+                            className="edit-neutral"
+                            src={editNeutral}
+                            alt="Edit"
+                            onMouseOver={(e) => e.currentTarget.src = editHover}
+                            onMouseOut={(e) => e.currentTarget.src = editNeutral}
+                          />
+                        </div>
+                      </Link>
+                      <div
+                        className="edit-container"
+                        onClick={() => handleDeleteListing(listing.listingID)}
+                      >
+                        <img
+                          className="edit-neutral"
+                          src={deletePic}
+                          alt="Delete"
+                        />
+                      </div>
+                    </div>
+                  )}
+                  {showNotification && <Notify message={notificationMsg} isSuccessful={isSuccessful} />}
+                </div>
+              ))
+            )}
+          </ul>
         </div>
       </div>
     </div>
@@ -95,10 +99,11 @@ ListingCollection.propTypes = {
       bookmarkID: PropTypes.string.isRequired,
       listingID: PropTypes.string.isRequired,
       title: PropTypes.string.isRequired,
-      userID: PropTypes.string.isRequired,
+      userID: PropTypes.string.isRequired
     })
   ).isRequired,
-  time: PropTypes.string.isRequired
+  time: PropTypes.string.isRequired,
+  custom: PropTypes.bool.isRequired
 };
 
 export default ListingCollection;

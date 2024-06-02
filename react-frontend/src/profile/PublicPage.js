@@ -4,6 +4,7 @@ import LoadingSpinner from "../components/LoadingSpinner";
 import WhitePfp from '../assets/white-placeholder.png';
 import DefaultPfp from '../assets/profile-placeholder.png';
 import { useParams } from 'react-router-dom';
+import ListingCollection from './ListingCollection';
 import axios from 'axios';
 
 
@@ -12,10 +13,13 @@ function PublicPage() {
   const [isLoading, setIsLoading] = useState(true);  // tracks loading states for rendering
   const timestamp = Date.now();  // timestamp is appended to profile picture URL to remove browser caching
   const { userID } = useParams();
+  const [listings, setMyListings] = useState([]);
+  const isCustom = false;
   const [userProfile, setUserProfile] = useState({  // user data
     username: '',
     fullName: '',
-    bio: ''
+    bio: '',
+    city: ''
   });
 
   const fetchUserProfile = async(userID) => {
@@ -36,25 +40,46 @@ function PublicPage() {
     }
   }  // if there is no custom pfp set, the profile picture will be set as the default pfp defined in assets
   
+  const fetchCollections = async (userID) => {
+    try {
+      console.log(userID);
+      const response = await axios.get(process.env.REACT_APP_BACKEND_LINK + `/listings/mylistings/${userID}`);
+      setMyListings(response.data);
+      console.log(response.data, "hello");
+
+    } catch (error) {
+      console.error('Failed to fetch myListings', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   useEffect(() => {
+    fetchCollections(userID);
     fetchUserProfile(userID);
     fetchProfilePicture(userID);
-    setIsLoading(false);
   }, []);
 
 
   return (
     <div className = "vertical-center margin padding-top">
       {isLoading ? (
-        <div><LoadingSpinner/> {/*Visible loading spinner that runs until all data for elements are made availble*/}</div> 
+        <div><LoadingSpinner/> {/*Visible loading spinner that runs until all data for elements are made available*/}</div> 
        ) : (
+        <div className="vertical-center profile-page-layout margin padding-top">
           <div className = "small-container drop-shadow">
-            <h1>{userProfile.fullName}</h1>
-            <img src={profileImage} alt="Profile" className="profile-picture"></img>
-            {userProfile.bio.length > 0 ? <p>{userProfile.bio}</p> : <p>No bio provided.</p>}
+            <div className ="full-container">
+              <h1>{userProfile.fullName}</h1>
+              <img src={profileImage} alt="Profile" className="profile-picture"></img>
+              <h5>{userProfile.city}</h5>
+              {userProfile.bio.length > 0 ? <p>{userProfile.bio}</p> : <p>No bio provided.</p>}
+            </div>
+            <ListingCollection title="Listings" bookmarks={listings} userID={userProfile.userID} time = {timestamp} custom = {isCustom} />
           </div>
+        </div>
       )
     }
+    
     </div>
   );
 }

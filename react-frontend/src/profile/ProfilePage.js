@@ -13,6 +13,7 @@ function ProfilePage() {
   const [listings, setMyListings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const timestamp = useState(Date.now());
+  const isCustom = true;
   const [userProfile, setUserProfile] = useState({
     username: '',
     full_name: '',
@@ -182,7 +183,7 @@ function ProfilePage() {
 
             <div className="collection-layout margin padding-left drop-shadow">
               <BookmarksCollection title="Bookmarks" bookmarks={bookmarks} userID={userProfile.userID} time = {timestamp} />
-              <ListingCollection title="Listings" bookmarks={listings} userID={userProfile.userID} time = {timestamp} />
+              <ListingCollection title="Listings" bookmarks={listings} userID={userProfile.userID} time = {timestamp} custom = {isCustom} />
             </div>
 
             <ProfileDetails userID = {userProfile.userID}>
