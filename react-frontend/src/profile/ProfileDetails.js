@@ -17,6 +17,17 @@ function ProfileDetails(props) {
         setBio(event.target.value);
     }
 
+    function triggerNotification(textField, successBool) {
+        if (!showNotification) {
+            setNotificationMsg(textField);
+                    setIsSuccessful(successBool);
+                    setShowNotification(true);
+            setTimeout(() => {
+                setShowNotification(false); // Hide notification after 3 seconds
+            }, 3300);
+        }
+    }
+
     const fetchUserProfile = async(userID) => {
         try {
           const response = await axios.get(process.env.REACT_APP_BACKEND_LINK + `/users/public-profile/${userID}`);
@@ -32,9 +43,7 @@ function ProfileDetails(props) {
     const saveBio = async() => {
         try {
             if (bio.length == 0) {
-                setNotificationMsg("Text field empty");
-                setIsSuccessful(false);
-                setShowNotification(true);
+                triggerNotification("Text field empty", false);
                 return;
             }
 
@@ -46,14 +55,10 @@ function ProfileDetails(props) {
                     'Authorization': `Bearer ${localStorage.getItem(process.env.JWT_TOKEN_NAME)}`
                   }
             });
-            setNotificationMsg("Bio Saved Successfully");
-            setIsSuccessful(true);
-            setShowNotification(true);
+            triggerNotification("Bio Saved Successfully", true);
         } catch (error) {
             console.error("Error:", error);
-            setIsSuccessful(false);
-            setNotificationMsg("Save Unsuccessful");
-            setShowNotification(true);
+            triggerNotification("Save Unsuccessful", false);
         }
     }
 
@@ -68,26 +73,39 @@ function ProfileDetails(props) {
                 console.log(city);
             } else {
                 console.log("Location not found");
-                setIsSuccessful(false);
+                let msg ="ZIP Code not found";
                 if (hometown.length!== 5) {
-                    setNotificationMsg("Invalid ZIP Code");
-                } else {
-                    setNotificationMsg("ZIP Code not found");
+                    msg = "Invalid Zip Code";
                 }
-                
+                triggerNotification(msg, false);
                 setShowNotification(true);
             }
         } catch (error) {
             console.error("Error:", error);
-            setIsSuccessful(false);
-            setNotificationMsg("Failed to fetch location");
-            setShowNotification(true);
+            triggerNotification("Failed to fetch location", false);
         }
     };
     
-    const handleSetHometown = () => {
-        // Implement backend call to set the hometown
-        // This function will be called when the button to set hometown is clicked
+    const handleSetHometown = async() => {
+        try {
+            if (cityByZip.length == 0) {
+                triggerNotification("Enter & Confirm a Zip Code", false);
+                return;
+            }
+
+            await axios.post(`${process.env.REACT_APP_BACKEND_LINK}/users/set-location`, {
+                userID: props.userID,
+                city: cityByZip
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem(process.env.JWT_TOKEN_NAME)}`
+                  }
+            });
+            triggerNotification("Location Saved Successfully", true);
+        } catch (error) {
+            console.error("Error:", error);
+            triggerNotification("Location Save Unsuccessful", false);
+        }
     };
     
     
