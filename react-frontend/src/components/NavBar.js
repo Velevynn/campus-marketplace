@@ -7,14 +7,15 @@ import { jwtDecode } from "jwt-decode";
 
 function getProfileName() {
   const token = localStorage.getItem("token");
-  const decodedToken = jwtDecode(token);
-  if (token !== null && (decodedToken.exp && decodedToken.exp > (Date.now() / 1000))) {
+  if (token !== null) {
     const decodedToken = jwtDecode(token);
-    const username = decodedToken.username;
-    return username;
-  } else {
+    if (decodedToken.exp && decodedToken.exp > (Date.now() / 1000)) {
+      const username = decodedToken.username;
+      return username;
+    }
     return "Profile";
   }
+  return "Profile"
 }
 
 function NavBar() {
