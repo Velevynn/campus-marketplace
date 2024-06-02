@@ -7,6 +7,7 @@ import { jwtDecode } from "jwt-decode";
 import { Link, useNavigate } from 'react-router-dom';
 import emptyBookmark from "../assets/empty-bookmark.png";
 import filledBookmark from "../assets/filled-bookmark.png";
+import { FaUser } from 'react-icons/fa';
 import './ListingView.css';
 
 function ListingView() {
@@ -17,6 +18,8 @@ function ListingView() {
   const [isBookmarked, setBookmark] = useState(false);
   const [loggedID, setLoggedID] = useState(null);
   const [dropdownVisible, setDropdownVisible] = useState(false); // State to control dropdown visibility
+  const [username, setUsername] = useState("");
+  const [ownerID, setOwnerID] = useState(null);
   const facebookLink = "https://facebook.com/sharer/sharer.php?u=" + 
   process.env.REACT_APP_FRONTEND_LINK + "/listings/" + listingID;  // does not work with local host (invalid HTTPS URL)
   const navigate = useNavigate();
@@ -71,6 +74,7 @@ function ListingView() {
         /* set fetched data to state */
         if (response.data.length > 0) {
           setListing(response.data[0]);
+          setOwnerID(response.data[0].userID);
           /* check currently logged-in userID */
           if(loggedID){
               setIsOwner(response.data[0].userID === loggedID); // If userIDs are the same, we know this user owns this listing
@@ -78,6 +82,17 @@ function ListingView() {
             }
           } else{
             console.log("user not logged in or token not found");
+          }
+
+          // Fetch username separately using the userID
+          if (loggedID) {
+            const usernameResponse = await axios.get(
+              process.env.REACT_APP_BACKEND_LINK + `/users/public-profile/${loggedID}`,
+            );
+            
+            if (usernameResponse.data) {
+              setUsername(usernameResponse.data.username);
+            }
           }
         }
       catch (error) {
@@ -318,6 +333,9 @@ function ListingView() {
             </p>
             <h5 style={{color: "green"}}>{listing.price === "0" || listing.price === 0 ? "FREE" : "$" + listing.price}</h5>
             <p>{listing.description}</p>
+            <Link to = {`/profile/${ownerID}`}>
+              <h5 style={{paddingTop: "100px"}}><FaUser style = {{marginRight: "10px"}}/>{username}</h5>
+            </Link>
           </div>
         </div>
         <div className="vertical-center margin-top">

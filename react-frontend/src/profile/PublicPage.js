@@ -34,7 +34,7 @@ function PublicPage() {
   const fetchProfilePicture = async(userID) => {
     try {
       const response = await axios.get(process.env.REACT_APP_BACKEND_LINK + `/users/is-profile-picture/${userID}`);
-      setProfileImage(response ? `https://haggleimgs.s3.amazonaws.com/user/${userID}/bruh0.jpg?${timestamp}` : DefaultPfp);
+      setProfileImage(response.data.isProfilePicture ? `https://haggleimgs.s3.amazonaws.com/user/${userID}/bruh0.jpg?${timestamp}` : DefaultPfp);
     } catch (error) {
       console.log("Error encountered: ", error);
     }
