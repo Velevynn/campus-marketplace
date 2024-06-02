@@ -455,14 +455,6 @@ h5 {
   border: none;
 }
 
-.small-button {
-  height: 35px;
-  width: 100px;
-  font-size: 12px;
-  vertical-align: center;
-  margin-top: 10px;
-}
-
 /* Dropdown container */
 .dropdown {
   position: relative;
