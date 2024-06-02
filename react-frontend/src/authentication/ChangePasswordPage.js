@@ -16,7 +16,7 @@ const ChangePasswordPage = () => {
   const navigate = useNavigate();
   // Accessing the password reset token from the URL search parameters
   const [searchParams] = useSearchParams();
-  const token = searchParams.get('token');
+  const token = searchParams.get(process.env.JWT_TOKEN_NAME);
 
   // Validation checks for the new password
   //const passwordHasContent = password.length > 0;

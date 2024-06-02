@@ -36,7 +36,7 @@ function ProfilePage() {
   }, []);
 
   const fetchUserProfile = async () => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem(process.env.JWT_TOKEN_NAME);
     if (!token) {
       navigate('/login');
       return;
@@ -82,7 +82,7 @@ function ProfilePage() {
   };
 
   const handleSignOut = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem(process.env.JWT_TOKEN_NAME);
     navigate('/login');
   };
 
@@ -97,7 +97,7 @@ function ProfilePage() {
 
 
   const handleDeleteConfirmation = async () => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem(process.env.JWT_TOKEN_NAME);
     if (!token) {
       navigate('/login');
       return;
@@ -116,7 +116,7 @@ function ProfilePage() {
 
       if (response.status === 200) {
         // After successful deletion, redirect to login
-        localStorage.removeItem('token');
+        localStorage.removeItem(process.env.JWT_TOKEN_NAME);
         navigate('/login');
       }
     } catch (error) {

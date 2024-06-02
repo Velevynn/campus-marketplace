@@ -66,7 +66,7 @@ function ChangeProfilePicture(props) {
       const response = await axios.post(`${process.env.REACT_APP_BACKEND_LINK}/users/change-profile-image`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${localStorage.getItem(process.env.JWT_TOKEN_NAME)}`
         }
       });
 

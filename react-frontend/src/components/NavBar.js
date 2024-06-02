@@ -6,14 +6,13 @@ import SearchBar from "./SearchBar";
 import { jwtDecode } from "jwt-decode";
 
 function getProfileName() {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem(process.env.JWT_TOKEN_NAME);
   if (token !== null) {
     const decodedToken = jwtDecode(token);
     if (decodedToken.exp && decodedToken.exp > (Date.now() / 1000)) {
       const username = decodedToken.username;
       return username;
     }
-    return "Profile";
   }
   return "Profile"
 }

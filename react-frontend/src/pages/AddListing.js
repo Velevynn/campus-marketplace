@@ -135,7 +135,7 @@ function AddListing() {
   
 
   async function submitForm() {
-      const token = localStorage.getItem("token"); // Retrieve the JWT token from localStorage
+      const token = localStorage.getItem(process.env.JWT_TOKEN_NAME); // Retrieve the JWT token from localStorage
       const decodedToken = jwtDecode(token); // Decode the token
       const username = decodedToken.username; // Extract the username from the token
   

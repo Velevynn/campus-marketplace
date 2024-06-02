@@ -22,7 +22,7 @@ function ProfileDetails(props) {
                 bio: bio
             }, {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    'Authorization': `Bearer ${localStorage.getItem(process.env.JWT_TOKEN_NAME)}`
                   }
             });
             setNotificationMsg("Bio Saved Successfully");

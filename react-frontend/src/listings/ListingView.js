@@ -26,7 +26,7 @@ function ListingView() {
     const fetchUserID = async () => {
       if (!loggedID) {
         console.log("Fetching userID from JWT token.");
-        const token = localStorage.getItem("token");
+        const token = localStorage.getItem(process.env.JWT_TOKEN_NAME);
         if (token) {
           const decodedToken = jwtDecode(token);
           const username = decodedToken.username;
