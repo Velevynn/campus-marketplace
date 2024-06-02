@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import PropTypes from "prop-types";
 import Notify from '../components/ErrorNotification';
@@ -15,8 +15,27 @@ function ProfileDetails(props) {
         setBio(event.target.value);
     }
 
+    const fetchUserProfile = async(userID) => {
+        try {
+          const response = await axios.get(process.env.REACT_APP_BACKEND_LINK + `/users/public-profile/${userID}`);
+          setBio(response.data.bio);
+          if (bio && bio.length > 0 ) {
+            setBio(bio)
+          }
+        } catch (error) {
+          console.log("Error encountered: ", error);
+        }
+      }
+
     const saveBio = async() => {
         try {
+            if (bio.length == 0) {
+                setNotificationMsg("Text field empty");
+                setIsSuccessful(false);
+                setShowNotification(true);
+                return;
+            }
+
             await axios.post(`${process.env.REACT_APP_BACKEND_LINK}/users/set-bio`, {
                 userID: props.userID,
                 bio: bio
@@ -35,6 +54,10 @@ function ProfileDetails(props) {
             setShowNotification(true);
         }
     }
+
+    useEffect(() => {
+        fetchUserProfile(props.userID);
+      }, []);
 
     return (
         <div className = "padding-left">
