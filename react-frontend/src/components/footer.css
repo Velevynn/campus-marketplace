@@ -7,6 +7,11 @@
     align-items: center;
   }
   
+  .logo {
+    display: flex;
+    align-items: center;
+  }
+
   .logo img {
     width: 50px;
     transition: filter 0.3s ease;
@@ -32,4 +37,12 @@
   
   .link-separator {
     margin: 0 10px;
+  }
+
+  .media-icon {
+    margin-left: 15px;
+  }
+
+  .media-icon:hover {
+    scale: 1.1;
   }

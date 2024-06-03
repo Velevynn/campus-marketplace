@@ -8,6 +8,7 @@ import { jwtDecode } from "jwt-decode";
 import { Link, useNavigate } from 'react-router-dom';
 import emptyBookmark from "../assets/empty-bookmark.png";
 import filledBookmark from "../assets/filled-bookmark.png";
+import Footer from "../components/Footer.js";
 import { FaUser } from 'react-icons/fa';
 import './ListingView.css';
 
@@ -302,53 +303,56 @@ function ListingView() {
     {isLoading ? (
             <div><LoadingSpinner/> {/*Visible loading spinner that runs until all data for elements are made available*/}</div> 
           ) : ( 
-            <div className="vertical-center margin">
-                  <div className="medium-container drop-shadow">
-                    <div className="listing-layout">
-                      <div className="margin vertical-center flex-column">
-                        <ImageCarousel images={images} />
-                        <div className="">
-                        {isOwner && (
-                          <>
-                            <button className="muted-button margin-right" onClick={handleEditListing}>Edit</button>
-                            <button style={{backgroundColor: "red"}}onClick={handleDeleteListing}>Delete</button>
-                          </>
-                        )}
+            <div>
+              <div className="vertical-center margin">
+                    <div className="medium-container drop-shadow">
+                      <div className="listing-layout">
+                        <div className="margin vertical-center flex-column">
+                          <ImageCarousel images={images} />
+                          <div className="">
+                          {isOwner && (
+                            <>
+                              <button className="muted-button margin-right" onClick={handleEditListing}>Edit</button>
+                              <button style={{backgroundColor: "red"}}onClick={handleDeleteListing}>Delete</button>
+                            </>
+                          )}
+                          </div>
+                        </div>
+                        <div className="margin" type="text">
+                          <h1 className="no-margin-top no-margin-bottom">{listing.title}</h1>
+                          <h5 style={{margin: "0"}}><Link to = {`/marketplace?q=${listing.category}`}>{listing.category}</Link></h5>
+                          <p>Posted {TimeAgo(listing.postDate)}</p>
+                          <p>
+                              {getBookmarkCount()}
+                          </p>
+                          <h5 style={{color: "green"}}>{listing.price === "0" || listing.price === 0 ? "FREE" : "$" + listing.price}</h5>
+                          <p>{listing.description}</p>
+                            <div style={{display: 'flex', alignItems: 'center', marginTop: "100px"}}>
+                              <Link to = {`/profile/${ownerID}`}  style={{ display: 'flex', alignItems: 'center' }}>
+                              <FaUser style = {{marginRight: "10px"}}/>
+                                <h5 style={{paddingBottom:"1px"}}>
+                                  {username}    
+                                </h5>
+                              </Link>
+                            </div>
                         </div>
                       </div>
-                      <div className="margin" type="text">
-                        <h1 className="no-margin-top no-margin-bottom">{listing.title}</h1>
-                        <h5 style={{margin: "0"}}><Link to = {`/marketplace?q=${listing.category}`}>{listing.category}</Link></h5>
-                        <p>Posted {TimeAgo(listing.postDate)}</p>
-                        <p>
-                            {getBookmarkCount()}
-                        </p>
-                        <h5 style={{color: "green"}}>{listing.price === "0" || listing.price === 0 ? "FREE" : "$" + listing.price}</h5>
-                        <p>{listing.description}</p>
-                          <div style={{display: 'flex', alignItems: 'center', marginTop: "100px"}}>
-                            <Link to = {`/profile/${ownerID}`}  style={{ display: 'flex', alignItems: 'center' }}>
-                            <FaUser style = {{marginRight: "10px"}}/>
-                              <h5 style={{paddingBottom:"1px"}}>
-                                {username}    
-                              </h5>
-                            </Link>
-                          </div>
+                      <div className="vertical-center margin-top">
+                          <button className="margin-right" onClick={handleMakeOffer}>Make Offer</button>
+                          <button className="margin-right" onClick={handleStartChat}>Start Chat</button>
+
+                          <div className="vertical-center margin-right" onClick={toggleBookmark}>
+                            {isBookmarked ? 
+                            (<img className="bookmark" src={filledBookmark}/>) : 
+                            (<img className="bookmark" src={emptyBookmark}/>)
+                            }</div>
+
+                            <ShareButton link = {`${process.env.REACT_APP_FRONTEND_LINK} + "/listings/" + ${listingID}`} type = 'Listing'/>
+                          
                       </div>
                     </div>
-                    <div className="vertical-center margin-top">
-                        <button className="margin-right" onClick={handleMakeOffer}>Make Offer</button>
-                        <button className="margin-right" onClick={handleStartChat}>Start Chat</button>
-
-                        <div className="vertical-center margin-right" onClick={toggleBookmark}>
-                          {isBookmarked ? 
-                          (<img className="bookmark" src={filledBookmark}/>) : 
-                          (<img className="bookmark" src={emptyBookmark}/>)
-                          }</div>
-
-                          <ShareButton link = {`${process.env.REACT_APP_FRONTEND_LINK} + "/listings/" + ${listingID}`} type = 'Listing'/>
-                        
-                    </div>
-                  </div>
+                </div>
+                <Footer/>
               </div>
           )}
     </div>
