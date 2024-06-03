@@ -158,14 +158,16 @@ router.delete("/:listingID/bookmark/", async (req, res) => {
       [req.query.userID, req.query.listingID]
     );
 
-  
     if (result.rowCount === 0) {
       return res.status(404).send("Bookmark not found.");
     }
 
+    const deleted = result.rowCount;
+
+
     const rows = await connection.query(
-      'UPDATE listings SET "bookmarkCount" = "bookmarkCount" - 1 WHERE "listingID" = $1',
-      [req.query.listingID]
+      'UPDATE listings SET "bookmarkCount" = "bookmarkCount" - $1 WHERE "listingID" = $2',
+      [deleted, req.query.listingID]
     )
 
     // Successful deletion.
