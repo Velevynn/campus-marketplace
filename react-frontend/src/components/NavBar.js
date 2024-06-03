@@ -11,7 +11,8 @@ function getProfileName() {
     const decodedToken = jwtDecode(token);
     if (decodedToken.exp && decodedToken.exp > (Date.now() / 1000)) {
       const username = decodedToken.username;
-      return username;
+      const formattedUsername = username.charAt(0).toUpperCase() + username.slice(1).toLowerCase();
+      return formattedUsername;
     }
   }
   return "Profile"
