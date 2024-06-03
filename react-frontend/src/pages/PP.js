@@ -1,5 +1,6 @@
 import React from "react";
 import Footer from "../components/Footer";
+import ScrollToTopButton from "../components/ScrollToTopButton";
 
 function Pp() {
   return (
@@ -56,8 +57,16 @@ function Pp() {
         </div>
       </div>
       <Footer/>
+      <ScrollToTopButton onClick={scrollToTop} />
     </div>
   );
 }
+
+const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  };
 
 export default Pp;

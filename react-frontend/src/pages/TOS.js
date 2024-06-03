@@ -1,5 +1,6 @@
 import React from "react";
 import Footer from "../components/Footer";
+import ScrollToTopButton from "../components/ScrollToTopButton";
 
 function Tos() {
   return (
@@ -106,8 +107,16 @@ function Tos() {
         </div>
       </div>
       <Footer/>
+      <ScrollToTopButton onClick={scrollToTop} />
     </div>
   );
 }
+
+const scrollToTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+};
 
 export default Tos;
