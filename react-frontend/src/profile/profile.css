@@ -96,6 +96,24 @@
   min-height: 110px;
   max-height: 110px;
   min-width: 360px;
+  overflow-y: auto; 
+}
+
+.vertical-form::-webkit-scrollbar {
+  width: 10px; 
+}
+
+.vertical-form::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+
+.vertical-form::-webkit-scrollbar-thumb {
+  background: #888; 
+  border-radius: 5px; 
+}
+
+.vertical-form::-webkit-scrollbar-thumb:hover {
+  background: #555; 
 }
 
 .error-message {
@@ -129,7 +147,7 @@
 }
 
 .collection-list-listing {
-  max-height: 175px;
+  max-height: 135px;
 }
 
 .collection-list::-webkit-scrollbar {
@@ -237,4 +255,8 @@
 
 .user-bio {
   text-align: justify;
+}
+
+.line-length {
+  line-height: 1.25;
 }

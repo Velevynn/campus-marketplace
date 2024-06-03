@@ -1,5 +1,6 @@
 import React from "react";
 import Bio from "../components/Bio";
+import Footer from "../components/Footer";
 import "./About.css"
 
 function About() {
@@ -33,12 +34,13 @@ function About() {
 
   return (
     <div>
-      <h1 className="vertical-center margin">About</h1>
+      <h1 className="vertical-center margin">About Us</h1>
       <div className="about-layout">
         {bios.map((bio, index) => (
           <Bio key={index} name={bio.name} bio={bio.bio} quip={bio.quip}/>
         ))}
       </div>
+      <Footer/>
     </div>
   );
 }

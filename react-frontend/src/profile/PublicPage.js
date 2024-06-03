@@ -6,16 +6,20 @@ import DefaultPfp from '../assets/profile-placeholder.png';
 import { useParams } from 'react-router-dom';
 import ListingCollection from './ListingCollection';
 import ShareButton from '../components/ShareButton';
+import ArrowButton from "../components/ArrowButton";
+import Footer from "../components/Footer";
+import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 
 function PublicPage() {
-  const [profileImage, setProfileImage] = useState(WhitePfp);  // temporary while real pfp loads
-  const [isLoading, setIsLoading] = useState(true);  // tracks loading states for rendering
-  const timestamp = Date.now();  // timestamp is appended to profile picture URL to remove browser caching
+  const [profileImage, setProfileImage] = useState(WhitePfp); 
+  const [isLoading, setIsLoading] = useState(true);  
+  const timestamp = Date.now();  
   const { userID } = useParams();
   const [listings, setMyListings] = useState([]);
   const isCustom = false;
-  const [userProfile, setUserProfile] = useState({  // user data
+  const navigate = useNavigate();
+  const [userProfile, setUserProfile] = useState({  
     username: '',
     fullName: '',
     bio: '',
@@ -25,7 +29,7 @@ function PublicPage() {
   const fetchUserProfile = async(userID) => {
     try {
       const response = await axios.get(process.env.REACT_APP_BACKEND_LINK + `/users/public-profile/${userID}`);
-      setUserProfile(response.data);  // update the userProfile data to public profile data retrieved from the backend
+      setUserProfile(response.data);  
     } catch (error) {
       console.log("Error encountered: ", error);
     }
@@ -38,8 +42,8 @@ function PublicPage() {
     } catch (error) {
       console.log("Error encountered: ", error);
     }
-  }  // if there is no custom pfp set, the profile picture will be set as the default pfp defined in assets
-  
+  }  
+
   const fetchCollections = async (userID) => {
     try {
       console.log(userID);
@@ -62,33 +66,42 @@ function PublicPage() {
 
 
   return (
-    <div className = "vertical-center margin padding-top">
-      {isLoading ? (
-        <div><LoadingSpinner/> {/*Visible loading spinner that runs until all data for elements are made available*/}</div> 
-       ) : (
-        <div className="vertical-center profile-page-layout margin padding-top">
-          <div className = "small-container drop-shadow">
-            <div className ="full-container">
-              <h1>{userProfile.fullName}</h1>
-              <img src={profileImage} alt="Profile" className="profile-picture"></img>
-                <a href={`https://www.google.com/maps/place/${userProfile.city},+CA+93422`} target="_blank" rel="noopener noreferrer">
-              <h5 className="text-link">
-                {userProfile.city && (
-                  <div>{userProfile.city}, CA</div>
-                  )}
-              </h5>
-              </a>
-              {userProfile.bio.length > 0 ? <p className = "user-bio">{userProfile.bio}</p> : <p>No bio provided.</p>}
+    <div>
+      
+        {isLoading ? (
+          <div><LoadingSpinner/></div> 
+        ) : (
+          <div>
+            <div className = "vertical-center">
+              <div className="vertical-center profile-page-layout margin padding-top">
+                <div className = "small-container drop-shadow">
+                  <div className ="full-container">
+                  <div className="vertical-center" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', marginBottom:'15px' }}>
+                    <div onClick={() => { navigate(-1) }} style={{ rotate: '-90deg', position: 'absolute', left: -30 }}>
+                      <ArrowButton></ArrowButton>
+                    </div>
+                    <h3 style={{ margin: '0 auto' }}>{userProfile.fullName}</h3>
+                  </div>
+                    <img src={profileImage} alt="Profile" className="profile-picture"></img>
+                      <a href={`https://www.google.com/maps/place/${userProfile.city},+CA+93422`} target="_blank" rel="noopener noreferrer">
+                    <h5 className="text-link">
+                      {userProfile.city && (
+                        <div>{userProfile.city}, CA</div>
+                        )}
+                    </h5>
+                    </a>
+                    {userProfile.bio.length > 0 ? <p className = "user-bio">{userProfile.bio}</p> : <p>No bio provided.</p>}
+                  </div>
+                  <ListingCollection title="Listings" bookmarks={listings} userID={userProfile.userID} time = {timestamp} custom = {isCustom} />
+                  <div className = "full-container" >
+                    <ShareButton link = {`${process.env.REACT_APP_FRONTEND_LINK} + "/profile/" + ${userID}`} type = 'Profile'/>
+                  </div>
+                </div>
+              </div>
             </div>
-            <ListingCollection title="Listings" bookmarks={listings} userID={userProfile.userID} time = {timestamp} custom = {isCustom} />
-            <div className = "full-container" >
-              <ShareButton link = {`${process.env.REACT_APP_FRONTEND_LINK} + "/profile/" + ${userID}`} type = 'Profile'/>
-            </div>
+            <Footer/>
           </div>
-        </div>
-      )
-    }
-    
+        )}
     </div>
   );
 }

@@ -11,6 +11,7 @@ import PageNotFound from "./pages/PageNotFound";
 import NavBar from "./components/NavBar";
 import About from "./pages/About";
 import TOS from "./pages/TOS";
+import PP from "./pages/PP";
 import ListingView from "./listings/ListingView.js";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import BuyNow from "./pages/BuyNow.js";
@@ -49,6 +50,7 @@ function App() {
                   </ProtectedRoute>
                   } />
           <Route path="/terms-of-service" element={<TOS />} />
+          <Route path="/privacy-policy" element={<PP />} />
           <Route path="/listings/:listingID" element={<ListingView />} />
           <Route path="/listings/:listingID/buy" element={<ProtectedRoute> <BuyNow /></ProtectedRoute> } />
           <Route path="/listings/:listingID/offer" element={<ProtectedRoute> <MakeOfferPage /></ProtectedRoute> } />

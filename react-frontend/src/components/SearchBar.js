@@ -14,6 +14,29 @@ function Search() {
     setRecentSearches(storedSearches);
   }, []);
 
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const pathname = url.pathname;
+    
+    // Check if the pathname includes "/marketplace" and if there are query parameters
+    if (pathname.includes("/marketplace") && url.searchParams.has("q")) {
+      const query = url.searchParams.get("q");
+      setSearchQuery(query);
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setInputFocused(false);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   const updateRecentSearches = (query) => {
     let searches = [...recentSearches];
     const searchIndex = searches.indexOf(query);
@@ -79,7 +102,6 @@ function Search() {
 
   const handleInputFocus = () => {
     setInputFocused(true);
-    console.log(inputFocused);
   };
 
   const handleInputBlur = () => {
@@ -89,7 +111,7 @@ function Search() {
   };
 
   return (
-    <div className="search-container">
+    <div className="search-container" onClick={handleInputFocus}>
       <input
         type="text"
         placeholder="Search for products..."
@@ -104,15 +126,15 @@ function Search() {
         <img src={search} alt="search-icon" className="search-img" />
       </button>
       {showNotification && <Notify message="Search field empty" />}
-      {recentSearches.length > 0 && (
-      <ul className="recent-searches">
-        {recentSearches.map((search, index) => (
-          <li key={index} className="recent-search-item" onClick={() => handleRecentSearchClick(search)}>
-            <span>{search}</span>
-            <button onClick={(e) => { e.stopPropagation(); handleDeleteSearch(search); }} className="delete-search-button">X</button>
-          </li>
-        ))}
-      </ul>
+      {inputFocused && recentSearches.length > 0 && searchQuery.length === 0 && (
+        <ul className="recent-searches">
+          {recentSearches.map((search, index) => (
+            <li key={index} className="recent-search-item" onClick={() => handleRecentSearchClick(search)}>
+              <span>{search}</span>
+              <button onClick={(e) => { e.stopPropagation(); handleDeleteSearch(search); }} className="delete-search-button">X</button>
+            </li>
+          ))}
+        </ul>
       )}
     </div>
   );

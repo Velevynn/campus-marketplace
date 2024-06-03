@@ -14,14 +14,17 @@ function ProfileDetails(props) {
     const publicURL = process.env.REACT_APP_FRONTEND_LINK + "/profile/" + props.userID;
 
     function handleChange(event) {
-        if (bio.length < 200 || event.nativeEvent.inputType === "deleteContentBackward") {
-            setBio(event.target.value);
+        const inputValue = event.target.value;
+        const newlineCount = (inputValue.match(/\n/g) || []).length; // Count the number of newlines
+    
+        if (newlineCount <= 4 && (inputValue.length < 250 || event.nativeEvent.inputType === "deleteContentBackward")) {
+            setBio(inputValue);
         } else {
-            triggerNotification("Max Character Count Exceeded!", false);
+            triggerNotification("Max Newlines Exceeded!", false);
         }
-
-        if (bio.length > 200) {
-            setBio(bio.slice(0, 199));
+    
+        if (inputValue.length > 250) {
+            setBio(inputValue.slice(0, 249));
         }
     }
 
@@ -55,7 +58,7 @@ function ProfileDetails(props) {
                 return;
             }
 
-            if (bio.length > 200) {
+            if (bio.length > 249) {
                 triggerNotification("Bio is too long", false);
                 return;
             }
@@ -130,7 +133,7 @@ function ProfileDetails(props) {
         <div className = "padding-left">
         <div className = "small-container drop-shadow profile-height">
             <h5>Profile Details</h5>
-            <textarea className="vertical-form" placeholder = "Add your bio here.." value ={bio} onChange={handleChange}></textarea>
+            <textarea className="vertical-form line-length" placeholder = "Add your bio here.." value ={bio} onChange={handleChange}></textarea>
             <button className = "small-button small-width" onClick={saveBio}>Save Bio</button>
             <h5>Set Location</h5>
             <div style={{ display: "flex", alignItems: "center", marginTop: "-15px" }}>

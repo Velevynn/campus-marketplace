@@ -1,0 +1,48 @@
+.footer {
+    background-color: #156030;
+    color: #fff;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .logo {
+    display: flex;
+    align-items: center;
+  }
+
+  .logo img {
+    width: 50px;
+    transition: filter 0.3s ease;
+    height: auto;
+  }
+
+  .logo img:hover {
+    filter: brightness(0.8);
+  }
+  
+  .information a {
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .footer-link {
+    color: white;
+  }
+
+  .footer-link:hover {
+    color: lightgrey;
+  }
+  
+  .link-separator {
+    margin: 0 10px;
+  }
+
+  .media-icon {
+    margin-left: 15px;
+  }
+
+  .media-icon:hover {
+    scale: 1.1;
+  }
