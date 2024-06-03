@@ -85,7 +85,7 @@ function ListingView() {
           // Fetch username separately using the userID
           if (loggedID) {
             const usernameResponse = await axios.get(
-              process.env.REACT_APP_BACKEND_LINK + `/users/public-profile/${loggedID}`,
+              process.env.REACT_APP_BACKEND_LINK + `/users/public-profile/${response.data[0].userID}`,
             );
             
             if (usernameResponse.data) {
