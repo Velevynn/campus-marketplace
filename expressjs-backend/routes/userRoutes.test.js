@@ -1,18 +1,18 @@
-const express = require('express');
-const request = require('supertest');
-const { Pool } = require('pg');
-const router = require('./userRoutes');
-const bcrypt = require('bcryptjs');;
+const express = require("express");
+const request = require("supertest");
+const { Pool } = require("pg");
+const router = require("./userRoutes");
+const bcrypt = require("bcryptjs");
 
 // Mocks
-jest.mock('pg', () => {
-  const { Client } = jest.requireActual('pg');
-  return {
-    Pool: jest.fn(() => ({
-      query: jest.fn(),
-      end: jest.fn()
-    }))
-  };
+jest.mock("pg", () => {
+	const { Client } = jest.requireActual("pg");
+	return {
+		Pool: jest.fn(() => ({
+			query: jest.fn(),
+			end: jest.fn()
+		}))
+	};
 });
 
 
@@ -20,30 +20,30 @@ jest.mock('pg', () => {
 // Create a mock Express app
 const app = express();
 app.use(express.json());
-app.use('/', router); // Update the base URL for router
+app.use("/", router); // Update the base URL for router
 
 const mockRequestBody = {
-  username: 'dnednedne',  // these credentials are not in the database
-  full_name: 'dne dnes',
-  password: 'apassword$12',
-  email: 'dne@gmail.com',
-  phoneNumber: '1234567890'
+	username: "dnednedne",  // these credentials are not in the database
+	full_name: "dne dnes",
+	password: "apassword$12",
+	email: "dne@gmail.com",
+	phoneNumber: "1234567890"
 };
 
 const mockBadRequestBody = {
-  username: 'dnednedne',  // these credentials are not in the database
-  full_name: 'dne dnes',
-  password: 'apassword$12',
-  email: 'dne@gmail.com',
-  phoneNumber: 'null'
+	username: "dnednedne",  // these credentials are not in the database
+	full_name: "dne dnes",
+	password: "apassword$12",
+	email: "dne@gmail.com",
+	phoneNumber: "null"
 };
 
 const LoginBody = {
-  identifier: 'testuser@example.com',
-  password: 'password123'
+	identifier: "testuser@example.com",
+	password: "password123"
 };
 
-const mockError = new Error('Database error');
+const mockError = new Error("Database error");
 
 /*test('Testing successful login', async () => {
   // Mock request body
@@ -71,103 +71,103 @@ const mockError = new Error('Database error');
     console.log("Testing response:", response);
 }); */
 
-test('should return 500 server error', async () => {
-  // Mock database query
-  Pool.mockImplementationOnce(() => ({
-    query: jest.fn().mockRejectedValue(mockError),
-    end: jest.fn()
-  }));
+test("should return 500 server error", async () => {
+	// Mock database query
+	Pool.mockImplementationOnce(() => ({
+		query: jest.fn().mockRejectedValue(mockError),
+		end: jest.fn()
+	}));
   
-  const response = await request(app)
-    .post('/register')
-    .send(mockRequestBody)
-    .expect(500); 
+	const response = await request(app)
+		.post("/register")
+		.send(mockRequestBody)
+		.expect(500); 
 });
 
-test('Testin successful signup', async () => {
-  //if no conflicts found in database, it should succeed and return 200 success
+test("Testin successful signup", async () => {
+	//if no conflicts found in database, it should succeed and return 200 success
 
-  // Mock database query response indicating no conflicts for the provided user data  
-  const mockGetQueryResponse = {
-    rows: ''
-  };
+	// Mock database query response indicating no conflicts for the provided user data  
+	const mockGetQueryResponse = {
+		rows: ""
+	};
 
-  // Mock database query
-  Pool.mockImplementationOnce(() => ({
-    query: jest.fn().mockResolvedValue(mockGetQueryResponse),
-    end: jest.fn()
-  }));
+	// Mock database query
+	Pool.mockImplementationOnce(() => ({
+		query: jest.fn().mockResolvedValue(mockGetQueryResponse),
+		end: jest.fn()
+	}));
 
-  const response = await request(app)
-    .post('/check') // Ensure the correct endpoint is being called
-    .expect(200); // Expecting 200 success
+	const response = await request(app)
+		.post("/check") // Ensure the correct endpoint is being called
+		.expect(200); // Expecting 200 success
 });
 
-test('should return 409 conflict', async () => {
-  // Mock database query response indicating no conflicts for the provided user data
-  const mockGetQueryResponse = {
-    rows: 'bruh'
-  };
+test("should return 409 conflict", async () => {
+	// Mock database query response indicating no conflicts for the provided user data
+	const mockGetQueryResponse = {
+		rows: "bruh"
+	};
 
-  // Mock database query
-  Pool.mockImplementationOnce(() => ({
-    query: jest.fn().mockResolvedValue(mockGetQueryResponse),
-    end: jest.fn()
-  }));
+	// Mock database query
+	Pool.mockImplementationOnce(() => ({
+		query: jest.fn().mockResolvedValue(mockGetQueryResponse),
+		end: jest.fn()
+	}));
 
-  const response = await request(app)
-    .post('/check') // Ensure the correct endpoint is being called
-    .expect(409); // Expecting 200 success
+	const response = await request(app)
+		.post("/check") // Ensure the correct endpoint is being called
+		.expect(409); // Expecting 200 success
 });
 
-test('should return 500 server error', async () => {
-  // Mock database query
-  Pool.mockImplementationOnce(() => ({
-    query: jest.fn().mockRejectedValue(mockError),
-    end: jest.fn()
-  }));
+test("should return 500 server error", async () => {
+	// Mock database query
+	Pool.mockImplementationOnce(() => ({
+		query: jest.fn().mockRejectedValue(mockError),
+		end: jest.fn()
+	}));
 
-  const response = await request(app)
-    .post('/check') // Ensure the correct endpoint is being called
-    .expect(500); // Expecting 200 success
+	const response = await request(app)
+		.post("/check") // Ensure the correct endpoint is being called
+		.expect(500); // Expecting 200 success
 });
 
-test('should return 500 server error', async () => {
-  // Mock database query response indicating no conflicts for the provided user data
+test("should return 500 server error", async () => {
+	// Mock database query response indicating no conflicts for the provided user data
 
-  // Mock database query
-  Pool.mockImplementationOnce(() => ({
-    query: jest.fn().mockRejectedValue(mockError),
-    end: jest.fn()
-  }));
+	// Mock database query
+	Pool.mockImplementationOnce(() => ({
+		query: jest.fn().mockRejectedValue(mockError),
+		end: jest.fn()
+	}));
 
-  const response = await request(app)
-    .post('/check') // Ensure the correct endpoint is being called
-    .expect(500); // Expecting 200 success
+	const response = await request(app)
+		.post("/check") // Ensure the correct endpoint is being called
+		.expect(500); // Expecting 200 success
 });
 
-test('should return 500 server error (missing phoneNumber)', async () => {
+test("should return 500 server error (missing phoneNumber)", async () => {
   
-  const response = await request(app)
-    .post('/register')
-    .send(mockBadRequestBody)
-    .expect(500); 
+	const response = await request(app)
+		.post("/register")
+		.send(mockBadRequestBody)
+		.expect(500); 
 });
 
 
-test('test for successful registration 201 no conflicts', async () => {
-  const mockGetQueryResponse = {
-  };
-  // Mock database query
-  Pool.mockImplementationOnce(() => ({
-    query: jest.fn().mockResolvedValue(mockGetQueryResponse),
-    end: jest.fn()
-  }));
+test("test for successful registration 201 no conflicts", async () => {
+	const mockGetQueryResponse = {
+	};
+	// Mock database query
+	Pool.mockImplementationOnce(() => ({
+		query: jest.fn().mockResolvedValue(mockGetQueryResponse),
+		end: jest.fn()
+	}));
   
-  const response = await request(app)
-    .post('/register')
-    .send(mockRequestBody)
-    .expect(201); 
+	const response = await request(app)
+		.post("/register")
+		.send(mockRequestBody)
+		.expect(201); 
 });
 
 

@@ -44,6 +44,10 @@ module.exports = {
 		"semi": [
 			"error",
 			"always"
-		]
+		],
+		"no-mixed-spaces-and-tabs": [
+			"error", 
+			"smart-tabs"
+		],
 	}
 };
