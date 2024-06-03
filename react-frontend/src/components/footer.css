@@ -1,0 +1,32 @@
+.footer {
+    background-color: #156030;
+    color: #fff;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .logo img {
+    width: 50px;
+    transition: transform 0.3s ease;
+    height: auto;
+  }
+
+  .logo img:hover {
+    transform: scale(1.2);
+  }
+  
+  .information a {
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .footer-link {
+    color: white;
+  }
+
+  .footer-link:hover {
+    color: lightgrey;
+  }
+  

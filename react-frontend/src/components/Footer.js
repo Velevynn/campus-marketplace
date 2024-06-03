@@ -12,7 +12,7 @@ function Footer() {
           <img className="team-logo" src={teamLogo}></img>
         </div>
         <div className="information">
-          <Link to="/terms-of-service">Terms of Service</Link>
+          <Link className = "footer-link" to="/terms-of-service">Terms of Service</Link>
         </div>
       </footer>
     </div>
