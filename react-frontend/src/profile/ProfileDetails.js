@@ -17,7 +17,7 @@ function ProfileDetails(props) {
         const inputValue = event.target.value;
         const newlineCount = (inputValue.match(/\n/g) || []).length; // Count the number of newlines
     
-        if (newlineCount <= 8 && (inputValue.length < 250 || event.nativeEvent.inputType === "deleteContentBackward")) {
+        if (newlineCount <= 4 && (inputValue.length < 250 || event.nativeEvent.inputType === "deleteContentBackward")) {
             setBio(inputValue);
         } else {
             triggerNotification("Max Newlines Exceeded!", false);
