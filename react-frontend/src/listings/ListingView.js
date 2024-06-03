@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import ImageCarousel from "../components/ImageCarousel.js";
 import LoadingSpinner from "../components/LoadingSpinner.js";
+import ShareButton from "../components/ShareButton.js"
 import { jwtDecode } from "jwt-decode";
 import { Link, useNavigate } from 'react-router-dom';
 import emptyBookmark from "../assets/empty-bookmark.png";
@@ -17,11 +18,8 @@ function ListingView() {
   const [isOwner, setIsOwner] = useState(false);
   const [isBookmarked, setBookmark] = useState(false);
   const [loggedID, setLoggedID] = useState(null);
-  const [dropdownVisible, setDropdownVisible] = useState(false); // State to control dropdown visibility
   const [username, setUsername] = useState("");
   const [ownerID, setOwnerID] = useState(null);
-  const facebookLink = "https://facebook.com/sharer/sharer.php?u=" + 
-  process.env.REACT_APP_FRONTEND_LINK + "/listings/" + listingID;  // does not work with local host (invalid HTTPS URL)
   const navigate = useNavigate();
 
   // hook to retrieve logged in userID from jwt token
@@ -277,18 +275,6 @@ function ListingView() {
     }
   }
 
-  const handleCopyURL = () => {
-    const listingURL = window.location.href; // Get the current URL
-    navigator.clipboard.writeText(listingURL)
-      .then(() => {
-        console.log('Listing URL copied to clipboard:', listingURL);
-        setDropdownVisible(false); // Close the dropdown after copying URL
-      })
-      .catch((error) => {
-        console.error('Failed to copy listing URL to clipboard:', error);
-      });
-  };
-
   if (!listing) {
     return (
         <div className="margin">
@@ -348,17 +334,7 @@ function ListingView() {
               (<img className="bookmark" src={emptyBookmark}/>)
               }</div>
 
-              <div className="dropdown" onClick={() => setDropdownVisible(!dropdownVisible)}>
-                <button className="dropbtn">Share</button>
-                {dropdownVisible && (
-                  <div className="dropdown-content" id="myDropdown">
-                    <div className="option" onClick={handleCopyURL}>Copy Listing URL</div>
-                    <Link to = {facebookLink}>
-                      <div className="option">Share to Facebook</div>
-                    </Link>
-                  </div>
-                )}
-              </div>
+              <ShareButton link = {`${process.env.REACT_APP_FRONTEND_LINK} + "/listings/" + ${listingID}`}/>
             
         </div>
       </div>

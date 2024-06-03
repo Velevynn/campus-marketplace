@@ -5,8 +5,8 @@ import WhitePfp from '../assets/white-placeholder.png';
 import DefaultPfp from '../assets/profile-placeholder.png';
 import { useParams } from 'react-router-dom';
 import ListingCollection from './ListingCollection';
+import ShareButton from '../components/ShareButton';
 import axios from 'axios';
-
 
 function PublicPage() {
   const [profileImage, setProfileImage] = useState(WhitePfp);  // temporary while real pfp loads
@@ -77,6 +77,7 @@ function PublicPage() {
               {userProfile.bio.length > 0 ? <p>{userProfile.bio}</p> : <p>No bio provided.</p>}
             </div>
             <ListingCollection title="Listings" bookmarks={listings} userID={userProfile.userID} time = {timestamp} custom = {isCustom} />
+            <ShareButton link = {`${process.env.REACT_APP_FRONTEND_LINK} + "/profile/" + ${userID}`}/>
           </div>
         </div>
       )
