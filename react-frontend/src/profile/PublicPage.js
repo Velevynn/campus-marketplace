@@ -6,6 +6,8 @@ import DefaultPfp from '../assets/profile-placeholder.png';
 import { useParams } from 'react-router-dom';
 import ListingCollection from './ListingCollection';
 import ShareButton from '../components/ShareButton';
+import ArrowButton from "../components/ArrowButton";
+import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 
 function PublicPage() {
@@ -15,6 +17,7 @@ function PublicPage() {
   const { userID } = useParams();
   const [listings, setMyListings] = useState([]);
   const isCustom = false;
+  const navigate = useNavigate();
   const [userProfile, setUserProfile] = useState({  // user data
     username: '',
     fullName: '',
@@ -69,7 +72,12 @@ function PublicPage() {
         <div className="vertical-center profile-page-layout margin padding-top">
           <div className = "small-container drop-shadow">
             <div className ="full-container">
-              <h1>{userProfile.fullName}</h1>
+            <div className="vertical-center" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', marginBottom:'15px' }}>
+              <div onClick={() => { navigate(-1) }} style={{ rotate: '-90deg', position: 'absolute', left: -30 }}>
+                <ArrowButton></ArrowButton>
+              </div>
+              <h3 style={{ margin: '0 auto' }}>{userProfile.fullName}</h3>
+            </div>
               <img src={profileImage} alt="Profile" className="profile-picture"></img>
                 <a href={`https://www.google.com/maps/place/${userProfile.city},+CA+93422`} target="_blank" rel="noopener noreferrer">
               <h5 className="text-link">
