@@ -25,6 +25,18 @@ function Search() {
     }
   }, []);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setInputFocused(false);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   const updateRecentSearches = (query) => {
     let searches = [...recentSearches];
     const searchIndex = searches.indexOf(query);
@@ -99,7 +111,7 @@ function Search() {
   };
 
   return (
-    <div className="search-container">
+    <div className="search-container" onClick={handleInputFocus}>
       <input
         type="text"
         placeholder="Search for products..."
