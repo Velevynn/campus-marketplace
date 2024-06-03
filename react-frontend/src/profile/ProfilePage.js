@@ -6,6 +6,7 @@ import LoadingSpinner from "../components/LoadingSpinner";
 import ProfileDetails from './ProfileDetails';
 import ListingCollection from './ListingCollection';
 import ChangeProfilePicture from './ChangeProfilePicture'; // Import the ChangeProfilePicture component
+import Footer from '../components/Footer';
 import './profile.css';
 
 function ProfilePage() {
@@ -227,6 +228,7 @@ function ProfilePage() {
           )}
             </div>
         </div>
+        <Footer/>
         </div>
       )}
     </div>

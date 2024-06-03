@@ -1,5 +1,6 @@
 import React from "react";
 import Bio from "../components/Bio";
+import Footer from "../components/Footer";
 import "./About.css"
 
 function About() {
@@ -39,6 +40,7 @@ function About() {
           <Bio key={index} name={bio.name} bio={bio.bio} quip={bio.quip}/>
         ))}
       </div>
+      <Footer/>
     </div>
   );
 }

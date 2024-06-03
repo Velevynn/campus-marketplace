@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Notify from "../components/ErrorNotification";
 import axios from "axios";
 import LoadingSpinner from "../components/LoadingSpinner";
+import Footer from "../components/Footer";
 import { jwtDecode } from "jwt-decode";
 import "./AddListing.css";
 
@@ -53,14 +54,6 @@ function AddListing() {
   ));
 
   useEffect(() => {
-    // Scrolls down when images are added to show container on smaller screens
-    const scrollToPosition = () => {
-      window.scrollTo({
-        top: 1000,
-        behavior: "smooth"
-      });
-    };
-    scrollToPosition();
   }, [listing.images]);
   
   function handleChange(event) {
@@ -217,87 +210,90 @@ function AddListing() {
     }
   
   return (
-    <div className="vertical-center add-listing-layout margin">
-    <div className="small-container drop-shadow">
-      {loading? (
+    <div>
+      <div className="vertical-center add-listing-layout margin">
+      <div className="small-container drop-shadow">
+        {loading ? (
+          <>
+            <h3 className="vertical-center">Posting your listing</h3>
+            <LoadingSpinner/>
+          </>
+        ) : (
         <>
-          <h3 className="vertical-center">Posting your listing</h3>
-          <LoadingSpinner/>
-        </>
-      ) : (
-      <>
-        <h2 className="vertical-center no-margin-bottom">Post Listing</h2>
-        <form>
-          <label htmlFor="title">Title (Required)</label>
-          <input
-            type="text"
-            name="title"
-            id="title"
-            placeholder="Title your listing here."
-            value={listing.title}
-            onChange={handleChange}
-          />
-          <label htmlFor="category">Category</label>
-          <select id="category" name="category" onChange={handleChange}>
-            {categoryOptions}
-          </select>
-          <label htmlFor="description">Description</label>
-          <textarea
-            type="text"
-            name="description"
-            id="description"
-            value={listing.description}
-            placeholder="Write about your item here."
-            onChange={handleChange}
-          />
-          <label htmlFor="price">Price (Required)</label>
-          <input
-            type="text"
-            name="price"
-            id="price"
-            placeholder="Price your listing here."
-            value={listing.price}
-            onChange={handleChange}
-          />   
-        </form>
-        <p className="vertical-center margin"> {listing.images.length}/8 images selected</p>
-        <div className="vertical-center margin">
-            <label htmlFor="images" className="span-button">
-              <span>Select Images (Required)</span>
-              <input
-                type="file"
-                key={key}
-                name="images"
-                id="images"
-                accept="image/*"
-                multiple
-                className="custom-file-input"
-                onChange={handleImageChange}
-              />
-            </label>
-        </div>
-        <div className="vertical-center margin">
-          <button className={`span-button ${listing.title.length > 0 && 
-            listing.price.length > 0 && listing.images.length > 0 ? "" : "disabled"}`} 
-            onClick={submitForm}>Post Listing</button>
-        </div>
-        {showNotification && <Notify message={notificationMsg} />}
-      </>
-      )}
-    </div>
-      {(listing.images.length > 0 && !loading) && <div className="flex-container drop-shadow margin">
-        <h5 className="text-center no-margin-top">Click to remove image</h5>
-        <div className="thumbnails vertical-center" >
-          {listing.images.map((image, index) => (
-            <img
-              key={index}
-              src={URL.createObjectURL(image)}
-              alt={`Thumbnail ${index}`}
-              onClick={() => removeImage(index)}
+          <h2 className="vertical-center no-margin-bottom">Post Listing</h2>
+          <form>
+            <label htmlFor="title">Title (Required)</label>
+            <input
+              type="text"
+              name="title"
+              id="title"
+              placeholder="Title your listing here."
+              value={listing.title}
+              onChange={handleChange}
             />
-          ))}
-        </div>
-      </div>}
+            <label htmlFor="category">Category</label>
+            <select id="category" name="category" onChange={handleChange}>
+              {categoryOptions}
+            </select>
+            <label htmlFor="description">Description</label>
+            <textarea
+              type="text"
+              name="description"
+              id="description"
+              value={listing.description}
+              placeholder="Write about your item here."
+              onChange={handleChange}
+            />
+            <label htmlFor="price">Price (Required)</label>
+            <input
+              type="text"
+              name="price"
+              id="price"
+              placeholder="Price your listing here."
+              value={listing.price}
+              onChange={handleChange}
+            />   
+          </form>
+          <p className="vertical-center margin"> {listing.images.length}/8 images selected</p>
+          <div className="vertical-center margin">
+              <label htmlFor="images" className="span-button">
+                <span>Select Images (Required)</span>
+                <input
+                  type="file"
+                  key={key}
+                  name="images"
+                  id="images"
+                  accept="image/*"
+                  multiple
+                  className="custom-file-input"
+                  onChange={handleImageChange}
+                />
+              </label>
+          </div>
+          <div className="vertical-center margin">
+            <button className={`span-button ${listing.title.length > 0 && 
+              listing.price.length > 0 && listing.images.length > 0 ? "" : "disabled"}`} 
+              onClick={submitForm}>Post Listing</button>
+          </div>
+          {showNotification && <Notify message={notificationMsg} />}
+        </>
+        )}
+      </div>
+        {(listing.images.length > 0 && !loading) && <div className="flex-container drop-shadow margin">
+          <h5 className="text-center no-margin-top">Click to remove image</h5>
+          <div className="thumbnails vertical-center" >
+            {listing.images.map((image, index) => (
+              <img
+                key={index}
+                src={URL.createObjectURL(image)}
+                alt={`Thumbnail ${index}`}
+                onClick={() => removeImage(index)}
+              />
+            ))}
+          </div>
+        </div>}
+      </div>
+      {!loading && <Footer/>}
     </div>
   );
 }
