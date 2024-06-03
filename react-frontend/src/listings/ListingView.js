@@ -319,9 +319,13 @@ function ListingView() {
             </p>
             <h5 style={{color: "green"}}>{listing.price === "0" || listing.price === 0 ? "FREE" : "$" + listing.price}</h5>
             <p>{listing.description}</p>
-            <Link to = {`/profile/${ownerID}`}>
-              <h5 className="text-link" style={{paddingTop: "100px"}}><FaUser style = {{marginRight: "10px"}}/>{username}</h5>
-            </Link>
+              <div style={{paddingTop: "100px"}}>
+                <Link to = {`/profile/${ownerID}`}>
+                  <h5 className="text-link">
+                    <FaUser style = {{marginRight: "10px"}}/>{username}    
+                  </h5>
+                </Link>
+              </div>
           </div>
         </div>
         <div className="vertical-center margin-top">
