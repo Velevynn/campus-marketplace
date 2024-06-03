@@ -312,7 +312,7 @@ function ListingView() {
           </div>
           <div className="margin" type="text">
             <h1 className="no-margin-top no-margin-bottom">{listing.title}</h1>
-            <h5 style={{margin: "0"}}>{listing.category}</h5>
+            <h5 style={{margin: "0"}}><Link to = {`/marketplace?q=${listing.category}`}>{listing.category}</Link></h5>
             <p>Posted {TimeAgo(listing.postDate)}</p>
             <p>
                 {getBookmarkCount()}
