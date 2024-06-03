@@ -11,14 +11,14 @@ import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 
 function PublicPage() {
-  const [profileImage, setProfileImage] = useState(WhitePfp);  // temporary while real pfp loads
-  const [isLoading, setIsLoading] = useState(true);  // tracks loading states for rendering
-  const timestamp = Date.now();  // timestamp is appended to profile picture URL to remove browser caching
+  const [profileImage, setProfileImage] = useState(WhitePfp); 
+  const [isLoading, setIsLoading] = useState(true);  
+  const timestamp = Date.now();  
   const { userID } = useParams();
   const [listings, setMyListings] = useState([]);
   const isCustom = false;
   const navigate = useNavigate();
-  const [userProfile, setUserProfile] = useState({  // user data
+  const [userProfile, setUserProfile] = useState({  
     username: '',
     fullName: '',
     bio: '',
@@ -28,7 +28,7 @@ function PublicPage() {
   const fetchUserProfile = async(userID) => {
     try {
       const response = await axios.get(process.env.REACT_APP_BACKEND_LINK + `/users/public-profile/${userID}`);
-      setUserProfile(response.data);  // update the userProfile data to public profile data retrieved from the backend
+      setUserProfile(response.data);  
     } catch (error) {
       console.log("Error encountered: ", error);
     }
@@ -41,8 +41,8 @@ function PublicPage() {
     } catch (error) {
       console.log("Error encountered: ", error);
     }
-  }  // if there is no custom pfp set, the profile picture will be set as the default pfp defined in assets
-  
+  }  
+
   const fetchCollections = async (userID) => {
     try {
       console.log(userID);
@@ -67,7 +67,7 @@ function PublicPage() {
   return (
     <div className = "vertical-center margin padding-top">
       {isLoading ? (
-        <div><LoadingSpinner/> {/*Visible loading spinner that runs until all data for elements are made available*/}</div> 
+        <div><LoadingSpinner/></div> 
        ) : (
         <div className="vertical-center profile-page-layout margin padding-top">
           <div className = "small-container drop-shadow">
@@ -94,9 +94,7 @@ function PublicPage() {
             </div>
           </div>
         </div>
-      )
-    }
-    
+      )}
     </div>
   );
 }

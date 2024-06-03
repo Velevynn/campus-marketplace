@@ -6,6 +6,31 @@ import { useNavigate } from 'react-router-dom';
 import ArrowButton from "../components/ArrowButton"
 
 function EditListing() {
+  const categories = [
+    "No Change",
+    "Other",
+    "Vehicles",
+    "Property Rentals",
+    "Apparel",
+    "Classifieds",
+    "Electronics",
+    "Entertainment",
+    "Family",
+    "Free Stuff",
+    "Garden & Outdoor",
+    "Hobbies",
+    "Home Goods",
+    "Home Improvement",
+    "Supplies",
+    "Home Improvement Supplies",
+    "Home Sales",
+    "Musical Instruments",
+    "Office Supplies",
+    "Pet Supplies",
+    "Sporting Goods",
+    "Toys & Games",
+    "Buy and Sell Groups"
+  ];
   const { listingID } = useParams();
   const navigate = useNavigate();
   const [imageDisplay, setImages] = useState([]);
@@ -20,6 +45,12 @@ function EditListing() {
     newImages: [],
     category: null
   });
+
+  const categoryOptions = categories.map((category, index) => (
+    <option key={index} value={category}>
+      {category}
+    </option>
+  ));
 
   // Function to fetch and set the existing listing data including images
   useEffect(() => {
@@ -179,33 +210,8 @@ function EditListing() {
             onChange={handleChange}
           />
           <label htmlFor="category">New Category</label>
-          <select
-          id="category"
-          name="category"
-          onChange={handleChange}>
-            <option value={listing.category}>No Change</option>
-            <option value="Other">Other</option>
-            <option value="Vehicles">Vehicles</option>
-            <option value="Property Rentals">Property Rentals</option>
-            <option value="Apparel">Apparel</option>
-            <option value="Classifieds">Classifieds</option>
-            <option value="Electronics">Electronics</option>
-            <option value="Entertainment">Entertainment</option>
-            <option value="Family">Family</option>
-            <option value="Free Stuff">Free Stuff</option>
-            <option value="Garden & Outdoor">Garden & Outdoor</option>
-            <option value="Hobbies">Hobbies</option>
-            <option value="Home Goods">Home Goods</option>
-            <option value="Home Improvement">Home Improvement</option>
-            <option value="Supplies">Supplies</option>
-            <option value="Home Improvement Supplies">Home Improvement Supplies</option>
-            <option value="Home Sales">Home Sales</option>
-            <option value="Musical Instruments">Musical Instruments</option>
-            <option value="Office Supplies">Office Supplies</option>
-            <option value="Pet Supplies">Pet Supplies</option>
-            <option value="Sporting Goods">Sporting Goods</option>
-            <option value="Toys & Games">Toys & Games</option>
-            <option value="Buy and Sell Groups">Buy and Sell Groups</option>
+          <select id="category" name="category" onChange={handleChange}>
+            {categoryOptions}
           </select>
           <label htmlFor="description">New Description</label>
           <textarea
