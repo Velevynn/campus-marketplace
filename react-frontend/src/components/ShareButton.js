@@ -22,7 +22,7 @@ function ShareButton(props) {
         <button className="dropbtn">Share</button>
         {dropdownVisible && (
           <div className="dropdown-content" id="myDropdown">
-            <div className="option" onClick={handleCopyURL}>Copy Listing URL</div>
+            <div className="option" onClick={handleCopyURL}>Copy {props.type} URL</div>
             <a href = {facebookLink} target="_blank" rel="noopener noreferrer">
               <div className="option">Share to Facebook</div>
             </a>
@@ -34,6 +34,7 @@ function ShareButton(props) {
 
 ShareButton.propTypes = {
     link: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired
   };
 
 export default ShareButton;

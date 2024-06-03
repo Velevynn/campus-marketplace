@@ -334,7 +334,7 @@ function ListingView() {
               (<img className="bookmark" src={emptyBookmark}/>)
               }</div>
 
-              <ShareButton link = {`${process.env.REACT_APP_FRONTEND_LINK} + "/listings/" + ${listingID}`}/>
+              <ShareButton link = {`${process.env.REACT_APP_FRONTEND_LINK} + "/listings/" + ${listingID}`} type = 'Listing'/>
             
         </div>
       </div>
