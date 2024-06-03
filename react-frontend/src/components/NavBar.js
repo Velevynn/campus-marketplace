@@ -41,7 +41,7 @@ function NavBar() {
           <SearchBar />
         </div>
 
-        <div className="flex-row margin">
+        <div className="flex-row margin" style={{marginTop:'5px'}}>
           <li>
             <Link to="/about">About</Link>
           </li>
@@ -52,7 +52,7 @@ function NavBar() {
             <Link to="/profile">{getProfileName()}</Link>
           </li>
         </div>
-        <button className="" onClick={handlePostListingClick}>
+        <button className="post-button" onClick={handlePostListingClick}>
           Post
         </button>
       
