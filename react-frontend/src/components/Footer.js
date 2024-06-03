@@ -19,7 +19,7 @@ function Footer() {
           <span className="link-separator"></span>
           <Link className="footer-link" to="/privacy-policy">Privacy Policy</Link>
           <span className="link-separator"></span>
-          @2024 Five Guys
+          ©2024 Five Guys
         </div>
       </footer>
     </div>
