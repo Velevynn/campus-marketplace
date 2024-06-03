@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import PropTypes from 'prop-types';
 
-function MakeOfferPage() {
+function MakeOfferPage({ onClose }) {
   const [offer, setOffer] = useState("0");  // Initial state for the offer input
   const navigate = useNavigate();
   const { listingID } = useParams();
@@ -38,15 +39,11 @@ function MakeOfferPage() {
     }).format(number);
   };
 
-  const handleGoBack = () => {
-    navigate(`/listings/${listingID}`);
-  };
-
   return (
     <>
-      <div className="vertical-center" style={{marginTop: "10%", marginBottom: "auto"}}>
+      <div className="vertical-center" style={{marginTop: "5%", marginBottom: "5%"}}>
       <div className="small-container drop-shadow">
-        <h1 className="text-center" style={{ marginTop: '10px'}}>
+        <h1 className="text-center">
           Enter Your Offer
         </h1>
         <form>
@@ -67,7 +64,7 @@ function MakeOfferPage() {
           </button>
           </div>
           <div className="margin">
-          <button className="span-button" onClick={handleGoBack}>
+          <button className="span-button" onClick={onClose}>
             Return to Listing
           </button>
           </div>
@@ -77,5 +74,9 @@ function MakeOfferPage() {
     </>
   );
 }
+
+MakeOfferPage.propTypes = {
+  onClose: PropTypes.func.isRequired,
+};
 
 export default MakeOfferPage;

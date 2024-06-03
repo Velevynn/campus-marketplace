@@ -10,6 +10,7 @@ import emptyBookmark from "../assets/empty-bookmark.png";
 import filledBookmark from "../assets/filled-bookmark.png";
 import { FaUser } from 'react-icons/fa';
 import './ListingView.css';
+import MakeOfferPage from '../pages/MakeOfferPage.js';
 
 function ListingView() {
   const { listingID } = useParams();
@@ -20,6 +21,7 @@ function ListingView() {
   const [loggedID, setLoggedID] = useState(null);
   const [username, setUsername] = useState("");
   const [ownerID, setOwnerID] = useState(null);
+  const [showPopup, setShowPopup] = useState(false);
   const navigate = useNavigate();
 
   // hook to retrieve logged in userID from jwt token
@@ -168,7 +170,8 @@ function ListingView() {
 
   const handleMakeOffer = () => {
     console.log("Make Offer clicked for listing:", listing);
-    navigate(`/listings/${listingID}/offer`);
+    //navigate(`/listings/${listingID}/offer`);
+    setShowPopup(true);
   };
 
   const handleStartChat = () => {
@@ -324,7 +327,7 @@ function ListingView() {
             </Link>
           </div>
         </div>
-        <div className="vertical-center margin-top">
+        <div className={`vertical-center margin ${showPopup ? 'blur' : ''}`}>
             <button className="margin-right" onClick={handleMakeOffer}>Make Offer</button>
             <button className="margin-right" onClick={handleStartChat}>Start Chat</button>
 
@@ -335,7 +338,32 @@ function ListingView() {
               }</div>
 
               <ShareButton link = {`${process.env.REACT_APP_FRONTEND_LINK} + "/listings/" + ${listingID}`} type = 'Listing'/>
-            
+              
+              {showPopup && (
+      <div style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background: "rgba(0, 0, 0, 0.6)",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        zIndex: 1000
+      }}>
+        <div style={{
+          background: "white",
+          padding: "10px",
+          borderRadius: "10px",
+          maxWidth: "500px",
+          width: "100%",
+          textAlign: "center"
+        }}>
+          <MakeOfferPage onClose={() => { setShowPopup(false) }} />
+        </div>
+      </div>
+    )}
         </div>
       </div>
         
