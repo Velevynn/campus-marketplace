@@ -71,7 +71,9 @@ function PublicPage() {
             <div className ="full-container">
               <h1>{userProfile.fullName}</h1>
               <img src={profileImage} alt="Profile" className="profile-picture"></img>
-              <h5>{userProfile.city}</h5>
+                <a href={`https://www.google.com/maps/place/${userProfile.city},+CA+93422`} target="_blank" rel="noopener noreferrer">
+              <h5 className="text-link">{userProfile.city}, CA</h5>
+              </a>
               {userProfile.bio.length > 0 ? <p>{userProfile.bio}</p> : <p>No bio provided.</p>}
             </div>
             <ListingCollection title="Listings" bookmarks={listings} userID={userProfile.userID} time = {timestamp} custom = {isCustom} />
