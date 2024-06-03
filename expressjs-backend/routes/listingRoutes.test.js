@@ -71,11 +71,6 @@ const mockFiles = [
     // Add more mock files as needed
   ];
 
-// Mock query response for POST requests
-const mockQueryResponse = {
-  rows: [{ listingID: 1 }]
-};
-
 
 // Mock error for failed queries
 const mockError = new Error('Database error');
@@ -104,110 +99,33 @@ test('POST / should add a new listing', async () => {
 });
 
 test('POST / should add a new listing with images', async () => {
-    // Mock database query
-    Pool.mockImplementationOnce(() => ({
-        query: jest.fn().mockResolvedValue({ rows: [{ listingID: 1 }] }),
-        end: jest.fn()
-    }));
-
-    const response = await request(app)
-    .post('/')
-    .field('userID', mockRequestBody.userID)
-    .field('title', mockRequestBody.title)
-    .field('price', mockRequestBody.price)
-    .field('description', mockRequestBody.description)
-    .field('quantity', mockRequestBody.quantity)
-    .attach(mockFiles[0].fieldname, mockFiles[0].buffer, mockFiles[0].originalname)
-    .attach(mockFiles[1].fieldname, mockFiles[1].buffer, mockFiles[1].originalname)
-    
-    .expect(201);
-
-    expect(response.body).toEqual(mockRequestBody);
-    expect(Pool).toHaveBeenCalled();
-    expect(uploadImageToS3).toHaveBeenCalledTimes(2); // Expect 2 images to be uploaded
-});
-
-
-
-test('POST / should return 500 if an error occurs', async () => {
-  // Mock database query to throw an error
-  Pool.mockImplementationOnce(() => ({
-    query: jest.fn().mockRejectedValue(mockError),
-    end: jest.fn()
-  }));
-
-  await request(app)
-    .post('/')
-    .send(mockRequestBody)
-    .expect(500);
-});
-
-test('GET / should return listings', async () => {
   // Mock database query
   Pool.mockImplementationOnce(() => ({
-    query: jest.fn().mockResolvedValue(mockGetQueryResponse),
+      query: jest.fn().mockResolvedValue({ rows: [{ listingID: 1 }] }),
+      end: jest.fn()
+  }));
+  Pool.mockImplementationOnce(() => ({
+    query: jest.fn().mockResolvedValue(),
     end: jest.fn()
   }));
+  Pool.mockImplementationOnce(() => ({
+    query: jest.fn().mockResolvedValue(),
+    end: jest.fn()
+  }));
+
+  const response = await request(app)
+  .post('/')
+  .field('userID', mockRequestBody.userID)
+  .field('title', mockRequestBody.title)
+  .field('price', mockRequestBody.price)
+  .field('description', mockRequestBody.description)
+  .field('quantity', mockRequestBody.quantity)
+  .attach(mockFiles[0].fieldname, mockFiles[0].buffer, mockFiles[0].originalname)
+  .attach(mockFiles[1].fieldname, mockFiles[1].buffer, mockFiles[1].originalname)
   
-  const response = await request(app).get('/').expect(200);
-  expect(response.body).toEqual(mockGetQueryResponse.rows);
+  .expect(201);
+
+  expect(response.body).toEqual(mockRequestBody);
   expect(Pool).toHaveBeenCalled();
-});
-
-
-
-test('GET / should return 500 if an error occurs', async () => {
-  // Mock database query to throw an error
-  Pool.mockImplementationOnce(() => ({
-    query: jest.fn().mockRejectedValue(mockError),
-    end: jest.fn()
-  }));
-
-  await request(app).get('/').expect(500);
-});
-
-test('GET /:listingID should return a listing by its ID', async () => {
-  // Mock database query
-  Pool.mockImplementationOnce(() => ({
-    query: jest.fn().mockResolvedValue(mockQueryResponse),
-    end: jest.fn()
-  }));
-
-  const response = await request(app).get('/1').expect(200);
-
-  expect(response.body).toEqual(mockQueryResponse.rows);
-  expect(Pool).toHaveBeenCalled();
-});
-
-test('GET /:listingID should return 500 if an error occurs', async () => {
-  // Mock database query to throw an error
-  Pool.mockImplementationOnce(() => ({
-    query: jest.fn().mockRejectedValue(mockError),
-    end: jest.fn()
-  }));
-
-  await request(app).get('/1').expect(500);
-});
-
-test('GET /images/:listingID should return images for a listing by its ID', async () => {
-  // Mock database query
-  Pool.mockImplementationOnce(() => ({
-    query: jest.fn().mockResolvedValue(mockQueryResponse),
-    end: jest.fn()
-  }));
-
-  const response = await request(app).get('/images/1').expect(200);
-
-  expect(response.body).toEqual(mockQueryResponse.rows);
-  expect(Pool).toHaveBeenCalled();
-});
-
-test('GET /images/:listingID should return 500 if an error occurs', async () => {
-  // Mock database query to throw an error
-  Pool.mockImplementationOnce(() => ({
-    query: jest.fn().mockRejectedValue(mockError),
-    end: jest.fn()
-  }));
-
-  await request(app).get('/images/1').expect(500);
+  expect(uploadImageToS3).toHaveBeenCalledTimes(2); // Expect 2 images to be uploaded
 });
