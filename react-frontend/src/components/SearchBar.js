@@ -104,7 +104,7 @@ function Search() {
         <img src={search} alt="search-icon" className="search-img" />
       </button>
       {showNotification && <Notify message="Search field empty" />}
-      {recentSearches.length > 0 && (
+      {recentSearches.length > 0 && searchQuery.length === 0 && (
       <ul className="recent-searches">
         {recentSearches.map((search, index) => (
           <li key={index} className="recent-search-item" onClick={() => handleRecentSearchClick(search)}>
