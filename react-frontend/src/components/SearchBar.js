@@ -12,18 +12,18 @@ function Search() {
   useEffect(() => {
     const storedSearches = JSON.parse(localStorage.getItem("recentSearches")) || [];
     setRecentSearches(storedSearches);
-
-    // Add event listener for scroll
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      // Clean up the event listener when the component unmounts
-      window.removeEventListener("scroll", handleScroll);
-    };
   }, []);
 
-  const handleScroll = () => {
-    setInputFocused(false); // Set inputFocused to false when the user scrolls
-  };
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const pathname = url.pathname;
+    
+    // Check if the pathname includes "/marketplace" and if there are query parameters
+    if (pathname.includes("/marketplace") && url.searchParams.has("q")) {
+      const query = url.searchParams.get("q");
+      setSearchQuery(query);
+    }
+  }, []);
 
   const updateRecentSearches = (query) => {
     let searches = [...recentSearches];
@@ -93,11 +93,13 @@ function Search() {
   };
 
   const handleInputBlur = () => {
+    setTimeout(() => {
       setInputFocused(false);
+    }, 200); // Delay to allow clicks on dropdown items
   };
 
   return (
-    <div className="search-container" onClick={handleInputFocus}>
+    <div className="search-container">
       <input
         type="text"
         placeholder="Search for products..."
