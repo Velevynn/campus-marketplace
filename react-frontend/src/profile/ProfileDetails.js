@@ -14,10 +14,14 @@ function ProfileDetails(props) {
     const publicURL = process.env.REACT_APP_FRONTEND_LINK + "/profile/" + props.userID;
 
     function handleChange(event) {
-        if (bio.length <= 200 || event.nativeEvent.inputType === "deleteContentBackward") {
+        if (bio.length < 200 || event.nativeEvent.inputType === "deleteContentBackward") {
             setBio(event.target.value);
         } else {
             triggerNotification("Max Character Count Exceeded!", false);
+        }
+
+        if (bio.length > 200) {
+            setBio(bio.slice(0, 199));
         }
     }
 
