@@ -55,9 +55,14 @@ function ProfileDetails(props) {
                 return;
             }
 
+            if (bio.length > 200) {
+                triggerNotification("Bio is too long", false);
+                return;
+            }
+
             await axios.post(`${process.env.REACT_APP_BACKEND_LINK}/users/set-bio`, {
                 userID: props.userID,
-                bio: bio
+                bio: bio.slice(0,199)
             }, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem(process.env.JWT_TOKEN_NAME)}`
