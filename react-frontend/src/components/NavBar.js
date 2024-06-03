@@ -11,11 +11,17 @@ function getProfileName() {
     const decodedToken = jwtDecode(token);
     if (decodedToken.exp && decodedToken.exp > (Date.now() / 1000)) {
       const username = decodedToken.username;
+      // Capitalize the first letter and convert the rest to lowercase
       const formattedUsername = username.charAt(0).toUpperCase() + username.slice(1).toLowerCase();
-      return formattedUsername;
+      // Truncate usernames longer than 10 characters and pad shorter usernames with spaces
+      if (formattedUsername.length > 10) {
+        return formattedUsername.substring(0, 8) + ".."; // Truncate and add ".."
+      } else {
+        return formattedUsername.padEnd(10, " "); // Pad with spaces
+      }
     }
   }
-  return "Profile"
+  return "Profile    "; // 10 spaces to ensure consistent length
 }
 
 function NavBar() {
@@ -50,7 +56,7 @@ function NavBar() {
             <Link to="/marketplace">Marketplace</Link>
           </li>
           <li>
-            <Link to="/profile">{getProfileName()}</Link>
+            <Link to="/profile" style={{ width: "80px", textAlign: "center", whiteSpace: "pre" }}>{getProfileName()}</Link>
           </li>
         </div>
         <button className="post-button" onClick={handlePostListingClick}>
