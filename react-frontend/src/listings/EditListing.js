@@ -6,8 +6,11 @@ import { useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer';
 import ArrowButton from "../components/ArrowButton"
 import LoadingSpinner from "../components/LoadingSpinner";
+import Notify from "../components/ErrorNotification";
 
 function EditListing() {
+  const MINIMUM_IMAGE_WIDTH = 500;
+  const MINIMUM_IMAGE_HEIGHT = 500;
   const categories = [
     "No Change",
     "Other",
@@ -38,6 +41,9 @@ function EditListing() {
   const [imageDisplay, setImages] = useState([]);
   const [imagesToRemove, setImagesToRemove] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [key, setKey] = useState(0); // Allows notification to appear multiple times for same image
+  const [showNotification, setShowNotification] = useState(false); // Shows notification
+  const [notificationMsg, setNotificationMsg] = useState(""); // Sets notification msg
   const [listing, setListing] = useState({
     userID: null,
     title: "",
@@ -113,6 +119,16 @@ function EditListing() {
     fetchListing();
   }, [listingID]);
 
+  function displayNotification(message) {
+    // Displays a notification with the given message
+    setNotificationMsg(message);
+    setShowNotification(true);
+    setTimeout(() => {
+       // Hides notification after 3 seconds
+      setShowNotification(false);
+    }, 3300);
+  }
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setListing((prevListing) => ({
@@ -123,11 +139,65 @@ function EditListing() {
 
   const handleImageChange = (event) => {
     const files = Array.from(event.target.files);
-    setListing((prevListing) => ({
-      ...prevListing,
-      newImages: [...prevListing.newImages, ...files]
-    }));
-  };
+    if (files.length > 8) {
+      // Checks if number of images selected is greater than 8
+      displayNotification("Max number of images is 8");
+      setListing(prevListing => ({
+        ...prevListing,
+        images: []
+      }));
+      setKey(key === 0 ? 1 : 0);
+      return;
+    }
+  
+    const promises = files.map(file => {
+      // Turns files uploaded into image object
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const img = new Image();
+          img.src = event.target.result;
+          img.onload = () => {
+            resolve({ file, width: img.width, height: img.height });
+          };
+          img.onerror = () => {
+            reject(new Error("Failed to load image"));
+          };
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+  
+    Promise.all(promises)
+      .then(results => {
+        // Check if any images are under 500x500 minimum resolution
+        const nonValidImages = results.filter(({ width, height }) => {
+          return width < MINIMUM_IMAGE_WIDTH || height < MINIMUM_IMAGE_HEIGHT;
+        });
+        if (nonValidImages.length > 0) {
+          setListing(prevListing => ({
+            ...prevListing,
+            images: []
+          }));
+          displayNotification(`Minimum image resolution: ${MINIMUM_IMAGE_WIDTH}x${MINIMUM_IMAGE_HEIGHT}px`);
+          setKey(key === 0 ? 1 : 0);
+          // Don't update the state if there are non-valid images
+        } else {
+          // Update the state with valid images if all images meet the resolution criteria
+          setListing((prevListing) => ({
+            ...prevListing,
+            newImages: [...prevListing.newImages, ...files]
+          }));
+          setKey(key === 0 ? 1 : 0);
+        }
+      })
+      .catch(error => {
+        console.error("Error validating image:", error);
+        displayNotification("Error validating image file");
+        return []; 
+        
+      });
+    }
 
   const handleDeleteOldImage = async (indexToRemove) => {
     setImagesToRemove((prevImagesToRemove) => {
@@ -304,12 +374,14 @@ function EditListing() {
                       type="file"
                       name="images"
                       id="images"
+                      key={key}
                       accept="image/*"
                       multiple
                       className="custom-file-input"
                       onChange={handleImageChange}
                     />
                   </label>
+                  {showNotification && <Notify message={notificationMsg} />}
                 </div>
               </div>
               <div className="vertical-center" >
