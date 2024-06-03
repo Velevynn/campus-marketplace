@@ -7,6 +7,7 @@ import { useParams } from 'react-router-dom';
 import ListingCollection from './ListingCollection';
 import ShareButton from '../components/ShareButton';
 import ArrowButton from "../components/ArrowButton";
+import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 
@@ -65,36 +66,40 @@ function PublicPage() {
 
 
   return (
-    <div className = "vertical-center margin padding-top">
-      {isLoading ? (
-        <div><LoadingSpinner/></div> 
-       ) : (
-        <div className="vertical-center profile-page-layout margin padding-top">
-          <div className = "small-container drop-shadow">
-            <div className ="full-container">
-            <div className="vertical-center" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', marginBottom:'15px' }}>
-              <div onClick={() => { navigate(-1) }} style={{ rotate: '-90deg', position: 'absolute', left: -30 }}>
-                <ArrowButton></ArrowButton>
+    <div>
+      <div className = "vertical-center">
+        {isLoading ? (
+          <div><LoadingSpinner/></div> 
+        ) : (
+          <div className="vertical-center profile-page-layout margin padding-top">
+            <div className = "small-container drop-shadow">
+              <div className ="full-container">
+              <div className="vertical-center" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', marginBottom:'15px' }}>
+                <div onClick={() => { navigate(-1) }} style={{ rotate: '-90deg', position: 'absolute', left: -30 }}>
+                  <ArrowButton></ArrowButton>
+                </div>
+                <h3 style={{ margin: '0 auto' }}>{userProfile.fullName}</h3>
               </div>
-              <h3 style={{ margin: '0 auto' }}>{userProfile.fullName}</h3>
-            </div>
-              <img src={profileImage} alt="Profile" className="profile-picture"></img>
-                <a href={`https://www.google.com/maps/place/${userProfile.city},+CA+93422`} target="_blank" rel="noopener noreferrer">
-              <h5 className="text-link">
-                {userProfile.city && (
-                  <div>{userProfile.city}, CA</div>
-                  )}
-              </h5>
-              </a>
-              {userProfile.bio.length > 0 ? <p className = "user-bio">{userProfile.bio}</p> : <p>No bio provided.</p>}
-            </div>
-            <ListingCollection title="Listings" bookmarks={listings} userID={userProfile.userID} time = {timestamp} custom = {isCustom} />
-            <div className = "full-container" >
-              <ShareButton link = {`${process.env.REACT_APP_FRONTEND_LINK} + "/profile/" + ${userID}`} type = 'Profile'/>
+                <img src={profileImage} alt="Profile" className="profile-picture"></img>
+                  <a href={`https://www.google.com/maps/place/${userProfile.city},+CA+93422`} target="_blank" rel="noopener noreferrer">
+                <h5 className="text-link">
+                  {userProfile.city && (
+                    <div>{userProfile.city}, CA</div>
+                    )}
+                </h5>
+                </a>
+                {userProfile.bio.length > 0 ? <p className = "user-bio">{userProfile.bio}</p> : <p>No bio provided.</p>}
+              </div>
+              <ListingCollection title="Listings" bookmarks={listings} userID={userProfile.userID} time = {timestamp} custom = {isCustom} />
+              <div className = "full-container" >
+                <ShareButton link = {`${process.env.REACT_APP_FRONTEND_LINK} + "/profile/" + ${userID}`} type = 'Profile'/>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+
+      </div>
+      <Footer/>
     </div>
   );
 }
