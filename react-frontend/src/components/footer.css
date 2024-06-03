@@ -9,12 +9,12 @@
   
   .logo img {
     width: 50px;
-    transition: transform 0.3s ease;
+    transition: filter 0.3s ease;
     height: auto;
   }
 
   .logo img:hover {
-    transform: scale(1.2);
+    filter: brightness(0.8);
   }
   
   .information a {

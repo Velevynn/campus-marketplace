@@ -34,7 +34,7 @@ function About() {
 
   return (
     <div>
-      <h1 className="vertical-center margin">About</h1>
+      <h1 className="vertical-center margin">About Us</h1>
       <div className="about-layout">
         {bios.map((bio, index) => (
           <Bio key={index} name={bio.name} bio={bio.bio} quip={bio.quip}/>
