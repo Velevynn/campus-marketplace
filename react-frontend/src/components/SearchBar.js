@@ -12,7 +12,18 @@ function Search() {
   useEffect(() => {
     const storedSearches = JSON.parse(localStorage.getItem("recentSearches")) || [];
     setRecentSearches(storedSearches);
+
+    // Add event listener for scroll
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      // Clean up the event listener when the component unmounts
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
+
+  const handleScroll = () => {
+    setInputFocused(false); // Set inputFocused to false when the user scrolls
+  };
 
   const updateRecentSearches = (query) => {
     let searches = [...recentSearches];
@@ -79,17 +90,14 @@ function Search() {
 
   const handleInputFocus = () => {
     setInputFocused(true);
-    console.log(inputFocused);
   };
 
   const handleInputBlur = () => {
-    setTimeout(() => {
       setInputFocused(false);
-    }, 200); // Delay to allow clicks on dropdown items
   };
 
   return (
-    <div className="search-container">
+    <div className="search-container" onClick={handleInputFocus}>
       <input
         type="text"
         placeholder="Search for products..."
@@ -104,15 +112,15 @@ function Search() {
         <img src={search} alt="search-icon" className="search-img" />
       </button>
       {showNotification && <Notify message="Search field empty" />}
-      {recentSearches.length > 0 && searchQuery.length === 0 && (
-      <ul className="recent-searches">
-        {recentSearches.map((search, index) => (
-          <li key={index} className="recent-search-item" onClick={() => handleRecentSearchClick(search)}>
-            <span>{search}</span>
-            <button onClick={(e) => { e.stopPropagation(); handleDeleteSearch(search); }} className="delete-search-button">X</button>
-          </li>
-        ))}
-      </ul>
+      {inputFocused && recentSearches.length > 0 && searchQuery.length === 0 && (
+        <ul className="recent-searches">
+          {recentSearches.map((search, index) => (
+            <li key={index} className="recent-search-item" onClick={() => handleRecentSearchClick(search)}>
+              <span>{search}</span>
+              <button onClick={(e) => { e.stopPropagation(); handleDeleteSearch(search); }} className="delete-search-button">X</button>
+            </li>
+          ))}
+        </ul>
       )}
     </div>
   );
