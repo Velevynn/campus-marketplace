@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
-import PropTypes from 'prop-types';
 
 function MakeOfferPage({ onClose }) {
   const [offer, setOffer] = useState("0");  // Initial state for the offer input
@@ -76,7 +75,7 @@ function MakeOfferPage({ onClose }) {
 }
 
 MakeOfferPage.propTypes = {
-  onClose: PropTypes.func.isRequired,
+  onClose: () => {}
 };
 
 export default MakeOfferPage;

@@ -353,26 +353,8 @@ function ListingView() {
                             <ShareButton link = {`${process.env.REACT_APP_FRONTEND_LINK} + "/listings/" + ${listingID}`} type = 'Listing'/>
                             
                             {showPopup && (
-                              <div style={{
-                                position: "fixed",
-                                top: 0,
-                                left: 0,
-                                right: 0,
-                                bottom: 0,
-                                background: "rgba(0, 0, 0, 0.6)",
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                zIndex: 1000
-                              }}>
-                                <div style={{
-                                  background: "white",
-                                  padding: "10px",
-                                  borderRadius: "10px",
-                                  maxWidth: "500px",
-                                  width: "100%",
-                                  textAlign: "center"
-                                }}>
+                              <div className="popup-overlay">
+                                <div className="popup-content">
                                   <MakeOfferPage onClose={() => { setShowPopup(false) }} />
                                 </div>
                               </div>
