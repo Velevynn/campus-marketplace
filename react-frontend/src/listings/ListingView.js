@@ -20,6 +20,7 @@ function ListingView() {
   const [loggedID, setLoggedID] = useState(null);
   const [username, setUsername] = useState("");
   const [ownerID, setOwnerID] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
   // hook to retrieve logged in userID from jwt token
@@ -75,26 +76,27 @@ function ListingView() {
           setOwnerID(response.data[0].userID);
           /* check currently logged-in userID */
           if(loggedID){
-              setIsOwner(response.data[0].userID === loggedID); // If userIDs are the same, we know this user owns this listing
-              console.log("logged in userID: ", loggedID);
-            }
-          } else{
-            console.log("user not logged in or token not found");
+            setIsOwner(response.data[0].userID === loggedID); // If userIDs are the same, we know this user owns this listing
+            console.log("logged in userID: ", loggedID);
           }
+        } else {
+          console.log("user not logged in or token not found");
+        }
 
-          // Fetch username separately using the userID
-          if (loggedID) {
-            const usernameResponse = await axios.get(
-              process.env.REACT_APP_BACKEND_LINK + `/users/public-profile/${response.data[0].userID}`,
-            );
-            
-            if (usernameResponse.data) {
-              setUsername(usernameResponse.data.username);
-            }
+        // Fetch username separately using the userID
+        if (response.data[0].userID) {
+          const usernameResponse = await axios.get(
+            process.env.REACT_APP_BACKEND_LINK + `/users/public-profile/${response.data[0].userID}`,
+          );
+          
+          if (usernameResponse.data) {
+            setUsername(usernameResponse.data.username);
           }
         }
-      catch (error) {
+      } catch (error) {
         console.error("Error fetching listing:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -296,55 +298,61 @@ function ListingView() {
   }
 
   return (
-    <div className="vertical-center margin">
-      <div className="medium-container drop-shadow">
-        <div className="listing-layout">
-          <div className="margin vertical-center flex-column">
-            <ImageCarousel images={images} />
-            <div className="">
-            {isOwner && (
-              <>
-                <button className="muted-button margin-right" onClick={handleEditListing}>Edit</button>
-                <button style={{backgroundColor: "red"}}onClick={handleDeleteListing}>Delete</button>
-              </>
-            )}
-            </div>
-          </div>
-          <div className="margin" type="text">
-            <h1 className="no-margin-top no-margin-bottom">{listing.title}</h1>
-            <h5 style={{margin: "0"}}><Link to = {`/marketplace?q=${listing.category}`}>{listing.category}</Link></h5>
-            <p>Posted {TimeAgo(listing.postDate)}</p>
-            <p>
-                {getBookmarkCount()}
-            </p>
-            <h5 style={{color: "green"}}>{listing.price === "0" || listing.price === 0 ? "FREE" : "$" + listing.price}</h5>
-            <p>{listing.description}</p>
-              <div style={{display: 'flex', alignItems: 'center', marginTop: "100px"}}>
-                <Link to = {`/profile/${ownerID}`}  style={{ display: 'flex', alignItems: 'center' }}>
-                <FaUser style = {{marginRight: "10px"}}/>
-                  <h5 className="text-link" style={{paddingBottom:"1px"}}>
-                    {username}    
-                  </h5>
-                </Link>
+    <div>
+    {isLoading ? (
+            <div><LoadingSpinner/> {/*Visible loading spinner that runs until all data for elements are made available*/}</div> 
+          ) : ( 
+            <div className="vertical-center margin">
+                  <div className="medium-container drop-shadow">
+                    <div className="listing-layout">
+                      <div className="margin vertical-center flex-column">
+                        <ImageCarousel images={images} />
+                        <div className="">
+                        {isOwner && (
+                          <>
+                            <button className="muted-button margin-right" onClick={handleEditListing}>Edit</button>
+                            <button style={{backgroundColor: "red"}}onClick={handleDeleteListing}>Delete</button>
+                          </>
+                        )}
+                        </div>
+                      </div>
+                      <div className="margin" type="text">
+                        <h1 className="no-margin-top no-margin-bottom">{listing.title}</h1>
+                        <h5 style={{margin: "0"}}><Link to = {`/marketplace?q=${listing.category}`}>{listing.category}</Link></h5>
+                        <p>Posted {TimeAgo(listing.postDate)}</p>
+                        <p>
+                            {getBookmarkCount()}
+                        </p>
+                        <h5 style={{color: "green"}}>{listing.price === "0" || listing.price === 0 ? "FREE" : "$" + listing.price}</h5>
+                        <p>{listing.description}</p>
+                          <div style={{display: 'flex', alignItems: 'center', marginTop: "100px"}}>
+                            <Link to = {`/profile/${ownerID}`}  style={{ display: 'flex', alignItems: 'center' }}>
+                            <FaUser style = {{marginRight: "10px"}}/>
+                              <h5 style={{paddingBottom:"1px"}}>
+                                {username}    
+                              </h5>
+                            </Link>
+                          </div>
+                      </div>
+                    </div>
+                    <div className="vertical-center margin-top">
+                        <button className="margin-right" onClick={handleMakeOffer}>Make Offer</button>
+                        <button className="margin-right" onClick={handleStartChat}>Start Chat</button>
+
+                        <div className="vertical-center margin-right" onClick={toggleBookmark}>
+                          {isBookmarked ? 
+                          (<img className="bookmark" src={filledBookmark}/>) : 
+                          (<img className="bookmark" src={emptyBookmark}/>)
+                          }</div>
+
+                          <ShareButton link = {`${process.env.REACT_APP_FRONTEND_LINK} + "/listings/" + ${listingID}`} type = 'Listing'/>
+                        
+                    </div>
+                  </div>
               </div>
-          </div>
-        </div>
-        <div className="vertical-center margin-top">
-            <button className="margin-right" onClick={handleMakeOffer}>Make Offer</button>
-            <button className="margin-right" onClick={handleStartChat}>Start Chat</button>
-
-            <div className="vertical-center margin-right" onClick={toggleBookmark}>
-              {isBookmarked ? 
-              (<img className="bookmark" src={filledBookmark}/>) : 
-              (<img className="bookmark" src={emptyBookmark}/>)
-              }</div>
-
-              <ShareButton link = {`${process.env.REACT_APP_FRONTEND_LINK} + "/listings/" + ${listingID}`} type = 'Listing'/>
-            
-        </div>
-      </div>
-        
+          )}
     </div>
+    
   );
 }
 
