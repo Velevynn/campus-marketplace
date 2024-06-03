@@ -55,7 +55,7 @@ router.post("/:listingID/bookmark/", async (req, res) => {
   try {
     // Add new relationship to bookmark table.
     await addBookmark(req.body.userID, req.body.listingID, req.body.title);
-    res.status(201).send
+    res.status(201).end();
   }
   catch (error) {
     console.error("Error adding bookmark: ", error);
