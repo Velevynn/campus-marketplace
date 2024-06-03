@@ -78,7 +78,7 @@ function PublicPage() {
                   )}
               </h5>
               </a>
-              {userProfile.bio.length > 0 ? <p>{userProfile.bio}</p> : <p>No bio provided.</p>}
+              {userProfile.bio.length > 0 ? <p className = "user-bio">{userProfile.bio}</p> : <p>No bio provided.</p>}
             </div>
             <ListingCollection title="Listings" bookmarks={listings} userID={userProfile.userID} time = {timestamp} custom = {isCustom} />
             <div className = "full-container" >

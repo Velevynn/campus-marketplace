@@ -107,8 +107,8 @@ function Search() {
       {recentSearches.length > 0 && (
       <ul className="recent-searches">
         {recentSearches.map((search, index) => (
-          <li key={index} className="recent-search-item">
-            <span onClick={() => handleRecentSearchClick(search)}>{search}</span>
+          <li key={index} className="recent-search-item" onClick={() => handleRecentSearchClick(search)}>
+            <span>{search}</span>
             <button onClick={(e) => { e.stopPropagation(); handleDeleteSearch(search); }} className="delete-search-button">X</button>
           </li>
         ))}

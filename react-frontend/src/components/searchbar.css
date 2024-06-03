@@ -46,7 +46,7 @@
   background: white;
   border: 1px solid #ccc;
   z-index: 1000;
-  width: 50%;
+  width: 40%;
   display: none;
 }
 
@@ -67,13 +67,20 @@
 .delete-search-button {
   background: none;
   border: none;
-  color: red;
+  color: red !important;
   cursor: pointer;
   float: right;
-  padding: 5px 8px;
+  background-color: transparent !important;
+  width: 20px;
+  padding: 5px 8px 10px;
 }
 
 .delete-search-button:hover {
-  color: darkred;
+  color: darkred !important;
+  background-color: transparent !important;
+}
+
+.delete-search-button:active {
+  color: darkred !important;
   background-color: transparent !important;
 }

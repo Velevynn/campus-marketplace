@@ -92,7 +92,7 @@ function ChangeProfilePicture(props) {
     <div className="profile-picture-container">
       <div className="profile-picture-wrapper">
         <div>
-        <img src={profileImage} alt="Profile" className="profile-picture" />
+        <img src={profileImage} alt="Profile" className="profile-picture profile-picture-custom" />
         <label htmlFor="profileImage" className="overlay">
           <span className="overlay-text">Change Image</span>
         </label>

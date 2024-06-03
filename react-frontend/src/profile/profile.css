@@ -36,9 +36,12 @@
   width: 150px;
   height: 150px;
   border-radius: 50%;
-  transition: filter 0.3s ease;
   object-fit: cover;
   object-position: center;
+}
+
+.profile-picture-custom {
+  transition: filter 0.3s ease;
 }
 
 @media screen and (max-width: 1175px) {
@@ -48,7 +51,7 @@
   }
 }
 
-.profile-picture:hover {
+.profile-picture-custom:hover {
   filter: brightness(0.5); 
 }
 
@@ -232,3 +235,6 @@
   margin-top: 33px;
 }
 
+.user-bio {
+  text-align: justify;
+}
