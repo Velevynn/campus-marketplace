@@ -3,11 +3,15 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import ImageCarousel from "../components/ImageCarousel.js";
 import LoadingSpinner from "../components/LoadingSpinner.js";
+import ShareButton from "../components/ShareButton.js"
 import { jwtDecode } from "jwt-decode";
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import emptyBookmark from "../assets/empty-bookmark.png";
 import filledBookmark from "../assets/filled-bookmark.png";
+import Footer from "../components/Footer.js";
+import { FaUser } from 'react-icons/fa';
 import './ListingView.css';
+import MakeOfferPage from '../pages/MakeOfferPage.js';
 
 function ListingView() {
   const { listingID } = useParams();
@@ -16,15 +20,18 @@ function ListingView() {
   const [isOwner, setIsOwner] = useState(false);
   const [isBookmarked, setBookmark] = useState(false);
   const [loggedID, setLoggedID] = useState(null);
-  const [dropdownVisible, setDropdownVisible] = useState(false); // State to control dropdown visibility
+  const [username, setUsername] = useState("");
+  const [ownerID, setOwnerID] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [showPopup, setShowPopup] = useState(false);
   const navigate = useNavigate();
 
-  // Hook to retrieve logged in userID from jwt token
+  // hook to retrieve logged in userID from jwt token
   useEffect(() => {
     const fetchUserID = async () => {
       if (!loggedID) {
         console.log("Fetching userID from JWT token.");
-        const token = localStorage.getItem("token");
+        const token = localStorage.getItem(process.env.JWT_TOKEN_NAME);
         if (token) {
           const decodedToken = jwtDecode(token);
           const username = decodedToken.username;
@@ -69,17 +76,30 @@ function ListingView() {
         /* set fetched data to state */
         if (response.data.length > 0) {
           setListing(response.data[0]);
+          setOwnerID(response.data[0].userID);
           /* check currently logged-in userID */
           if(loggedID){
-              setIsOwner(response.data[0].userID === loggedID); // If userIDs are the same, we know this user owns this listing
-              console.log("logged in userID: ", loggedID);
-            }
-          } else{
-            console.log("user not logged in or token not found");
+            setIsOwner(response.data[0].userID === loggedID); // If userIDs are the same, we know this user owns this listing
+            console.log("logged in userID: ", loggedID);
+          }
+        } else {
+          console.log("user not logged in or token not found");
+        }
+
+        // Fetch username separately using the userID
+        if (response.data[0].userID) {
+          const usernameResponse = await axios.get(
+            process.env.REACT_APP_BACKEND_LINK + `/users/public-profile/${response.data[0].userID}`,
+          );
+          
+          if (usernameResponse.data) {
+            setUsername(usernameResponse.data.username);
           }
         }
-      catch (error) {
+      } catch (error) {
         console.error("Error fetching listing:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -153,7 +173,8 @@ function ListingView() {
 
   const handleMakeOffer = () => {
     console.log("Make Offer clicked for listing:", listing);
-    navigate(`/listings/${listingID}/offer`);
+    //navigate(`/listings/${listingID}/offer`);
+    setShowPopup(true);
   };
 
   const handleStartChat = () => {
@@ -260,18 +281,6 @@ function ListingView() {
     }
   }
 
-  const handleCopyURL = () => {
-    const listingURL = window.location.href; // Get the current URL
-    navigator.clipboard.writeText(listingURL)
-      .then(() => {
-        console.log('Listing URL copied to clipboard:', listingURL);
-        setDropdownVisible(false); // Close the dropdown after copying URL
-      })
-      .catch((error) => {
-        console.error('Failed to copy listing URL to clipboard:', error);
-      });
-  };
-
   if (!listing) {
     return (
         <div className="margin">
@@ -293,56 +302,89 @@ function ListingView() {
   }
 
   return (
-    <div className="vertical-center margin">
-      <div className="medium-container drop-shadow">
-        <div className="listing-layout">
-          <div className="margin vertical-center flex-column">
-            <ImageCarousel images={images} />
-            <div className="">
-            {isOwner && (
-              <>
-                <button className="muted-button margin-right" onClick={handleEditListing}>Edit</button>
-                <button style={{backgroundColor: "red"}}onClick={handleDeleteListing}>Delete</button>
-              </>
-            )}
-            </div>
-          </div>
-          <div className="margin" type="text">
-            <h1 className="no-margin-top no-margin-bottom">{listing.title}</h1>
-            <h5 style={{margin: "0"}}>{listing.category}</h5>
-            <p>Posted {TimeAgo(listing.postDate)}</p>
-            <p>
-                {getBookmarkCount()}
-            </p>
-            <h5 style={{color: "green"}}>{listing.price === "0" || listing.price === 0 ? "FREE" : "$" + listing.price}</h5>
-            <p>{listing.description}</p>
-          </div>
-        </div>
-        <div className="vertical-center margin-top">
-            <button className="margin-right" onClick={handleMakeOffer}>Make Offer</button>
-            <button className="margin-right" onClick={handleStartChat}>Start Chat</button>
+    <div>
+    {isLoading ? (
+            <div><LoadingSpinner/> {/*Visible loading spinner that runs until all data for elements are made available*/}</div> 
+          ) : ( 
+            <div>
+              <div className="vertical-center margin">
+                    <div className="medium-container drop-shadow">
+                      <div className="listing-layout">
+                        <div className="margin vertical-center flex-column">
+                          <ImageCarousel images={images} />
+                          <div className="">
+                          {isOwner && (
+                            <>
+                              <button className="muted-button margin-right" onClick={handleEditListing}>Edit</button>
+                              <button style={{backgroundColor: "red"}}onClick={handleDeleteListing}>Delete</button>
+                            </>
+                          )}
+                          </div>
+                        </div>
+                        <div className="margin" type="text">
+                          <h1 className="no-margin-top no-margin-bottom">{listing.title}</h1>
+                          <h5 style={{margin: "0"}}><Link to = {`/marketplace?q=${listing.category}`}>{listing.category}</Link></h5>
+                          <p>Posted {TimeAgo(listing.postDate)}</p>
+                          <p>
+                              {getBookmarkCount()}
+                          </p>
+                          <h5 style={{color: "green"}}>{listing.price === "0" || listing.price === 0 ? "FREE" : "$" + listing.price}</h5>
+                          <p>{listing.description}</p>
+                            <div style={{display: 'flex', alignItems: 'center', marginTop: "100px"}}>
+                              <Link to = {`/profile/${ownerID}`}  style={{ display: 'flex', alignItems: 'center' }}>
+                              <FaUser style = {{marginRight: "10px"}}/>
+                                <h5 style={{paddingBottom:"1px"}}>
+                                  {username}    
+                                </h5>
+                              </Link>
+                            </div>
+                        </div>
+                      </div>
+                      <div className={`vertical-center margin ${showPopup ? 'blur' : ''}`}>
+                          <button className="margin-right" onClick={handleMakeOffer}>Make Offer</button>
+                          <button className="margin-right" onClick={handleStartChat}>Start Chat</button>
 
-            <div className="vertical-center margin-right" onClick={toggleBookmark}>
-              {isBookmarked ? 
-              (<img className="bookmark" src={filledBookmark}/>) : 
-              (<img className="bookmark" src={emptyBookmark}/>)
-              }</div>
+                          <div className="vertical-center margin-right" onClick={toggleBookmark}>
+                            {isBookmarked ? 
+                            (<img className="bookmark" src={filledBookmark}/>) : 
+                            (<img className="bookmark" src={emptyBookmark}/>)
+                            }</div>
 
-              {/* Dropdown button */}
-              <div className="dropdown" onClick={() => setDropdownVisible(!dropdownVisible)}>
-                <button className="dropbtn">Share</button>
-                {/* Dropdown content */}
-                {dropdownVisible && (
-                  <div className="dropdown-content" id="myDropdown">
-                    <div className="option" onClick={handleCopyURL}>Copy Listing URL</div>
-                  </div>
-                )}
+                            <ShareButton link = {`${process.env.REACT_APP_FRONTEND_LINK} + "/listings/" + ${listingID}`} type = 'Listing'/>
+                            
+                            {showPopup && (
+                              <div style={{
+                                position: "fixed",
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                                background: "rgba(0, 0, 0, 0.6)",
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                zIndex: 1000
+                              }}>
+                                <div style={{
+                                  background: "white",
+                                  padding: "10px",
+                                  borderRadius: "10px",
+                                  maxWidth: "500px",
+                                  width: "100%",
+                                  textAlign: "center"
+                                }}>
+                                  <MakeOfferPage onClose={() => { setShowPopup(false) }} />
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      <Footer/>
+                    </div>
+                  )}
               </div>
-            
-        </div>
-      </div>
-        
-    </div>
+    
   );
 }
 

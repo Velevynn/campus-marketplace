@@ -2,17 +2,14 @@ import React, { useState, useEffect } from 'react';
 import Notify from '../components/ErrorNotification';
 import axios from 'axios';
 import PropTypes from "prop-types";
-import LoadingSpinner from '../components/LoadingSpinner';
 import DefaultPfp from '../assets/profile-placeholder.png';
+import WhitePfp from '../assets/white-placeholder.png';
 
 function ChangeProfilePicture(props) {
-  const [profileImage, setProfileImage] = useState('');
+  const [profileImage, setProfileImage] = useState(WhitePfp);
   const [showNotification, setShowNotification] = useState(false);
   const [isSuccessful, setIsSuccessful] = useState(false);
   const [notificationMsg, setNotificationMsg] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [timestamp, setTimestamp] = useState(Date.now());
-  
 
   useEffect(() => {
     fetchIsProfilePicture();
@@ -22,15 +19,15 @@ function ChangeProfilePicture(props) {
     try {
       const response = await axios.get(`${process.env.REACT_APP_BACKEND_LINK}/users/is-profile-picture/${props.userID}`);
       const { isProfilePicture } = response.data;
-      setProfileImage(isProfilePicture ? `https://haggleimgs.s3.amazonaws.com/user/${props.userID}/bruh0.jpg?${timestamp}` : DefaultPfp);
+      setProfileImage(isProfilePicture ? `https://haggleimgs.s3.amazonaws.com/user/${props.userID}/bruh0.jpg?${props.time}` : DefaultPfp);
     } catch (error) {
       console.error('Error fetching isProfilePicture:', error);
     }
   };
 
   const handleFileChange = async (event) => {
-    const MINIMUM_IMAGE_WIDTH = 100;
-    const MINIMUM_IMAGE_HEIGHT = 100;
+    const MINIMUM_IMAGE_WIDTH = 200;
+    const MINIMUM_IMAGE_HEIGHT = 200;
     const file = event.target.files[0];
     const userID = props.userID;
 
@@ -40,7 +37,6 @@ function ChangeProfilePicture(props) {
     }
 
     try {
-      setLoading(true);
       const formData = new FormData();
       formData.append('userID', userID);
 
@@ -70,11 +66,10 @@ function ChangeProfilePicture(props) {
       const response = await axios.post(`${process.env.REACT_APP_BACKEND_LINK}/users/change-profile-image`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${localStorage.getItem(process.env.JWT_TOKEN_NAME)}`
         }
       });
 
-      setTimestamp(Date.now());
       setProfileImage(URL.createObjectURL(validatedFile));
       setIsSuccessful(true);
       displayNotification(response.data.message);
@@ -82,8 +77,6 @@ function ChangeProfilePicture(props) {
       console.error('Error changing profile picture:', error);
       setIsSuccessful(false);
       displayNotification(error.message || 'Failed to change profile picture');
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -97,13 +90,9 @@ function ChangeProfilePicture(props) {
 
   return (
     <div className="profile-picture-container">
-      {loading && (
-        <div className="loading-spinner">
-          <LoadingSpinner />
-        </div>
-      )}
       <div className="profile-picture-wrapper">
-        <img src={profileImage} alt="Profile" className="profile-picture" />
+        <div>
+        <img src={profileImage} alt="Profile" className="profile-picture profile-picture-custom" />
         <label htmlFor="profileImage" className="overlay">
           <span className="overlay-text">Change Image</span>
         </label>
@@ -114,6 +103,7 @@ function ChangeProfilePicture(props) {
           style={{ display: 'none' }}
           onChange={handleFileChange}
         />
+        </div>
       </div>
       {showNotification && <Notify message={notificationMsg} isSuccessful = {isSuccessful}/>}
     </div>
@@ -122,6 +112,7 @@ function ChangeProfilePicture(props) {
 
 ChangeProfilePicture.propTypes = {
   userID: PropTypes.string.isRequired,
+  time: PropTypes.string.isRequired
 };
 
 export default ChangeProfilePicture;

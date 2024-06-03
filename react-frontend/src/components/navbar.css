@@ -4,6 +4,16 @@
   z-index: 100;
   background-color: rgba(255, 255, 255, 0.885);
   border-radius: 0px !important; 
+  transition: background-color 0.3s ease;
+}
+
+.nav-container:hover {
+  background-color: rgba(255, 255, 255, .98);
+}
+
+.nav-container:not(:hover) {
+  transition-delay: 5s;
+  background-color: rgba(255, 255, 255, 0.885);
 }
 
 @media screen and (max-width: 768px)  {
@@ -21,7 +31,6 @@
   padding: 10px 10px 10px 0px;
   width: 150px;
   min-width: 100px;
-  
 }
 
 .logo-container img {
@@ -30,4 +39,11 @@
 
 .logo-container:hover img {
   transform: scale(1.06); 
+  cursor: pointer; 
+}
+
+.post-button {
+  width: 100px;
+  margin-bottom: 5px;
+  margin-left: 10px;
 }

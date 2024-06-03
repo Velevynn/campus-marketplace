@@ -6,12 +6,15 @@ import LoadingSpinner from "../components/LoadingSpinner";
 import ProfileDetails from './ProfileDetails';
 import ListingCollection from './ListingCollection';
 import ChangeProfilePicture from './ChangeProfilePicture'; // Import the ChangeProfilePicture component
+import Footer from '../components/Footer';
 import './profile.css';
 
 function ProfilePage() {
   const [bookmarks, setBookmarks] = useState([]);
   const [listings, setMyListings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const timestamp = useState(Date.now());
+  const isCustom = true;
   const [userProfile, setUserProfile] = useState({
     username: '',
     full_name: '',
@@ -35,7 +38,7 @@ function ProfilePage() {
   }, []);
 
   const fetchUserProfile = async () => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem(process.env.JWT_TOKEN_NAME);
     if (!token) {
       navigate('/login');
       return;
@@ -81,7 +84,7 @@ function ProfilePage() {
   };
 
   const handleSignOut = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem(process.env.JWT_TOKEN_NAME);
     navigate('/login');
   };
 
@@ -96,7 +99,7 @@ function ProfilePage() {
 
 
   const handleDeleteConfirmation = async () => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem(process.env.JWT_TOKEN_NAME);
     if (!token) {
       navigate('/login');
       return;
@@ -115,7 +118,7 @@ function ProfilePage() {
 
       if (response.status === 200) {
         // After successful deletion, redirect to login
-        localStorage.removeItem('token');
+        localStorage.removeItem(process.env.JWT_TOKEN_NAME);
         navigate('/login');
       }
     } catch (error) {
@@ -158,7 +161,7 @@ function ProfilePage() {
         <div>
           <div className="vertical-center profile-page-layout margin padding-top">
             <div className="small-container drop-shadow">
-              <ChangeProfilePicture userID = {userProfile.userID}/>
+              <ChangeProfilePicture userID = {userProfile.userID} time = {timestamp}/>
               <form>
                 {Object.entries(userProfile).map(([key, value]) => (
                   key !== 'userID' && 
@@ -180,8 +183,8 @@ function ProfilePage() {
             </div>
 
             <div className="collection-layout margin padding-left drop-shadow">
-              <BookmarksCollection title="Bookmarks" bookmarks={bookmarks} userID={userProfile.userID} />
-              <ListingCollection title="Listings" bookmarks={listings} userID={userProfile.userID} />
+              <BookmarksCollection title="Bookmarks" bookmarks={bookmarks} userID={userProfile.userID} time = {timestamp} />
+              <ListingCollection title="Listings" bookmarks={listings} userID={userProfile.userID} time = {timestamp} custom = {isCustom} />
             </div>
 
             <ProfileDetails userID = {userProfile.userID}>
@@ -225,6 +228,7 @@ function ProfilePage() {
           )}
             </div>
         </div>
+        <Footer/>
         </div>
       )}
     </div>

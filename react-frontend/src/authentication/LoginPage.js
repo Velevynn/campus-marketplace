@@ -40,7 +40,7 @@ function LoginPage() {
         password: credentials.password,
       };
       const response = await axios.post(process.env.REACT_APP_BACKEND_LINK + '/users/login', requestBody);
-      localStorage.setItem('token', response.data.token); // Stores the received token in local storage and navigates to the profile page
+      localStorage.setItem(process.env.JWT_TOKEN_NAME, response.data.token); // Stores the received token in local storage and navigates to the profile page
       const url = process.env.REACT_APP_FRONTEND_LINK + `/profile`;
       window.history.pushState({}, "", url);
       window.dispatchEvent(new PopStateEvent('popstate'));

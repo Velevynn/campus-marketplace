@@ -495,4 +495,40 @@ router.post('/set-bio', verifyToken, async (req, res) => {
   }
 });
 
+router.post('/set-location', verifyToken, async (req, res) => {
+  const { userID } = req.body;
+  const { city } = req.body;
+  try {
+    console.log(req.body);
+    const connection = createConnection();
+    console.log(city, " ", userID)
+    const query = 'UPDATE users SET city = $1 WHERE "userID" = $2';
+    await connection.query(query, [city, userID]);
+    res.status(200).json({ message: 'City changed successfully' });
+  } catch (error) {
+    console.error('Error saving bio:', error);
+    res.status(500).json({error: 'Failed to post bio'});
+  }
+});
+
+router.get('/public-profile/:userID', async (req, res) => {
+  const { userID } = req.params
+  try {
+    const connection = createConnection();
+    // Retrieve user details from extracted username...
+    const { rows: user } = await connection.query(
+      'SELECT username, "fullName", bio, city FROM users WHERE "userID" = $1',
+      [userID]
+    );
+
+    // And if the user exists, return their information.
+    if (user.length > 0) {
+      res.status(200).json(user[0]); // HTTP (OK) - user exists
+    }
+  } catch (error) {
+    console.error('Error fetching user profile:', error);
+    res.status(500).json({ error: 'Failed to fetch user profile' }); // HTTP 500 (Internal Server Error) - unexpected error/condition
+  }
+});
+
 module.exports = router;

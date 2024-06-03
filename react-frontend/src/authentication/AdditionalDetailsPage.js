@@ -39,7 +39,7 @@ function AdditionalDetailsPage() {
     }
     try {
       const response = await axios.post(process.env.REACT_APP_BACKEND_LINK + '/users/register-google-user', userData);
-      localStorage.setItem('token', response.data.token);
+      localStorage.setItem(process.env.JWT_TOKEN_NAME, response.data.token);
       navigate('/profile'); // Redirect to profile page after registration
     } catch (error) {
       const errorText = error.response ? error.response.data.error : error.message;

@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import emptyBookmark from "../assets/empty-bookmark.png";
 import filledBookmark from "../assets/filled-bookmark.png";
+import truncateString from "../utils/Functions";
 
 function BookmarksCollection(props) {
   const { bookmarks } = props;
@@ -71,7 +72,7 @@ function BookmarksCollection(props) {
 
   return (
     <div>
-      <div className="vertical-center margin">
+      <div className="vertical-left margin">
         <h4>My Bookmarks</h4>
       </div>
       <div className="vertical-center margin">
@@ -85,13 +86,13 @@ function BookmarksCollection(props) {
                   <Link to={`/listings/${bookmark.listingID}`} className="collection-link">
                     <div className="collection-container">
                       <img
-                        src={`https://haggleimgs.s3.amazonaws.com/${bookmark.listingID}/image0`}
+                        src={`https://haggleimgs.s3.amazonaws.com/${bookmark.listingID}/image0?${props.time}`}
                         className="collection-image"
                         alt={`Listing ${bookmark.title}`}
                       />
                     </div>
                     <div className="collection-container margin-right">
-                      <h5 className="collection-text">{bookmark.title}</h5>
+                      <h5 className="collection-text">{truncateString(bookmark.title, 19)}</h5>
                     </div>
                   </Link>
                   <div
@@ -122,6 +123,7 @@ BookmarksCollection.propTypes = {
       title: PropTypes.string.isRequired,
     })
   ).isRequired,
+  time: PropTypes.string.isRequired
 };
 
 export default BookmarksCollection;

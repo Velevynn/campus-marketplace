@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useLocation } from "react-router-dom";
 import Entry from "../components/MarketplaceEntry";
 import ScrollToTopButton from "../components/ScrollToTopButton";
 import LoadingSpinner from "../components/LoadingSpinner"; // Import the loading spinner component
@@ -11,6 +11,17 @@ function Marketplace() {
   const [entries, setEntries] = useState([]);
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true); // Add loading state
+  const [query, setQuery] = useState('');
+  const location = useLocation();
+
+  const getQueryFromURL = () => {
+    const search = location.search;  // save query string
+    if (search.startsWith('?q=')) {
+      const queryString = search.substring(3);  // truncate to remove '?q='
+      return decodeURIComponent(queryString);  // converts ASCII codes for spaces and other special characters
+    }
+    return '';  // return nothing if there's no query
+  }
 
   if (q === null) {
     q = "";
@@ -18,7 +29,10 @@ function Marketplace() {
 
   useEffect(() => {
     fetchEntries();
-  }, [q, page]);
+    const initialQuery = getQueryFromURL();
+    setQuery(initialQuery);
+    console.log("hello: ", query);
+  }, [q, page, location]);
 
   async function fetchEntries() {
     try {
@@ -53,11 +67,22 @@ function Marketplace() {
 
   return (
     <div>
+      <div className="left-container">
+        <h1>{query}</h1>
+      </div>  
       <div className="full-container">
         {isLoading ? ( // Render loading spinner if isLoading is true
           <div className="margin">
             <LoadingSpinner />
           </div>
+        ) : entries.length === 0 ? (
+          <div>
+          
+          <h2>
+            No Search Results
+          </h2>
+          <h1>💀</h1>
+        </div>
         ) : (
           entries.map((entry) => (
             <Entry 
@@ -68,6 +93,7 @@ function Marketplace() {
             />
           ))
         )}
+
       </div>
       <ScrollToTopButton onClick={scrollToTop} />
     </div>
