@@ -77,7 +77,9 @@ function PublicPage() {
               {userProfile.bio.length > 0 ? <p>{userProfile.bio}</p> : <p>No bio provided.</p>}
             </div>
             <ListingCollection title="Listings" bookmarks={listings} userID={userProfile.userID} time = {timestamp} custom = {isCustom} />
-            <ShareButton link = {`${process.env.REACT_APP_FRONTEND_LINK} + "/profile/" + ${userID}`}/>
+            <div className = "full-container" >
+              <ShareButton link = {`${process.env.REACT_APP_FRONTEND_LINK} + "/profile/" + ${userID}`}/>
+            </div>
           </div>
         </div>
       )
