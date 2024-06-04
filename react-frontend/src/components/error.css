@@ -10,6 +10,7 @@
   height: 60px;
   align-items: center;
   vertical-align: center;
+  z-index: 10000;
 }
 
 .notification.visible {
