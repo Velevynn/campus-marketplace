@@ -49,8 +49,10 @@
   right: 0;
   background: white;
   border: 1px solid #ccc;
-  z-index: 1000;
+  border-top: transparent;
   width: 40%;
+  z-index: 1000;
+  transform: translateX(15%);
 }
 
 .recent-search-item {

@@ -127,14 +127,14 @@ function Search() {
 			</button>
 			{showNotification && <Notify message="Search field empty" />}
 			{inputFocused && recentSearches.length > 0 && searchQuery.length === 0 && (
-				<ul className="recent-searches">
+				<div className="recent-searches">
 					{recentSearches.map((search, index) => (
 						<li key={index} className="recent-search-item" onClick={() => handleRecentSearchClick(search)}>
 							<span>{search}</span>
 							<button onClick={(e) => { e.stopPropagation(); handleDeleteSearch(search); }} className="delete-search-button">X</button>
 						</li>
 					))}
-				</ul>
+				</div>
 			)}
 		</div>
 	);
