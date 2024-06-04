@@ -7,8 +7,21 @@ const jwt = require('jsonwebtoken');
 const { google } = require('googleapis');
 
 jest.mock('jsonwebtoken');
+const express = require("express");
+const request = require("supertest");
+const { Pool } = require("pg");
+const router = require("./userRoutes");
+const bcrypt = require("bcryptjs");
 
 // Mocks
+jest.mock("pg", () => {
+	const { Client } = jest.requireActual("pg");
+	return {
+		Pool: jest.fn(() => ({
+			query: jest.fn(),
+			end: jest.fn()
+		}))
+	};
 jest.mock("pg", () => {
 	const { Client } = jest.requireActual("pg");
 	return {
@@ -29,6 +42,7 @@ const oauth2Client = new google.auth.OAuth2(
 const app = express();
 app.use(express.json());
 app.use("/", router); // Update the base URL for router
+app.use("/", router); // Update the base URL for router
 
 const mockRequestBody = {
   username: 'dnednedne',
@@ -36,6 +50,11 @@ const mockRequestBody = {
   password: 'apassword$12',
   email: 'dne@gmail.com',
   phoneNumber: '1234567890'
+	username: "dnednedne",  // these credentials are not in the database
+	full_name: "dne dnes",
+	password: "apassword$12",
+	email: "dne@gmail.com",
+	phoneNumber: "1234567890"
 };
 
 const mockBadRequestBody = {
@@ -44,14 +63,19 @@ const mockBadRequestBody = {
   password: 'apassword$12',
   email: 'dne@gmail.com',
   phoneNumber: 'null'
+	username: "dnednedne",  // these credentials are not in the database
+	full_name: "dne dnes",
+	password: "apassword$12",
+	email: "dne@gmail.com",
+	phoneNumber: "null"
 };
 
 const LoginBody = {
-  identifier: 'testuser@example.com',
-  password: 'password123'
+	identifier: "testuser@example.com",
+	password: "password123"
 };
 
-const mockError = new Error('Database error');
+const mockError = new Error("Database error");
 
 describe('Login Endpoint Tests', () => {
   const LoginBody = {
@@ -245,6 +269,40 @@ describe('Registration Endpoint Tests', () => {
       query: jest.fn().mockResolvedValue(mockGetQueryResponse),
       end: jest.fn()
     }));
+  // Send request to login endpoint
+  const response = await request(app)
+    .post('/login')
+    .send(LoginBody)
+    .expect(200);
+    console.log("Testing response:", response);
+}); */
+
+test("should return 500 server error", async () => {
+	// Mock database query
+	Pool.mockImplementationOnce(() => ({
+		query: jest.fn().mockRejectedValue(mockError),
+		end: jest.fn()
+	}));
+  
+	const response = await request(app)
+		.post("/register")
+		.send(mockRequestBody)
+		.expect(500); 
+});
+
+test("Testin successful signup", async () => {
+	//if no conflicts found in database, it should succeed and return 200 success
+
+	// Mock database query response indicating no conflicts for the provided user data  
+	const mockGetQueryResponse = {
+		rows: ""
+	};
+
+	// Mock database query
+	Pool.mockImplementationOnce(() => ({
+		query: jest.fn().mockResolvedValue(mockGetQueryResponse),
+		end: jest.fn()
+	}));
 
     const response = await request(app)
       .post('/register')
@@ -258,6 +316,16 @@ describe('Registration Endpoint Tests', () => {
 describe('Check Endpoint Tests', () => {
   test('Test successful check with no conflicts', async () => {
     const mockGetQueryResponse = { rows: [] };
+	const response = await request(app)
+		.post("/check") // Ensure the correct endpoint is being called
+		.expect(200); // Expecting 200 success
+});
+
+test("should return 409 conflict", async () => {
+	// Mock database query response indicating no conflicts for the provided user data
+	const mockGetQueryResponse = {
+		rows: "bruh"
+	};
 
     Pool.mockImplementationOnce(() => ({
       query: jest.fn().mockResolvedValue(mockGetQueryResponse),
@@ -349,6 +417,11 @@ describe('Check Endpoint Tests', () => {
       email: 'conflictemail@example.com',
       phoneNumber: '1234567890'
     };
+	// Mock database query
+	Pool.mockImplementationOnce(() => ({
+		query: jest.fn().mockResolvedValue(mockGetQueryResponse),
+		end: jest.fn()
+	}));
 
     const response = await request(app)
       .post('/check')
@@ -390,6 +463,17 @@ describe('Check Endpoint Tests', () => {
       email: 'anemail@example.com',
       phoneNumber: null
     };
+	const response = await request(app)
+		.post("/check") // Ensure the correct endpoint is being called
+		.expect(409); // Expecting 200 success
+});
+
+test("should return 500 server error", async () => {
+	// Mock database query
+	Pool.mockImplementationOnce(() => ({
+		query: jest.fn().mockRejectedValue(mockError),
+		end: jest.fn()
+	}));
 
     const response = await request(app)
       .post('/check')
@@ -513,6 +597,19 @@ describe('Google OAuth Endpoint Tests', () => {
       query: jest.fn().mockRejectedValue(new Error('Database error')),
       end: jest.fn()
     }));
+	const response = await request(app)
+		.post("/check") // Ensure the correct endpoint is being called
+		.expect(500); // Expecting 200 success
+});
+
+test("should return 500 server error", async () => {
+	// Mock database query response indicating no conflicts for the provided user data
+
+	// Mock database query
+	Pool.mockImplementationOnce(() => ({
+		query: jest.fn().mockRejectedValue(mockError),
+		end: jest.fn()
+	}));
 
     const response = await request(app)
       .get('/auth/google/callback')
@@ -801,3 +898,40 @@ describe('Delete Account Endpoint Tests', () => {
     expect(response.body).toEqual({ error: 'Failed to delete account' });
   });
 });
+	const response = await request(app)
+		.post("/check") // Ensure the correct endpoint is being called
+		.expect(500); // Expecting 200 success
+});
+
+test("should return 500 server error (missing phoneNumber)", async () => {
+  
+	const response = await request(app)
+		.post("/register")
+		.send(mockBadRequestBody)
+		.expect(500); 
+});
+
+
+test("test for successful registration 201 no conflicts", async () => {
+	const mockGetQueryResponse = {
+	};
+	// Mock database query
+	Pool.mockImplementationOnce(() => ({
+		query: jest.fn().mockResolvedValue(mockGetQueryResponse),
+		end: jest.fn()
+	}));
+  
+	const response = await request(app)
+		.post("/register")
+		.send(mockRequestBody)
+		.expect(201); 
+});
+
+
+
+
+
+
+
+
+
