@@ -162,7 +162,7 @@ function ProfilePage() {
 								{Object.entries(userProfile).map(([key, value]) => (
 									key !== "userID" && 
 				<div key={key}>
-					<label className='compact'>
+					<label className="compact">
 						{key === "fullName" ? "Full Name" : key === "phoneNumber" ? "Phone Number" : key.replace(/_/g, " ")
 							.split(" ")
 							.map(word => word.charAt(0).toUpperCase() + word.slice(1))

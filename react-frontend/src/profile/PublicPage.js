@@ -93,7 +93,7 @@ function PublicPage() {
 								</div>  {/*If the user did not set a bio, it will default to "No bio provided." */}
 								<ListingCollection title="Listings" bookmarks={listings} userID={userProfile.userID} time = {timestamp} custom = {false} />
 								<div className = "full-container" >
-									<ShareButton link = {`${process.env.REACT_APP_FRONTEND_LINK} + "/profile/" + ${userID}`} type = 'Profile'/>
+									<ShareButton link = {`${process.env.REACT_APP_FRONTEND_LINK} + "/profile/" + ${userID}`} type = "Profile"/>
 								</div>
 							</div>
 						</div>
