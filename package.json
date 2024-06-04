@@ -6,7 +6,8 @@
   "scripts": {
     "test": "jest --coverage",
     "dev": "nodemon backend.js",
-    "start": "node backend.js"
+    "start": "node backend.js",
+    "prepare": "husky install"
   },
   "author": "",
   "license": "ISC",
@@ -15,6 +16,19 @@
   },
   "devDependencies": {
     "jest": "^29.7.0",
-    "nodemon": "^2.0.15"
+    "nodemon": "^2.0.15",
+    "husky": "^8.0.0"
+  },
+  "lint-staged": {
+    "frontend/**/*.js": [
+      "cd frontend && eslint --fix",
+      "cd frontend && prettier --write",
+      "cd frontend && git add"
+    ],
+    "backend/**/*.js": [
+      "cd backend && eslint --fix",
+      "cd backend && prettier --write",
+      "cd backend && git add"
+    ]
   }
 }
