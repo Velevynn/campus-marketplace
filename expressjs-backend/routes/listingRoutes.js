@@ -23,7 +23,6 @@ router.post("/", upload.array('image'), async (req, res) => {
     try {
         // Access uploaded images.
         const images = req.files;
-        console.log(images);
         // Add listing to the database, returning the new listingID.
         const listingID = await addListing(req.body);
 
@@ -212,12 +211,10 @@ router.get("/:listingID/bookmark/", async (req, res) => {
       ])
 
     if ( rows.length > 0 ) {
-      const bookmarked = true;
-      res.status(200).send(bookmarked);
+      res.status(200).send(true);
     }
     else {
-      const bookmarked = false;
-      res.status(204).send(bookmarked);
+      res.status(200).send(false);
     }
     await connection.end();
   }

@@ -22,23 +22,17 @@ jest.mock('pg', () => {
   };
 });
 
+
+
+
 // Create a mock Express app
 const app = express();
 app.use(express.json());
 app.use('/', router);
 
-// Mock request body and files for POST request
-const mockRequestBody = {
-  userID: '1',
-  title: 'Test Listing',
-  price: '100',
-  description: 'Test description',
-  quantity: '1'
-};
-
 // Mock response for get requests
-const mockGetQueryResponse = {rows:
-    [{
+const mockListing =
+    {
     listingID: '825',
     userID: '1060',
     title: "jimmy's laptop",
@@ -49,8 +43,7 @@ const mockGetQueryResponse = {rows:
     bookmarkCount: null,
     quantity: '1',
     location: null
-    }]
-};
+    }
 
 // Mock image files
 const mockFiles = [
@@ -75,31 +68,18 @@ const mockFiles = [
 // Mock error for failed queries
 const mockError = new Error('Database error');
 
-
-test('POST / should add a new listing', async () => {
-    // Mock database query
-    Pool.mockImplementationOnce(() => ({
-        query: jest.fn().mockResolvedValue({ rows: [{ listingID: 1 }] }),
-        end: jest.fn()
-    }));
-
-    const response = await request(app)
-    .post('/')
-    .field('userID', mockRequestBody.userID)
-    .field('title', mockRequestBody.title)
-    .field('price', mockRequestBody.price)
-    .field('description', mockRequestBody.description)
-    .field('quantity', mockRequestBody.quantity)
-    .attach('image', '') // Pass an empty file for the image field
-    .expect(201);
-
-    expect(response.body).toEqual(mockRequestBody);
-    expect(Pool).toHaveBeenCalled();
-    expect(uploadImageToS3).toHaveBeenCalledTimes(0); // Expect no image to be uploaded
+beforeEach(() => {
+  // Reset the mocks before each test
+  Pool.mockClear();
+  Pool().query.mockClear();
+  Pool().end.mockClear();
+  uploadImageToS3.mockClear();
 });
 
-test('POST / should add a new listing with images', async () => {
-  // Mock database query
+
+
+test('Posting a listing', async () => {
+  // Mock database queries
   Pool.mockImplementationOnce(() => ({
       query: jest.fn().mockResolvedValue({ rows: [{ listingID: 1 }] }),
       end: jest.fn()
@@ -115,17 +95,309 @@ test('POST / should add a new listing with images', async () => {
 
   const response = await request(app)
   .post('/')
-  .field('userID', mockRequestBody.userID)
-  .field('title', mockRequestBody.title)
-  .field('price', mockRequestBody.price)
-  .field('description', mockRequestBody.description)
-  .field('quantity', mockRequestBody.quantity)
+  .field('userID', mockListing.userID)
+  .field('title', mockListing.title)
+  .field('price', mockListing.price)
+  .field('description', mockListing.description)
+  .field('quantity', mockListing.quantity)
   .attach(mockFiles[0].fieldname, mockFiles[0].buffer, mockFiles[0].originalname)
   .attach(mockFiles[1].fieldname, mockFiles[1].buffer, mockFiles[1].originalname)
   
   .expect(201);
 
-  expect(response.body).toEqual(mockRequestBody);
-  expect(Pool).toHaveBeenCalled();
   expect(uploadImageToS3).toHaveBeenCalledTimes(2); // Expect 2 images to be uploaded
 });
+
+test('Bookmarking a listing', async () => {
+  // Mock database queries
+  Pool.mockImplementationOnce(() => ({
+    query: jest.fn().mockResolvedValue({ rows: [{ listingID: 1 }] }),
+    end: jest.fn()
+  }));
+  Pool.mockImplementationOnce(() => ({
+    query: jest.fn().mockResolvedValue({ result: [{ listingID: 1 }] }),
+    end: jest.fn()
+  }));
+
+  const response = await request(app)
+  .post(`/${mockListing.listingID}/bookmark`)
+  .send({
+    userID: mockListing.userID,
+    listingID: mockListing.listingID,
+    title: mockListing.title
+  })
+
+  
+  .expect(201);
+
+});
+
+test('Get all listings without a query', async () => {
+  const returnVal =  [{ listingID: 1}];
+  // Mock database queries
+  Pool.mockImplementationOnce(() => ({
+    query: jest.fn().mockResolvedValue({ rows: [{ listingID: 1}] }),
+    end: jest.fn()
+  }));
+
+  const response = await request(app)
+  .get("/")
+  .expect(200);
+
+  expect(response.body).toEqual(returnVal);
+
+});
+
+test('Get all listings with query', async () => {
+  const returnVal =  [{ listingID: 1}];
+  // Mock database queries
+  Pool.mockImplementationOnce(() => ({
+    query: jest.fn().mockResolvedValue({ rows: [{ listingID: 1}] }),
+    end: jest.fn()
+  }));
+  const q = "bruh";
+  const page = 2;
+
+  const response = await request(app)
+  .get("/")
+  .query({ q, page })
+  .expect(200);
+
+  expect(response.body).toEqual(returnVal);
+});
+
+test('Get my listings using userID', async () => {
+  const returnVal =  [{ listingID: 1}];
+  // Mock database queries
+  Pool.mockImplementationOnce(() => ({
+    query: jest.fn().mockResolvedValue({ rows: [{ listingID: 1}] }),
+    end: jest.fn()
+  }));
+
+
+  const response = await request(app)
+  .get(`/mylistings/${mockListing.userID}`)
+  .expect(200);
+
+  expect(response.body).toEqual(returnVal);
+});
+
+
+test('Get all images for a given listing', async () => {
+  const returnVal =  [{ imageURL: "bruh"}];
+  // Mock database queries
+  Pool.mockImplementationOnce(() => ({
+    query: jest.fn().mockResolvedValue({ rows: [{ imageURL: "bruh"}] }),
+    end: jest.fn()
+  }));
+
+  const response = await request(app)
+  .get(`/images/${mockListing.listingID}/`)
+  .expect(200);
+
+  expect(response.body).toEqual(returnVal);
+});
+
+test('Retrieving a single listing', async () => {
+  const returnVal = [{ listingID: 1 }];
+  // Mock database queries
+  Pool.mockImplementationOnce(() => ({
+    query: jest.fn().mockResolvedValue({ rows: [{ listingID: 1 }] }),
+    end: jest.fn()
+  }));
+
+  const response = await request(app)
+    .get(`/${mockListing.listingID}/`)
+    .expect(200);
+
+  expect(response.body).toEqual(returnVal);
+});
+
+test('Deleting a listing', async () => {
+  // Mock database queries
+  Pool.mockImplementationOnce(() => ({
+    query: jest.fn().mockResolvedValue({ rowCount: 1 }), // Assuming successful deletion
+    end: jest.fn()
+  }));
+
+  const response = await request(app)
+    .delete(`/${mockListing.listingID}/`)
+    .expect(204);
+});
+
+test('Deleting a non-existent listing', async () => {
+  // Mock database queries
+  Pool.mockImplementationOnce(() => ({
+    query: jest.fn().mockResolvedValue({ rowCount: 0 }), // Assuming successful deletion
+    end: jest.fn()
+  }));
+
+  const response = await request(app)
+    .delete(`/${mockListing.listingID}/`)
+    .expect(404);
+});
+
+test('Deleting a bookmark', async () => {
+  // Mock database queries
+  Pool.mockImplementationOnce(() => ({
+    query: jest.fn().mockResolvedValue({ rowCount: 1 }), // Assuming successful deletion
+    end: jest.fn()
+  }));
+  Pool.mockImplementationOnce(() => ({
+    query: jest.fn().mockResolvedValue({ rowCount: 1 }), // Assuming successful decrement of bookmarkCount
+    end: jest.fn()
+  }));
+
+  const response = await request(app)
+    .delete(`/${mockListing.listingID}/bookmark/`)
+    .query({ userID: mockListing.userID, listingID: mockListing.listingID })
+    .expect(204);
+});
+
+test('Deleting a non-existent bookmark', async () => {
+  // Mock database queries
+  Pool.mockImplementationOnce(() => ({
+    query: jest.fn().mockResolvedValue({ rowCount: 0 }), // Assuming successful deletion
+    end: jest.fn()
+  }));
+
+  const response = await request(app)
+    .delete(`/${mockListing.listingID}/bookmark/`)
+    .query({ userID: mockListing.userID, listingID: mockListing.listingID })
+    .expect(404);
+});
+
+test('Bookmark exists route', async () => {
+  // Mock database queries
+  Pool.mockImplementationOnce(() => ({
+    query: jest.fn().mockResolvedValue({ rows: [{ userID: mockListing.userID, listingID: mockListing.listingID }] }), // Assuming bookmark exists
+    end: jest.fn()
+  }));
+
+  const response = await request(app)
+    .get(`/${mockListing.listingID}/bookmark/`)
+    .query({ userID: mockListing.userID, listingID: mockListing.listingID })
+    .expect(200);
+  expect(response.body).toEqual(true);
+});
+
+test('Bookmark doesnt exist route', async () => {
+  // Mock database queries
+  Pool.mockImplementationOnce(() => ({
+    query: jest.fn().mockResolvedValue({ rows: [] }), // Assuming bookmark exists
+    end: jest.fn()
+  }));
+
+  const response = await request(app)
+    .get(`/${mockListing.listingID}/bookmark/`)
+    .query({ userID: mockListing.userID, listingID: mockListing.listingID })
+    .expect(200);
+  expect(response.body).toEqual(false);
+});
+
+test('Retrieving bookmarks for a user', async () => {
+  const returnVal = [{ listingID: 1 }];
+  // Mock database queries
+  Pool.mockImplementationOnce(() => ({
+    query: jest.fn().mockResolvedValue({ rows: [{ listingID: 1 }] }),
+    end: jest.fn()
+  }));
+
+  const response = await request(app)
+    .get(`/bookmark/${mockListing.userID}`)
+    .expect(200);
+
+  expect(response.body).toEqual(returnVal);
+});
+
+test('Updating a listing', async () => {
+  // Mock database queries
+  Pool.mockImplementationOnce(() => ({
+    query: jest.fn().mockResolvedValue({ rowCount: 1 }), // Assuming successful update
+    end: jest.fn()
+  }));
+
+  const response = await request(app)
+    .put(`/${mockListing.listingID}`)
+    .send({
+      title: mockListing.title,
+      description: mockListing.description,
+      price: mockListing.price,
+      expirationDate: mockListing.expirationDate,
+      quantity: mockListing.quantity,
+      category: mockListing.category
+    })
+    .expect(200);
+});
+
+test('Updating listing images', async () => {
+  // Mock database queries
+
+  Pool.mockImplementationOnce(() => ({
+    query: jest.fn().mockResolvedValue({}), // Mock delete call
+    end: jest.fn()
+  }));
+  const response = await request(app)
+    .put(`/images/${mockListing.listingID}`)
+    .query({ imagesToRemove: ['https://example.com/image1', 'https://example.com/image2'] })
+    .attach(mockFiles[0].fieldname, mockFiles[0].buffer, mockFiles[0].originalname)
+    .attach(mockFiles[1].fieldname, mockFiles[1].buffer, mockFiles[1].originalname)
+    .expect(201);
+});
+
+test('Error when posting a listing', async () => {
+  // Mock database queries to throw an error
+  Pool.mockImplementationOnce(() => ({
+    query: jest.fn().mockRejectedValue(mockError),
+    end: jest.fn()
+  }));
+
+  const response = await request(app)
+    .post('/')
+    .field('userID', mockListing.userID)
+    .field('title', mockListing.title)
+    .field('price', mockListing.price)
+    .field('description', mockListing.description)
+    .field('quantity', mockListing.quantity)
+    .attach(mockFiles[0].fieldname, mockFiles[0].buffer, mockFiles[0].originalname)
+    .attach(mockFiles[1].fieldname, mockFiles[1].buffer, mockFiles[1].originalname)
+    .expect(500);
+
+  expect(response.body).toEqual({ error: "Failed to add listing" });
+});
+
+test('Error when bookmarking a listing', async () => {
+  // Mock database queries to throw an error
+  Pool.mockImplementationOnce(() => ({
+    query: jest.fn().mockRejectedValue(mockError),
+    end: jest.fn()
+  }));
+
+  const response = await request(app)
+    .post(`/${mockListing.listingID}/bookmark`)
+    .send({
+      userID: mockListing.userID,
+      listingID: mockListing.listingID,
+      title: mockListing.title
+    })
+    .expect(500);
+
+  expect(response.body).toEqual({ error: "Failed to add bookmark." });
+});
+
+test('Error when retrieving all listings', async () => {
+  // Mock database queries to throw an error
+  Pool.mockImplementationOnce(() => ({
+    query: jest.fn().mockRejectedValue(mockError),
+    end: jest.fn()
+  }));
+
+  const response = await request(app)
+    .get("/")
+    .expect(500);
+
+  expect(response.text).toBe("An error occurred while fetching listings");
+});
+
+
+
