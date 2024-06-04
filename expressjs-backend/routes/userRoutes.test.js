@@ -9,14 +9,14 @@ const { google } = require('googleapis');
 jest.mock('jsonwebtoken');
 
 // Mocks
-jest.mock('pg', () => {
-  const { Client } = jest.requireActual('pg');
-  return {
-    Pool: jest.fn(() => ({
-      query: jest.fn(),
-      end: jest.fn()
-    }))
-  };
+jest.mock("pg", () => {
+	const { Client } = jest.requireActual("pg");
+	return {
+		Pool: jest.fn(() => ({
+			query: jest.fn(),
+			end: jest.fn()
+		}))
+	};
 });
 
 const oauth2Client = new google.auth.OAuth2(
@@ -28,7 +28,7 @@ const oauth2Client = new google.auth.OAuth2(
 // Create a mock Express app
 const app = express();
 app.use(express.json());
-app.use('/', router); // Update the base URL for router
+app.use("/", router); // Update the base URL for router
 
 const mockRequestBody = {
   username: 'dnednedne',
