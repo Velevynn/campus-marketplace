@@ -160,6 +160,46 @@ describe('Login Endpoint Tests', () => {
       error: 'Invalid password'
     });
   });
+
+  test('should return 200 for successful login with username', async () => {
+    const username = 'testuser';
+    const password = 'password123';
+    const mockDbQueryResponse = {
+      rows: [{ username, password: 'hashedPassword' }]
+    };
+  
+    Pool.mockImplementationOnce(() => ({
+      query: jest.fn().mockResolvedValue(mockDbQueryResponse),
+      end: jest.fn()
+    }));
+  
+    jest.spyOn(bcrypt, 'compare').mockResolvedValue(true);
+    jest.spyOn(jwt, 'sign').mockReturnValue('mockToken');
+  
+    const response = await request(app)
+      .post('/login')
+      .send({ identifier: username, password })
+      .expect(200);
+  
+    expect(response.body).toEqual({
+      message: 'User logged in successfully',
+      token: 'mockToken'
+    });
+  });
+
+  test('should return 400 for invalid identifier type', async () => {
+    const invalidIdentifier = 12345;
+    const password = 'password123';
+  
+    const response = await request(app)
+      .post('/login')
+      .send({ identifier: invalidIdentifier, password })
+      .expect(400);
+  
+    expect(response.body).toEqual({
+      error: 'Identifier and password are required and must be strings.'
+    });
+  });  
 });
 
 describe('Registration Endpoint Tests', () => {
