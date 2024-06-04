@@ -1,25 +1,24 @@
 // listingRoutes.test.js
 
 // Import dependencies
-const express = require('express');
-const request = require('supertest');
-const { Pool } = require('pg');
-const { uploadImageToS3 } = require('../util/s3');
-const router = require('./listingRoutes');
-const fs = require('fs');
-const path = require('path');
-
+const express = require("express");
+const request = require("supertest");
+const {Pool} = require("pg");
+const {uploadImageToS3} = require("../util/s3");
+const router = require("./listingRoutes");
+const fs = require("fs");
+const path = require("path");
 
 // Mocks
-jest.mock('../util/s3');
-jest.mock('pg', () => {
-  const { Client } = jest.requireActual('pg');
-  return {
-    Pool: jest.fn(() => ({
-      query: jest.fn(),
-      end: jest.fn()
-    }))
-  };
+jest.mock("../util/s3");
+jest.mock("pg", () => {
+	const {Client} = jest.requireActual("pg");
+	return {
+		Pool: jest.fn(() => ({
+			query: jest.fn(),
+			end: jest.fn()
+		}))
+	};
 });
 
 
@@ -28,7 +27,7 @@ jest.mock('pg', () => {
 // Create a mock Express app
 const app = express();
 app.use(express.json());
-app.use('/', router);
+app.use("/", router);
 
 // Mock response for get requests
 const mockListing =
@@ -47,26 +46,25 @@ const mockListing =
 
 // Mock image files
 const mockFiles = [
-    {
-      fieldname: 'image',
-      originalname: 'image1.jpg',
-      encoding: '7bit',
-      mimetype: 'image/jpeg',
-      buffer: fs.readFileSync(path.join(__dirname, 'dummyImage1.jpg'))
-    },
-    {
-      fieldname: 'image',
-      originalname: 'image2.jpg',
-      encoding: '7bit',
-      mimetype: 'image/jpeg',
-      buffer: fs.readFileSync(path.join(__dirname, 'dummyImage2.jpg'))
-    }
-    // Add more mock files as needed
-  ];
-
+	{
+		fieldname: "image",
+		originalname: "image1.jpg",
+		encoding: "7bit",
+		mimetype: "image/jpeg",
+		buffer: fs.readFileSync(path.join(__dirname, "dummyImage1.jpg"))
+	},
+	{
+		fieldname: "image",
+		originalname: "image2.jpg",
+		encoding: "7bit",
+		mimetype: "image/jpeg",
+		buffer: fs.readFileSync(path.join(__dirname, "dummyImage2.jpg"))
+	}
+	// Add more mock files as needed
+];
 
 // Mock error for failed queries
-const mockError = new Error('Database error');
+const mockError = new Error("Database error");
 
 beforeEach(() => {
   // Reset the mocks before each test

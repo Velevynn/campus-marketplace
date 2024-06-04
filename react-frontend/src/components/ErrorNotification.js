@@ -3,31 +3,31 @@ import PropTypes from "prop-types";
 import "./error.css"; // Import CSS file for styling
 
 function Notification({ message, isSuccessful }) {
-  const [isVisible, setIsVisible] = useState(true);
+	const [isVisible, setIsVisible] = useState(true);
 
-  // Hide the notification after 3 seconds
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setIsVisible(false);
-    }, 3000);
+	// Hide the notification after 3 seconds
+	useEffect(() => {
+		const timeout = setTimeout(() => {
+			setIsVisible(false);
+		}, 3000);
 
-    // Cleanup function to clear the timeout when the component unmounts or isVisible changes
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, []);
+		// Cleanup function to clear the timeout when the component unmounts or isVisible changes
+		return () => {
+			clearTimeout(timeout);
+		};
+	}, []);
 
-  return (
-    <div className={`notification ${isVisible ? "visible" : "hidden"}
+	return (
+		<div className={`notification ${isVisible ? "visible" : "hidden"}
                     ${isSuccessful ? "success" : "error"}`}>
-      <p className="notif-text">{message}</p>
-    </div>
-  );
+			<p className="notif-text">{message}</p>
+		</div>
+	);
 }
 
 Notification.propTypes = {
-  message: PropTypes.string.isRequired,
-  isSuccessful: PropTypes.bool
+	message: PropTypes.string.isRequired,
+	isSuccessful: PropTypes.bool
 };
 
 export default Notification;
