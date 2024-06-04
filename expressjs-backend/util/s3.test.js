@@ -27,13 +27,13 @@ describe("file upload", () => {
 	test("Test unsuccessful file upload(null image data", async () => {
 		const imageName = "testing/testImage";
 		const imageData = null;
-		await expect(s3.uploadImageToS3(imageName, imageData)).rejects.toThrow();
+		await expect(s3.uploadImageToS3(imageName, imageData)).rejects.toThrow('Invalid image data or name');
 	});
 
 	test("Test unsuccessful file upload(null image data", async () => {
 		const imageName = null;
 		const imageData = "imagedata";
-		await expect(s3.uploadImageToS3(imageName, imageData)).rejects.toThrow();
+		await expect(s3.uploadImageToS3(imageName, imageData)).rejects.toThrow('Invalid image data or name');
 	});
 
 });
@@ -50,6 +50,15 @@ describe("object listing", () => {
 		expect(testFiles.length === 1).toEqual(true);
 	});
 
+	test('Test listing objects in empty folder', async () => {
+		const testFiles = await s3.listS3Objects('testing');
+		expect(testFiles.length === 0).toEqual(true);
+	  });
+	
+	  test('Test listing objects in root folder', async () => {
+		const testFiles = await s3.listS3Objects('');
+		expect(Array.isArray(testFiles)).toEqual(true);
+	  });
 });
 
 describe("image deletion", () => {
@@ -70,6 +79,9 @@ describe("image deletion", () => {
 		expect(testFiles).toEqual([]);
 	});
 
+	test('Test deletion of non-existent image', async () => {
+		await expect(s3.deleteFromS3('testing/nonExistentImage')).resolves.not.toThrow();
+	});
 });
 
 describe("object renaming", () => {
@@ -95,4 +107,31 @@ describe("object renaming", () => {
 
 	});
 
+	test('Test renaming s3 object to the same name', async () => {
+		const imageName = 'testing/testImage';
+		const imageData = 'testimagedata';
+		await s3.uploadImageToS3(imageName, imageData);
+		await s3.renameS3Object(imageName, imageName);
+		const testFiles = await s3.listS3Objects("testing");
+		expect(testFiles.length).toEqual(1);
+		expect(testFiles[0].Key).toEqual(imageName);
+	});
+
+});
+
+describe('folder deletion', () => {
+	test('Test successful folder deletion', async () => {
+	  const imageName1 = 'testing/testImage1';
+	  const imageName2 = 'testing/testImage2';
+	  const imageData = 'testimagedata';
+	  await s3.uploadImageToS3(imageName1, imageData);
+	  await s3.uploadImageToS3(imageName2, imageData);
+	  await s3.deleteS3Folder('testing');
+	  const testFiles = await s3.listS3Objects('testing');
+	  expect(testFiles).toEqual([]);
+	});
+	
+	test('Test deleting non-existent folder', async () => {
+		await expect(s3.deleteS3Folder('nonExistentFolder')).resolves.not.toThrow();
+	});
 });
