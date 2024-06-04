@@ -1,20 +1,18 @@
+// ProfilePage.js (Alex Zaharia, Joshua Estrada)
+// Displays user credentials and dashboard
+// Features: SignOut, ChangePassword, MyBookmarks, MyListings, UserBio, SetLocation
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import BookmarksCollection from "./BookmarksCollection";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../components/LoadingSpinner";
+import BookmarksCollection from "./BookmarksCollection";
 import ProfileDetails from "./ProfileDetails";
-import ListingCollection from "./ListingCollection";
-import ChangeProfilePicture from "./ChangeProfilePicture"; // Import the ChangeProfilePicture component
 import Footer from "../components/Footer";
+import ListingCollection from "./ListingCollection";
+import ChangeProfilePicture from "./ChangeProfilePicture";
+import axios from "axios";
 import "./profile.css";
 
 function ProfilePage() {
-	const [bookmarks, setBookmarks] = useState([]);
-	const [listings, setMyListings] = useState([]);
-	const [isLoading, setIsLoading] = useState(true);
-	const timestamp = useState(Date.now());
-	const isCustom = true;
 	const [userProfile, setUserProfile] = useState({
 		username: "",
 		full_name: "",
@@ -22,21 +20,24 @@ function ProfilePage() {
 		phoneNumber: "",
 		userID: ""
 	});
-	//const [isHovered, setIsHovered] = useState(false); // Define isHovered state
-
-	const navigate = useNavigate(); // Define navigate for routing
-
 	const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
 	const [deleteConfirmationData, setDeleteConfirmationData] = useState({
 		username: "",
 		password: "",
 	});
+
+	const navigate = useNavigate(); // Define navigate for routing
+	const [bookmarks, setBookmarks] = useState([]);  // myBookmarks State
+	const [listings, setMyListings] = useState([]);  // myListings State
+	const [isLoading, setIsLoading] = useState(true);  // Loading state
 	const [deleteError, setDeleteError] = useState("");
+	const timestamp = Date.now();
 
 	useEffect(() => {
 		fetchUserProfile();
 	}, []);
 
+	// fetch personal user profile data & credentials
 	const fetchUserProfile = async () => {
 		const token = localStorage.getItem(process.env.JWT_TOKEN_NAME);
 		if (!token) {
@@ -52,27 +53,23 @@ function ProfilePage() {
 			});
 			setUserProfile(response.data);
 			fetchCollections(response.data.userID);
-			console.log(response.data, "my data");
 		} catch (error) {
 			console.error("Failed to fetch profile data:", error);
 			navigate("/login");
 		}
 	};
 
+	// fetch listings and bookmarks owned by the user
 	const fetchCollections = async (userID) => {
 		try {
-			console.log(userID);
 			const response = await axios.get(process.env.REACT_APP_BACKEND_LINK + `/listings/bookmark/${userID}`);
 			setBookmarks(response.data);
 		} catch (error) {
 			console.error("Failed to fetch bookmarks", error);
 		}
 		try {
-			console.log(userID);
 			const response = await axios.get(process.env.REACT_APP_BACKEND_LINK + `/listings/mylistings/${userID}`);
 			setMyListings(response.data);
-			console.log(response.data, "hello");
-
 		} catch (error) {
 			console.error("Failed to fetch myListings", error);
 		}
@@ -81,12 +78,12 @@ function ProfilePage() {
 
 	const handleChangePassword = () => {
 		navigate("/change-password");
-	};
+	};  // navigation lambda
 
 	const handleSignOut = () => {
 		localStorage.removeItem(process.env.JWT_TOKEN_NAME);
 		navigate("/login");
-	};
+	};  // sign out is triggered by removing user JWT JSON Web Token
 
 	const formatPhoneNumber = (phoneNumber) => {
 		const cleaned = ("" + phoneNumber).replace(/\D/g, "");
@@ -95,29 +92,29 @@ function ProfilePage() {
 			return "(" + match[1] + ") " + match[2] + "-" + match[3];
 		}
 		return phoneNumber;
-	};
+	};  // phone number formatting lambda
 
-
+	// deletion is facilitated by JSON WebToken and the user confirming their username and password
 	const handleDeleteConfirmation = async () => {
 		const token = localStorage.getItem(process.env.JWT_TOKEN_NAME);
 		if (!token) {
 			navigate("/login");
 			return;
-		}
+		}  // if there is no such token return to login page
 
 		try {
 			const response = await axios.delete(process.env.REACT_APP_BACKEND_LINK + "/users/delete", {
 				headers: {
 					"Authorization": `Bearer ${token}`
-				},
+				},  // user's JWT Token for validation (other users cannot delete other people's accounts)
 				data: {
 					username: deleteConfirmationData.username,
 					password: deleteConfirmationData.password
-				}
+				}  // user given username & password for validation  (confirmation)
 			});
 
 			if (response.status === 200) {
-				// After successful deletion, redirect to login
+				// after successful deletion, redirect to login
 				localStorage.removeItem(process.env.JWT_TOKEN_NAME);
 				navigate("/login");
 			}
@@ -127,23 +124,22 @@ function ProfilePage() {
 				setDeleteError(error.response.data.error);
 			} else {
 				setDeleteError("An error occurred while deleting the profile.");
-			}
+			}  // either the result of an invalid password/username or JWT Token
 		}
 	};
 
 	const confirmDelete = () => {
 		setShowDeleteConfirmation(true);
-	};
+	};  // enable useState for showDeleteConfirmation to reveal delete form
 
 	const handleCancelDelete = () => {
 		setShowDeleteConfirmation(false);
 		setDeleteError("");
-	};
+	};  // disable useState for showDeleteConfirmation to hide delete form
 
 	const handleDelete = (e) => {
 		e.preventDefault();
-		// Perform deletion after confirmation
-		handleDeleteConfirmation();
+		handleDeleteConfirmation();  // trigger deletion after confirmation
 	};
 
 	const handleInputChange = (e) => {
@@ -184,7 +180,7 @@ function ProfilePage() {
 
 						<div className="collection-layout margin padding-left drop-shadow">
 							<BookmarksCollection title="Bookmarks" bookmarks={bookmarks} userID={userProfile.userID} time = {timestamp} />
-							<ListingCollection title="Listings" bookmarks={listings} userID={userProfile.userID} time = {timestamp} custom = {isCustom} />
+							<ListingCollection title="Listings" bookmarks={listings} userID={userProfile.userID} time = {timestamp} custom = {true} />
 						</div>
 
 						<ProfileDetails userID = {userProfile.userID}>
