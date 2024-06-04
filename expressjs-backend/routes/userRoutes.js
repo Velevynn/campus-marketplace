@@ -17,7 +17,6 @@ const { uploadImageToS3} = require("../util/s3");
 const connectionString = process.env.DB_CONNECTION_STRING; // stores supabase db connection string, allowing us to connect to supabase db
 
 const secretKey = process.env.JWT_SECRET_KEY; // stores jtw secret key
-// console.log('JWT key:', secretKey);
 
 
 const oauth2Client = new google.auth.OAuth2(
@@ -86,7 +85,6 @@ router.post("/check", async (req, res) => { // async function means we can use a
 		}
 		// catch any missed errors
 	} catch (error) {
-		// console.error('Error checking user details:', error);
 		res.status(500).json({ error: "Failed to check user details" });
 	} // HTTP 500 (Internal Server Error) - unexpected conditions
 });
@@ -95,15 +93,12 @@ router.post("/check", async (req, res) => { // async function means we can use a
 router.post("/register", async (req, res) => {
 	const { username, full_name, password, email, phoneNumber: phoneNumber } = req.body;
 	try {
-		// console.log("Making Null Checks");
 		if (username === null || full_name === null || password === null || email === null || phoneNumber === null) {throw Error;} // ensure fields are filled, throw error if not
 		// Asynchronously hash the password using bcrypt library. 10 saltrounds = hash password 10 times. the more rounds the longer it takes to finish hashing
 		const bcrypt = require("bcryptjs");
 		const hashedPassword = await bcryptjs.hash(password, 10); // await pauses execution of async function for bcrypt.hash to run
-		// console.log("Hashed Password: ", hashedPassword);
 		const connection = createConnection();
 
-		// console.log("Inserting into users table");
 		// Insert user details into the users table.
 		// result is used only to execute the query... we don't actually need it for anything else
 		const  { result } = await connection.query( 
@@ -113,7 +108,6 @@ router.post("/register", async (req, res) => {
 		await connection.end();
 		res.status(201).json({ message: "User registered successfully"}); // HTTP 201 (Created) - led to creation of new resource
 	} catch (error) {
-		//console.error('Error registering user:', error);
 		res.status(500).json({ error: "Failed to register user" }); // HTTP 500 (Internal Server Error) - unexpected condition
 	}
 });
@@ -121,64 +115,44 @@ router.post("/register", async (req, res) => {
 // Sign in user after verifying account details.
 router.post("/login", async (req, res) => {
 	const { identifier, password } = req.body;
-	// console.log('Received login request with:', { identifier, password });
-
 	if (typeof identifier !== "string" || typeof password !== "string") {
-		// console.log('Validation error: Identifier or password is not a string.');
 		return res.status(400).json({ error: "Identifier and password are required and must be strings." }); // HTTP 400 (Bad Request) - invalid user input format
 	}
 
 	try {
-		console.log("Attempting to connect to DB...");
 		connection = createConnection();
-		console.log("Successfully connected to DB.");
-
 		let query = "SELECT * FROM users WHERE ";
 		let queryParams = [];
 
 		if (identifier.includes("@")) {
 			query += "email = $1";
 			queryParams.push(identifier);
-			console.log("Attempting to find user by email...");
 		} else if (/^\d+$/.test(identifier) && identifier.length === 10) {
 			query += "\"phoneNumber\" = $1";
 			queryParams.push(identifier);
-			console.log("Attempting to find user by phone number...");
 		} else {
 			query += "username = $1";
 			queryParams.push(identifier);
-			console.log("Attempting to find user by username...");
 		}
 
-		console.log(`Constructed query: ${query}`);
-		console.log("Query parameters:", queryParams);
-
 		const { rows: users } = await connection.query(query, queryParams);
-		console.log("Query executed. Number of users found:", users.length);
 
 		if (users.length > 0) {
 			const user = users[0];
-			console.log("User found:", user);
 			const validPassword = await bcryptjs.compare(password, user.password);
-			console.log("Password verification result:", validPassword);
 
 			if (validPassword) {
 				// creating JWT
 				const token = jwt.sign({ username: user.username }, secretKey, { expiresIn: "24h" });
-				console.log("JWT token generated:", token);
 				await connection.end();
-				console.log("Database connection released.");
 				res.status(200).json({ message: "User logged in successfully", token }); // HTTP 200 (OK)
 			} else {
-				console.log("Password verification failed.");
 				res.status(401).json({ error: "Invalid password" }); // HTTP 401 (Unauthorized) - incorrect credentials/password
 			}
 		} else {
-			console.log("No user found matching the criteria.");
 			res.status(404).json({ error: "User not found" }); // HTTP 404 (Not Found) - can't find existing resource (user)
 		}
 	} catch (error) {
-		console.error("Error during login process:", error);
 		res.status(500).json({ error: "Failed to log in" }); // HTTP 500 (Internal Server Error) - unexpected error/condition
 	}
 });
@@ -189,7 +163,6 @@ router.get("/auth/google", (req, res) => {
 		scope: "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile",
 		redirect_uri: process.env.REACT_APP_BACKEND_LINK + "/users/auth/google/callback"
 	});
-	console.log("Generated Google Auth URL:", authUrl);
 	res.redirect(authUrl);
 });
 
@@ -221,7 +194,6 @@ router.get("/auth/google/callback", async (req, res) => {
 			res.redirect(process.env.REACT_APP_FRONTEND_LINK + `/additional-details?email=${encodeURIComponent(email)}&name=${encodeURIComponent(name)}`);
 		}
 	} catch (error) {
-		console.error("Error in OAuth callback:", error);
 		res.status(500).json({ error: "Authentication failed", details: error });
 	}
 });
@@ -261,7 +233,6 @@ router.post("/register-google-user", async (req, res) => {
 		res.status(201).json({ message: "User registered successfully via Google", token });
 
 	} catch (error) {
-		console.error("Error registering Google user:", error);
 		res.status(500).json({ error: "Failed to register user" });
 	}
 });
@@ -281,7 +252,6 @@ router.get("/profile", verifyToken, async (req, res) => {
 			res.status(200).json(user[0]); // HTTP (OK) - user exists
 		}
 	} catch (error) {
-		console.error("Error fetching user profile:", error);
 		res.status(500).json({ error: "Failed to fetch user profile" }); // HTTP 500 (Internal Server Error) - unexpected error/condition
 	}
 });
@@ -304,7 +274,6 @@ router.get("/userID", async (req, res) => {
 			res.status(404).json({ error: "User not found" }); // HTTP 404 (Not Found) - error finding resource (user)
 		}
 	} catch (error) {
-		console.error("Error fetching userID:", error);
 		res.status(500).json({ error: "Failed to fetch userID" }); // HTTP 500 (Internal Server Error) - Unexpected condition met
 	}
 });
@@ -349,7 +318,6 @@ router.delete("/delete", async (req, res) => {
 			res.status(404).json({ error: "User not found" }); // HTTP 404 (Not Found) - resource not found
 		}
 	} catch (error) {
-		console.error("Error deleting account:", error);
 		res.status(500).json({ error: "Failed to delete account" }); // HTTP 500 (Internal Server Error) - unexpected condition met, throw error
 	}
 });
@@ -401,10 +369,8 @@ router.post("/forgot-password", async (req, res) => {
   
 		transporter.sendMail(mailOptions, function(error, info){
 			if (error) {
-				console.error("Error sending email:", error);
 				res.status(500).json({ error: "Failed to send forgot password email" });
 			} else {
-				// console.log('Email sent: ' + info.response);
 				res.json({ message: "Reset link sent to your email address" });
 			}
 		});
@@ -412,7 +378,6 @@ router.post("/forgot-password", async (req, res) => {
 		await connection.end();
     
 	} catch (error) {
-		console.error("Error in forgot-password route:", error);
 		res.status(500).json({ error: "Failed to send forgot password email" });
 	}
 });
@@ -425,9 +390,7 @@ router.post("/reset-password", async (req, res) => {
 
 		// Verify token and its expiration
 		const { rows: users } = await connection.query("SELECT * FROM users WHERE \"resetPasswordToken\" = $1 AND \"resetPasswordExpires\" > NOW()", [token]);
-		// console.log(users);
 		if (users.length === 0) {
-			// console.log("invalid");
 			return res.status(400).json({ error: "Invalid or expired token" });
 		}
 
@@ -437,14 +400,12 @@ router.post("/reset-password", async (req, res) => {
 		res.json({ message: "Password has been reset successfully" });
     
 	} catch (error) {
-		console.error("Error resetting password:", error);
 		res.status(500).json({ error: "Failed to reset password" });
 	}
 });
 
 router.post("/change-profile-image", verifyToken, upload.single("image"), async (req, res) => {
 	const { userID } = req.body;
-	console.log(req.body);
 	try {
 		const connection = createConnection();
 		const image = req.file;
@@ -455,7 +416,6 @@ router.post("/change-profile-image", verifyToken, upload.single("image"), async 
     
 		res.status(200).json({ message: "Profile picture changed successfully" });
 	} catch (error) {
-		console.error("Error changing profile picture:", error);
 		res.status(500).json({ error: "Failed to change profile picture" });
 	}
 });
@@ -474,7 +434,6 @@ router.get("/is-profile-picture/:userID", async (req, res) => {
 		const { isProfilePicture } = rows[0];  // extract bool val from first row
 		res.json({ isProfilePicture });  // return true
 	} catch (error) {
-		console.error("Error fetching isProfilePicture:", error);
 		res.status(500).json({ error: "Failed to fetch isProfilePicture" });
 	}
 });
@@ -483,14 +442,11 @@ router.post("/set-bio", verifyToken, async (req, res) => {
 	const { userID } = req.body;
 	const { bio } = req.body;
 	try {
-		console.log(req.body);
 		const connection = createConnection();
-		console.log(bio, " ", userID);
 		const query = "UPDATE users SET bio = $1 WHERE \"userID\" = $2";
 		await connection.query(query, [bio, userID]);
 		res.status(200).json({ message: "Bio changed successfully" });
 	} catch (error) {
-		console.error("Error saving bio:", error);
 		res.status(500).json({error: "Failed to post bio"});
 	}
 });
@@ -499,14 +455,11 @@ router.post("/set-location", verifyToken, async (req, res) => {
 	const { userID } = req.body;
 	const { city } = req.body;
 	try {
-		console.log(req.body);
 		const connection = createConnection();
-		console.log(city, " ", userID);
 		const query = "UPDATE users SET city = $1 WHERE \"userID\" = $2";
 		await connection.query(query, [city, userID]);
 		res.status(200).json({ message: "City changed successfully" });
 	} catch (error) {
-		console.error("Error saving bio:", error);
 		res.status(500).json({error: "Failed to post bio"});
 	}
 });
@@ -526,7 +479,6 @@ router.get("/public-profile/:userID", async (req, res) => {
 			res.status(200).json(user[0]); // HTTP (OK) - user exists
 		}
 	} catch (error) {
-		console.error("Error fetching user profile:", error);
 		res.status(500).json({ error: "Failed to fetch user profile" }); // HTTP 500 (Internal Server Error) - unexpected error/condition
 	}
 });

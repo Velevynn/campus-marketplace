@@ -5,8 +5,12 @@ const router = require('./userRoutes');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { google } = require('googleapis');
+const { uploadImageToS3 } = require('../util/s3');
 
 jest.mock('jsonwebtoken');
+jest.mock('../util/s3', () => ({
+  uploadImageToS3: jest.fn()
+}));
 
 // Mocks
 jest.mock("pg", () => {
@@ -799,5 +803,380 @@ describe('Delete Account Endpoint Tests', () => {
       .expect(500);
 
     expect(response.body).toEqual({ error: 'Failed to delete account' });
+  });
+
+  test('should return 500 if password is missing', async () => {
+    const response = await request(app)
+      .delete('/delete')
+      .send({ username: 'testuser' }) // Missing password
+      .expect(500);
+  
+    expect(response.body).toEqual({ error: 'Failed to delete account' });
+  });
+});
+
+describe('Forgot Password Endpoint Tests', () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
+  test('should return 400 if email is not provided', async () => {
+    const response = await request(app)
+      .post('/forgot-password')
+      .send({})
+      .expect(400);
+
+    expect(response.body).toEqual({ error: 'Email is required' });
+  });
+
+  test('should return 404 if user is not found', async () => {
+    Pool.mockImplementationOnce(() => ({
+      query: jest.fn().mockResolvedValue({ rows: [] }),
+      end: jest.fn()
+    }));
+
+    const response = await request(app)
+      .post('/forgot-password')
+      .send({ email: 'nonexistentuser@example.com' })
+      .expect(404);
+
+    expect(response.body).toEqual({ error: 'User not found' });
+  });
+
+  test('should return 500 for unexpected errors', async () => {
+    Pool.mockImplementationOnce(() => ({
+      query: jest.fn().mockRejectedValue(new Error('Database error')),
+      end: jest.fn()
+    }));
+
+    const response = await request(app)
+      .post('/forgot-password')
+      .send({ email: 'testuser@example.com' })
+      .expect(500);
+
+    expect(response.body).toEqual({ error: 'Failed to send forgot password email' });
+  });
+
+  test('should return 404 if user does not exist', async () => {
+    const mockDbQueryResponse = {
+      rows: []
+    };
+  
+    Pool.mockImplementationOnce(() => ({
+      query: jest.fn().mockResolvedValue(mockDbQueryResponse),
+      end: jest.fn()
+    }));
+  
+    const response = await request(app)
+      .post('/forgot-password')
+      .send({ email: 'nonexistentuser@example.com' })
+      .expect(404);
+  
+    expect(response.body).toEqual({ error: 'User not found' });
+  });  
+});
+
+describe('Change Profile Image Endpoint Tests', () => {
+  const mockUserID = '123';
+  const validToken = 'validToken';
+  const invalidToken = 'invalidToken';
+
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
+  test('should change profile image successfully', async () => {
+    jwt.verify.mockImplementation((token, secret, callback) => {
+      if (token === validToken) {
+        callback(null, { userID: mockUserID });
+      } else {
+        callback(new Error('Invalid token'));
+      }
+    });
+
+    // Mock uploadImageToS3 function
+    uploadImageToS3.mockResolvedValueOnce(); // Assuming uploadImageToS3 succeeds
+
+    Pool.mockImplementationOnce(() => ({
+      query: jest.fn().mockResolvedValue(), // Mock database update
+      end: jest.fn()
+    }));
+
+    const mockFile = {
+      buffer: Buffer.from('mockImageData', 'utf8'),
+    };
+
+    const response = await request(app)
+      .post('/change-profile-image')
+      .set('Authorization', `Bearer ${validToken}`)
+      .attach('image', mockFile.buffer, 'testImage.jpg')
+      .expect(200);
+
+    expect(response.body).toEqual({ message: 'Profile picture changed successfully' });
+  });
+
+  test('should return 401 for invalid token', async () => {
+    jwt.verify.mockImplementation((token, secret, callback) => {
+      callback(new Error('Invalid token'));
+    });
+
+    const response = await request(app)
+      .post('/change-profile-image')
+      .set('Authorization', `Bearer ${invalidToken}`)
+      .expect(401);
+
+    expect(response.body).toEqual({ message: 'Invalid Token' });
+  });
+
+  test('should handle database error', async () => {
+    jwt.verify.mockImplementation((token, secret, callback) => {
+      if (token === validToken) {
+        callback(null, { userID: mockUserID });
+      } else {
+        callback(new Error('Invalid token'));
+      }
+    });
+
+    // Mock uploadImageToS3 function
+    uploadImageToS3.mockRejectedValueOnce(new Error('S3 upload failed'));
+
+    const mockFile = {
+      buffer: Buffer.from('mockImageData', 'utf8'),
+    };
+
+    const response = await request(app)
+      .post('/change-profile-image')
+      .set('Authorization', `Bearer ${validToken}`)
+      .attach('image', mockFile.buffer, 'testImage.jpg')
+      .expect(500);
+
+    expect(response.body).toEqual({ error: 'Failed to change profile picture' });
+  });
+});
+
+describe('Is Profile Picture Endpoint Tests', () => {
+  const mockUserID = '123';
+
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
+  test('should fetch isProfilePicture successfully', async () => {
+    Pool.mockImplementationOnce(() => ({
+      query: jest.fn().mockResolvedValue({ rows: [{ isProfilePicture: true }] }),
+      end: jest.fn()
+    }));
+
+    const response = await request(app)
+      .get(`/is-profile-picture/${mockUserID}`)
+      .expect(200);
+
+    expect(response.body).toEqual({ isProfilePicture: true });
+  });
+
+  test('should return 404 if user not found', async () => {
+    Pool.mockImplementationOnce(() => ({
+      query: jest.fn().mockResolvedValue({ rows: [] }),
+      end: jest.fn()
+    }));
+
+    const response = await request(app)
+      .get(`/is-profile-picture/nonexistentuser`)
+      .expect(404);
+
+    expect(response.body).toEqual({ error: 'User not found' });
+  });
+
+  test('should handle database error', async () => {
+    Pool.mockImplementationOnce(() => ({
+      query: jest.fn().mockRejectedValue(new Error('Database error')),
+      end: jest.fn()
+    }));
+
+    const response = await request(app)
+      .get(`/is-profile-picture/${mockUserID}`)
+      .expect(500);
+
+    expect(response.body).toEqual({ error: 'Failed to fetch isProfilePicture' });
+  });
+});
+
+describe('Set Bio Endpoint Tests', () => {
+  const mockUserID = '123';
+  const validToken = 'validToken';
+  const invalidToken = 'invalidToken';
+
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
+  test('should set bio successfully', async () => {
+    jwt.verify.mockImplementation((token, secret, callback) => {
+      if (token === validToken) {
+        callback(null, { userID: mockUserID });
+      } else {
+        callback(new Error('Invalid token'));
+      }
+    });
+
+    Pool.mockImplementationOnce(() => ({
+      query: jest.fn().mockResolvedValue(), // Mock database update
+      end: jest.fn()
+    }));
+
+    const bio = 'Test bio';
+
+    const response = await request(app)
+      .post('/set-bio')
+      .set('Authorization', `Bearer ${validToken}`)
+      .send({ userID: mockUserID, bio })
+      .expect(200);
+
+    expect(response.body).toEqual({ message: 'Bio changed successfully' });
+  });
+
+  test('should return 401 for invalid token', async () => {
+    jwt.verify.mockImplementation((token, secret, callback) => {
+      callback(new Error('Invalid token'));
+    });
+
+    const response = await request(app)
+      .post('/set-bio')
+      .set('Authorization', `Bearer ${invalidToken}`)
+      .expect(401);
+
+    expect(response.body).toEqual({ message: 'Invalid Token' });
+  });
+
+  test('should handle database error', async () => {
+    jwt.verify.mockImplementation((token, secret, callback) => {
+      if (token === validToken) {
+        callback(null, { userID: mockUserID });
+      } else {
+        callback(new Error('Invalid token'));
+      }
+    });
+
+    Pool.mockImplementationOnce(() => ({
+      query: jest.fn().mockRejectedValue(new Error('Database error')),
+      end: jest.fn()
+    }));
+
+    const bio = 'Test bio';
+
+    const response = await request(app)
+      .post('/set-bio')
+      .set('Authorization', `Bearer ${validToken}`)
+      .send({ userID: mockUserID, bio })
+      .expect(500);
+
+    expect(response.body).toEqual({ error: 'Failed to post bio' });
+  });
+});
+
+describe('Set Location Endpoint Tests', () => {
+  const mockUserID = '123';
+  const validToken = 'validToken';
+  const invalidToken = 'invalidToken';
+
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
+  test('should set location successfully', async () => {
+    jwt.verify.mockImplementation((token, secret, callback) => {
+      if (token === validToken) {
+        callback(null, { userID: mockUserID });
+      } else {
+        callback(new Error('Invalid token'));
+      }
+    });
+
+    Pool.mockImplementationOnce(() => ({
+      query: jest.fn().mockResolvedValue(), // Mock database update
+      end: jest.fn()
+    }));
+
+    const city = 'Test City';
+
+    const response = await request(app)
+      .post('/set-location')
+      .set('Authorization', `Bearer ${validToken}`)
+      .send({ userID: mockUserID, city })
+      .expect(200);
+
+    expect(response.body).toEqual({ message: 'City changed successfully' });
+  });
+
+  test('should return 401 for invalid token', async () => {
+    jwt.verify.mockImplementation((token, secret, callback) => {
+      callback(new Error('Invalid token'));
+    });
+
+    const response = await request(app)
+      .post('/set-location')
+      .set('Authorization', `Bearer ${invalidToken}`)
+      .expect(401);
+
+    expect(response.body).toEqual({ message: 'Invalid Token' });
+  });
+
+  test('should handle database error', async () => {
+    jwt.verify.mockImplementation((token, secret, callback) => {
+      if (token === validToken) {
+        callback(null, { userID: mockUserID });
+      } else {
+        callback(new Error('Invalid token'));
+      }
+    });
+
+    Pool.mockImplementationOnce(() => ({
+      query: jest.fn().mockRejectedValue(new Error('Database error')),
+      end: jest.fn()
+    }));
+
+    const city = 'Test City';
+
+    const response = await request(app)
+      .post('/set-location')
+      .set('Authorization', `Bearer ${validToken}`)
+      .send({ userID: mockUserID, city })
+      .expect(500);
+
+    expect(response.body).toEqual({ error: 'Failed to post bio' });
+  });
+});
+
+describe('Public Profile Endpoint Tests', () => {
+  const mockUserID = '123';
+
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
+  test('should fetch public profile successfully', async () => {
+    Pool.mockImplementationOnce(() => ({
+      query: jest.fn().mockResolvedValue({ rows: [{ username: 'testuser', fullName: 'Test User', bio: 'Test Bio', city: 'Test City' }] }),
+      end: jest.fn()
+    }));
+
+    const response = await request(app)
+      .get(`/public-profile/${mockUserID}`)
+      .expect(200);
+
+    expect(response.body).toEqual({ username: 'testuser', fullName: 'Test User', bio: 'Test Bio', city: 'Test City' });
+  });
+
+  test('should handle database error', async () => {
+    Pool.mockImplementationOnce(() => ({
+      query: jest.fn().mockRejectedValue(new Error('Database error')),
+      end: jest.fn()
+    }));
+
+    const response = await request(app)
+      .get(`/public-profile/${mockUserID}`)
+      .expect(500);
+
+    expect(response.body).toEqual({ error: 'Failed to fetch user profile' });
   });
 });
