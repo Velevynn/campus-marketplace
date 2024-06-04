@@ -1,18 +1,20 @@
+// ProfileDetails.js (Joshua Estrada)
+// ProfilePage Component to edit userBio and userLocation
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import PropTypes from "prop-types";
-import Notify from "../components/ErrorNotification";
 import { Link } from "react-router-dom";
+import Notify from "../components/ErrorNotification";
+import PropTypes from "prop-types";
+import axios from "axios";
 
 function ProfileDetails(props) {
-	const [bio, setBio] = useState("");
 	const [showNotification, setShowNotification] = useState(false);
-	const [notificationMsg, setNotificationMsg] = useState("");
 	const [isSuccessful, setIsSuccessful] = useState(false);
+	const [notificationMsg, setNotificationMsg] = useState("");
+	const [bio, setBio] = useState("");
 	const [hometown, setHometown] = useState("");
 	const [cityByZip, setCityByZip] = useState("");
-	const publicURL = process.env.REACT_APP_FRONTEND_LINK + "/profile/" + props.userID;
-
+	
+	// handles changes to bio: prevents exceeding max char limit and excessive newlines
 	function handleChange(event) {
 		const inputValue = event.target.value;
 		const newlineCount = (inputValue.match(/\n/g) || []).length; // Count the number of newlines
@@ -28,6 +30,7 @@ function ProfileDetails(props) {
 		}
 	}
 
+	// function for triggering visual notification with a custom message & color indicator (success, fail)
 	function triggerNotification(textField, successBool) {
 		if (!showNotification) {
 			setNotificationMsg(textField);
@@ -39,6 +42,7 @@ function ProfileDetails(props) {
 		}
 	}
 
+	// fetches user profile data to set bio (if user has set their bio)
 	const fetchUserProfile = async(userID) => {
 		try {
 			const response = await axios.get(process.env.REACT_APP_BACKEND_LINK + `/users/public-profile/${userID}`);
@@ -47,10 +51,11 @@ function ProfileDetails(props) {
 				setBio(bio);
 			}
 		} catch (error) {
-			console.log("Error encountered: ", error);
+			console.error("Error encountered: ", error);
 		}
 	};
 
+	// saves the bio by sending user inputted bio to the backend: automatically truncates bio
 	const saveBio = async() => {
 		try {
 			if (bio.length == 0) {
@@ -78,23 +83,19 @@ function ProfileDetails(props) {
 		}
 	};
 
+	// finds user's city or general region using a get call to open-source street map API
 	const handleSetLocationByZip = async () => {
 		try {
 			const response = await axios.get(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(hometown)}, California, United States&format=json&addressdetails=1`);
-			console.log("Response:", response.data); // Log the entire response object
-			console.log(response.data[0].address.postcode);
 			if (hometown.length === 5 && response.data && response.data.length > 0 && response.data[0].address.postcode === hometown) {
-				const city = response.data[0].address.city || response.data[0].address.town || response.data[0].address.village || response.data[0].address.county;
+				const city = response.data[0].address.city || response.data[0].address.town || response.data[0].address.village || response.data[0].address.county;  // find region
 				setCityByZip(city); // Set the city found by zip code
-				console.log(city);
 			} else {
-				console.log("Location not found");
 				let msg ="ZIP Code not found";
-				if (hometown.length!== 5) {
+				if (hometown.length!== 5) {  // Zip Code must be a US valid 5-digit zip code
 					msg = "Invalid Zip Code";
 				}
 				triggerNotification(msg, false);
-				setShowNotification(true);
 			}
 		} catch (error) {
 			console.error("Error:", error);
@@ -102,6 +103,7 @@ function ProfileDetails(props) {
 		}
 	};
     
+	// saves user's hometown (location) through a post call to the backend
 	const handleSetHometown = async() => {
 		try {
 			if (cityByZip.length == 0) {
@@ -144,7 +146,7 @@ function ProfileDetails(props) {
 					<button className="small-button margin-top" onClick={handleSetHometown}>Set Hometown</button>
 					{cityByZip && <div className="overflow-container">{`${cityByZip}`}</div>}
 				</div>
-				<Link to ={publicURL}><div className="text-link margin-top">See Public Profile</div></Link>
+				<Link to ={process.env.REACT_APP_FRONTEND_LINK + "/profile/" + props.userID}><div className="text-link margin-top">See Public Profile</div></Link>
 			</div>
 			{showNotification && <Notify message={notificationMsg} isSuccessful={isSuccessful}/>}
 		</div>
