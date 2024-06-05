@@ -1,0 +1,25 @@
+.category-list {
+    display: flex;
+    justify-content: space-between;
+    column-gap: 1%;
+    overflow-x: scroll;
+    white-space: Nowrap;
+    background-color: rgb(238, 238, 238);
+}
+
+/* Above must be in CSS file, overflow-x is not valid for inline styling */
+
+.category-button {
+    background-color: seagreen;
+}
+
+/* Non-standard for common browsers, will default to normal scroll bar elsewhere. */
+::-webkit-scrollbar {
+    display: none;
+}
+
+.example {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+

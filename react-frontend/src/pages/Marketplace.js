@@ -4,6 +4,7 @@ import { useSearchParams, useLocation } from "react-router-dom";
 import Entry from "../components/MarketplaceEntry";
 import ScrollToTopButton from "../components/ScrollToTopButton";
 import LoadingSpinner from "../components/LoadingSpinner"; // Import the loading spinner component
+import CategoryBar from "../components/CategoryBar";
 
 function Marketplace() {
   const [searchParams] = useSearchParams();
@@ -67,8 +68,9 @@ function Marketplace() {
 
   return (
     <div>
-      <div className="left-container">
+      <div className="container" style={{margin: '0 5rem'}}>
         <h1>{query}</h1>
+        <CategoryBar />
       </div>  
       <div className="full-container">
         {isLoading ? ( // Render loading spinner if isLoading is true
