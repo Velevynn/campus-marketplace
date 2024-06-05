@@ -1,46 +1,57 @@
-import React from "react";
-import { useCallback } from 'react';
+import React, { useEffect, useRef } from 'react';
 import Talk from 'talkjs';
-import { Session, Chatbox } from '@talkjs/react';
+import PropTypes from 'prop-types';
 
-function Chat() {
-  const syncUser = useCallback(
-    () =>
-      new Talk.User({
-        id: 'nina',
-        name: 'Nina',
-        email: 'nina@example.com',
-        photoUrl: 'https://talkjs.com/new-web/avatar-7.jpg',
-        welcomeMessage: 'Hi!',
-      }),
-    []
-  );
+function ChatComponent({ appId, user, otherUser }) {
+  const chatContainerRef = useRef();
 
-  const syncConversation = useCallback((session) => {
-    // JavaScript SDK code here
-    const conversation = session.getOrCreateConversation('new_conversation');
+  useEffect(() => {
+      if (!Talk.ready) return;
 
-    const other = new Talk.User({
-      id: 'frank',
-      name: 'Frank',
-      email: 'frank@example.com',
-      photoUrl: 'https://talkjs.com/new-web/avatar-8.jpg',
-      welcomeMessage: 'Hey, how can I help?',
-    });
-    conversation.setParticipant(session.me);
-    conversation.setParticipant(other);
+      Talk.ready.then(() => {
+          const me = new Talk.User(user);
+          const other = new Talk.User(otherUser);
+          const session = new Talk.Session({
+              appId: appId,
+              me: me
+          });
 
-    return conversation;
-  }, []);
+          const conversation = session.getOrCreateConversation(Talk.oneOnOneId(me, other));
+          conversation.setParticipant(me);
+          conversation.setParticipant(other);
 
-  return (
-    <Session appId="tEOH06eA" syncUser={syncUser}>
-      <Chatbox
-        syncConversation={syncConversation}
-        style={{ width: '100%', height: '500px' }}
-      ></Chatbox>
-    </Session>
-  );
+          const chatbox = session.createChatbox();
+          chatbox.select(conversation);
+          chatbox.mount(chatContainerRef.current);
+      });
+
+      return () => {
+          if (chatContainerRef.current) {
+              chatContainerRef.current.innerHTML = '';
+          }
+      };
+  }, [appId, user, otherUser]);
+
+  return <div ref={chatContainerRef} className="chat-container" style={{ height: '500px', width: '100%' }}></div>;
 }
 
-export default Chat;
+// Define the prop types
+ChatComponent.propTypes = {
+  appId: PropTypes.string.isRequired,
+  user: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      email: PropTypes.string,
+      photoUrl: PropTypes.string,
+      welcomeMessage: PropTypes.string
+  }).isRequired,
+  otherUser: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      email: PropTypes.string,
+      photoUrl: PropTypes.string,
+      welcomeMessage: PropTypes.string
+  }).isRequired
+};
+
+export default ChatComponent;
