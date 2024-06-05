@@ -1,7 +1,7 @@
 // ChatPage.js
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import Chat from "../components/Chat";
+import Chat from '../components/Chat.js';
 
 function ChatPage() {
     const { state } = useLocation(); // Using location state to receive listing, seller, and buyer data
@@ -16,9 +16,7 @@ function ChatPage() {
                 <p>Selling by: {seller[0].fullName}</p>
                 <p>Contacting: {buyer.fullName}</p>
             </div>
-            <React.StrictMode>
-                <Chat />
-            </React.StrictMode>
+            <Chat/>
         </>
     );
 }
