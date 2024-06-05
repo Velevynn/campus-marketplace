@@ -40,18 +40,13 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/" element={<Marketplace />} />
           <Route path="/marketplace/" element={<Marketplace />} />
-          <Route path="/new-listing" 
-                element={
-                  <ProtectedRoute> 
-                    <AddListing/>
-                  </ProtectedRoute>
-                  } />
+          <Route path="/new-listing" element={ <ProtectedRoute> <AddListing/> </ProtectedRoute>} />
           <Route path="/terms-of-service" element={<TOS />} />
           <Route path="/listings/:listingID" element={<ListingView />} />
-          <Route path="/listings/:listingID/buy" element={<ProtectedRoute> <BuyNow /></ProtectedRoute> } />
-          <Route path="/listings/:listingID/offer" element={<ProtectedRoute> <MakeOfferPage /></ProtectedRoute> } />
-          <Route path="/chat" element={<ProtectedRoute> <ChatPage /></ProtectedRoute> } />
-          <Route path="/listings/:listingID/edit" element={<ProtectedRoute> <EditListing /></ProtectedRoute> } />
+          <Route path="/listings/:listingID/buy" element={<ProtectedRoute> <BuyNow /> </ProtectedRoute> } />
+          <Route path="/listings/:listingID/offer" element={<ProtectedRoute> <MakeOfferPage /> </ProtectedRoute> } />
+          <Route path="/chat" element={<ProtectedRoute> <ChatPage /> </ProtectedRoute> } />
+          <Route path="/listings/:listingID/edit" element={<ProtectedRoute> <EditListing /> </ProtectedRoute> } />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/change-password" element={<ChangePasswordPage />} />

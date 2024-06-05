@@ -36,6 +36,7 @@ function createConnection() {
   return pool
 }
 
+
 // Asynchronous route handler to check if non-duplicate user info already exists in the database.
 router.post('/check', async (req, res) => { // async function means we can use await keyword to pause the function's execution at asynchronous operations without blocking the entire server's execution
     const { username, email, phoneNumber } = req.body;
@@ -461,27 +462,25 @@ router.post('/change-profile-image', verifyToken, upload.single('file'), async (
   }
 });
 
-router.get('/api/users/:userId', async (req, res) => {
-  const { userId } = req.params;
-  const connection = createConnection();
-
+// Retrieve user details for given userID.
+router.get("/:userID/", async (req, res) => {
   try {
+      // Extract userID from query parameters.
+      const { userID } = req.params;
+
+      // Retrieve user details from database if user exists.
+      const connection = createConnection();
       const { rows } = await connection.query(
-          'SELECT * FROM users WHERE "userID" = $1',
-          [userId]
+        'SELECT * FROM users WHERE "userID" =  $1 LIMIT 1',
+        [userID]
       );
-      if (rows.length > 0) {
-          res.status(200).json(rows[0]);
-      } else {
-          res.status(404).send('User not found');
-      }
-      console.log(userId);
-  } catch (error) {
-      console.error('Error fetching user:', error);
-      res.status(500).send('Failed to fetch user');
-  } finally {
-      connection.end();
-  }
+      res.status(200).send(rows);
+      await connection.end();
+    }
+    catch (error) {
+      console.error("An error occurred while fetching the user:", error);
+      res.status(500).send("An error occurred while fetching the user");
+    }
 });
 
 

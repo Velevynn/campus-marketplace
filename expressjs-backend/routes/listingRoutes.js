@@ -318,29 +318,6 @@ router.put("/images/:listingID", upload.array('image'), async (req, res) => {
   }
 });
 
-router.get('/api/listings/:listingID', async (req, res) => {
-  const { listingID } = req.params;
-  const connection = createConnection();
-
-  try {
-      const { rows } = await connection.query(
-          'SELECT * FROM listings WHERE "listingID" = $1',
-          [listingID]
-      );
-      if (rows.length > 0) {
-          res.status(200).json(rows[0]);
-      } else {
-          res.status(404).send('Listing not found');
-      }
-      console.log(listingId);
-  } catch (error) {
-      console.error('Error fetching listing:', error);
-      res.status(500).send('Failed to fetch listing');
-  } finally {
-      connection.end();
-  }
-});
-
 async function updateImages(listingID, imageUrls, newImages) {
   try {
     for(index in imageUrls) {

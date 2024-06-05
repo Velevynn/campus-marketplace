@@ -1,17 +1,25 @@
+// ChatPage.js
 import React from 'react';
 import { useLocation } from 'react-router-dom';
+import Chat from "../components/Chat";
 
 function ChatPage() {
-    const { state } = useLocation();  // Using location state to receive listing, seller, and buyer data
-    const { listing, seller, buyer } = state;
+    const { state } = useLocation(); // Using location state to receive listing, seller, and buyer data
+    const listing = state.listing || [];
+    const seller = state.seller || [];
+    const buyer = state.buyer || {};
 
     return (
-        <div>
-            <h1>Chat for {listing.title}</h1>
-            <p>Selling by: {seller.name}</p>
-            <p>Contacting: {buyer.name}</p>
-            <div id="talkjs-container" style={{ height: "400px", width: "600px" }}></div>  // Container for the chat
-        </div>
+        <>
+            <div>
+                <h1>Chat for {listing[0].title}</h1>
+                <p>Selling by: {seller[0].fullName}</p>
+                <p>Contacting: {buyer.fullName}</p>
+            </div>
+            <React.StrictMode>
+                <Chat />
+            </React.StrictMode>
+        </>
     );
 }
 
