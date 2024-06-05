@@ -14,7 +14,7 @@ function Marketplace() {
 	const [isLoading, setIsLoading] = useState(true); // Add loading state
 	const [query, setQuery] = useState("");
 	const location = useLocation();
-	const navigate = useNavigate;
+	const navigate = useNavigate();
 
 	const getQueryFromURL = () => {
 		const search = location.search; // save query string
