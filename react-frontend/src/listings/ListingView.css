@@ -1,66 +1,64 @@
-  /* listingview.css */
+/* listingview.css */
 
 .listing-layout {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
 }
 
 @media screen and (max-width: 768px) {
-    .listing-layout {
-        /* Moves image preview to underneath add listing form */
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: start;
-    }
-  }
-
+	.listing-layout {
+		/* Moves image preview to underneath add listing form */
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		text-align: start;
+	}
+}
 
 .bookmark {
-    max-width: 30px;
-    max-height: 30px;
-    cursor: pointer;
-    transition-duration: 0.4s;
+	max-width: 30px;
+	max-height: 30px;
+	cursor: pointer;
+	transition-duration: 0.4s;
 }
 
 .bookmark:hover {
-    /*transform: scale(1.1); 
+	/*transform: scale(1.1); 
     transition: transform 0.2s ease-in-out;*/
-    animation: rotateBackAndForth 0.5s ease-in-out infinite alternate;
-
+	animation: rotateBackAndForth 0.5s ease-in-out infinite alternate;
 }
 
 .popup-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.6);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
-  
-  .popup-content {
-    background: white;
-    padding: 10px;
-    border-radius: 10px;
-    max-width: 500px;
-    width: 100%;
-    text-align: center;
-  }
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(0, 0, 0, 0.6);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 1000;
+}
+
+.popup-content {
+	background: white;
+	padding: 10px;
+	border-radius: 10px;
+	max-width: 500px;
+	width: 100%;
+	text-align: center;
+}
 
 @keyframes rotateBackAndForth {
-    0% {
-        transform: rotate(0deg);
-    }
-    50% {
-        transform: rotate(10deg);
-    }
-    100% {
-        transform: rotate(-10deg);
-    }
+	0% {
+		transform: rotate(0deg);
+	}
+	50% {
+		transform: rotate(10deg);
+	}
+	100% {
+		transform: rotate(-10deg);
+	}
 }

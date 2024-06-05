@@ -1,12 +1,11 @@
 // Importing necessary React hooks and Axios for HTTP requests
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect} from "react";
 import axios from "axios";
 // Importing components for the layout, styling, and form elements
 import logoImage from "../assets/haggle-horizontal.png";
-import { FaCheckCircle, FaTimesCircle, FaEye, FaEyeSlash  } from "react-icons/fa";
+import {FaCheckCircle, FaTimesCircle, FaEye, FaEyeSlash} from "react-icons/fa";
 // Importing navigation hooks and components for routing
-import { Link, useNavigate } from "react-router-dom";
-
+import {Link, useNavigate} from "react-router-dom";
 
 // SignUpPage component for the user registration process
 function SignUpPage() {
@@ -16,7 +15,7 @@ function SignUpPage() {
 		full_name: "",
 		password: "",
 		email: "",
-		phoneNumber: "",
+		phoneNumber: ""
 	});
 
 	const [passwordVisible, setPasswordVisible] = useState(false);
@@ -31,36 +30,36 @@ function SignUpPage() {
 		const passwordRules = {
 			minLength: value.length >= 8,
 			containsNumber: /[0-9]/.test(value),
-			containsSpecialChar: /[\W_]/.test(value),
+			containsSpecialChar: /[\W_]/.test(value)
 		};
 
 		// Phone number validation rules
 		const phoneNumRules = {
 			minLength: value.length === 10,
 			maxLength: value.length === 10,
-			containsNumber: /[0-9]/.test(value),
+			containsNumber: /[0-9]/.test(value)
 		};
 
 		// Validation logic for different inputs
 		switch (name) {
-		case "username":
-			return value.length >= 3 && value.length <= 25;
-		case "full_name":
-			return value.length > 0 && value.length <= 40;
-		case "password":
-			return Object.values(passwordRules).every(valid => valid);
-		case "email":
-			return /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(value);
-		case "phoneNumber":
-			return Object.values(phoneNumRules).every(valid => valid);
-		default:
-			return false;
+			case "username":
+				return value.length >= 3 && value.length <= 25;
+			case "full_name":
+				return value.length > 0 && value.length <= 40;
+			case "password":
+				return Object.values(passwordRules).every(valid => valid);
+			case "email":
+				return /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(value);
+			case "phoneNumber":
+				return Object.values(phoneNumRules).every(valid => valid);
+			default:
+				return false;
 		}
 	};
 
 	// Effect hook to update form validity based on input validation
 	useEffect(() => {
-		const isValid = Object.keys(user).every((key) =>
+		const isValid = Object.keys(user).every(key =>
 			isInputValid(key, user[key])
 		);
 		setIsFormValid(isValid);
@@ -70,19 +69,19 @@ function SignUpPage() {
 	const handlePasswordFocus = () => setPasswordFocused(true);
 	const handlePasswordBlur = () => setPasswordFocused(false);
 
-	const handleChange = (event) => {
-		const { name, value } = event.target;
+	const handleChange = event => {
+		const {name, value} = event.target;
 		// Special handling for phoneNumber to ensure only numbers are inputted
 		if (name === "phoneNumber") {
 			const filteredValue = value.replace(/[^\d]/g, "");
 			setUser({
 				...user,
-				[name]: filteredValue,
+				[name]: filteredValue
 			});
 		} else {
 			setUser({
 				...user,
-				[name]: value,
+				[name]: value
 			});
 		}
 	};
@@ -93,68 +92,79 @@ function SignUpPage() {
 	};
 
 	// Function to handle form submission
-	const handleSubmit = async (event) => {
+	const handleSubmit = async event => {
 		event.preventDefault();
-  
+
 		// Reset error message at the beginning of submission attempt
 		setErrorMessage("");
 
 		if (isFormValid) {
 			try {
 				// Pre-registration check for existing username, email, or phone number
-				const checkResponse = await axios.post(process.env.REACT_APP_BACKEND_LINK + "/users/check", {
-					email: user.email,
-					phoneNumber: user.phoneNumber,
-					username: user.username,
-				});
-        
+				const checkResponse = await axios.post(
+					process.env.REACT_APP_BACKEND_LINK + "/users/check",
+					{
+						email: user.email,
+						phoneNumber: user.phoneNumber,
+						username: user.username
+					}
+				);
+
 				// Display specific error message based on the conflict
 				if (checkResponse.data.exists) {
-					setErrorMessage(`${checkResponse.data.message} already exists.`);
+					setErrorMessage(
+						`${checkResponse.data.message} already exists.`
+					);
 
 					// Proceed with registration if no conflicts
 				} else {
 					// Proceed with registration if no conflicts
-					const registerResponse = await axios.post(process.env.REACT_APP_BACKEND_LINK + "/users/register", user);
-					if (registerResponse.status === 201) { // success
+					const registerResponse = await axios.post(
+						process.env.REACT_APP_BACKEND_LINK + "/users/register",
+						user
+					);
+					if (registerResponse.status === 201) {
+						// success
 						navigate("/login");
 					}
 				}
 			} catch (error) {
 				if (error.response) {
 					// Backend provides specific error message in response
-					const message = error.response.data.error || error.response.data.message;
+					const message =
+						error.response.data.error ||
+						error.response.data.message;
 					setErrorMessage(`Error:  ${message}`);
 				} else {
 					// Fallback error message for network issues or unexpected errors
-					setErrorMessage("An error occurred during registration. Please try again.");
+					setErrorMessage(
+						"An error occurred during registration. Please try again."
+					);
 				}
 			}
 			// doesn't pop up since submit button is disabled until all fields are filled out... get rid of
 		} else {
-			setErrorMessage("Please ensure all fields are filled out correctly before submitting.");
+			setErrorMessage(
+				"Please ensure all fields are filled out correctly before submitting."
+			);
 		}
 	};
-  
+
 	// Render the sign-up form with validation feedback and navigation options
 	return (
-		<div className="vertical-center" style = {{marginTop: "15px"}}>
+		<div className="vertical-center" style={{marginTop: "15px"}}>
 			<div>
 				<div className="small-container drop-shadow">
 					<div className="vertical-center">
-						<img className="logo-img" src={logoImage} alt="Logo"/>
-					</div>      
+						<img className="logo-img" src={logoImage} alt="Logo" />
+					</div>
 					<form onSubmit={handleSubmit}>
-
-						<h5 className="text-center" style={{fontSize:"18px"}}>
-            Join our community of Cal Poly students to buy, sell, and trade
+						<h5 className="text-center" style={{fontSize: "18px"}}>
+							Join our community of Cal Poly students to buy,
+							sell, and trade
 						</h5>
 
-						{errorMessage && (
-							<div>
-								{errorMessage}
-							</div>
-						)}
+						{errorMessage && <div>{errorMessage}</div>}
 
 						<div className="input margin">
 							<input
@@ -162,13 +172,20 @@ function SignUpPage() {
 								name="email"
 								id="email"
 								value={user.email}
-								maxLength = "50"
+								maxLength="50"
 								onChange={handleChange}
 								style={{paddingRight: "2.5rem"}}
 								placeholder="Email"
-								required />
+								required
+							/>
 							<div className="input-icon">
-								{user.email.length > 0 ? (isInputValid("email", user.email) ? <FaCheckCircle /> : <FaTimesCircle style={{color: "red"}}/>) : null}
+								{user.email.length > 0 ? (
+									isInputValid("email", user.email) ? (
+										<FaCheckCircle />
+									) : (
+										<FaTimesCircle style={{color: "red"}} />
+									)
+								) : null}
 							</div>
 						</div>
 
@@ -178,13 +195,23 @@ function SignUpPage() {
 								name="phoneNumber"
 								id="phoneNumber"
 								value={user.phoneNumber}
-								maxLength = "10"
+								maxLength="10"
 								onChange={handleChange}
 								style={{paddingRight: "2.5rem"}}
 								placeholder="Mobile number"
-								required />
+								required
+							/>
 							<div className="input-icon">
-								{user.phoneNumber.length > 0 ? (isInputValid("phoneNumber", user.phoneNumber) ? <FaCheckCircle /> : <FaTimesCircle style={{color: "red"}} />) : null}
+								{user.phoneNumber.length > 0 ? (
+									isInputValid(
+										"phoneNumber",
+										user.phoneNumber
+									) ? (
+										<FaCheckCircle />
+									) : (
+										<FaTimesCircle style={{color: "red"}} />
+									)
+								) : null}
 							</div>
 						</div>
 
@@ -194,13 +221,20 @@ function SignUpPage() {
 								name="username"
 								id="username"
 								value={user.username}
-								maxLength = "25"
+								maxLength="25"
 								onChange={handleChange}
 								style={{paddingRight: "2.5rem"}}
 								placeholder="Username"
-								required />
+								required
+							/>
 							<div className="input-icon">
-								{user.username.length > 0 ? (isInputValid("username", user.username) ? <FaCheckCircle /> : <FaTimesCircle style={{color: "red"}} />) : null}
+								{user.username.length > 0 ? (
+									isInputValid("username", user.username) ? (
+										<FaCheckCircle />
+									) : (
+										<FaTimesCircle style={{color: "red"}} />
+									)
+								) : null}
 							</div>
 						</div>
 
@@ -209,14 +243,24 @@ function SignUpPage() {
 								type="text"
 								name="full_name"
 								id="full_name"
-								maxLength = "40"
+								maxLength="40"
 								value={user.full_name}
 								onChange={handleChange}
 								style={{paddingRight: "2.5rem"}}
 								placeholder="Full name"
-								required />
+								required
+							/>
 							<div className="input-icon">
-								{user.full_name.length > 0 ? (isInputValid("full_name", user.full_name) ? <FaCheckCircle /> : <FaTimesCircle style={{color: "red"}} />) : null}
+								{user.full_name.length > 0 ? (
+									isInputValid(
+										"full_name",
+										user.full_name
+									) ? (
+										<FaCheckCircle />
+									) : (
+										<FaTimesCircle style={{color: "red"}} />
+									)
+								) : null}
 							</div>
 						</div>
 
@@ -225,63 +269,112 @@ function SignUpPage() {
 								type={passwordVisible ? "text" : "password"}
 								name="password"
 								id="password"
-								minLength = "8"
+								minLength="8"
 								value={user.password}
 								onChange={handleChange}
 								onFocus={handlePasswordFocus}
 								onBlur={handlePasswordBlur}
 								style={{paddingRight: "2.5rem"}}
 								placeholder="Password"
-								required 
+								required
 							/>
-							<div className="input-icon" onClick={togglePasswordVisibility}>
+							<div
+								className="input-icon"
+								onClick={togglePasswordVisibility}
+							>
 								{passwordVisible ? <FaEye /> : <FaEyeSlash />}
 							</div>
 						</div>
 
 						{passwordFocused && (
 							<div className="margin">
-								<div className="margin" style={{ color: user.password.length >= 8 ? "green" : "red" }}>
-									{user.password.length >= 8 ? <FaCheckCircle /> : <FaTimesCircle />}
-									<span style={{ marginLeft: "5px" }}>At least 8 characters</span>
+								<div
+									className="margin"
+									style={{
+										color:
+											user.password.length >= 8
+												? "green"
+												: "red"
+									}}
+								>
+									{user.password.length >= 8 ? (
+										<FaCheckCircle />
+									) : (
+										<FaTimesCircle />
+									)}
+									<span style={{marginLeft: "5px"}}>
+										At least 8 characters
+									</span>
 								</div>
-								<div className="margin" style={{ color: /[0-9]/.test(user.password) ? "green" : "red" }}>
-									{/[0-9]/.test(user.password) ? <FaCheckCircle /> : <FaTimesCircle />}
-									<span style={{ marginLeft: "5px" }}>At least one number</span>
+								<div
+									className="margin"
+									style={{
+										color: /[0-9]/.test(user.password)
+											? "green"
+											: "red"
+									}}
+								>
+									{/[0-9]/.test(user.password) ? (
+										<FaCheckCircle />
+									) : (
+										<FaTimesCircle />
+									)}
+									<span style={{marginLeft: "5px"}}>
+										At least one number
+									</span>
 								</div>
-								<div className="margin" style={{ color: /[\W_]/.test(user.password) ? "green" : "red" }}>
-									{/[\W_]/.test(user.password) ? <FaCheckCircle /> : <FaTimesCircle />}
-									<span style={{ marginLeft: "5px" }}>At least one special character</span>
+								<div
+									className="margin"
+									style={{
+										color: /[\W_]/.test(user.password)
+											? "green"
+											: "red"
+									}}
+								>
+									{/[\W_]/.test(user.password) ? (
+										<FaCheckCircle />
+									) : (
+										<FaTimesCircle />
+									)}
+									<span style={{marginLeft: "5px"}}>
+										At least one special character
+									</span>
 								</div>
 							</div>
 						)}
 
-            
-						<div className="margin" style = {{marginTop: "20px"}}>
-							<button className={`span-button ${isFormValid ? "" : "disabled"}`} type="submit" >
-                  Sign Up
+						<div className="margin" style={{marginTop: "20px"}}>
+							<button
+								className={`span-button ${isFormValid ? "" : "disabled"}`}
+								type="submit"
+							>
+								Sign Up
 							</button>
 						</div>
-          
-						<p className="text-center margin-bottom" style={{fontSize: "12px", marginTop: "20px", marginBottom: "10px"}}>
-            By registering you agree to our {}
-							<Link to="/terms-of-service" >
-                Terms of Service
-							</Link>
+
+						<p
+							className="text-center margin-bottom"
+							style={{
+								fontSize: "12px",
+								marginTop: "20px",
+								marginBottom: "10px"
+							}}
+						>
+							By registering you agree to our {}
+							<Link to="/terms-of-service">Terms of Service</Link>
 							{} and acknowledge our {}
-							<Link to="/privacy-policy">
-                Privacy Policy
-							</Link>
+							<Link to="/privacy-policy">Privacy Policy</Link>
 						</p>
 					</form>
 				</div>
 
-				<div className="small-container drop-shadow" style={{marginTop:"10px"}}>
-					<p className="text-center" style ={{fontSize:"14px"}}>
-          Already have an account? {}
-						<Link to="/login">
-            Log in
-						</Link>
+				<div
+					className="small-container drop-shadow"
+					style={{marginTop: "10px"}}
+				>
+					<p className="text-center" style={{fontSize: "14px"}}>
+						Already have an account? {}
+						<Link to="/login">Log in</Link>
 					</p>
 				</div>
 			</div>

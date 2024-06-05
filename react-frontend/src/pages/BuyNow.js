@@ -1,6 +1,6 @@
 import React from "react";
 
-function BuyNow(){
+function BuyNow() {
 	return (
 		<div className="listing-container">
 			<h3> BUY NOW </h3>

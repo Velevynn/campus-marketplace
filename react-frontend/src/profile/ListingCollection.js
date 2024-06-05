@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import Notify from "../components/ErrorNotification";
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import axios from "axios";
 import editHover from "../assets/edit-hover.png";
 import editNeutral from "../assets/edit-neutral.png";
@@ -15,14 +15,23 @@ function ListingCollection(props) {
 	const [notificationMsg, setNotificationMsg] = useState("");
 	console.log(props.bookmarks);
 
-	const handleDeleteListing = async (listingID) => {
-		const confirmed = window.confirm("Are you sure you want to delete this listing?");
-    
+	const handleDeleteListing = async listingID => {
+		const confirmed = window.confirm(
+			"Are you sure you want to delete this listing?"
+		);
+
 		if (confirmed) {
 			try {
 				console.log("listingID deleting: ", listingID);
-				await axios.delete(process.env.REACT_APP_BACKEND_LINK + `/listings/${listingID}`);
-				setBookmarks((prevBookmarks) => prevBookmarks.filter(bookmark => bookmark.listingID !== listingID));
+				await axios.delete(
+					process.env.REACT_APP_BACKEND_LINK +
+						`/listings/${listingID}`
+				);
+				setBookmarks(prevBookmarks =>
+					prevBookmarks.filter(
+						bookmark => bookmark.listingID !== listingID
+					)
+				);
 				setIsSuccessful(true);
 				setNotificationMsg("Successfully deleted");
 				setShowNotification(true);
@@ -47,32 +56,59 @@ function ListingCollection(props) {
 						{props.bookmarks.length === 0 ? (
 							<p>There are no Listings</p>
 						) : (
-							listings.map((listing) => (
-								<div key={listing.bookmarkID} className="collection-item">
-									<Link to={`/listings/${listing.listingID}`} className="collection-link">
+							listings.map(listing => (
+								<div
+									key={listing.bookmarkID}
+									className="collection-item"
+								>
+									<Link
+										to={`/listings/${listing.listingID}`}
+										className="collection-link"
+									>
 										<div className="collection-container">
-											<img src={`https://haggleimgs.s3.amazonaws.com/${listing.listingID}/image0?${props.time}`} className="collection-image" alt={`Listing ${listing.title}`} />
+											<img
+												src={`https://haggleimgs.s3.amazonaws.com/${listing.listingID}/image0?${props.time}`}
+												className="collection-image"
+												alt={`Listing ${listing.title}`}
+											/>
 										</div>
 										<div className="collection-container">
-											<h5 className="collection-text">{truncateString(listing.title, 18)}</h5>
+											<h5 className="collection-text">
+												{truncateString(
+													listing.title,
+													18
+												)}
+											</h5>
 										</div>
 									</Link>
 									{props.custom && (
 										<div className="collection-item">
-											<Link to={`/listings/${listing.listingID}/edit`}>
+											<Link
+												to={`/listings/${listing.listingID}/edit`}
+											>
 												<div className="edit-container">
 													<img
 														className="edit-neutral"
 														src={editNeutral}
 														alt="Edit"
-														onMouseOver={(e) => e.currentTarget.src = editHover}
-														onMouseOut={(e) => e.currentTarget.src = editNeutral}
+														onMouseOver={e =>
+															(e.currentTarget.src =
+																editHover)
+														}
+														onMouseOut={e =>
+															(e.currentTarget.src =
+																editNeutral)
+														}
 													/>
 												</div>
 											</Link>
 											<div
 												className="edit-container"
-												onClick={() => handleDeleteListing(listing.listingID)}
+												onClick={() =>
+													handleDeleteListing(
+														listing.listingID
+													)
+												}
 											>
 												<img
 													className="edit-neutral"
@@ -82,7 +118,12 @@ function ListingCollection(props) {
 											</div>
 										</div>
 									)}
-									{showNotification && <Notify message={notificationMsg} isSuccessful={isSuccessful} />}
+									{showNotification && (
+										<Notify
+											message={notificationMsg}
+											isSuccessful={isSuccessful}
+										/>
+									)}
 								</div>
 							))
 						)}

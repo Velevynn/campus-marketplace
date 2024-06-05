@@ -36,7 +36,7 @@ function App() {
 						path="/login/google"
 						element={<HandleTokenRedirect />}
 					/>
-					c
+
 					<Route
 						path="/profile"
 						element={
@@ -49,7 +49,15 @@ function App() {
 					<Route path="/about" element={<About />} />
 					<Route path="/" element={<Marketplace />} />
 					<Route path="/marketplace/" element={<Marketplace />} />
-					<Route path="/chat" element={<ProtectedRoute> <ChatPage /> </ProtectedRoute> } />
+					<Route
+						path="/chat"
+						element={
+							<ProtectedRoute>
+								{" "}
+								<ChatPage />{" "}
+							</ProtectedRoute>
+						}
+					/>
 					<Route
 						path="/new-listing"
 						element={

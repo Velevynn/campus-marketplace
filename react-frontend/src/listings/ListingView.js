@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import React, {useState, useEffect} from "react";
+import {useParams} from "react-router-dom";
 import axios from "axios";
 import ImageCarousel from "../components/ImageCarousel.js";
 import LoadingSpinner from "../components/LoadingSpinner.js";
 import ShareButton from "../components/ShareButton.js";
-import { jwtDecode } from "jwt-decode";
-import { Link, useNavigate } from "react-router-dom";
+import {jwtDecode} from "jwt-decode";
+import {Link, useNavigate} from "react-router-dom";
 import emptyBookmark from "../assets/empty-bookmark.png";
 import filledBookmark from "../assets/filled-bookmark.png";
 import Footer from "../components/Footer.js";
-import { FaUser } from "react-icons/fa";
+import {FaUser} from "react-icons/fa";
 import "./ListingView.css";
 import MakeOfferPage from "../pages/MakeOfferPage.js";
 
 function ListingView() {
-	const { listingID } = useParams();
+	const {listingID} = useParams();
 	const [listing, setListing] = useState(null);
 	const [images, setImages] = useState([]);
 	const [isOwner, setIsOwner] = useState(false);
@@ -38,22 +38,29 @@ function ListingView() {
 					console.log("Decoded username:", username);
 					try {
 						// Make a request to the backend to fetch the userID based on the username
-						const userData = await axios.get(process.env.REACT_APP_BACKEND_LINK + "/users/userID", { 
-							params: {
-								"username": username
+						const userData = await axios.get(
+							process.env.REACT_APP_BACKEND_LINK +
+								"/users/userID",
+							{
+								params: {
+									username: username
+								}
+							},
+							{
+								headers: {
+									Authorization: `Bearer ${token}`
+								}
 							}
-						}, {
-							headers: {
-								"Authorization": `Bearer ${token}`
-							}
-						});
+						);
 						console.log("loggedID:", userData.data.userID);
 						setLoggedID(userData.data.userID);
+					} catch (error) {
+						console.log(
+							"Error while fetching userID from JWT token:",
+							error
+						);
 					}
-					catch (error) {
-						console.log("Error while fetching userID from JWT token:", error);
-					}
-            
+
 					return;
 				}
 				// return null if there is no token
@@ -69,16 +76,17 @@ function ListingView() {
 			try {
 				/* get data of listing by its ID */
 				const response = await axios.get(
-					process.env.REACT_APP_BACKEND_LINK + `/listings/${listingID}`,
+					process.env.REACT_APP_BACKEND_LINK +
+						`/listings/${listingID}`
 				);
-				(console.log(response.data[0].category));
-        
+				console.log(response.data[0].category);
+
 				/* set fetched data to state */
 				if (response.data.length > 0) {
 					setListing(response.data[0]);
 					setOwnerID(response.data[0].userID);
 					/* check currently logged-in userID */
-					if(loggedID){
+					if (loggedID) {
 						setIsOwner(response.data[0].userID === loggedID); // If userIDs are the same, we know this user owns this listing
 						console.log("logged in userID: ", loggedID);
 					}
@@ -89,9 +97,10 @@ function ListingView() {
 				// Fetch username separately using the userID
 				if (response.data[0].userID) {
 					const usernameResponse = await axios.get(
-						process.env.REACT_APP_BACKEND_LINK + `/users/public-profile/${response.data[0].userID}`,
+						process.env.REACT_APP_BACKEND_LINK +
+							`/users/public-profile/${response.data[0].userID}`
 					);
-          
+
 					if (usernameResponse.data) {
 						setUsername(usernameResponse.data.username);
 					}
@@ -112,23 +121,32 @@ function ListingView() {
 			console.log("After fetch:", loggedID);
 
 			const fetchBookmark = async () => {
-				console.log("Fetching initial bookmark status with userID:", loggedID);
+				console.log(
+					"Fetching initial bookmark status with userID:",
+					loggedID
+				);
 				try {
 					// Check if a bookmark exists.
 					console.log(process.env.REACT_APP_BACKEND_LINK);
-					const bookmarked = await axios.get(process.env.REACT_APP_BACKEND_LINK + `/listings/${listingID}/bookmark`, {
-						params: {
-							"userID": loggedID,
-							"listingID": listingID
+					const bookmarked = await axios.get(
+						process.env.REACT_APP_BACKEND_LINK +
+							`/listings/${listingID}/bookmark`,
+						{
+							params: {
+								userID: loggedID,
+								listingID: listingID
+							}
 						}
-					});
-    
+					);
+
 					if (bookmarked.status === 200) {
 						setBookmark(true);
 					}
-				}
-				catch (error) {
-					console.log("Error while retrieving initial bookmark status: ", error);
+				} catch (error) {
+					console.log(
+						"Error while retrieving initial bookmark status: ",
+						error
+					);
 				}
 			};
 			fetchBookmark();
@@ -141,7 +159,8 @@ function ListingView() {
 			try {
 				/* Fetch images for the listing from the backend */
 				const response = await axios.get(
-					process.env.REACT_APP_BACKEND_LINK + `/listings/images/${listingID}`,
+					process.env.REACT_APP_BACKEND_LINK +
+						`/listings/images/${listingID}`
 				);
 				if (response.data.length > 0) {
 					setImages(response.data);
@@ -155,8 +174,13 @@ function ListingView() {
 		fetchImages();
 	}, [listingID]);
 
-	const TimeAgo = (timestamp) => {
-		const string = timestamp.toString().slice(5,7) + "/" + timestamp.toString().slice(8,10) + "/" + timestamp.toString().slice(0,4);
+	const TimeAgo = timestamp => {
+		const string =
+			timestamp.toString().slice(5, 7) +
+			"/" +
+			timestamp.toString().slice(8, 10) +
+			"/" +
+			timestamp.toString().slice(0, 4);
 		let currentDate = new Date();
 		let postDate = new Date(string);
 		const difference = currentDate.getTime() - postDate.getTime();
@@ -179,7 +203,8 @@ function ListingView() {
 
 	const handleStartChat = () => {
 		console.log("Start a Chat clicked for listing:", listing);
-		const url = process.env.REACT_APP_FRONTEND_LINK + `/listings/${listingID}/chat`;
+		const url =
+			process.env.REACT_APP_FRONTEND_LINK + `/listings/${listingID}/chat`;
 		window.history.replaceState({}, "", url);
 		window.location.reload();
 	};
@@ -191,13 +216,18 @@ function ListingView() {
 
 	const handleDeleteListing = async () => {
 		console.log("Delete Listing clicked for listing:", listing);
-  
-		const confirmed = window.confirm("Are you sure you want to delete this listing?");
-    
+
+		const confirmed = window.confirm(
+			"Are you sure you want to delete this listing?"
+		);
+
 		if (confirmed) {
 			try {
 				console.log("listingID deleting: ", listingID);
-				await axios.delete(process.env.REACT_APP_BACKEND_LINK + `/listings/${listingID}`);
+				await axios.delete(
+					process.env.REACT_APP_BACKEND_LINK +
+						`/listings/${listingID}`
+				);
 				console.log("listing successfully deleted");
 				const url = process.env.REACT_APP_FRONTEND_LINK + "/";
 				window.history.replaceState({}, "", url);
@@ -214,21 +244,29 @@ function ListingView() {
 		console.log("Toggle Bookmark clicked for listing: ", listing);
 		console.log("Current bookmark status: ", isBookmarked);
 		if (!isBookmarked) {
-			console.log("Posting bookmark with userID", loggedID, "and listingID", listingID);
+			console.log(
+				"Posting bookmark with userID",
+				loggedID,
+				"and listingID",
+				listingID
+			);
 			try {
 				createBookmark();
 				setBookmark(true);
-			}
-			catch (error) {
+			} catch (error) {
 				console.log("Error in toggleBookmark.");
 			}
 		} else if (isBookmarked) {
-			console.log("Deleting bookmark with userID:", loggedID, "and listingID:", listingID);
+			console.log(
+				"Deleting bookmark with userID:",
+				loggedID,
+				"and listingID:",
+				listingID
+			);
 			try {
 				deleteBookmark();
 				setBookmark(false);
-			}
-			catch (error) {
+			} catch (error) {
 				console.log("Error in toggleBookmark.");
 			}
 		}
@@ -241,14 +279,15 @@ function ListingView() {
 			const url = process.env.REACT_APP_FRONTEND_LINK + "/login";
 			window.history.replaceState({}, "", url);
 			window.location.reload();
-		}
-		else {
+		} else {
 			try {
 				await axios.post(
-					process.env.REACT_APP_BACKEND_LINK + `/listings/${listingID}/bookmark`, {
-						"userID": loggedID,
-						"listingID": listingID,
-						"title" : listing.title
+					process.env.REACT_APP_BACKEND_LINK +
+						`/listings/${listingID}/bookmark`,
+					{
+						userID: loggedID,
+						listingID: listingID,
+						title: listing.title
 					}
 				);
 				setBookmark(true);
@@ -259,17 +298,18 @@ function ListingView() {
 			}
 			console.log("Finished creating bookmark");
 		}
-    
 	};
 
 	const deleteBookmark = async () => {
 		console.log("Entered deleteBookmark");
 		try {
 			await axios.delete(
-				process.env.REACT_APP_BACKEND_LINK + `/listings/${listingID}/bookmark`, {
+				process.env.REACT_APP_BACKEND_LINK +
+					`/listings/${listingID}/bookmark`,
+				{
 					params: {
-						"userID": loggedID,
-						"listingID": listingID
+						userID: loggedID,
+						listingID: listingID
 					}
 				}
 			);
@@ -284,13 +324,15 @@ function ListingView() {
 	if (!listing) {
 		return (
 			<div className="margin">
-				<LoadingSpinner/>
+				<LoadingSpinner />
 			</div>
 		);
 	}
 
 	const getBookmarkCount = () => {
-		const bookmarkCount = (isBookmarked) ? Number(listing.bookmarkCount) + 1 : listing.bookmarkCount;
+		const bookmarkCount = isBookmarked
+			? Number(listing.bookmarkCount) + 1
+			: listing.bookmarkCount;
 
 		if (bookmarkCount == 1) {
 			// If it's only 1 bookmark count, change to "person is watching"
@@ -298,14 +340,16 @@ function ListingView() {
 		} else {
 			return bookmarkCount + " people are watching";
 		}
-
 	};
 
 	return (
 		<div>
 			{isLoading ? (
-				<div><LoadingSpinner/> {/*Visible loading spinner that runs until all data for elements are made available*/}</div> 
-			) : ( 
+				<div>
+					<LoadingSpinner />{" "}
+					{/*Visible loading spinner that runs until all data for elements are made available*/}
+				</div>
+			) : (
 				<div>
 					<div className="vertical-center margin">
 						<div className="medium-container drop-shadow">
@@ -315,58 +359,126 @@ function ListingView() {
 									<div className="">
 										{isOwner && (
 											<>
-												<button className="muted-button margin-right" onClick={handleEditListing}>Edit</button>
-												<button style={{backgroundColor: "red"}}onClick={handleDeleteListing}>Delete</button>
+												<button
+													className="muted-button margin-right"
+													onClick={handleEditListing}
+												>
+													Edit
+												</button>
+												<button
+													style={{
+														backgroundColor: "red"
+													}}
+													onClick={
+														handleDeleteListing
+													}
+												>
+													Delete
+												</button>
 											</>
 										)}
 									</div>
 								</div>
 								<div className="margin" type="text">
-									<h1 className="no-margin-top no-margin-bottom">{listing.title}</h1>
-									<h5 style={{margin: "0"}}><Link to = {`/marketplace?q=${listing.category}`}>{listing.category}</Link></h5>
+									<h1 className="no-margin-top no-margin-bottom">
+										{listing.title}
+									</h1>
+									<h5 style={{margin: "0"}}>
+										<Link
+											to={`/marketplace?q=${listing.category}`}
+										>
+											{listing.category}
+										</Link>
+									</h5>
 									<p>Posted {TimeAgo(listing.postDate)}</p>
-									<p>
-										{getBookmarkCount()}
-									</p>
-									<h5 style={{color: "green"}}>{listing.price === "0" || listing.price === 0 ? "FREE" : "$" + listing.price}</h5>
+									<p>{getBookmarkCount()}</p>
+									<h5 style={{color: "green"}}>
+										{listing.price === "0" ||
+										listing.price === 0
+											? "FREE"
+											: "$" + listing.price}
+									</h5>
 									<p>{listing.description}</p>
-									<div style={{display: "flex", alignItems: "center", marginTop: "100px"}}>
-										<Link to = {`/profile/${ownerID}`}  style={{ display: "flex", alignItems: "center" }}>
-											<FaUser style = {{marginRight: "10px"}}/>
-											<h5 style={{paddingBottom:"1px"}}>
-												{username}    
+									<div
+										style={{
+											display: "flex",
+											alignItems: "center",
+											marginTop: "100px"
+										}}
+									>
+										<Link
+											to={`/profile/${ownerID}`}
+											style={{
+												display: "flex",
+												alignItems: "center"
+											}}
+										>
+											<FaUser
+												style={{marginRight: "10px"}}
+											/>
+											<h5 style={{paddingBottom: "1px"}}>
+												{username}
 											</h5>
 										</Link>
 									</div>
 								</div>
 							</div>
-							<div className={`vertical-center margin ${showPopup ? "blur" : ""}`}>
-								<button className="margin-right" onClick={handleMakeOffer}>Make Offer</button>
-								<button className="margin-right" onClick={handleStartChat}>Start Chat</button>
+							<div
+								className={`vertical-center margin ${showPopup ? "blur" : ""}`}
+							>
+								<button
+									className="margin-right"
+									onClick={handleMakeOffer}
+								>
+									Make Offer
+								</button>
+								<button
+									className="margin-right"
+									onClick={handleStartChat}
+								>
+									Start Chat
+								</button>
 
-								<div className="vertical-center margin-right" onClick={toggleBookmark}>
-									{isBookmarked ? 
-										(<img className="bookmark" src={filledBookmark}/>) : 
-										(<img className="bookmark" src={emptyBookmark}/>)
-									}</div>
+								<div
+									className="vertical-center margin-right"
+									onClick={toggleBookmark}
+								>
+									{isBookmarked ? (
+										<img
+											className="bookmark"
+											src={filledBookmark}
+										/>
+									) : (
+										<img
+											className="bookmark"
+											src={emptyBookmark}
+										/>
+									)}
+								</div>
 
-								<ShareButton link = {`${process.env.REACT_APP_FRONTEND_LINK} + "/listings/" + ${listingID}`} type = 'Listing'/>
-                            
+								<ShareButton
+									link={`${process.env.REACT_APP_FRONTEND_LINK} + "/listings/" + ${listingID}`}
+									type="Listing"
+								/>
+
 								{showPopup && (
 									<div className="popup-overlay">
 										<div className="popup-content">
-											<MakeOfferPage onClose={() => { setShowPopup(false); }} />
+											<MakeOfferPage
+												onClose={() => {
+													setShowPopup(false);
+												}}
+											/>
 										</div>
 									</div>
 								)}
 							</div>
 						</div>
 					</div>
-					<Footer/>
+					<Footer />
 				</div>
 			)}
 		</div>
-    
 	);
 }
 
