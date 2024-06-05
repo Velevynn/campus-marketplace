@@ -1,79 +1,77 @@
 .image-carousel {
-  position: relative;
-  width: 385px;
-  height: 385px;
-  background-color: rgb(222, 222, 222);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 20px;
-  overflow: hidden;
+	position: relative;
+	width: 385px;
+	height: 385px;
+	background-color: rgb(222, 222, 222);
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 20px;
+	overflow: hidden;
 }
 
 .next-button,
 .prev-button {
-  position: absolute;
+	position: absolute;
 }
 
 .next-button {
-  right: 0;
-  rotate: 90deg;
+	right: 0;
+	rotate: 90deg;
 }
 
 .prev-button {
-  left: 0;
-  rotate: -90deg;
+	left: 0;
+	rotate: -90deg;
 }
 
 .thumbnails {
-  display: inline-flex;
-  flex-wrap: wrap;
-  max-width: 385px;
-  margin-top: 10px;
-  transition: opacity 0.5s ease;
+	display: inline-flex;
+	flex-wrap: wrap;
+	max-width: 385px;
+	margin-top: 10px;
+	transition: opacity 0.5s ease;
 }
 
 .thumbnails img {
-  width: 60px;
-  height: 60px;
-  background-color: rgb(222, 222, 222);
-  margin-right: 5px;
-  margin-bottom: 5px;
-  cursor: pointer;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
+	width: 60px;
+	height: 60px;
+	background-color: rgb(222, 222, 222);
+	margin-right: 5px;
+	margin-bottom: 5px;
+	cursor: pointer;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	border-radius: 5px;
 }
 
 .thumbnails img:last-child,
 .thumbnails img:nth-child(6n) {
-  /* No margin for last item in each line break*/
-  margin-right: 0;
+	/* No margin for last item in each line break*/
+	margin-right: 0;
 }
 
 .thumbnails img.inactive {
-  opacity: 0.7;
+	opacity: 0.7;
 }
 
-
 @media screen and (max-width: 768px) {
-  .image-carousel {
-    width: 80vw;
-    height: 80vw;
-    border-radius: 20px;
-  }
-  .thumbnails {
-    max-width: 80vw;
-    
-  }
-  .thumbnails img {
-    width: calc(80vw*60/385);
-    height: calc(80vw*60/385);
-    background-color: rgb(222, 222, 222);
-    margin-right: calc(80vw*5/385);
-    margin-bottom: calc(80vw*5/385);
-    cursor: pointer;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
-  }
-} 
+	.image-carousel {
+		width: 80vw;
+		height: 80vw;
+		border-radius: 20px;
+	}
+	.thumbnails {
+		max-width: 80vw;
+	}
+	.thumbnails img {
+		width: calc(80vw * 60 / 385);
+		height: calc(80vw * 60 / 385);
+		background-color: rgb(222, 222, 222);
+		margin-right: calc(80vw * 5 / 385);
+		margin-bottom: calc(80vw * 5 / 385);
+		cursor: pointer;
+		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+		border-radius: 5px;
+	}
+}

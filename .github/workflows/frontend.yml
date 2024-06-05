@@ -1,6 +1,5 @@
 name: Azure Static Web Apps CI/CD Frontend
 
-
 env:
   REACT_APP_BACKEND_LINK: ${{ secrets.REACT_APP_BACKEND_LINK }}
   REACT_APP_FRONTEND_LINK: ${{ secrets.REACT_APP_FRONTEND_LINK }}

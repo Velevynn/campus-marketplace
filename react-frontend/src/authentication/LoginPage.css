@@ -1,47 +1,46 @@
 .google-img {
-    width: 20px;
-    border-radius: 25px;
-    margin-top: -5px;
-    margin-bottom: -5px;
+	width: 20px;
+	border-radius: 25px;
+	margin-top: -5px;
+	margin-bottom: -5px;
 }
 
 .logo-img {
-    width: 175px;
+	width: 175px;
 }
 
 .input {
-    position: relative;
+	position: relative;
 }
 
 .input-label-empty {
-    position: absolute;
-    left: 0.75rem;
-    top: 0.68rem;
-    color: gray;
-    font-size: 14px;
-    transition: transform 0.3s ease;
-    pointer-events: none;
+	position: absolute;
+	left: 0.75rem;
+	top: 0.68rem;
+	color: gray;
+	font-size: 14px;
+	transition: transform 0.3s ease;
+	pointer-events: none;
 }
 
 .input-label-full {
-    position: absolute;
-    left: 0.75rem;
-    top: 0.75rem;
-    color: gray;
-    font-size: 9px;
-    pointer-events: none;
-    transition: transform 0.3s ease;
-    transform: translateY(-0.7rem);
+	position: absolute;
+	left: 0.75rem;
+	top: 0.75rem;
+	color: gray;
+	font-size: 9px;
+	pointer-events: none;
+	transition: transform 0.3s ease;
+	transform: translateY(-0.7rem);
 }
 
-
 .input-icon {
-    position: absolute;
-    top: 0.75rem;
-    right: 1rem;
-    cursor: pointer;
+	position: absolute;
+	top: 0.75rem;
+	right: 1rem;
+	cursor: pointer;
 }
 
 .span-button {
-    transition: opacity 0.5s ease;
+	transition: opacity 0.5s ease;
 }

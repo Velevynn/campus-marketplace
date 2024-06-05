@@ -1,20 +1,14 @@
 {
-    "arrowParens": "avoid",
-    "semi": false,
-    "singleQuote": false,
-    "trailingComma": "all",
-    "bracketSpacing": true,
-    "jsxBracketSameLine": false,
-    "printWidth": 80,
-    "tabWidth": 4,
-    "useTabs": false,
-    "proseWrap": "preserve",
-    "endOfLine": "auto",
-    "overrides": [
-      {
-        "files": ["*.json", "*.json5", "*.jsonc"],
-        "options": { "parser": "json" }
-      }
-    ]
-  }
-  
+	"printWidth": 80,
+	"tabWidth": 4,
+	"useTabs": true,
+	"semi": true,
+	"singleQuote": false,
+	"quoteProps": "as-needed",
+	"jsxSingleQuote": false,
+	"trailingComma": "none",
+	"bracketSpacing": false,
+	"jsxBracketSameLine": false,
+	"arrowParens": "avoid",
+	"endOfLine": "auto"
+}
