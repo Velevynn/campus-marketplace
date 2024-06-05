@@ -21,8 +21,8 @@ function ChatComponent({ appId, user, otherUser }) {
             const conversationId = Talk.oneOnOneId(me, other);
             const conversation = session.getOrCreateConversation(conversationId);
 
-            console.log("User ID:", me.id, "Other User ID:", other.id);
-            console.log("Conversation ID:", conversationId);
+            console.log('User ID:', me.id, 'Other User ID:', other.id);
+            console.log('Conversation ID:', conversationId);
 
             conversation.setParticipant(me);
             conversation.setParticipant(other);
@@ -39,7 +39,7 @@ function ChatComponent({ appId, user, otherUser }) {
         };
     }, [appId, user, otherUser]);
 
-    return <div ref={chatContainerRef} className="chat-container" style={{ height: '500px', width: '100%' }}></div>;
+    return <div ref={chatContainerRef} className='chat-container' style={{ height: '500px', width: '100%' }}></div>;
 }
 
 ChatComponent.propTypes = {
