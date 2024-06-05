@@ -5,11 +5,18 @@ import axios from "axios";
 // Importing navigation hooks and components for routing and navigation
 import {Link} from "react-router-dom";
 // Importing logo, icons, and styled components for UI
+<<<<<<< HEAD
+import logoImage from "../assets/haggle-horizontal.png";
+import {FaEye, FaEyeSlash} from "react-icons/fa";
+import googlepng from "../assets/google.png";
+import "./LoginPage.css";
+=======
 import logoImage from '../assets/haggle-horizontal.png';
 import { FaEye, FaEyeSlash  } from 'react-icons/fa';
 import googlepng from '../assets/google.png';
 import "./AuthenticationStyling.css"
 
+>>>>>>> zaharia_branch
 
 // LoginPage component for handling user login
 function LoginPage() {

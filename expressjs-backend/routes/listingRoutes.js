@@ -456,5 +456,20 @@ async function addBookmark(userID, listingID, title) {
 	}
 }
 
+<<<<<<< HEAD
+router.post("/api/offers/:listingID", (req, res) => {
+	const {listingID} = req.params;
+	const {offer} = req.body;
+
+	// Pseudocode for creating a chat and sending an initial message
+	const chatID = createChatSession(listingID);
+	sendMessage(chatID, `Offer: ${offer}`);
+
+	res.json({chatID});
+});
 
 module.exports = router;
+=======
+
+module.exports = router;
+>>>>>>> zaharia_branch
