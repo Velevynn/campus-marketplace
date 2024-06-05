@@ -483,4 +483,25 @@ router.get("/public-profile/:userID", async (req, res) => {
 	}
 });
 
+// Retrieve user details for given userID.
+router.get("/:userID/", async (req, res) => {
+	try {
+		// Extract userID from query parameters.
+		const { userID } = req.params;
+  
+		// Retrieve user details from database if user exists.
+		const connection = createConnection();
+		const { rows } = await connection.query(
+		  'SELECT * FROM users WHERE "userID" =  $1 LIMIT 1',
+		  [userID]
+		);
+		res.status(200).send(rows);
+		await connection.end();
+	  }
+	  catch (error) {
+		console.error("An error occurred while fetching the user:", error);
+		res.status(500).send("An error occurred while fetching the user");
+	  }
+  });
+
 module.exports = router;
