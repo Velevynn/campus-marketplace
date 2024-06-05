@@ -17,6 +17,7 @@ function ChatPage() {
             <div>
                 <h1>Chat for {listing[0]?.title}</h1>
                 <p>Selling by: {seller[0]?.fullName}</p>
+                <p>Offer: {offer}</p>
                 <p>Contacting: {buyer?.fullName}</p>
             </div>
             <ChatComponent 
