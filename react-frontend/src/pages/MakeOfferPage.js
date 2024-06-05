@@ -83,7 +83,7 @@ function MakeOfferPage() {
 			const seller = sellerResponse.data;
 			console.log(seller);
 
-			navigate(`/chat`, {state: {listing, seller, buyer, offer}});
+			navigate("/chat", {state: {listing, seller, buyer, offer}});
 		} catch (error) {
 			console.error("Error making offer:", error);
 		}
