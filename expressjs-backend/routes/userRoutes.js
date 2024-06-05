@@ -19,15 +19,9 @@ const connectionString = process.env.DB_CONNECTION_STRING; // stores supabase db
 const secretKey = process.env.JWT_SECRET_KEY; // stores jtw secret key
 
 const oauth2Client = new google.auth.OAuth2(
-<<<<<<< HEAD
 	process.env.REACT_APP_GOOGLE_CLIENT_ID,
 	process.env.GOOGLE_CLIENT_SECRET,
 	process.env.REACT_APP_BACKEND_LINK + "/users/auth/google/callback"
-=======
-  process.env.GOOGLE_CLIENT_ID,
-  process.env.GOOGLE_CLIENT_SECRET,
-  process.env.REACT_APP_BACKEND_LINK + '/users/auth/google/callback'
->>>>>>> zaharia_branch
 );
 
 // Create connection pool to connect to the database.
@@ -38,7 +32,6 @@ function createConnection() {
 	});
 	return pool;
 }
-
 
 // Asynchronous route handler to check if non-duplicate user info already exists in the database.
 router.post("/check", async (req, res) => {
@@ -193,7 +186,6 @@ router.post("/login", async (req, res) => {
 	}
 });
 
-<<<<<<< HEAD
 router.get("/auth/google", (req, res) => {
 	const authUrl = oauth2Client.generateAuthUrl({
 		access_type: "offline", // Indicates that we need to retrieve a refresh token
@@ -202,16 +194,6 @@ router.get("/auth/google", (req, res) => {
 			process.env.REACT_APP_BACKEND_LINK + "/users/auth/google/callback"
 	});
 	res.redirect(authUrl);
-=======
-router.get('/auth/google', (req, res) => {
-  const authUrl = oauth2Client.generateAuthUrl({
-    access_type: 'offline', // Indicates that we need to retrieve a refresh token
-    scope: 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile',
-    redirect_uri: process.env.REACT_APP_BACKEND_LINK + '/users/auth/google/callback'
-  });
-  console.log('Generated Google Auth URL:', authUrl);
-  res.redirect(authUrl);
->>>>>>> zaharia_branch
 });
 
 router.get("/auth/google/callback", async (req, res) => {
@@ -234,7 +216,6 @@ router.get("/auth/google/callback", async (req, res) => {
 			[email]
 		);
 
-<<<<<<< HEAD
 		if (existingUsers.length > 0) {
 			// if there is a user returned from the select statement...
 			const user = existingUsers[0];
@@ -255,19 +236,6 @@ router.get("/auth/google/callback", async (req, res) => {
 	} catch (error) {
 		res.status(500).json({error: "Authentication failed", details: error});
 	}
-=======
-    if (existingUsers.length > 0) { // if there is a user returned from the select statement...
-      const user = existingUsers[0];
-      const token = jwt.sign({ username: user.username }, secretKey, { expiresIn: '24h' });
-      res.redirect(process.env.REACT_APP_FRONTEND_LINK + `/login/google?token=${encodeURIComponent(token)}`);
-    } else { // if there isnt a user returned from the select statement...
-      res.redirect(process.env.REACT_APP_FRONTEND_LINK + `/additional-details?email=${encodeURIComponent(email)}&name=${encodeURIComponent(name)}`);
-    }
-  } catch (error) {
-    console.error('Error in OAuth callback:', error);
-    res.status(500).json({ error: 'Authentication failed', details: error });
-  }
->>>>>>> zaharia_branch
 });
 
 router.post("/register-google-user", async (req, res) => {
@@ -276,7 +244,6 @@ router.post("/register-google-user", async (req, res) => {
 	try {
 		const connection = createConnection();
 
-<<<<<<< HEAD
 		// check if the user already exists in the database
 		const existingUser = await connection.query(
 			"SELECT * FROM users WHERE email = $1",
@@ -302,36 +269,6 @@ router.post("/register-google-user", async (req, res) => {
 					`/profile?token=${encodeURIComponent(token)}`
 			);
 		}
-=======
-    // Check if the email already exists in the database
-    const existingEmail = await connection.query(
-      'SELECT * FROM users WHERE email = $1',
-      [email]
-    );
-
-    if (existingEmail.rows.length > 0) {
-      return res.status(409).json({ error: 'email is already taken.' });
-    }
-
-    // Check if the phone number already exists in the database
-    const existingPhone = await connection.query(
-      'SELECT * FROM users WHERE "phoneNumber" = $1',
-      [phoneNumber]
-    );
-
-    if (existingPhone.rows.length > 0) {
-      return res.status(409).json({ error: 'phone number is already taken.' });
-    }
-
-    // If neither email nor phone number exists, proceed to register the user
-    const result = await connection.query(
-      'INSERT INTO users (email, "fullName", username, "phoneNumber") VALUES ($1, $2, $3, $4) RETURNING *',
-      [email, name, username, phoneNumber]
-    );
-    const newUser = result.rows[0];
-    const token = jwt.sign({ username: newUser.username }, secretKey, { expiresIn: '24h' });
-    res.status(201).json({ message: 'User registered successfully via Google', token });
->>>>>>> zaharia_branch
 
 		// if the user does not exist in the database, insert new user details
 		const result = await connection.query(
@@ -467,7 +404,9 @@ router.post("/forgot-password", async (req, res) => {
 		);
 
 		// create the reset password url using the token
-    const resetUrl = process.env.REACT_APP_FRONTEND_LINK + `/reset-password?token=${resetToken}`;
+		const resetUrl =
+			process.env.REACT_APP_FRONTEND_LINK +
+			`/reset-password?token=${resetToken}`;
 
 		// use nodemailer
 		const nodemailer = require("nodemailer");
@@ -576,7 +515,6 @@ router.get("/is-profile-picture/:userID", async (req, res) => {
 	}
 });
 
-<<<<<<< HEAD
 router.post("/set-bio", verifyToken, async (req, res) => {
 	const {userID} = req.body;
 	const {bio} = req.body;
@@ -589,29 +527,6 @@ router.post("/set-bio", verifyToken, async (req, res) => {
 		res.status(500).json({error: "Failed to post bio"});
 	}
 });
-=======
-// Retrieve user details for given userID.
-router.get("/:userID/", async (req, res) => {
-  try {
-      // Extract userID from query parameters.
-      const { userID } = req.params;
-
-      // Retrieve user details from database if user exists.
-      const connection = createConnection();
-      const { rows } = await connection.query(
-        'SELECT * FROM users WHERE "userID" =  $1 LIMIT 1',
-        [userID]
-      );
-      res.status(200).send(rows);
-      await connection.end();
-    }
-    catch (error) {
-      console.error("An error occurred while fetching the user:", error);
-      res.status(500).send("An error occurred while fetching the user");
-    }
-});
-
->>>>>>> zaharia_branch
 
 router.post("/set-location", verifyToken, async (req, res) => {
 	const {userID} = req.body;

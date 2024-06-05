@@ -43,7 +43,6 @@ const ForgotPasswordPage = () => {
 		}
 	};
 
-<<<<<<< HEAD
 	// Rendering the Forgot Password page
 	return (
 		<>
@@ -73,83 +72,6 @@ const ForgotPasswordPage = () => {
 						Enter your email and we will send you a link to reset
 						your password.
 					</p>
-=======
-  // Rendering the Forgot Password page
-  return (
-    <div className="vertical-center margin-top">
-      <div>
-        <div className="small-container drop-shadow" >
-        <div className="vertical-center">
-            <img className="logo-img" src={logoImage} alt="Logo"/>
-          </div>
-
-          <h5 className="text-center" style={{fontSize:"18px", marginTop:"20px"}}>
-              Forgot Password?
-          </h5>
-
-          <h5 className="text-center" style={{fontSize:"16px", marginTop:"20px", fontWeight:"normal"}}>
-            Enter your email and we will send you a link to reset your password.</h5>
-  
-            <form onSubmit={handleSubmit}>
-            {message && (
-              <p className="margin" style={{color: "red", fontSize: "12px"}}>
-                {message}
-              </p>
-            )}
-  
-             <div className="margin input">
-              <p className={email.length > 0 ? "input-label-full" : "input-label-empty unselectable"}>
-                Email
-              </p>
-
-              <input
-                type="text"
-                name="identifier"
-                id="identifier"
-                value={email}
-                onChange={handleChange}
-                autoComplete="on"
-                required
-                style={{fontSize:"14px", paddingTop:"14px", paddingBottom:"8px"}}
-              />  
-
-              <div className="input-icon">
-                {email.length > 0 ? (
-                  isValidEmail(email) ? (
-                    <FaCheckCircle  style={{ color: 'green' }}/>
-                  ) : (
-                    <FaTimesCircle style={{ color: 'red' }} />
-                  )
-                ) : null}
-              </div>
-
-            </div>
-  
-            <button
-              className="span-button"
-              type="submit"
-              disabled={!isValidEmail(email)}
-              style={{ marginTop: '20px' }}
-            >
-              Send Reset Link
-            </button>
-          </form>
-        </div>
-  
-        <div className="small-container drop-shadow" style={{marginTop:'10px'}}>
-          <p className="text-center" style ={{fontSize:'14px'}}>
-            Return to {}
-            <Link to="/signup">
-              Login
-            </Link>
-          </p>
-        </div>
-        
-      </div>
-    </div>
-  );
-              }  
->>>>>>> zaharia_branch
 
 					<form onSubmit={handleSubmit}>
 						{message && <h6>{message}</h6>}
