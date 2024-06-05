@@ -1,9 +1,10 @@
 import React, {useState, useEffect} from "react";
 import axios from "axios";
-import {useSearchParams, useLocation} from "react-router-dom";
+import {useSearchParams, useLocation, useNavigate} from "react-router-dom";
 import Entry from "../components/MarketplaceEntry";
 import ScrollToTopButton from "../components/ScrollToTopButton";
 import LoadingSpinner from "../components/LoadingSpinner"; // Import the loading spinner component
+import ArrowButton from "../components/ArrowButton";
 
 function Marketplace() {
 	const [searchParams] = useSearchParams();
@@ -13,6 +14,7 @@ function Marketplace() {
 	const [isLoading, setIsLoading] = useState(true); // Add loading state
 	const [query, setQuery] = useState("");
 	const location = useLocation();
+	const navigate = useNavigate;
 
 	const getQueryFromURL = () => {
 		const search = location.search; // save query string
@@ -79,9 +81,29 @@ function Marketplace() {
 
 	return (
 		<div>
-			<div className="left-container">
-				<h1>{query}</h1>
-			</div>
+			{q && (
+				<div
+					className="left-container"
+					style={{
+						display: "flex",
+						alignItems: "center",
+						marginBottom: "-50px"
+					}}
+				>
+					<div
+						onClick={() => {
+							navigate(-1);
+						}}
+						style={{rotate: "-90deg"}}
+					>
+						<ArrowButton></ArrowButton>
+					</div>
+					<h1 style={{marginBottom: "40px", paddingLeft: "10px"}}>
+						{query}
+					</h1>
+				</div>
+			)}
+
 			<div className="full-container">
 				{isLoading ? ( // Render loading spinner if isLoading is true
 					<div className="margin">
