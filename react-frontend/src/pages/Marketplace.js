@@ -92,7 +92,8 @@ function Marketplace() {
 				>
 					<div
 						onClick={() => {
-							navigate(-1);
+							navigate("/marketplace");
+							window.location.reload();
 						}}
 						style={{rotate: "-90deg"}}
 					>
