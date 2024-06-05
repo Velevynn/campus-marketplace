@@ -63,7 +63,7 @@ function MakeOfferPage() {
       const seller = sellerResponse.data;
       console.log(seller);
   
-      navigate(`/chat`, { state: { listing, seller, buyer } });
+      navigate(`/chat`, { state: { listing, seller, buyer, offer } });
     } catch (error) {
       console.error('Error making offer:', error);
     }
@@ -73,7 +73,7 @@ function MakeOfferPage() {
     const { value } = event.target;
     const numbers = value.replace(/[^0-9]/g, '');
     setOffer(numbers);
-  };
+};
 
   const formatNumber = (number) => {
     return new Intl.NumberFormat('en-US', {
