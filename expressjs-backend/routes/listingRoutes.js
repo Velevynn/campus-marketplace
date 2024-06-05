@@ -456,6 +456,7 @@ async function addBookmark(userID, listingID, title) {
 	}
 }
 
+<<<<<<< HEAD
 router.post("/api/offers/:listingID", (req, res) => {
 	const {listingID} = req.params;
 	const {offer} = req.body;
@@ -468,3 +469,7 @@ router.post("/api/offers/:listingID", (req, res) => {
 });
 
 module.exports = router;
+=======
+
+module.exports = router;
+>>>>>>> zaharia_branch
