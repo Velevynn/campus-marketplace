@@ -1,6 +1,5 @@
-/* global process */
-import React, {useEffect} from "react";
-import {useNavigate, useLocation} from "react-router-dom";
+import React, { useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 function HandleTokenRedirect() {
 	const navigate = useNavigate();

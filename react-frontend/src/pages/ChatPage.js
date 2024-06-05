@@ -1,10 +1,10 @@
 // ChatPage.js
-import React, {useState, useEffect} from "react";
-import {useParams} from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useParams} from "react-router-dom";
 import axios from "axios";
 
 function ChatPage() {
-	const {chatID} = useParams();
+	const { chatID } = useParams();
 	const [messages, setMessages] = useState([]);
 
 	useEffect(() => {

@@ -1,10 +1,10 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import "./ImageCarousel.css";
 import PropTypes from "prop-types";
 import LoadingSpinner from "./LoadingSpinner";
 import ArrowButton from "./ArrowButton";
 
-function ImageCarousel({images}) {
+function ImageCarousel({ images }) {
 	const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
 	useEffect(() => {
@@ -45,25 +45,16 @@ function ImageCarousel({images}) {
 			<div className="image-carousel">
 				{images.length > 1 && (
 					<>
-						<div
-							className="next-button"
-							onClick={() => nextImage()}
-						>
+						<div className="next-button" onClick={() => nextImage()}>
 							<ArrowButton></ArrowButton>
 						</div>
-						<div
-							className="prev-button"
-							onClick={() => prevImage()}
-						>
+						<div className="prev-button" onClick={() => prevImage()}>
 							<ArrowButton></ArrowButton>
 						</div>
 					</>
 				)}
-
-				<img
-					src={images[currentImageIndex].imageURL}
-					alt={`Image ${currentImageIndex}`}
-				/>
+        
+				<img src={images[currentImageIndex].imageURL} alt={`Image ${currentImageIndex}`} />
 			</div>
 			<div className="thumbnails">
 				{images.map((image, index) => (
@@ -71,9 +62,7 @@ function ImageCarousel({images}) {
 						key={index}
 						src={image.imageURL}
 						alt={`Thumbnail ${index}`}
-						className={
-							currentImageIndex === index ? "" : "inactive"
-						}
+						className={currentImageIndex === index ? "" : "inactive"}
 						onClick={() => selectImage(index)}
 					/>
 				))}

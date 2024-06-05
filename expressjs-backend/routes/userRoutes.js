@@ -1,22 +1,23 @@
 // userRoutes.js
-/* global require, process, module */
 const express = require("express");
 const multer = require("multer");
 const router = express.Router();
 const bcryptjs = require("bcryptjs");
-const {google} = require("googleapis");
+const { google } = require("googleapis");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
-const {verifyToken} = require("../util/middleware");
-const {Pool} = require("pg");
+const { verifyToken } = require("../util/middleware");
+const { Pool } = require("pg");
 require("dotenv").config();
 const storage = multer.memoryStorage();
-const upload = multer({storage});
-const {uploadImageToS3} = require("../util/s3");
+const upload = multer({ storage });
+const { uploadImageToS3} = require("../util/s3");
+
 
 const connectionString = process.env.DB_CONNECTION_STRING; // stores supabase db connection string, allowing us to connect to supabase db
 
 const secretKey = process.env.JWT_SECRET_KEY; // stores jtw secret key
+
 
 const oauth2Client = new google.auth.OAuth2(
 	process.env.REACT_APP_GOOGLE_CLIENT_ID,
@@ -28,25 +29,22 @@ const oauth2Client = new google.auth.OAuth2(
 function createConnection() {
 	// Pool is a cache of database connections. Allows pre-established connections to be reused instead of constantly opening/closing connections
 	const pool = new Pool({
-		connectionString: connectionString
+		connectionString: connectionString,
 	});
 	return pool;
 }
 
 // Asynchronous route handler to check if non-duplicate user info already exists in the database.
-router.post("/check", async (req, res) => {
-	// async function means we can use await keyword to pause the function's execution at asynchronous operations without blocking the entire server's execution
-	const {username, email, phoneNumber} = req.body;
+router.post("/check", async (req, res) => { // async function means we can use await keyword to pause the function's execution at asynchronous operations without blocking the entire server's execution
+	const { username, email, phoneNumber } = req.body;
 	let conflict = false;
 
 	try {
 		// throw error if any fields are empty (which they shouldn't be)
-		if (username === null || email === null || phoneNumber === null) {
-			throw Error;
-		}
+		if (username === null || email === null || phoneNumber === null) {throw Error;}
 		const connection = createConnection();
 		// Check if username already exists in db. If so, conflict is the username
-		const {rows: usernameResult} = await connection.query(
+		const { rows: usernameResult } = await connection.query(
 			"SELECT 1 FROM users WHERE username = $1 LIMIT 1",
 			[username]
 		);
@@ -55,7 +53,7 @@ router.post("/check", async (req, res) => {
 		}
 
 		// Check if phone number already exists in db. If so, conflict is phone number
-		const {rows: phoneResult} = await connection.query(
+		const { rows: phoneResult } = await connection.query(
 			"SELECT 1 FROM users WHERE \"phoneNumber\" = $1 LIMIT 1",
 			[phoneNumber]
 		);
@@ -64,14 +62,14 @@ router.post("/check", async (req, res) => {
 		}
 
 		// Check if email already exists in db...
-		const {rows: emailResult} = await connection.query(
+		const { rows: emailResult } = await connection.query(
 			"SELECT 1 FROM users WHERE email = $1 LIMIT 1",
 			[email]
 		);
 		if (emailResult.length > 0) {
 			conflict = "Email";
 		}
-
+  
 		// If conflict for any of the above is found, we send back the error message
 		if (conflict) {
 			res.status(409).json({
@@ -79,8 +77,7 @@ router.post("/check", async (req, res) => {
 				message: `${conflict} already exists.`,
 				conflict
 			}); // HTTP 409 (Conflict) - element already exists for one of user's attributes
-		} else {
-			// else there is no conflict
+		} else { // else there is no conflict
 			res.status(200).json({
 				exists: false,
 				message: "No conflicts with username, email, or phone number."
@@ -88,60 +85,42 @@ router.post("/check", async (req, res) => {
 		}
 		// catch any missed errors
 	} catch (error) {
-		res.status(500).json({error: "Failed to check user details"});
+		res.status(500).json({ error: "Failed to check user details" });
 	} // HTTP 500 (Internal Server Error) - unexpected conditions
 });
 
 // Insert user info into database upon signup.
 router.post("/register", async (req, res) => {
-	const {
-		username,
-		full_name,
-		password,
-		email,
-		phoneNumber: phoneNumber
-	} = req.body;
+	const { username, full_name, password, email, phoneNumber: phoneNumber } = req.body;
 	try {
-		if (
-			username === null ||
-			full_name === null ||
-			password === null ||
-			email === null ||
-			phoneNumber === null
-		) {
-			throw Error;
-		} // ensure fields are filled, throw error if not
+		if (username === null || full_name === null || password === null || email === null || phoneNumber === null) {throw Error;} // ensure fields are filled, throw error if not
 		// Asynchronously hash the password using bcrypt library. 10 saltrounds = hash password 10 times. the more rounds the longer it takes to finish hashing
 		const bcrypt = require("bcryptjs");
-		console.log(bcrypt);
 		const hashedPassword = await bcryptjs.hash(password, 10); // await pauses execution of async function for bcrypt.hash to run
 		const connection = createConnection();
 
 		// Insert user details into the users table.
 		// result is used only to execute the query... we don't actually need it for anything else
-		const {result} = await connection.query(
+		const  { result } = await connection.query( 
 			"INSERT INTO users (username, \"fullName\", password, email, \"phoneNumber\") VALUES ($1, $2, $3, $4, $5)",
 			[username, full_name, hashedPassword, email, phoneNumber]
 		);
-		console.log(result);
 		await connection.end();
-		res.status(201).json({message: "User registered successfully"}); // HTTP 201 (Created) - led to creation of new resource
+		res.status(201).json({ message: "User registered successfully"}); // HTTP 201 (Created) - led to creation of new resource
 	} catch (error) {
-		res.status(500).json({error: "Failed to register user"}); // HTTP 500 (Internal Server Error) - unexpected condition
+		res.status(500).json({ error: "Failed to register user" }); // HTTP 500 (Internal Server Error) - unexpected condition
 	}
 });
 
 // Sign in user after verifying account details.
 router.post("/login", async (req, res) => {
-	const {identifier, password} = req.body;
+	const { identifier, password } = req.body;
 	if (typeof identifier !== "string" || typeof password !== "string") {
-		return res.status(400).json({
-			error: "Identifier and password are required and must be strings."
-		}); // HTTP 400 (Bad Request) - invalid user input format
+		return res.status(400).json({ error: "Identifier and password are required and must be strings." }); // HTTP 400 (Bad Request) - invalid user input format
 	}
 
 	try {
-		let connection = createConnection(); // eslint-disable-line no-unused-vars
+		connection = createConnection();
 		let query = "SELECT * FROM users WHERE ";
 		let queryParams = [];
 
@@ -156,33 +135,25 @@ router.post("/login", async (req, res) => {
 			queryParams.push(identifier);
 		}
 
-		const {rows: users} = await connection.query(query, queryParams); // eslint-disable-line no-unused-vars
+		const { rows: users } = await connection.query(query, queryParams);
 
 		if (users.length > 0) {
 			const user = users[0];
-			const validPassword = await bcryptjs.compare(
-				password,
-				user.password
-			);
+			const validPassword = await bcryptjs.compare(password, user.password);
 
 			if (validPassword) {
 				// creating JWT
-				const token = jwt.sign({username: user.username}, secretKey, {
-					expiresIn: "24h"
-				});
-				await connection.end(); // eslint-disable-line no-unused-vars
-				res.status(200).json({
-					message: "User logged in successfully",
-					token
-				}); // HTTP 200 (OK)
+				const token = jwt.sign({ username: user.username }, secretKey, { expiresIn: "24h" });
+				await connection.end();
+				res.status(200).json({ message: "User logged in successfully", token }); // HTTP 200 (OK)
 			} else {
-				res.status(401).json({error: "Invalid password"}); // HTTP 401 (Unauthorized) - incorrect credentials/password
+				res.status(401).json({ error: "Invalid password" }); // HTTP 401 (Unauthorized) - incorrect credentials/password
 			}
 		} else {
-			res.status(404).json({error: "User not found"}); // HTTP 404 (Not Found) - can't find existing resource (user)
+			res.status(404).json({ error: "User not found" }); // HTTP 404 (Not Found) - can't find existing resource (user)
 		}
 	} catch (error) {
-		res.status(500).json({error: "Failed to log in"}); // HTTP 500 (Internal Server Error) - unexpected error/condition
+		res.status(500).json({ error: "Failed to log in" }); // HTTP 500 (Internal Server Error) - unexpected error/condition
 	}
 });
 
@@ -190,15 +161,14 @@ router.get("/auth/google", (req, res) => {
 	const authUrl = oauth2Client.generateAuthUrl({
 		access_type: "offline", // Indicates that we need to retrieve a refresh token
 		scope: "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile",
-		redirect_uri:
-			process.env.REACT_APP_BACKEND_LINK + "/users/auth/google/callback"
+		redirect_uri: process.env.REACT_APP_BACKEND_LINK + "/users/auth/google/callback"
 	});
 	res.redirect(authUrl);
 });
 
 router.get("/auth/google/callback", async (req, res) => {
 	try {
-		const {tokens} = await oauth2Client.getToken(req.query.code); // Exchange the authorization code for tokens
+		const { tokens } = await oauth2Client.getToken(req.query.code); // Exchange the authorization code for tokens
 		oauth2Client.setCredentials(tokens);
 
 		const oauth2 = google.oauth2({
@@ -211,35 +181,25 @@ router.get("/auth/google/callback", async (req, res) => {
 
 		const connection = createConnection();
 
-		const {rows: existingUsers} = await connection.query(
+		const { rows: existingUsers } = await connection.query(
 			"SELECT * FROM users WHERE email = $1",
 			[email]
 		);
 
-		if (existingUsers.length > 0) {
-			// if there is a user returned from the select statement...
+		if (existingUsers.length > 0) { // if there is a user returned from the select statement...
 			const user = existingUsers[0];
-			const token = jwt.sign({username: user.username}, secretKey, {
-				expiresIn: "24h"
-			});
-			res.redirect(
-				process.env.REACT_APP_FRONTEND_LINK +
-					`/login/google?token=${encodeURIComponent(token)}`
-			);
-		} else {
-			// if there isnt a user returned from the select statement...
-			res.redirect(
-				process.env.REACT_APP_FRONTEND_LINK +
-					`/additional-details?email=${encodeURIComponent(email)}&name=${encodeURIComponent(name)}`
-			);
+			const token = jwt.sign({ username: user.username }, secretKey, { expiresIn: "24h" });
+			res.redirect(process.env.REACT_APP_FRONTEND_LINK + `/login/google?token=${encodeURIComponent(token)}`);
+		} else { // if there isnt a user returned from the select statement...
+			res.redirect(process.env.REACT_APP_FRONTEND_LINK + `/additional-details?email=${encodeURIComponent(email)}&name=${encodeURIComponent(name)}`);
 		}
 	} catch (error) {
-		res.status(500).json({error: "Authentication failed", details: error});
+		res.status(500).json({ error: "Authentication failed", details: error });
 	}
 });
 
 router.post("/register-google-user", async (req, res) => {
-	const {email, name, username, phoneNumber} = req.body;
+	const { email, name, username, phoneNumber } = req.body;
 
 	try {
 		const connection = createConnection();
@@ -252,22 +212,15 @@ router.post("/register-google-user", async (req, res) => {
 
 		if (existingUser.rows.length > 0) {
 			const user = existingUser.rows[0];
-
+      
 			// if the user exists and has a password, they should use their Haggle credentials to log in
 			if (user.password) {
-				return res.status(409).json({
-					error: "User exists with a password. Please use Haggle credentials to log in."
-				});
+				return res.status(409).json({ error: "User exists with a password. Please use Haggle credentials to log in." });
 			}
 
 			// if the user exists and does not have a password, continue the registration process
-			const token = jwt.sign({username: user.username}, secretKey, {
-				expiresIn: "24h"
-			});
-			res.redirect(
-				process.env.REACT_APP_FRONTEND_LINK +
-					`/profile?token=${encodeURIComponent(token)}`
-			);
+			const token = jwt.sign({ username: user.username }, secretKey, { expiresIn: "24h" });
+			res.redirect(process.env.REACT_APP_FRONTEND_LINK + `/profile?token=${encodeURIComponent(token)}`);
 		}
 
 		// if the user does not exist in the database, insert new user details
@@ -276,15 +229,11 @@ router.post("/register-google-user", async (req, res) => {
 			[email, name, username, phoneNumber]
 		);
 		const newUser = result.rows[0];
-		const token = jwt.sign({username: newUser.username}, secretKey, {
-			expiresIn: "24h"
-		});
-		res.status(201).json({
-			message: "User registered successfully via Google",
-			token
-		});
+		const token = jwt.sign({ username: newUser.username }, secretKey, { expiresIn: "24h" });
+		res.status(201).json({ message: "User registered successfully via Google", token });
+
 	} catch (error) {
-		res.status(500).json({error: "Failed to register user"});
+		res.status(500).json({ error: "Failed to register user" });
 	}
 });
 
@@ -293,53 +242,53 @@ router.get("/profile", verifyToken, async (req, res) => {
 	try {
 		const connection = createConnection();
 		// Retrieve user details from extracted username...
-		const {rows: user} = await connection.query(
+		const { rows: user } = await connection.query(
 			"SELECT username, \"fullName\", email, \"phoneNumber\", \"userID\" FROM users WHERE username = $1",
 			[username]
 		);
-
+  
 		// And if the user exists, return their information.
 		if (user.length > 0) {
 			res.status(200).json(user[0]); // HTTP (OK) - user exists
 		}
 	} catch (error) {
-		res.status(500).json({error: "Failed to fetch user profile"}); // HTTP 500 (Internal Server Error) - unexpected error/condition
+		res.status(500).json({ error: "Failed to fetch user profile" }); // HTTP 500 (Internal Server Error) - unexpected error/condition
 	}
 });
 
 router.get("/userID", async (req, res) => {
-	const {username} = req.body;
+	const { username } = req.body;
 	try {
 		if (username === null) throw Error();
 		const connection = createConnection();
 		// Retrieve userID from queried username.
-		const {rows: user} = await connection.query(
+		const { rows : user } = await connection.query(
 			"SELECT \"userID\" FROM users WHERE username = $1",
 			[req.query.username]
 		);
-
+  
 		// And if user exists, return the userID.
 		if (user.length > 0) {
-			res.status(200).json({userID: user[0].userID}); // HTTP 200 (OK) - user exists, return userId
+			res.status(200).json({ userID: user[0].userID }); // HTTP 200 (OK) - user exists, return userId
 		} else {
-			res.status(404).json({error: "User not found"}); // HTTP 404 (Not Found) - error finding resource (user)
+			res.status(404).json({ error: "User not found" }); // HTTP 404 (Not Found) - error finding resource (user)
 		}
 	} catch (error) {
-		res.status(500).json({error: "Failed to fetch userID"}); // HTTP 500 (Internal Server Error) - Unexpected condition met
+		res.status(500).json({ error: "Failed to fetch userID" }); // HTTP 500 (Internal Server Error) - Unexpected condition met
 	}
 });
 
+
 // this will need to be modified to delete all listings, reviews, etc... that are dependent on userID as foreign key
 router.delete("/delete", async (req, res) => {
-	const {username, password} = req.body;
+	const { username, password } = req.body;
 	try {
-		if (!username || !password)
-			throw Error("Username and password are required");
+		if (!username || !password) throw Error("Username and password are required");
 
 		const connection = createConnection();
 
 		// Check if the username exists
-		const {rows: usernameResult} = await connection.query(
+		const { rows: usernameResult } = await connection.query(
 			"SELECT 1 FROM users WHERE username = $1 LIMIT 1",
 			[username]
 		);
@@ -347,16 +296,13 @@ router.delete("/delete", async (req, res) => {
 
 		if (usernameExists) {
 			// Check if the provided password matches the hashed password in the database
-			const {rows: users} = await connection.query(
+			const { rows: users } = await connection.query(
 				"SELECT password FROM users WHERE username = $1",
 				[username]
 			);
 
 			const user = users[0];
-			const validPassword = await bcryptjs.compare(
-				password,
-				user.password
-			);
+			const validPassword = await bcryptjs.compare(password, user.password);
 
 			if (validPassword) {
 				// Delete the user account
@@ -364,33 +310,31 @@ router.delete("/delete", async (req, res) => {
 					"DELETE FROM users WHERE username = $1",
 					[username]
 				);
-				res.status(200).json({message: "Account deleted successfully"}); // HTTP 200 (OK)
+				res.status(200).json({ message: "Account deleted successfully" }); // HTTP 200 (OK)
 			} else {
-				res.status(401).json({error: "Invalid password"}); // HTTP 401 (Unauthorized) - lacks valid authentication credentials
+				res.status(401).json({ error: "Invalid password" }); // HTTP 401 (Unauthorized) - lacks valid authentication credentials
 			}
 		} else {
-			res.status(404).json({error: "User not found"}); // HTTP 404 (Not Found) - resource not found
+			res.status(404).json({ error: "User not found" }); // HTTP 404 (Not Found) - resource not found
 		}
 	} catch (error) {
-		res.status(500).json({error: "Failed to delete account"}); // HTTP 500 (Internal Server Error) - unexpected condition met, throw error
+		res.status(500).json({ error: "Failed to delete account" }); // HTTP 500 (Internal Server Error) - unexpected condition met, throw error
 	}
 });
 
+
 router.post("/forgot-password", async (req, res) => {
-	const {email} = req.body;
+	const { email } = req.body;
 	if (!email) {
-		return res.status(400).json({error: "Email is required"});
+		return res.status(400).json({ error: "Email is required" });
 	}
 
 	try {
 		const connection = createConnection();
 		// Verify if email exists
-		const {rows: users} = await connection.query(
-			"SELECT * FROM users WHERE email = $1",
-			[email]
-		);
+		const { rows: users } = await connection.query("SELECT * FROM users WHERE email = $1", [email]);
 		if (users.length === 0) {
-			return res.status(404).json({error: "User not found"});
+			return res.status(404).json({ error: "User not found" });
 		}
 
 		// use crypto to generate a new password reset token + expiration time (1 hour from now)
@@ -398,17 +342,12 @@ router.post("/forgot-password", async (req, res) => {
 		const resetExpires = new Date(Date.now() + 3600000); // 1 hour from now (60 * 60 * 1000) ms
 
 		// Save the resetToken and expiration time to the user's record in the database
-		await connection.query(
-			"UPDATE users SET \"resetPasswordToken\" = $1, \"resetPasswordExpires\" = $2 WHERE email = $3",
-			[resetToken, resetExpires, email]
-		);
+		await connection.query("UPDATE users SET \"resetPasswordToken\" = $1, \"resetPasswordExpires\" = $2 WHERE email = $3", [resetToken, resetExpires, email]);
 
 		// create the reset password url using the token
-		const resetUrl =
-			process.env.REACT_APP_FRONTEND_LINK +
-			`/reset-password?token=${resetToken}`;
+		const resetUrl = process.env.REACT_APP_FRONTEND_LINK + `/reset-password?token=${resetToken}`;
 
-		// use nodemailer
+		// use nodemailer 
 		const nodemailer = require("nodemailer");
 		const transporter = nodemailer.createTransport({
 			service: "outlook",
@@ -417,7 +356,7 @@ router.post("/forgot-password", async (req, res) => {
 				pass: "haggle1234!" // store more securely in .env file
 			}
 		});
-
+  
 		const mailOptions = {
 			from: "no-reply.haggle@outlook.com", // Replace with your email
 			to: email, // The user's email address
@@ -427,126 +366,110 @@ router.post("/forgot-password", async (req, res) => {
                 <a href="${resetUrl}">Reset Password</a>
              </p>`
 		};
-
-		transporter.sendMail(mailOptions, function (error, info) {
+  
+		transporter.sendMail(mailOptions, function(error, info){
 			if (error) {
-				res.status(500).json({
-					error: "Failed to send forgot password email"
-				});
+				res.status(500).json({ error: "Failed to send forgot password email" });
 			} else {
-				console.log(info);
-				res.json({message: "Reset link sent to your email address"});
+				res.json({ message: "Reset link sent to your email address" });
 			}
 		});
+
 		await connection.end();
+    
 	} catch (error) {
-		res.status(500).json({error: "Failed to send forgot password email"});
+		res.status(500).json({ error: "Failed to send forgot password email" });
 	}
 });
 
 router.post("/reset-password", async (req, res) => {
-	const {token, password} = req.body;
+	const { token, password } = req.body;
 
 	try {
 		const connection = createConnection();
 
 		// Verify token and its expiration
-		const {rows: users} = await connection.query(
-			"SELECT * FROM users WHERE \"resetPasswordToken\" = $1 AND \"resetPasswordExpires\" > NOW()",
-			[token]
-		);
+		const { rows: users } = await connection.query("SELECT * FROM users WHERE \"resetPasswordToken\" = $1 AND \"resetPasswordExpires\" > NOW()", [token]);
 		if (users.length === 0) {
-			return res.status(400).json({error: "Invalid or expired token"});
+			return res.status(400).json({ error: "Invalid or expired token" });
 		}
 
 		const hashedPassword = await bcryptjs.hash(password, 10);
-		await connection.query(
-			"UPDATE users SET password = $1, \"resetPasswordToken\" = NULL, \"resetPasswordExpires\" = NULL WHERE \"userID\" = $2",
-			[hashedPassword, users[0].userID]
-		);
+		await connection.query("UPDATE users SET password = $1, \"resetPasswordToken\" = NULL, \"resetPasswordExpires\" = NULL WHERE \"userID\" = $2", [hashedPassword, users[0].userID]);
 
-		res.json({message: "Password has been reset successfully"});
+		res.json({ message: "Password has been reset successfully" });
+    
 	} catch (error) {
-		res.status(500).json({error: "Failed to reset password"});
+		res.status(500).json({ error: "Failed to reset password" });
 	}
 });
 
-router.post(
-	"/change-profile-image",
-	verifyToken,
-	upload.single("image"),
-	async (req, res) => {
-		const {userID} = req.body;
-		try {
-			const connection = createConnection();
-			const image = req.file;
+router.post("/change-profile-image", verifyToken, upload.single("image"), async (req, res) => {
+	const { userID } = req.body;
+	try {
+		const connection = createConnection();
+		const image = req.file;
 
-			await uploadImageToS3(`user/${userID}/bruh0.jpg`, image.buffer);
-			const query =
-				"UPDATE users SET \"isProfilePicture\" = true WHERE \"userID\" = $1";
-			await connection.query(query, [userID]);
-
-			res.status(200).json({
-				message: "Profile picture changed successfully"
-			});
-		} catch (error) {
-			res.status(500).json({error: "Failed to change profile picture"});
-		}
+		await uploadImageToS3(`user/${userID}/bruh0.jpg`, image.buffer);
+		const query = "UPDATE users SET \"isProfilePicture\" = true WHERE \"userID\" = $1";
+		await connection.query(query, [userID]);
+    
+		res.status(200).json({ message: "Profile picture changed successfully" });
+	} catch (error) {
+		res.status(500).json({ error: "Failed to change profile picture" });
 	}
-);
+});
 
 router.get("/is-profile-picture/:userID", async (req, res) => {
 	try {
-		const {userID} = req.params; // extract userID from request parameters
+		const { userID } = req.params;  // extract userID from request parameters
 		const connection = createConnection();
-		const query =
-			"SELECT \"isProfilePicture\" FROM users WHERE \"userID\" = $1";
-		const {rows} = await connection.query(query, [userID]);
+		const query = "SELECT \"isProfilePicture\" FROM users WHERE \"userID\" = $1";
+		const { rows } = await connection.query(query, [userID]);
 
-		if (rows.length === 0) {
-			// check if any rows were returned
-			return res.status(404).json({error: "User not found"}); // if no such user found there is an error
+		if (rows.length === 0) {  // check if any rows were returned
+			return res.status(404).json({ error: "User not found" });  // if no such user found there is an error
 		}
 
-		const {isProfilePicture} = rows[0]; // extract bool val from first row
-		res.json({isProfilePicture}); // return true
+		const { isProfilePicture } = rows[0];  // extract bool val from first row
+		res.json({ isProfilePicture });  // return true
 	} catch (error) {
-		res.status(500).json({error: "Failed to fetch isProfilePicture"});
+		res.status(500).json({ error: "Failed to fetch isProfilePicture" });
 	}
 });
 
 router.post("/set-bio", verifyToken, async (req, res) => {
-	const {userID} = req.body;
-	const {bio} = req.body;
+	const { userID } = req.body;
+	const { bio } = req.body;
 	try {
 		const connection = createConnection();
 		const query = "UPDATE users SET bio = $1 WHERE \"userID\" = $2";
 		await connection.query(query, [bio, userID]);
-		res.status(200).json({message: "Bio changed successfully"});
+		res.status(200).json({ message: "Bio changed successfully" });
 	} catch (error) {
 		res.status(500).json({error: "Failed to post bio"});
 	}
 });
 
 router.post("/set-location", verifyToken, async (req, res) => {
-	const {userID} = req.body;
-	const {city} = req.body;
+	const { userID } = req.body;
+	const { city } = req.body;
 	try {
 		const connection = createConnection();
 		const query = "UPDATE users SET city = $1 WHERE \"userID\" = $2";
 		await connection.query(query, [city, userID]);
-		res.status(200).json({message: "City changed successfully"});
+		res.status(200).json({ message: "City changed successfully" });
 	} catch (error) {
 		res.status(500).json({error: "Failed to post bio"});
 	}
 });
 
 router.get("/public-profile/:userID", async (req, res) => {
-	const {userID} = req.params;
+	const { userID } = req.params;
 	try {
 		const connection = createConnection();
 		// Retrieve user details from extracted username...
-		const {rows: user} = await connection.query(
+		const { rows: user } = await connection.query(
 			"SELECT username, \"fullName\", bio, city FROM users WHERE \"userID\" = $1",
 			[userID]
 		);
@@ -556,7 +479,7 @@ router.get("/public-profile/:userID", async (req, res) => {
 			res.status(200).json(user[0]); // HTTP (OK) - user exists
 		}
 	} catch (error) {
-		res.status(500).json({error: "Failed to fetch user profile"}); // HTTP 500 (Internal Server Error) - unexpected error/condition
+		res.status(500).json({ error: "Failed to fetch user profile" }); // HTTP 500 (Internal Server Error) - unexpected error/condition
 	}
 });
 

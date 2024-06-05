@@ -1,5 +1,4 @@
 // s3.js
-/* global require, process, module */
 const AWS = require("aws-sdk");
 require("dotenv").config();
 
@@ -20,7 +19,7 @@ const uploadImageToS3 = async (imageName, imageData) => {
 		Key: imageName,
 		Body: imageData
 	};
-
+  
 	try {
 		const data = await s3.upload(params).promise();
 		return data.Location; // Return the URL of the uploaded image
@@ -30,9 +29,9 @@ const uploadImageToS3 = async (imageName, imageData) => {
 	}
 };
 
-const deleteFromS3 = async name => {
+const deleteFromS3 = async (name) => {
 	const params = {
-		Bucket: "haggleimgs",
+		Bucket: "haggleimgs", 
 		Key: name
 	};
 	try {
@@ -43,23 +42,26 @@ const deleteFromS3 = async name => {
 	}
 };
 
-const deleteS3Folder = async folderName => {
+const deleteS3Folder = async (folderName) => {
 	try {
 		const images = await listS3Objects(folderName);
 		console.log("images: ", images);
 		// Must delete folder contents before able to delete folder
-		for (const image of images) {
+		for(const image of images) {
 			await deleteFromS3(image.Key);
 		}
 		await deleteFromS3(folderName);
+
 	} catch (error) {
 		console.error("Error deleting folder: ", error);
 		throw error;
 	}
+
+
 };
 
 const renameS3Object = async (newImageName, oldImageName) => {
-	if (newImageName == oldImageName) {
+	if(newImageName == oldImageName) {
 		// No need to rename if names are already same
 		return;
 	}
@@ -79,29 +81,26 @@ const renameS3Object = async (newImageName, oldImageName) => {
 	}
 
 	await deleteFromS3(oldImageName);
+
+
 };
 
-const listS3Objects = async folder => {
+const listS3Objects = async (folder) => {
 	const listParams = {
 		Bucket: "haggleimgs",
-		Prefix: folder == null || folder == "" ? "" : `${folder}/`
+		Prefix: (folder == null || folder == "") ? "" : `${folder}/`
 	};
-
+  
 	// Call the listObjectsV2 method with the parameters
 	try {
 		const data = await s3.listObjectsV2(listParams).promise();
 		return data.Contents;
+
 	} catch (error) {
 		console.error("Error listing objects:", error);
 		throw error;
 	}
 };
 
-module.exports = {
-	s3,
-	uploadImageToS3,
-	deleteFromS3,
-	renameS3Object,
-	listS3Objects,
-	deleteS3Folder
-};
+
+module.exports = { s3, uploadImageToS3, deleteFromS3, renameS3Object, listS3Objects, deleteS3Folder };

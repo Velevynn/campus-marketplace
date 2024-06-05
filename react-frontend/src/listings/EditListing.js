@@ -1,9 +1,8 @@
-/* global process */
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import {useParams} from "react-router-dom";
-import {jwtDecode} from "jwt-decode";
-import {useNavigate} from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 import ArrowButton from "../components/ArrowButton";
 import LoadingSpinner from "../components/LoadingSpinner";
@@ -37,7 +36,7 @@ function EditListing() {
 		"Toys & Games",
 		"Buy and Sell Groups"
 	];
-	const {listingID} = useParams();
+	const { listingID } = useParams();
 	const navigate = useNavigate();
 	const [imageDisplay, setImages] = useState([]);
 	const [imagesToRemove, setImagesToRemove] = useState([]);
@@ -72,24 +71,16 @@ function EditListing() {
 				console.log("username: ", username);
 
 				// Fetch listing details including images
-				const response = await axios.get(
-					process.env.REACT_APP_BACKEND_LINK +
-						`/listings/${listingID}`,
-					{
-						headers: {
-							Authorization: `Bearer ${token}`
-						}
+				const response = await axios.get(process.env.REACT_APP_BACKEND_LINK + `/listings/${listingID}`, {
+					headers: {
+						Authorization: `Bearer ${token}`
 					}
-				);
+				});
 
 				const fetchedListing = response.data[0];
 
-				if (
-					fetchedListing &&
-					typeof fetchedListing.price !== "undefined" &&
-					typeof fetchedListing.title !== "undefined"
-				) {
-					setListing(prevListing => ({
+				if (fetchedListing && typeof fetchedListing.price !== "undefined" && typeof fetchedListing.title !== "undefined") {
+					setListing((prevListing) => ({
 						...prevListing,
 						userID: fetchedListing.userID,
 						title: fetchedListing.title,
@@ -98,6 +89,7 @@ function EditListing() {
 						expirationDate: fetchedListing.expirationDate || null,
 						quantity: fetchedListing.quantity || 1,
 						category: fetchedListing.category
+            
 					}));
 					fetchImages();
 				}
@@ -112,8 +104,7 @@ function EditListing() {
 			try {
 				/* Fetch images for the listing from the backend */
 				const response = await axios.get(
-					process.env.REACT_APP_BACKEND_LINK +
-						`/listings/images/${listingID}`
+					process.env.REACT_APP_BACKEND_LINK + `/listings/images/${listingID}`,
 				);
 				if (response.data.length > 0) {
 					setImages(response.data);
@@ -138,15 +129,15 @@ function EditListing() {
 		}, 3300);
 	}
 
-	const handleChange = event => {
-		const {name, value} = event.target;
-		setListing(prevListing => ({
+	const handleChange = (event) => {
+		const { name, value } = event.target;
+		setListing((prevListing) => ({
 			...prevListing,
 			[name]: value
 		}));
 	};
 
-	const handleImageChange = event => {
+	const handleImageChange = (event) => {
 		const files = Array.from(event.target.files);
 		if (files.length > 8) {
 			// Checks if number of images selected is greater than 8
@@ -158,16 +149,16 @@ function EditListing() {
 			setKey(key === 0 ? 1 : 0);
 			return;
 		}
-
+  
 		const promises = files.map(file => {
 			// Turns files uploaded into image object
 			return new Promise((resolve, reject) => {
 				const reader = new FileReader();
-				reader.onload = event => {
+				reader.onload = (event) => {
 					const img = new Image();
 					img.src = event.target.result;
 					img.onload = () => {
-						resolve({file, width: img.width, height: img.height});
+						resolve({ file, width: img.width, height: img.height });
 					};
 					img.onerror = () => {
 						reject(new Error("Failed to load image"));
@@ -176,29 +167,24 @@ function EditListing() {
 				reader.readAsDataURL(file);
 			});
 		});
-
+  
 		Promise.all(promises)
 			.then(results => {
 				// Check if any images are under 500x500 minimum resolution
-				const nonValidImages = results.filter(({width, height}) => {
-					return (
-						width < MINIMUM_IMAGE_WIDTH ||
-						height < MINIMUM_IMAGE_HEIGHT
-					);
+				const nonValidImages = results.filter(({ width, height }) => {
+					return width < MINIMUM_IMAGE_WIDTH || height < MINIMUM_IMAGE_HEIGHT;
 				});
 				if (nonValidImages.length > 0) {
 					setListing(prevListing => ({
 						...prevListing,
 						images: []
 					}));
-					displayNotification(
-						`Minimum image resolution: ${MINIMUM_IMAGE_WIDTH}x${MINIMUM_IMAGE_HEIGHT}px`
-					);
+					displayNotification(`Minimum image resolution: ${MINIMUM_IMAGE_WIDTH}x${MINIMUM_IMAGE_HEIGHT}px`);
 					setKey(key === 0 ? 1 : 0);
 					// Don't update the state if there are non-valid images
 				} else {
 					// Update the state with valid images if all images meet the resolution criteria
-					setListing(prevListing => ({
+					setListing((prevListing) => ({
 						...prevListing,
 						newImages: [...prevListing.newImages, ...files]
 					}));
@@ -208,12 +194,13 @@ function EditListing() {
 			.catch(error => {
 				console.error("Error validating image:", error);
 				displayNotification("Error validating image file");
-				return [];
+				return []; 
+        
 			});
 	};
 
-	const handleDeleteOldImage = async indexToRemove => {
-		setImagesToRemove(prevImagesToRemove => {
+	const handleDeleteOldImage = async (indexToRemove) => {
+		setImagesToRemove((prevImagesToRemove) => {
 			// Create a copy of the previous array to avoid mutation
 			const newImagesToRemove = [...prevImagesToRemove];
 			// Append imageDisplay[indexToRemove] to the new array
@@ -221,7 +208,7 @@ function EditListing() {
 			// Return the updated array
 			return newImagesToRemove;
 		});
-		setImages(prevImageDisplay => {
+		setImages((prevImageDisplay) => {
 			// Create a copy of the previous array to avoid mutation
 			const newImageDisplay = [...prevImageDisplay];
 			// Remove the corresponding item from imageDisplay
@@ -229,53 +216,46 @@ function EditListing() {
 			// Return the updated array
 			return newImageDisplay;
 		});
+  
 	};
-	const handleDeleteNewImage = async indexToRemove => {
+	const handleDeleteNewImage = async (indexToRemove) => {
 		setListing(prevListing => ({
 			...prevListing,
-			newImages: prevListing.newImages.filter(
-				(_, index) => index !== indexToRemove
-			)
+			newImages: prevListing.newImages.filter((_, index) => index !== indexToRemove)
 		}));
 	};
+
 
 	const submitForm = async () => {
 		if (listing.title !== "" && listing.price !== "") {
 			try {
 				const token = localStorage.getItem(process.env.JWT_TOKEN_NAME);
-
+  
+  
 				// Send PUT request to update listing details
-				await axios.put(
-					process.env.REACT_APP_BACKEND_LINK +
-						`/listings/${listingID}`,
-					listing,
-					{
-						headers: {
-							Authorization: `Bearer ${token}`,
-							"Content-Type": "application/json"
-						}
+				await axios.put(process.env.REACT_APP_BACKEND_LINK + `/listings/${listingID}`, listing, {
+					headers: {
+						Authorization: `Bearer ${token}`,
+						"Content-Type": "application/json"
 					}
-				);
-
+				});
+        
+        
 				// Update images for the listing
 				const newImages = new FormData();
-				listing.newImages.forEach(image => {
+				listing.newImages.forEach((image) => {
 					newImages.append("image", image);
 				});
 
+
 				// Send PUT request to update listing images
-				await axios.put(
-					process.env.REACT_APP_BACKEND_LINK +
-						`/listings/images/${listingID}`,
-					newImages,
-					{
-						params: {imagesToRemove},
-						headers: {
-							Authorization: `Bearer ${token}`,
-							"Content-Type": "multipart/form-data"
-						}
+				await axios.put(process.env.REACT_APP_BACKEND_LINK + `/listings/images/${listingID}`, newImages, {
+					params: { imagesToRemove },
+					headers: {
+						Authorization: `Bearer ${token}`,
+						"Content-Type": "multipart/form-data"
 					}
-				);
+				});
 				// Redirect to the marketplace page after successful update
 				navigate(`/listings/${listingID}`);
 			} catch (error) {
@@ -283,6 +263,7 @@ function EditListing() {
 			}
 		}
 	};
+
 
 	//TODO: how to set selected category to existing category
 	return (

@@ -27,19 +27,5 @@ module.exports = {
 		quotes: ["error", "double"],
 		semi: ["error", "always"],
 		"no-mixed-spaces-and-tabs": ["error", "smart-tabs"]
-	},
-	ignorePatterns: ["node_modules/", "dist/"],
-	globals: {
-		jQuery: "readonly",
-		$: "readonly",
-		React: "readonly",
-		ReactDOM: "readonly",
-		express: "readonly",
-		indexing_v3: "readonly",
-		multer: "readonly",
-		upload: "readonly",
-		router: "readonly",
-		Pool: "readonly",
-		dotenv: "readonly"
 	}
 };
