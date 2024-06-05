@@ -25,103 +25,6 @@ import ChatPage from "./pages/ChatPage.js";
 import PublicPage from "./profile/PublicPage.js";
 
 function App() {
-<<<<<<< HEAD
-	return (
-		<div className="container">
-			<BrowserRouter basename="/">
-				<NavBar />
-				<Routes>
-					<Route path="/signup" element={<SignUpPage />} />
-					<Route path="/login" element={<LoginPage />} />
-					<Route
-						path="/login/google"
-						element={<HandleTokenRedirect />}
-					/>
-					c
-					<Route
-						path="/profile"
-						element={
-							<ProtectedRoute>
-								<ProfilePage />
-							</ProtectedRoute>
-						}
-					/>
-					<Route path="/profile/:userID" element={<PublicPage />} />
-					<Route path="/about" element={<About />} />
-					<Route path="/" element={<Marketplace />} />
-					<Route path="/marketplace/" element={<Marketplace />} />
-					<Route
-						path="/new-listing"
-						element={
-							<ProtectedRoute>
-								<AddListing />
-							</ProtectedRoute>
-						}
-					/>
-					<Route path="/terms-of-service" element={<TOS />} />
-					<Route path="/privacy-policy" element={<PP />} />
-					<Route
-						path="/listings/:listingID"
-						element={<ListingView />}
-					/>
-					<Route
-						path="/listings/:listingID/buy"
-						element={
-							<ProtectedRoute>
-								{" "}
-								<BuyNow />
-							</ProtectedRoute>
-						}
-					/>
-					<Route
-						path="/listings/:listingID/offer"
-						element={
-							<ProtectedRoute>
-								{" "}
-								<MakeOfferPage />
-							</ProtectedRoute>
-						}
-					/>
-					<Route
-						path="/listings/:listingID/chat/:chatID"
-						element={
-							<ProtectedRoute>
-								{" "}
-								<ChatPage />
-							</ProtectedRoute>
-						}
-					/>
-					<Route
-						path="/listings/:listingID/edit"
-						element={
-							<ProtectedRoute>
-								{" "}
-								<EditListing />
-							</ProtectedRoute>
-						}
-					/>
-					<Route
-						path="/forgot-password"
-						element={<ForgotPasswordPage />}
-					/>
-					<Route
-						path="/reset-password"
-						element={<ResetPasswordPage />}
-					/>
-					<Route
-						path="/change-password"
-						element={<ChangePasswordPage />}
-					/>
-					<Route
-						path="/additional-details"
-						element={<AdditionalDetailsPage />}
-					/>
-					<Route path="*" element={<PageNotFound />} />
-				</Routes>
-			</BrowserRouter>
-		</div>
-	);
-=======
   return (
     <div className="container">
       <BrowserRouter basename="/">
@@ -158,7 +61,6 @@ function App() {
       </BrowserRouter>
     </div>
   );
->>>>>>> zaharia_branch
 }
 
 export default App;
