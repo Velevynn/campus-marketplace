@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect} from "react";
 import PropTypes from "prop-types";
 import "./ScrollToTopButton.css"; // Import your CSS file
 import ArrowButton from "./ArrowButton";
 
-const ScrollToTopButton = ({ onClick }) => {
+const ScrollToTopButton = ({onClick}) => {
 	const [isVisible, setIsVisible] = useState(false);
 
 	useEffect(() => {
@@ -39,7 +39,7 @@ const ScrollToTopButton = ({ onClick }) => {
 
 // Prop type validation
 ScrollToTopButton.propTypes = {
-	onClick: PropTypes.func.isRequired, // onClick should be a function and is required
+	onClick: PropTypes.func.isRequired // onClick should be a function and is required
 };
 
 export default ScrollToTopButton;

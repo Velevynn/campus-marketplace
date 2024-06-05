@@ -1,3 +1,4 @@
+/* global test, expect, require, beforeEach, afterAll, describe */
 const s3 = require("./s3");
 
 beforeEach(async () => {

@@ -1,10 +1,11 @@
+/* global process */
 // Importing necessary React hooks and Axios for HTTP requests
-import React, { useState } from "react";
+import React, {useState} from "react";
 import axios from "axios";
 // Importing logo and styling components
 import logoImage from "../assets/haggle-horizontal.png";
-import { Link } from "react-router-dom";
-import { FaCheckCircle, FaTimesCircle  } from "react-icons/fa";
+import {Link} from "react-router-dom";
+import {FaCheckCircle, FaTimesCircle} from "react-icons/fa";
 
 // Component for the "Forgot Password" page
 const ForgotPasswordPage = () => {
@@ -14,23 +15,29 @@ const ForgotPasswordPage = () => {
 	//const navigate = useNavigate();
 
 	// check if valid email
-	const isValidEmail = (email) => {
+	const isValidEmail = email => {
 		const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 		return regex.test(email);
 	};
 
 	// Event handler for updating the email state on input change
-	const handleChange = (event) => {
+	const handleChange = event => {
 		setEmail(event.target.value);
 	};
 
 	// Event handler for form submission
-	const handleSubmit = async (event) => {
+	const handleSubmit = async event => {
 		event.preventDefault();
 		try {
-			const response = await axios.post(process.env.REACT_APP_BACKEND_LINK + "/users/forgot-password", { email });
+			const response = await axios.post(
+				process.env.REACT_APP_BACKEND_LINK + "/users/forgot-password",
+				{email}
+			);
 			// Assuming the API responds with a success message
-			setMessage(response.data.message || "If an account with that email exists, we have sent a reset password link.");
+			setMessage(
+				response.data.message ||
+					"If an account with that email exists, we have sent a reset password link."
+			);
 		} catch (error) {
 			setMessage("Error: Failed to reset password. Please try again.");
 		}
@@ -39,7 +46,14 @@ const ForgotPasswordPage = () => {
 	// Rendering the Forgot Password page
 	return (
 		<>
-			<div className="vertical-center" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+			<div
+				className="vertical-center"
+				style={{
+					display: "flex",
+					flexDirection: "column",
+					alignItems: "center"
+				}}
+			>
 				<div className="small-container drop-shadow margin text-center">
 					<img
 						src={logoImage}
@@ -51,17 +65,18 @@ const ForgotPasswordPage = () => {
 							height: "auto"
 						}}
 					/>
-					<h5 className="text-center" style={{fontSize:"18px"}}>Forgot Password?</h5>
-					<p className="text-center" style={{fontSize:"14px"}}>Enter your email and we will send you a link to reset your password.</p>
-  
+					<h5 className="text-center" style={{fontSize: "18px"}}>
+						Forgot Password?
+					</h5>
+					<p className="text-center" style={{fontSize: "14px"}}>
+						Enter your email and we will send you a link to reset
+						your password.
+					</p>
+
 					<form onSubmit={handleSubmit}>
-						{message && (
-							<h6>
-								{message}
-							</h6>
-						)}
-  
-						<div style = {{ marginTop: "20px"}}>
+						{message && <h6>{message}</h6>}
+
+						<div style={{marginTop: "20px"}}>
 							<input
 								type="email"
 								name="email"
@@ -74,36 +89,38 @@ const ForgotPasswordPage = () => {
 							<div className="input-icon">
 								{email.length > 0 ? (
 									isValidEmail(email) ? (
-										<FaCheckCircle style={{ color: "green" }} />
+										<FaCheckCircle
+											style={{color: "green"}}
+										/>
 									) : (
-										<FaTimesCircle style={{ color: "red" }} />
+										<FaTimesCircle style={{color: "red"}} />
 									)
 								) : null}
 							</div>
 						</div>
-  
+
 						<button
 							className="span-button"
 							type="submit"
 							disabled={!isValidEmail(email)}
-							style={{ marginTop: "20px" }}
+							style={{marginTop: "20px"}}
 						>
-              Send Reset Link
+							Send Reset Link
 						</button>
 					</form>
 				</div>
-  
+
 				<div className="small-container drop-shadow">
 					<div className="text-center">
-						<p className="text-center" style ={{fontSize:"14px"}}>
-              Return to{" "}
+						<p className="text-center" style={{fontSize: "14px"}}>
+							Return to{" "}
 							<Link
 								to="/login"
 								style={{
-									color: "green",
+									color: "green"
 								}}
 							>
-                Log in
+								Log in
 							</Link>
 						</p>
 					</div>
@@ -111,6 +128,6 @@ const ForgotPasswordPage = () => {
 			</div>
 		</>
 	);
-};  
+};
 
 export default ForgotPasswordPage;
