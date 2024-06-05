@@ -37,10 +37,15 @@ function About() {
 			<h1 className="vertical-center margin">About Us</h1>
 			<div className="about-layout">
 				{bios.map((bio, index) => (
-					<Bio key={index} name={bio.name} bio={bio.bio} quip={bio.quip}/>
+					<Bio
+						key={index}
+						name={bio.name}
+						bio={bio.bio}
+						quip={bio.quip}
+					/>
 				))}
 			</div>
-			<Footer/>
+			<Footer />
 		</div>
 	);
 }

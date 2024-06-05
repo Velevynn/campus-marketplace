@@ -1,8 +1,9 @@
 // middleware.test.js
+/* global test, expect, require, process, jest */
 
 // Import dependencies
 const jwt = require("jsonwebtoken");
-const { verifyToken } = require("./middleware");
+const {verifyToken} = require("./middleware");
 
 // Mock the response object
 const mockResponse = () => {
@@ -24,16 +25,20 @@ test("verifyToken middleware - valid token", () => {
 
 	// Mock jwt.verify
 	jwt.verify = jest.fn().mockImplementation((token, secretKey, callback) => {
-		callback(null, { userId: 1 });
+		callback(null, {userId: 1});
 	});
 
 	// Call the middleware
 	verifyToken(req, res, next);
 
 	// Expectations
-	expect(jwt.verify).toHaveBeenCalledWith("validToken", process.env.JWT_SECRET_KEY, expect.any(Function));
+	expect(jwt.verify).toHaveBeenCalledWith(
+		"validToken",
+		process.env.JWT_SECRET_KEY,
+		expect.any(Function)
+	);
 	expect(next).toHaveBeenCalled();
-	expect(req.user).toEqual({ userId: 1 });
+	expect(req.user).toEqual({userId: 1});
 	expect(res.status).not.toHaveBeenCalled();
 	expect(res.send).not.toHaveBeenCalled();
 });
@@ -52,7 +57,7 @@ test("verifyToken middleware - missing token", () => {
 	// Expectations
 	expect(next).not.toHaveBeenCalled();
 	expect(res.status).toHaveBeenCalledWith(403);
-	expect(res.send).toHaveBeenCalledWith({ message: "Token is required" });
+	expect(res.send).toHaveBeenCalledWith({message: "Token is required"});
 });
 
 test("verifyToken middleware - invalid token", () => {
@@ -74,8 +79,12 @@ test("verifyToken middleware - invalid token", () => {
 	verifyToken(req, res, next);
 
 	// Expectations
-	expect(jwt.verify).toHaveBeenCalledWith("invalidToken", process.env.JWT_SECRET_KEY, expect.any(Function));
+	expect(jwt.verify).toHaveBeenCalledWith(
+		"invalidToken",
+		process.env.JWT_SECRET_KEY,
+		expect.any(Function)
+	);
 	expect(next).not.toHaveBeenCalled();
 	expect(res.status).toHaveBeenCalledWith(401);
-	expect(res.send).toHaveBeenCalledWith({ message: "Invalid Token" });
+	expect(res.send).toHaveBeenCalledWith({message: "Invalid Token"});
 });

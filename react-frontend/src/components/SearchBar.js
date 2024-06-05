@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+/* global process */
+import React, {useState, useEffect} from "react";
 import search from "../assets/search.png";
 import "./searchbar.css";
 import Notify from "./ErrorNotification";
@@ -10,14 +11,15 @@ function Search() {
 	const [inputFocused, setInputFocused] = useState(false);
 
 	useEffect(() => {
-		const storedSearches = JSON.parse(localStorage.getItem("recentSearches")) || [];
+		const storedSearches =
+			JSON.parse(localStorage.getItem("recentSearches")) || [];
 		setRecentSearches(storedSearches);
 	}, []);
 
 	useEffect(() => {
 		const url = new URL(window.location.href);
 		const pathname = url.pathname;
-    
+
 		// Check if the pathname includes "/marketplace" and if there are query parameters
 		if (pathname.includes("/marketplace") && url.searchParams.has("q")) {
 			const query = url.searchParams.get("q");
@@ -31,13 +33,13 @@ function Search() {
 		};
 
 		window.addEventListener("scroll", handleScroll);
-    
+
 		return () => {
 			window.removeEventListener("scroll", handleScroll);
 		};
 	}, []);
 
-	const updateRecentSearches = (query) => {
+	const updateRecentSearches = query => {
 		let searches = [...recentSearches];
 		const searchIndex = searches.indexOf(query);
 
@@ -55,14 +57,16 @@ function Search() {
 		localStorage.setItem("recentSearches", JSON.stringify(searches));
 	};
 
-	const handleInputChange = (event) => {
+	const handleInputChange = event => {
 		setSearchQuery(event.target.value);
 	};
 
 	const handleSearch = () => {
 		if (searchQuery !== "") {
 			updateRecentSearches(searchQuery);
-			const url = process.env.REACT_APP_FRONTEND_LINK + `/marketplace?q=${searchQuery}`;
+			const url =
+				process.env.REACT_APP_FRONTEND_LINK +
+				`/marketplace?q=${searchQuery}`;
 			window.history.replaceState({}, "", url);
 			window.location.reload();
 		} else if (!showNotification) {
@@ -73,10 +77,12 @@ function Search() {
 		}
 	};
 
-	const handleKeyPress = (event) => {
+	const handleKeyPress = event => {
 		if (event.key === "Enter" && searchQuery !== "") {
 			updateRecentSearches(searchQuery);
-			const url = process.env.REACT_APP_FRONTEND_LINK + `/marketplace?q=${searchQuery}`;
+			const url =
+				process.env.REACT_APP_FRONTEND_LINK +
+				`/marketplace?q=${searchQuery}`;
 			window.history.replaceState({}, "", url);
 			window.location.reload();
 		} else if (!showNotification && event.key === "Enter") {
@@ -87,15 +93,18 @@ function Search() {
 		}
 	};
 
-	const handleRecentSearchClick = (query) => {
+	const handleRecentSearchClick = query => {
 		setSearchQuery(query);
-		const url = process.env.REACT_APP_FRONTEND_LINK + `/marketplace?q=${query}`;
+		const url =
+			process.env.REACT_APP_FRONTEND_LINK + `/marketplace?q=${query}`;
 		window.history.replaceState({}, "", url);
 		window.location.reload();
 	};
 
-	const handleDeleteSearch = (query) => {
-		const updatedSearches = recentSearches.filter((search) => search !== query);
+	const handleDeleteSearch = query => {
+		const updatedSearches = recentSearches.filter(
+			search => search !== query
+		);
 		setRecentSearches(updatedSearches);
 		localStorage.setItem("recentSearches", JSON.stringify(updatedSearches));
 	};
@@ -126,12 +135,26 @@ function Search() {
 				<img src={search} alt="search-icon" className="search-img" />
 			</button>
 			{showNotification && <Notify message="Search field empty" />}
-			{inputFocused && recentSearches.length > 0 && searchQuery.length === 0 && (
+			{inputFocused &&
+				recentSearches.length > 0 &&
+				searchQuery.length === 0 && (
 				<div className="recent-searches">
 					{recentSearches.map((search, index) => (
-						<li key={index} className="recent-search-item" onClick={() => handleRecentSearchClick(search)}>
+						<li
+							key={index}
+							className="recent-search-item"
+							onClick={() => handleRecentSearchClick(search)}
+						>
 							<span>{search}</span>
-							<button onClick={(e) => { e.stopPropagation(); handleDeleteSearch(search); }} className="delete-search-button">X</button>
+							<button
+								onClick={e => {
+									e.stopPropagation();
+									handleDeleteSearch(search);
+								}}
+								className="delete-search-button"
+							>
+									X
+							</button>
 						</li>
 					))}
 				</div>
