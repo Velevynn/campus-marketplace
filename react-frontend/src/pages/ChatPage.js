@@ -23,14 +23,14 @@ function ChatPage() {
             <ChatComponent 
                 appId="tEOH06eA"  // Use your actual TalkJS App ID
                 user={{
-                    id: buyer?.id || 'default_buyer',
+                    id: buyer?.userID || 'default_buyer',
                     name: buyer?.fullName,
                     email: buyer?.email,
                     photoUrl: buyer?.photoUrl,
                     welcomeMessage: "Hi there, interested in making an offer?"
                 }}
                 otherUser={{
-                    id: seller[0]?.id || 'default_seller',
+                    id: seller[0]?.userID || 'default_seller',
                     name: seller[0]?.fullName,
                     email: seller[0]?.email,
                     photoUrl: seller[0]?.photoUrl,
