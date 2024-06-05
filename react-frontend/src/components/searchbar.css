@@ -52,7 +52,7 @@
   border-top: transparent;
   width: 40%;
   z-index: 1000;
-  transform: translateX(15%);
+  transform: translateX(10%);
 }
 
 .recent-search-item {
