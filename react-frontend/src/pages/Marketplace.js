@@ -84,11 +84,12 @@ function Marketplace() {
 		<div>
 			{q && (
 				<div
-					className="container"
+					className="full-container"
 					style={{
 						display: "flex",
 						alignItems: "center",
-						marginBottom: "-50px"
+						marginBottom: "-50px",
+						marginLeft: "5rem"
 					}}
 				>
 					<div

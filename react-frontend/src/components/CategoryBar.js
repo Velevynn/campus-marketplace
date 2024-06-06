@@ -43,7 +43,10 @@ function CategoryBar() {
 				onClick={() => {
 					handleCategoryClick(category);
 				}}
-				style={{width: "fit-content"}}
+				style={{
+					width: "fit-content",
+					fontSize: "12px"
+				}}
 			>
 				{category}
 			</button>
@@ -52,7 +55,12 @@ function CategoryBar() {
 
 	return (
 		<div>
-			<div className="flex-container category-list">{pages}</div>
+			<div
+				className="flex-container category-list"
+				style={{marginTop: "15px"}}
+			>
+				{pages}
+			</div>
 		</div>
 	);
 }
