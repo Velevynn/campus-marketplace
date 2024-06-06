@@ -19,6 +19,7 @@
  }
 
 **-- Prettier Instructions --  **
+
  **should automatically run with every commit.  **
  - to manually run, use this script:  
  ./node\*modules/.bin/prettier --write "src/\*\*/\_.{js,jsx,ts,tsx,json,css,scss,md}"
