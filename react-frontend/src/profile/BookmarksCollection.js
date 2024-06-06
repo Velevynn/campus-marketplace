@@ -151,7 +151,7 @@ BookmarksCollection.propTypes = {
 			title: PropTypes.string.isRequired
 		})
 	).isRequired,
-	time: PropTypes.number.isRequired
+	time: PropTypes.string.isRequired
 };
 
 export default BookmarksCollection;

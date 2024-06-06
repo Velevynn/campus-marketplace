@@ -138,7 +138,7 @@ function ChangeProfilePicture(props) {
 
 ChangeProfilePicture.propTypes = {
 	userID: PropTypes.string.isRequired,
-	time: PropTypes.number.isRequired
+	time: PropTypes.string.isRequired
 };
 
 export default ChangeProfilePicture;
