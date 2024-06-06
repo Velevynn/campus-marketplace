@@ -18,14 +18,14 @@
  const variableNames;  
  }
 
-**-- Prettier Instructions --  
- should automatically run with every commit.  **
+**--- Prettier Instructions ---**
+ should automatically run with every commit.
  - to manually run, use this script:  
  ./node\*modules/.bin/prettier --write "src/\*\*/\_.{js,jsx,ts,tsx,json,css,scss,md}"
  you can also download the prettier plugin, but make sure to configure the settings to the requirements above:
  - then simply save or use the command "SHIFT + ALT + F" to automatically format
 
-**-- ESLint Instructions -- ** 
+**-- ESLint Instructions --** 
  run manually on files with this syntax:  
  npx eslint yourfile.js
 
