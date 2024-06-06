@@ -29,11 +29,11 @@
 .information {
 	display: flex;
 	flex-wrap: wrap;
+	gap: 4px;
 }
 
 .footer-link {
 	color: white;
-	margin: 0 10px;
 }
 
 .footer-link:hover {
