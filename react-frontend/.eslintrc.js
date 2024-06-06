@@ -39,6 +39,6 @@ module.exports = {
 		router: "readonly",
 		Pool: "readonly",
 		dotenv: "readonly",
-		process: "readonly"
+		process: "true"
 	}
 };
