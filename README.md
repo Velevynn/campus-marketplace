@@ -33,7 +33,7 @@
 
 https://docs.google.com/document/d/1Vw8oZdVeHm_3ThR43fCK_tF3VCOzy2mSXvV-OqpNOiI/view?usp=sharing
 
-<img width="620" alt="image" src="https://github.com/Velevynn/haggle/assets/112510910/c414646a-95fb-4969-b342-57dfb6ce106e">
+<img width="620" alt="image" src="https://github.com/Velevynn/haggle/assets/112510910/db76e462-b190-4980-9350-21c53449c82c">
 
 - Date ran: 06/06/2024
 - Time Ran: 1:17 PM
