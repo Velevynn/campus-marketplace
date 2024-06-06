@@ -7,7 +7,7 @@
 		"test": "jest --coverage",
 		"dev": "nodemon backend.js",
 		"start": "node backend.js",
-		"prepare": "husky install"
+		"prepare": "cd .. && husky install .husky && cd expressjs-backend"
 	},
 	"author": "",
 	"license": "ISC",
@@ -53,12 +53,10 @@
 	"lint-staged": {
 		"*.{js,jsx}": [
 			"prettier --write",
-			"eslint --fix",
-			"git add"
+			"eslint --fix"
 		],
 		"*.{html,css,less,ejs}": [
-			"prettier --write",
-			"git add"
+			"prettier --write"
 		]
 	}
 }

@@ -1,4 +1,5 @@
 // userRoutes.js
+/* global require, process, module */
 const express = require("express");
 const multer = require("multer");
 const router = express.Router();
@@ -15,7 +16,7 @@ const {uploadImageToS3} = require("../util/s3");
 
 const connectionString = process.env.DB_CONNECTION_STRING; // stores supabase db connection string, allowing us to connect to supabase db
 
-const secretKey = process.env.JWT_SECRET_KEY; // stores jtw secret key
+const secretKey = process.env.JWT_SECRET_KEY; // stores jwt secret key
 
 const oauth2Client = new google.auth.OAuth2(
 	process.env.REACT_APP_GOOGLE_CLIENT_ID,
@@ -55,7 +56,7 @@ router.post("/check", async (req, res) => {
 
 		// Check if phone number already exists in db. If so, conflict is phone number
 		const {rows: phoneResult} = await connection.query(
-			'SELECT 1 FROM users WHERE "phoneNumber" = $1 LIMIT 1',
+			"SELECT 1 FROM users WHERE \"phoneNumber\" = $1 LIMIT 1",
 			[phoneNumber]
 		);
 		if (phoneResult.length > 0) {
@@ -112,15 +113,17 @@ router.post("/register", async (req, res) => {
 		} // ensure fields are filled, throw error if not
 		// Asynchronously hash the password using bcrypt library. 10 saltrounds = hash password 10 times. the more rounds the longer it takes to finish hashing
 		const bcrypt = require("bcryptjs");
+		console.log(bcrypt);
 		const hashedPassword = await bcryptjs.hash(password, 10); // await pauses execution of async function for bcrypt.hash to run
 		const connection = createConnection();
 
 		// Insert user details into the users table.
 		// result is used only to execute the query... we don't actually need it for anything else
 		const {result} = await connection.query(
-			'INSERT INTO users (username, "fullName", password, email, "phoneNumber") VALUES ($1, $2, $3, $4, $5)',
+			"INSERT INTO users (username, \"fullName\", password, email, \"phoneNumber\") VALUES ($1, $2, $3, $4, $5)",
 			[username, full_name, hashedPassword, email, phoneNumber]
 		);
+		console.log(result);
 		await connection.end();
 		res.status(201).json({message: "User registered successfully"}); // HTTP 201 (Created) - led to creation of new resource
 	} catch (error) {
@@ -138,7 +141,7 @@ router.post("/login", async (req, res) => {
 	}
 
 	try {
-		connection = createConnection();
+		let connection = createConnection(); // eslint-disable-line no-unused-vars
 		let query = "SELECT * FROM users WHERE ";
 		let queryParams = [];
 
@@ -146,14 +149,14 @@ router.post("/login", async (req, res) => {
 			query += "email = $1";
 			queryParams.push(identifier);
 		} else if (/^\d+$/.test(identifier) && identifier.length === 10) {
-			query += '"phoneNumber" = $1';
+			query += "\"phoneNumber\" = $1";
 			queryParams.push(identifier);
 		} else {
 			query += "username = $1";
 			queryParams.push(identifier);
 		}
 
-		const {rows: users} = await connection.query(query, queryParams);
+		const {rows: users} = await connection.query(query, queryParams); // eslint-disable-line no-unused-vars
 
 		if (users.length > 0) {
 			const user = users[0];
@@ -167,7 +170,7 @@ router.post("/login", async (req, res) => {
 				const token = jwt.sign({username: user.username}, secretKey, {
 					expiresIn: "24h"
 				});
-				await connection.end();
+				await connection.end(); // eslint-disable-line no-unused-vars
 				res.status(200).json({
 					message: "User logged in successfully",
 					token
@@ -196,6 +199,7 @@ router.get("/auth/google", (req, res) => {
 router.get("/auth/google/callback", async (req, res) => {
 	try {
 		const {tokens} = await oauth2Client.getToken(req.query.code); // Exchange the authorization code for tokens
+
 		oauth2Client.setCredentials(tokens);
 
 		const oauth2 = google.oauth2({
@@ -269,7 +273,7 @@ router.post("/register-google-user", async (req, res) => {
 
 		// if the user does not exist in the database, insert new user details
 		const result = await connection.query(
-			'INSERT INTO users (email, "fullName", username, "phoneNumber") VALUES ($1, $2, $3, $4) RETURNING *',
+			"INSERT INTO users (email, \"fullName\", username, \"phoneNumber\") VALUES ($1, $2, $3, $4) RETURNING *",
 			[email, name, username, phoneNumber]
 		);
 		const newUser = result.rows[0];
@@ -291,7 +295,7 @@ router.get("/profile", verifyToken, async (req, res) => {
 		const connection = createConnection();
 		// Retrieve user details from extracted username...
 		const {rows: user} = await connection.query(
-			'SELECT username, "fullName", email, "phoneNumber", "userID" FROM users WHERE username = $1',
+			"SELECT username, \"fullName\", email, \"phoneNumber\", \"userID\" FROM users WHERE username = $1",
 			[username]
 		);
 
@@ -311,7 +315,7 @@ router.get("/userID", async (req, res) => {
 		const connection = createConnection();
 		// Retrieve userID from queried username.
 		const {rows: user} = await connection.query(
-			'SELECT "userID" FROM users WHERE username = $1',
+			"SELECT \"userID\" FROM users WHERE username = $1",
 			[req.query.username]
 		);
 
@@ -396,7 +400,7 @@ router.post("/forgot-password", async (req, res) => {
 
 		// Save the resetToken and expiration time to the user's record in the database
 		await connection.query(
-			'UPDATE users SET "resetPasswordToken" = $1, "resetPasswordExpires" = $2 WHERE email = $3',
+			"UPDATE users SET \"resetPasswordToken\" = $1, \"resetPasswordExpires\" = $2 WHERE email = $3",
 			[resetToken, resetExpires, email]
 		);
 
@@ -431,10 +435,10 @@ router.post("/forgot-password", async (req, res) => {
 					error: "Failed to send forgot password email"
 				});
 			} else {
+				console.log(info);
 				res.json({message: "Reset link sent to your email address"});
 			}
 		});
-
 		await connection.end();
 	} catch (error) {
 		res.status(500).json({error: "Failed to send forgot password email"});
@@ -449,7 +453,7 @@ router.post("/reset-password", async (req, res) => {
 
 		// Verify token and its expiration
 		const {rows: users} = await connection.query(
-			'SELECT * FROM users WHERE "resetPasswordToken" = $1 AND "resetPasswordExpires" > NOW()',
+			"SELECT * FROM users WHERE \"resetPasswordToken\" = $1 AND \"resetPasswordExpires\" > NOW()",
 			[token]
 		);
 		if (users.length === 0) {
@@ -458,7 +462,7 @@ router.post("/reset-password", async (req, res) => {
 
 		const hashedPassword = await bcryptjs.hash(password, 10);
 		await connection.query(
-			'UPDATE users SET password = $1, "resetPasswordToken" = NULL, "resetPasswordExpires" = NULL WHERE "userID" = $2',
+			"UPDATE users SET password = $1, \"resetPasswordToken\" = NULL, \"resetPasswordExpires\" = NULL WHERE \"userID\" = $2",
 			[hashedPassword, users[0].userID]
 		);
 
@@ -480,7 +484,7 @@ router.post(
 
 			await uploadImageToS3(`user/${userID}/bruh0.jpg`, image.buffer);
 			const query =
-				'UPDATE users SET "isProfilePicture" = true WHERE "userID" = $1';
+				"UPDATE users SET \"isProfilePicture\" = true WHERE \"userID\" = $1";
 			await connection.query(query, [userID]);
 
 			res.status(200).json({
@@ -497,7 +501,7 @@ router.get("/is-profile-picture/:userID", async (req, res) => {
 		const {userID} = req.params; // extract userID from request parameters
 		const connection = createConnection();
 		const query =
-			'SELECT "isProfilePicture" FROM users WHERE "userID" = $1';
+			"SELECT \"isProfilePicture\" FROM users WHERE \"userID\" = $1";
 		const {rows} = await connection.query(query, [userID]);
 
 		if (rows.length === 0) {
@@ -517,7 +521,7 @@ router.post("/set-bio", verifyToken, async (req, res) => {
 	const {bio} = req.body;
 	try {
 		const connection = createConnection();
-		const query = 'UPDATE users SET bio = $1 WHERE "userID" = $2';
+		const query = "UPDATE users SET bio = $1 WHERE \"userID\" = $2";
 		await connection.query(query, [bio, userID]);
 		res.status(200).json({message: "Bio changed successfully"});
 	} catch (error) {
@@ -530,7 +534,7 @@ router.post("/set-location", verifyToken, async (req, res) => {
 	const {city} = req.body;
 	try {
 		const connection = createConnection();
-		const query = 'UPDATE users SET city = $1 WHERE "userID" = $2';
+		const query = "UPDATE users SET city = $1 WHERE \"userID\" = $2";
 		await connection.query(query, [city, userID]);
 		res.status(200).json({message: "City changed successfully"});
 	} catch (error) {
@@ -544,7 +548,7 @@ router.get("/public-profile/:userID", async (req, res) => {
 		const connection = createConnection();
 		// Retrieve user details from extracted username...
 		const {rows: user} = await connection.query(
-			'SELECT username, "fullName", bio, city FROM users WHERE "userID" = $1',
+			"SELECT username, \"fullName\", bio, city FROM users WHERE \"userID\" = $1",
 			[userID]
 		);
 
@@ -566,7 +570,7 @@ router.get("/:userID/", async (req, res) => {
 		// Retrieve user details from database if user exists.
 		const connection = createConnection();
 		const {rows} = await connection.query(
-			'SELECT * FROM users WHERE "userID" =  $1 LIMIT 1',
+			"SELECT * FROM users WHERE \"userID\" =  $1 LIMIT 1",
 			[userID]
 		);
 		res.status(200).send(rows);

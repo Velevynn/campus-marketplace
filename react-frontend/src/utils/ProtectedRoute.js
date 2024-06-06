@@ -5,7 +5,7 @@ import {Navigate} from "react-router-dom";
 
 const ProtectedRoute = ({children}) => {
 	const isAuthenticated =
-		localStorage.getItem(process.env.JWT_TOKEN_NAME) !== null;
+		localStorage.getItem(process.env.REACT_APP_JWT_TOKEN_NAME) !== null;
 	if (isAuthenticated == false) {
 		return <Navigate to="/login" />;
 	}

@@ -22,13 +22,11 @@
   "lint-staged": {
     "frontend/**/*.js": [
       "cd frontend && eslint --fix",
-      "cd frontend && prettier --write",
-      "cd frontend && git add"
+      "cd frontend && prettier --write"
     ],
     "backend/**/*.js": [
       "cd backend && eslint --fix",
-      "cd backend && prettier --write",
-      "cd backend && git add"
+      "cd backend && prettier --write"
     ]
   }
 }

@@ -39,7 +39,9 @@ function ProfilePage() {
 
 	// fetch personal user profile data & credentials
 	const fetchUserProfile = async () => {
-		const token = localStorage.getItem(process.env.JWT_TOKEN_NAME);
+		const token = localStorage.getItem(
+			process.env.REACT_APP_JWT_TOKEN_NAME
+		);
 		if (!token) {
 			navigate("/login");
 			return;
@@ -90,7 +92,7 @@ function ProfilePage() {
 	}; // navigation lambda
 
 	const handleSignOut = () => {
-		localStorage.removeItem(process.env.JWT_TOKEN_NAME);
+		localStorage.removeItem(process.env.REACT_APP_JWT_TOKEN_NAME);
 		navigate("/login");
 	}; // sign out is triggered by removing user JWT JSON Web Token
 
@@ -105,7 +107,9 @@ function ProfilePage() {
 
 	// deletion is facilitated by JSON WebToken and the user confirming their username and password
 	const handleDeleteConfirmation = async () => {
-		const token = localStorage.getItem(process.env.JWT_TOKEN_NAME);
+		const token = localStorage.getItem(
+			process.env.REACT_APP_JWT_TOKEN_NAME
+		);
 		if (!token) {
 			navigate("/login");
 			return;
@@ -127,7 +131,7 @@ function ProfilePage() {
 
 			if (response.status === 200) {
 				// after successful deletion, redirect to login
-				localStorage.removeItem(process.env.JWT_TOKEN_NAME);
+				localStorage.removeItem(process.env.REACT_APP_JWT_TOKEN_NAME);
 				navigate("/login");
 			}
 		} catch (error) {

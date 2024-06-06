@@ -1,6 +1,7 @@
 // listingRoutes.js
+/* global require, createChatSession, sendMessage, module, process */
 const express = require("express");
-const {indexing_v3} = require("googleapis");
+const {indexing_v3} = require("googleapis"); // eslint-disable-line no-unused-vars
 const multer = require("multer");
 const upload = multer();
 const router = express.Router();
@@ -68,7 +69,6 @@ router.post("/:listingID/bookmark/", async (req, res) => {
 
 // Retrieve listings with pagination and optional query parameters
 router.get("/", async (req, res) => {
-	console.log("retriving all listings");
 	try {
 		let {q, page} = req.query;
 
@@ -109,7 +109,7 @@ router.get("/:listingID/", async (req, res) => {
 		// Retrieve listing details from database if listing exists.
 		const connection = createConnection();
 		const {rows} = await connection.query(
-			'SELECT * FROM listings WHERE "listingID" =  $1 LIMIT 1',
+			"SELECT * FROM listings WHERE \"listingID\" =  $1 LIMIT 1",
 			[listingID]
 		);
 		res.status(200).send(rows);
@@ -131,7 +131,7 @@ router.delete("/:listingID/", async (req, res) => {
 		// Retrieve listing details from database if listing exists.
 		const connection = createConnection();
 		const result = await connection.query(
-			'DELETE FROM listings WHERE "listingID" =  $1',
+			"DELETE FROM listings WHERE \"listingID\" =  $1",
 			[listingID]
 		);
 
@@ -153,7 +153,7 @@ router.delete("/:listingID/bookmark/", async (req, res) => {
 	try {
 		const connection = createConnection();
 		const result = await connection.query(
-			'DELETE FROM bookmarks WHERE "userID" = $1 AND "listingID" = $2',
+			"DELETE FROM bookmarks WHERE \"userID\" = $1 AND \"listingID\" = $2",
 			[req.query.userID, req.query.listingID]
 		);
 
@@ -161,10 +161,10 @@ router.delete("/:listingID/bookmark/", async (req, res) => {
 			return res.status(404).send("Bookmark not found.");
 		}
 
-    const rows = await connection.query(
-      'UPDATE listings SET "bookmarkCount" = "bookmarkCount" - $1 WHERE "listingID" = $2',
-      [deleted, req.query.listingID]
-    )
+		await connection.query(
+			"UPDATE listings SET \"bookmarkCount\" = \"bookmarkCount\" - $1 WHERE \"listingID\" = $2",
+			[result.rowCount, req.query.listingID]
+		);
 
 		// Successful deletion.
 		res.status(204).send();
@@ -183,7 +183,7 @@ router.get("/images/:listingID/", async (req, res) => {
 		// Retrieve image list from database if listing exists.
 		const connection = createConnection();
 		const {rows} = await connection.query(
-			'SELECT * FROM images WHERE "listingID" = $1',
+			"SELECT * FROM images WHERE \"listingID\" = $1",
 			[listingID]
 		);
 
@@ -201,7 +201,7 @@ router.get("/:listingID/bookmark/", async (req, res) => {
 	try {
 		const connection = createConnection();
 		const {rows} = await connection.query(
-			'SELECT * FROM bookmarks WHERE "userID" = $1 AND "listingID" = $2',
+			"SELECT * FROM bookmarks WHERE \"userID\" = $1 AND \"listingID\" = $2",
 			[req.query.userID, req.query.listingID]
 		);
 
@@ -226,11 +226,10 @@ router.get("/bookmark/:userID", async (req, res) => {
 	try {
 		const connection = createConnection();
 		const {rows} = await connection.query(
-			'SELECT * FROM bookmarks WHERE "userID" = $1',
+			"SELECT * FROM bookmarks WHERE \"userID\" = $1",
 			[req.params.userID]
 		);
 
-		console.log("Returned the bookmarks belonging to a particular user");
 		res.status(200).send(rows);
 		await connection.end();
 	} catch (error) {
@@ -246,12 +245,11 @@ router.get("/bookmark/:userID", async (req, res) => {
 
 // Retrieve listings for given userID.
 router.get("/mylistings/:userID", async (req, res) => {
-	console.log(req.params.userID);
 	try {
 		// Retrieve image list from database if listing exists.
 		const connection = createConnection();
 		const {rows} = await connection.query(
-			'SELECT * FROM listings WHERE "userID" = $1',
+			"SELECT * FROM listings WHERE \"userID\" = $1",
 			[req.params.userID]
 		);
 
@@ -331,7 +329,7 @@ router.put("/images/:listingID", upload.array("image"), async (req, res) => {
 
 async function updateImages(listingID, imageUrls, newImages) {
 	try {
-		for (index in imageUrls) {
+		for (const index in imageUrls) {
 			//Delete the image from S3
 			const pattern = /\/image(\d+)\?/;
 			const match = pattern.exec(imageUrls[index].imageURL); //Regex to get imageNum from url
@@ -339,7 +337,7 @@ async function updateImages(listingID, imageUrls, newImages) {
 		}
 
 		let images = await listS3Objects(listingID);
-		for (index in images) {
+		for (const index in images) {
 			//Rename all left over images to remove gaps in imageNums
 			await renameS3Object(
 				`${listingID}/image${index}`,
@@ -357,7 +355,7 @@ async function updateImages(listingID, imageUrls, newImages) {
 
 		// Delete all imageURLS with that listingID from table
 		const connection = createConnection();
-		await connection.query('DELETE FROM images WHERE "listingID" = $1', [
+		await connection.query("DELETE FROM images WHERE \"listingID\" = $1", [
 			listingID
 		]);
 
@@ -375,9 +373,9 @@ async function addImages(listingID, numImages) {
 		const connection = createConnection();
 
 		// Insert each image into the database, one at a time.
-		for (i = 0; i < numImages; i++) {
+		for (let i = 0; i < numImages; i++) {
 			await connection.query(
-				'INSERT INTO images ("listingID", "imageURL") VALUES ($1, $2)',
+				"INSERT INTO images (\"listingID\", \"imageURL\") VALUES ($1, $2)",
 				[
 					listingID,
 					`https://haggleimgs.s3.amazonaws.com/${listingID}/image${i}?rand=${Math.floor(Math.random() * 100000)}`
@@ -403,7 +401,7 @@ async function addListing(listing) {
 		// Insert listing details into database, returning the new listingID.
 		const connection = createConnection();
 		const {rows} = await connection.query(
-			'INSERT INTO listings ("userID", title, price, description, "expirationDate", quantity, category) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING "listingID"',
+			"INSERT INTO listings (\"userID\", title, price, description, \"expirationDate\", quantity, category) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING \"listingID\"",
 			[
 				listing.userID,
 				listing.title,
@@ -430,15 +428,18 @@ async function addListing(listing) {
 async function addBookmark(userID, listingID, title) {
 	try {
 		const connection = createConnection();
+
 		const {rows} = await connection.query(
-			'INSERT INTO bookmarks ("userID", "listingID", title) VALUES ($1, $2, $3)',
+			"INSERT INTO bookmarks (\"userID\", \"listingID\", title) VALUES ($1, $2, $3)",
 			[userID, listingID, title]
 		);
 
 		const {result} = await connection.query(
-			'UPDATE listings SET "bookmarkCount" = "bookmarkCount" + 1 WHERE "listingID" = $1',
+			"UPDATE listings SET \"bookmarkCount\" = \"bookmarkCount\" + 1 WHERE \"listingID\" = $1",
 			[listingID]
 		);
+		console.log(rows);
+		console.log(result);
 
 		await connection.end();
 		return;

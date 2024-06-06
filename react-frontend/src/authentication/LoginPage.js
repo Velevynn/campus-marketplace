@@ -45,7 +45,13 @@ function LoginPage() {
 				process.env.REACT_APP_BACKEND_LINK + "/users/login",
 				requestBody
 			);
-			localStorage.setItem(process.env.JWT_TOKEN_NAME, response.data.token); // Stores the received token in local storage and navigates to the profile page
+			console.log(
+				"jwt token name: " + process.env.REACT_APP_JWT_TOKEN_NAME
+			);
+			localStorage.setItem(
+				process.env.REACT_APP_JWT_TOKEN_NAME,
+				response.data.token
+			); // Stores the received token in local storage and navigates to the profile page
 			const url = process.env.REACT_APP_FRONTEND_LINK + "/profile";
 			window.history.pushState({}, "", url);
 			window.dispatchEvent(new PopStateEvent("popstate"));
@@ -73,7 +79,8 @@ function LoginPage() {
 	// Effect hook to update the form validity based on the credentials state
 	useEffect(() => {
 		const isValid =
-			credentials.identifier.length > 0 && credentials.password.length > 0;
+			credentials.identifier.length > 0 &&
+			credentials.password.length > 0;
 		setIsFormValid(isValid);
 	}, [credentials]);
 
@@ -92,7 +99,10 @@ function LoginPage() {
 
 					<form onSubmit={handleSubmit}>
 						{errorMessage && (
-							<p className="margin" style={{color: "red", fontSize: "12px"}}>
+							<p
+								className="margin"
+								style={{color: "red", fontSize: "12px"}}
+							>
 								{errorMessage}
 							</p>
 						)}
@@ -139,7 +149,10 @@ function LoginPage() {
 								required
 							/>
 
-							<div className="input-icon" onClick={togglePasswordVisibility}>
+							<div
+								className="input-icon"
+								onClick={togglePasswordVisibility}
+							>
 								{passwordVisible ? <FaEye /> : <FaEyeSlash />}
 							</div>
 						</div>
@@ -154,14 +167,19 @@ function LoginPage() {
 						</div>
 
 						<div className="margin">
-							<button className="span-button" onClick={handleGoogleLogin}>
+							<button
+								className="span-button"
+								onClick={handleGoogleLogin}
+							>
 								<div className="vertical-center">
 									<img
 										className="google-img"
 										src={googlepng}
 										alt="google"
 									></img>
-									<span className="margin-left">Continue with Google</span>
+									<span className="margin-left">
+										Continue with Google
+									</span>
 								</div>
 							</button>
 						</div>

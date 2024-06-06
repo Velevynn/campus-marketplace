@@ -83,7 +83,7 @@ function ProfileDetails(props) {
 				},
 				{
 					headers: {
-						Authorization: `Bearer ${localStorage.getItem(process.env.JWT_TOKEN_NAME)}`
+						Authorization: `Bearer ${localStorage.getItem(process.env.REACT_APP_JWT_TOKEN_NAME)}`
 					}
 				}
 			);
@@ -142,7 +142,7 @@ function ProfileDetails(props) {
 				},
 				{
 					headers: {
-						Authorization: `Bearer ${localStorage.getItem(process.env.JWT_TOKEN_NAME)}`
+						Authorization: `Bearer ${localStorage.getItem(process.env.REACT_APP_JWT_TOKEN_NAME)}`
 					}
 				}
 			);

@@ -15,7 +15,7 @@ const ResetPasswordPage = () => {
 	const [passwordFocused, setPasswordFocused] = useState(false);
 	const navigate = useNavigate();
 	const [searchParams] = useSearchParams();
-	const token = searchParams.get(process.env.JWT_TOKEN_NAME);
+	const token = searchParams.get(process.env.REACT_APP_JWT_TOKEN_NAME);
 
 	// Password validity checks
 	//const passwordHasContent = password.length > 0;

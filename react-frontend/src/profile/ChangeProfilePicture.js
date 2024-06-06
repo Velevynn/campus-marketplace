@@ -83,7 +83,7 @@ function ChangeProfilePicture(props) {
 				{
 					headers: {
 						"Content-Type": "multipart/form-data",
-						Authorization: `Bearer ${localStorage.getItem(process.env.JWT_TOKEN_NAME)}`
+						Authorization: `Bearer ${localStorage.getItem(process.env.REACT_APP_JWT_TOKEN_NAME)}`
 					}
 				}
 			);

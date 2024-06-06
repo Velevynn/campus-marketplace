@@ -84,7 +84,7 @@ function Marketplace() {
 		<div>
 			{q && (
 				<div
-					className="container" style={{margin: '0 5rem'}}
+					className="container"
 					style={{
 						display: "flex",
 						alignItems: "center",
@@ -103,7 +103,7 @@ function Marketplace() {
 					<h1 style={{marginBottom: "40px", paddingLeft: "10px"}}>
 						{query}
 					</h1>
-        <CategoryBar />
+					<CategoryBar />
 				</div>
 			)}
 
