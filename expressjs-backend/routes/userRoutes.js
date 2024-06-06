@@ -1,4 +1,5 @@
 // userRoutes.js
+/* global require, process, module */
 const express = require("express");
 const multer = require("multer");
 const router = express.Router();
@@ -112,6 +113,7 @@ router.post("/register", async (req, res) => {
 		} // ensure fields are filled, throw error if not
 		// Asynchronously hash the password using bcrypt library. 10 saltrounds = hash password 10 times. the more rounds the longer it takes to finish hashing
 		const bcrypt = require("bcryptjs");
+		console.log(bcrypt);
 		const hashedPassword = await bcryptjs.hash(password, 10); // await pauses execution of async function for bcrypt.hash to run
 		const connection = createConnection();
 
@@ -121,6 +123,7 @@ router.post("/register", async (req, res) => {
 			'INSERT INTO users (username, "fullName", password, email, "phoneNumber") VALUES ($1, $2, $3, $4, $5)',
 			[username, full_name, hashedPassword, email, phoneNumber]
 		);
+		console.log(result);
 		await connection.end();
 		res.status(201).json({message: "User registered successfully"}); // HTTP 201 (Created) - led to creation of new resource
 	} catch (error) {
@@ -138,7 +141,7 @@ router.post("/login", async (req, res) => {
 	}
 
 	try {
-		connection = createConnection();
+		let connection = createConnection(); // eslint-disable-line no-unused-vars
 		let query = "SELECT * FROM users WHERE ";
 		let queryParams = [];
 
@@ -153,7 +156,7 @@ router.post("/login", async (req, res) => {
 			queryParams.push(identifier);
 		}
 
-		const {rows: users} = await connection.query(query, queryParams);
+		const {rows: users} = await connection.query(query, queryParams); // eslint-disable-line no-unused-vars
 
 		if (users.length > 0) {
 			const user = users[0];
@@ -167,7 +170,7 @@ router.post("/login", async (req, res) => {
 				const token = jwt.sign({username: user.username}, secretKey, {
 					expiresIn: "24h"
 				});
-				await connection.end();
+				await connection.end(); // eslint-disable-line no-unused-vars
 				res.status(200).json({
 					message: "User logged in successfully",
 					token
@@ -431,10 +434,10 @@ router.post("/forgot-password", async (req, res) => {
 					error: "Failed to send forgot password email"
 				});
 			} else {
+				console.log(info);
 				res.json({message: "Reset link sent to your email address"});
 			}
 		});
-
 		await connection.end();
 	} catch (error) {
 		res.status(500).json({error: "Failed to send forgot password email"});
@@ -554,26 +557,6 @@ router.get("/public-profile/:userID", async (req, res) => {
 		}
 	} catch (error) {
 		res.status(500).json({error: "Failed to fetch user profile"}); // HTTP 500 (Internal Server Error) - unexpected error/condition
-	}
-});
-
-// Retrieve user details for given userID.
-router.get("/:userID/", async (req, res) => {
-	try {
-		// Extract userID from query parameters.
-		const {userID} = req.params;
-
-		// Retrieve user details from database if user exists.
-		const connection = createConnection();
-		const {rows} = await connection.query(
-			'SELECT * FROM users WHERE "userID" =  $1 LIMIT 1',
-			[userID]
-		);
-		res.status(200).send(rows);
-		await connection.end();
-	} catch (error) {
-		console.error("An error occurred while fetching the user:", error);
-		res.status(500).send("An error occurred while fetching the user");
 	}
 });
 

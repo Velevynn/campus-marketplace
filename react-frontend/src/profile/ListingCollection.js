@@ -58,7 +58,7 @@ function ListingCollection(props) {
 						) : (
 							listings.map(listing => (
 								<div
-									key={listing.bookmarkID}
+									key={listing.listingID}
 									className="collection-item"
 								>
 									<Link
@@ -137,13 +137,13 @@ function ListingCollection(props) {
 ListingCollection.propTypes = {
 	bookmarks: PropTypes.arrayOf(
 		PropTypes.shape({
-			bookmarkID: PropTypes.string.isRequired,
+			bookmarkID: PropTypes.string,
 			listingID: PropTypes.string.isRequired,
 			title: PropTypes.string.isRequired,
 			userID: PropTypes.string.isRequired
 		})
 	).isRequired,
-	time: PropTypes.string.isRequired,
+	time: PropTypes.number.isRequired,
 	custom: PropTypes.bool.isRequired
 };
 

@@ -1,6 +1,7 @@
 // listingRoutes.js
+/* global require, createChatSession, sendMessage, module, process */
 const express = require("express");
-const {indexing_v3} = require("googleapis");
+const {indexing_v3} = require("googleapis"); // eslint-disable-line no-unused-vars
 const multer = require("multer");
 const upload = multer();
 const router = express.Router();
@@ -165,6 +166,7 @@ router.delete("/:listingID/bookmark/", async (req, res) => {
 			'UPDATE listings SET "bookmarkCount" = "bookmarkCount" - 1 WHERE "listingID" = $1',
 			[req.query.listingID]
 		);
+		console.log(rows);
 
 		// Successful deletion.
 		res.status(204).send();
@@ -331,7 +333,7 @@ router.put("/images/:listingID", upload.array("image"), async (req, res) => {
 
 async function updateImages(listingID, imageUrls, newImages) {
 	try {
-		for (index in imageUrls) {
+		for (const index in imageUrls) {
 			//Delete the image from S3
 			const pattern = /\/image(\d+)\?/;
 			const match = pattern.exec(imageUrls[index].imageURL); //Regex to get imageNum from url
@@ -339,7 +341,7 @@ async function updateImages(listingID, imageUrls, newImages) {
 		}
 
 		let images = await listS3Objects(listingID);
-		for (index in images) {
+		for (const index in images) {
 			//Rename all left over images to remove gaps in imageNums
 			await renameS3Object(
 				`${listingID}/image${index}`,
@@ -375,7 +377,7 @@ async function addImages(listingID, numImages) {
 		const connection = createConnection();
 
 		// Insert each image into the database, one at a time.
-		for (i = 0; i < numImages; i++) {
+		for (let i = 0; i < numImages; i++) {
 			await connection.query(
 				'INSERT INTO images ("listingID", "imageURL") VALUES ($1, $2)',
 				[
@@ -430,6 +432,7 @@ async function addListing(listing) {
 async function addBookmark(userID, listingID, title) {
 	try {
 		const connection = createConnection();
+
 		const {rows} = await connection.query(
 			'INSERT INTO bookmarks ("userID", "listingID", title) VALUES ($1, $2, $3)',
 			[userID, listingID, title]
@@ -439,6 +442,8 @@ async function addBookmark(userID, listingID, title) {
 			'UPDATE listings SET "bookmarkCount" = "bookmarkCount" + 1 WHERE "listingID" = $1',
 			[listingID]
 		);
+		console.log(rows);
+		console.log(result);
 
 		await connection.end();
 		return;

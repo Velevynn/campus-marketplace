@@ -172,7 +172,7 @@ function ProfilePage() {
 			) : (
 				<div>
 					<div className="vertical-center profile-page-layout margin padding-top">
-						<div className="small-container drop-shadow">
+						<div className="small-container drop-shadow profile-height">
 							<ChangeProfilePicture
 								userID={userProfile.userID}
 								time={timestamp}
@@ -222,11 +222,15 @@ function ProfilePage() {
 								<button
 									className="margin"
 									onClick={handleChangePassword}
+									style={{fontSize: "12px"}}
 								>
 									Change Password
 								</button>
-								<button onClick={handleSignOut}>
-									Sign Out
+								<button
+									onClick={handleSignOut}
+									style={{fontSize: "12px"}}
+								>
+									Sign Out ↪
 								</button>
 							</div>
 						</div>
@@ -298,10 +302,14 @@ function ProfilePage() {
 													? "button"
 													: "disabled"
 											}
+											style={{fontSize: "13px"}}
 										>
 											Confirm Delete
 										</button>
-										<button onClick={handleCancelDelete}>
+										<button
+											onClick={handleCancelDelete}
+											style={{fontSize: "13px"}}
+										>
 											Cancel
 										</button>
 									</div>
