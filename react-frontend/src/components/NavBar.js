@@ -9,7 +9,7 @@ function getProfileName() {
 	const token = localStorage.getItem(process.env.REACT_APP_JWT_TOKEN_NAME);
 	try {
 		if (token !== null) {
-			const decodedToken = jwntDecode(token);
+			const decodedToken = jwtDecode(token);
 			if (decodedToken.exp && decodedToken.exp > Date.now() / 1000) {
 				const username = decodedToken.username;
 				// capitalize the first letter and convert the rest to lowercase

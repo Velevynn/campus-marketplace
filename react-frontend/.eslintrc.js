@@ -38,6 +38,7 @@ module.exports = {
 		upload: "readonly",
 		router: "readonly",
 		Pool: "readonly",
-		dotenv: "readonly"
+		dotenv: "readonly",
+		process: "readonly"
 	}
 };
