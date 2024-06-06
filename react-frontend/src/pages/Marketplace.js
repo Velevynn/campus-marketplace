@@ -5,6 +5,7 @@ import Entry from "../components/MarketplaceEntry";
 import ScrollToTopButton from "../components/ScrollToTopButton";
 import LoadingSpinner from "../components/LoadingSpinner"; // Import the loading spinner component
 import ArrowButton from "../components/ArrowButton";
+import CategoryBar from "../components/CategoryBar";
 
 function Marketplace() {
 	const [searchParams] = useSearchParams();
@@ -83,11 +84,12 @@ function Marketplace() {
 		<div>
 			{q && (
 				<div
-					className="left-container"
+					className="full-container"
 					style={{
 						display: "flex",
 						alignItems: "center",
-						marginBottom: "-50px"
+						marginBottom: "-50px",
+						marginLeft: "5rem"
 					}}
 				>
 					<div
@@ -104,6 +106,16 @@ function Marketplace() {
 					</h1>
 				</div>
 			)}
+
+			<div className="full-container">
+				<div
+					style={{
+						margin: "0 5rem"
+					}}
+				>
+					<CategoryBar />
+				</div>
+			</div>
 
 			<div className="full-container">
 				{isLoading ? ( // Render loading spinner if isLoading is true
