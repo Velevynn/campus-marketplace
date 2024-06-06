@@ -36,4 +36,4 @@ https://docs.google.com/document/d/1Vw8oZdVeHm_3ThR43fCK_tF3VCOzy2mSXvV-OqpNOiI/
 <img width="620" alt="image" src="https://github.com/Velevynn/haggle/assets/112510910/f5843344-2aa8-4062-af82-534369527d3d">
 
 - Date ran: 06/06/2024
-- Time Ran: 1:17 PM
+- Time Ran: 1:21 PM
