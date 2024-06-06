@@ -18,7 +18,7 @@ function CategoryBar() {
 		"Electronics",
 		"Entertainment",
 		"Family",
-		"Free Stuff",
+		"Free",
 		"Garden & Outdoor",
 		"Hobbies",
 		"Home Goods",
