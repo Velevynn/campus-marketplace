@@ -22,7 +22,6 @@ module.exports = {
 	plugins: ["react"],
 	rules: {
 		"no-console": "off",
-		"linebreak-style": ["error", "unix"],
 		quotes: ["error", "double"],
 		semi: ["error", "always"],
 		"no-mixed-spaces-and-tabs": ["error", "smart-tabs"]
