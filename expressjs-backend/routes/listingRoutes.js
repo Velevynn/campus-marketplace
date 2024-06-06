@@ -69,7 +69,6 @@ router.post("/:listingID/bookmark/", async (req, res) => {
 
 // Retrieve listings with pagination and optional query parameters
 router.get("/", async (req, res) => {
-	console.log("retriving all listings");
 	try {
 		let {q, page} = req.query;
 
@@ -232,7 +231,6 @@ router.get("/bookmark/:userID", async (req, res) => {
 			[req.params.userID]
 		);
 
-		console.log("Returned the bookmarks belonging to a particular user");
 		res.status(200).send(rows);
 		await connection.end();
 	} catch (error) {
@@ -248,7 +246,6 @@ router.get("/bookmark/:userID", async (req, res) => {
 
 // Retrieve listings for given userID.
 router.get("/mylistings/:userID", async (req, res) => {
-	console.log(req.params.userID);
 	try {
 		// Retrieve image list from database if listing exists.
 		const connection = createConnection();
