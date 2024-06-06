@@ -7,7 +7,7 @@
 		"test": "jest --coverage",
 		"dev": "nodemon backend.js",
 		"start": "node backend.js",
-		"prepare": "husky install"
+		"prepare": "cd .. && husky install .husky && cd expressjs-backend"
 	},
 	"author": "",
 	"license": "ISC",
