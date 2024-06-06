@@ -34,5 +34,7 @@
 https://docs.google.com/document/d/1Vw8oZdVeHm_3ThR43fCK_tF3VCOzy2mSXvV-OqpNOiI/view?usp=sharing
 
 <img width="620" alt="image" src="https://github.com/Velevynn/haggle/assets/112510910/edebd5e0-e841-4119-aa66-7df25a7a441c">
+
 Date ran: 06/06/2024
+
 Time Ran: 1:17pm
