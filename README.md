@@ -31,9 +31,8 @@
 
 **--- Product Spec ---**
 
-https://docs.google.com/document/d/1q0nC7W3DTViva0hseFEp7Kv1w5NV9NboWGGN5qR_MrE/edit?usp=sharing
+https://docs.google.com/document/d/1Vw8oZdVeHm_3ThR43fCK_tF3VCOzy2mSXvV-OqpNOiI/view?usp=sharing
 
-<img width="620" alt="image" src="https://github.com/Velevynn/haggle/assets/113927390/f92690a1-46d0-4284-9858-15deabe1a7ec">
-Date ran: 03/17/2024
-Time Ran: 6:10pm
-*minimal s3 coverage since it's just a function which uploads to the s3 bucket and we couldn't find a way to mock the s3 upload*
+<img width="620" alt="image" src="https://github.com/Velevynn/haggle/assets/112510910/edebd5e0-e841-4119-aa66-7df25a7a441c">
+Date ran: 06/06/2024
+Time Ran: 1:17pm
