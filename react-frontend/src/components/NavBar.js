@@ -6,10 +6,10 @@ import SearchBar from "./SearchBar";
 import {jwtDecode} from "jwt-decode";
 
 function getProfileName() {
-	const token = localStorage.getItem(process.env.JWT_TOKEN_NAME);
+	const token = localStorage.getItem(process.env.REACT_APP_JWT_TOKEN_NAME);
 	try {
 		if (token !== null) {
-			const decodedToken = jwtDecode(token);
+			const decodedToken = jwntDecode(token);
 			if (decodedToken.exp && decodedToken.exp > Date.now() / 1000) {
 				const username = decodedToken.username;
 				// capitalize the first letter and convert the rest to lowercase

@@ -65,7 +65,9 @@ function EditListing() {
 	useEffect(() => {
 		const fetchListing = async () => {
 			try {
-				const token = localStorage.getItem(process.env.JWT_TOKEN_NAME);
+				const token = localStorage.getItem(
+					process.env.REACT_APP_JWT_TOKEN_NAME
+				);
 				const decodedToken = jwtDecode(token);
 				const username = decodedToken.username;
 				console.log("username: ", username);
@@ -241,7 +243,9 @@ function EditListing() {
 	const submitForm = async () => {
 		if (listing.title !== "" && listing.price !== "") {
 			try {
-				const token = localStorage.getItem(process.env.JWT_TOKEN_NAME);
+				const token = localStorage.getItem(
+					process.env.REACT_APP_JWT_TOKEN_NAME
+				);
 
 				// Send PUT request to update listing details
 				await axios.put(

@@ -16,12 +16,14 @@ const ChangePasswordPage = () => {
 	const navigate = useNavigate();
 	// Accessing the password reset token from the URL search parameters
 	const [searchParams] = useSearchParams();
-	const token = searchParams.get(process.env.JWT_TOKEN_NAME);
+	const token = searchParams.get(process.env.REACT_APP_JWT_TOKEN_NAME);
 
 	// Validation checks for the new password
 	//const passwordHasContent = password.length > 0;
 	const isPasswordValid =
-		password.length >= 8 && /[0-9]/.test(password) && /[\W_]/.test(password);
+		password.length >= 8 &&
+		/[0-9]/.test(password) &&
+		/[\W_]/.test(password);
 
 	// Toggles the visibility of the password input field
 	const togglePasswordVisibility = () => {
@@ -87,7 +89,8 @@ const ChangePasswordPage = () => {
 					/>
 					<h1 style={{marginTop: "0px"}}>Change Password</h1>
 					<p1 style={{marginTop: "0px"}}>
-						Enter your new password and check it to confirm it&apos;s correct.
+						Enter your new password and check it to confirm
+						it&apos;s correct.
 					</p1>
 					<div className="margin input">
 						<input
@@ -101,7 +104,10 @@ const ChangePasswordPage = () => {
 							style={{paddingRight: "2.5rem"}}
 						/>
 
-						<div className="input-icon" onClick={togglePasswordVisibility}>
+						<div
+							className="input-icon"
+							onClick={togglePasswordVisibility}
+						>
 							{passwordVisible ? <FaEye /> : <FaEyeSlash />}
 						</div>
 					</div>
@@ -109,7 +115,8 @@ const ChangePasswordPage = () => {
 						<div>
 							<div
 								style={{
-									color: password.length >= 8 ? "green" : "red"
+									color:
+										password.length >= 8 ? "green" : "red"
 								}}
 							>
 								{password.length >= 8 ? (
@@ -133,7 +140,9 @@ const ChangePasswordPage = () => {
 							</div>
 							<div
 								style={{
-									color: /[0-9]/.test(password) ? "green" : "red"
+									color: /[0-9]/.test(password)
+										? "green"
+										: "red"
 								}}
 							>
 								{/[0-9]/.test(password) ? (
@@ -157,7 +166,9 @@ const ChangePasswordPage = () => {
 							</div>
 							<div
 								style={{
-									color: /[\W_]/.test(password) ? "green" : "red"
+									color: /[\W_]/.test(password)
+										? "green"
+										: "red"
 								}}
 							>
 								{/[\W_]/.test(password) ? (

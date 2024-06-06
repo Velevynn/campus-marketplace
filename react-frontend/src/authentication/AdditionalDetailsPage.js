@@ -46,7 +46,7 @@ function AdditionalDetailsPage() {
 				userData
 			);
 			localStorage.setItem(
-				process.env.JWT_TOKEN_NAME,
+				process.env.REACT_APP_JWT_TOKEN_NAME,
 				response.data.token
 			);
 			navigate("/profile"); // Redirect to profile page after registration

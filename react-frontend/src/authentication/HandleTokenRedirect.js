@@ -7,11 +7,14 @@ function HandleTokenRedirect() {
 
 	useEffect(() => {
 		const params = new URLSearchParams(location.search);
-		const token = params.get(process.env.JWT_TOKEN_NAME);
+		const token = params.get(process.env.REACT_APP_JWT_TOKEN_NAME);
 		const decoded_token = decodeURIComponent(token);
 
 		if (decoded_token) {
-			localStorage.setItem(process.env.JWT_TOKEN_NAME, decoded_token);
+			localStorage.setItem(
+				process.env.REACT_APP_JWT_TOKEN_NAME,
+				decoded_token
+			);
 			navigate("/profile"); // Navigate to the profile page
 		} else {
 			navigate("/login"); // No token found, redirect to login

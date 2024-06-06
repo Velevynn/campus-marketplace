@@ -20,7 +20,9 @@ function MakeOfferPage() {
 	useEffect(() => {
 		console.log("use effect");
 		const fetchUserProfile = async () => {
-			const token = localStorage.getItem(process.env.JWT_TOKEN_NAME);
+			const token = localStorage.getItem(
+				process.env.REACT_APP_JWT_TOKEN_NAME
+			);
 			if (!token) {
 				navigate("/login");
 				return;
@@ -51,7 +53,9 @@ function MakeOfferPage() {
 			return;
 		}
 		console.log("get token");
-		const token = localStorage.getItem(process.env.JWT_TOKEN_NAME);
+		const token = localStorage.getItem(
+			process.env.REACT_APP_JWT_TOKEN_NAME
+		);
 
 		try {
 			console.log("listingResponse");
