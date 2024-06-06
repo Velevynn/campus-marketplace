@@ -16,7 +16,7 @@ const {uploadImageToS3} = require("../util/s3");
 
 const connectionString = process.env.DB_CONNECTION_STRING; // stores supabase db connection string, allowing us to connect to supabase db
 
-const secretKey = process.env.JWT_SECRET_KEY; // stores jtw secret key
+const secretKey = process.env.JWT_SECRET_KEY; // stores jwt secret key
 
 const oauth2Client = new google.auth.OAuth2(
 	process.env.REACT_APP_GOOGLE_CLIENT_ID,
@@ -199,6 +199,7 @@ router.get("/auth/google", (req, res) => {
 router.get("/auth/google/callback", async (req, res) => {
 	try {
 		const {tokens} = await oauth2Client.getToken(req.query.code); // Exchange the authorization code for tokens
+
 		oauth2Client.setCredentials(tokens);
 
 		const oauth2 = google.oauth2({
