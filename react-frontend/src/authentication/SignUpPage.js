@@ -181,7 +181,9 @@ function SignUpPage() {
 							<div className="input-icon">
 								{user.email.length > 0 ? (
 									isInputValid("email", user.email) ? (
-										<FaCheckCircle />
+										<FaCheckCircle
+											style={{color: "green"}}
+										/>
 									) : (
 										<FaTimesCircle style={{color: "red"}} />
 									)
@@ -207,7 +209,9 @@ function SignUpPage() {
 										"phoneNumber",
 										user.phoneNumber
 									) ? (
-										<FaCheckCircle />
+										<FaCheckCircle
+											style={{color: "green"}}
+										/>
 									) : (
 										<FaTimesCircle style={{color: "red"}} />
 									)
@@ -230,7 +234,9 @@ function SignUpPage() {
 							<div className="input-icon">
 								{user.username.length > 0 ? (
 									isInputValid("username", user.username) ? (
-										<FaCheckCircle />
+										<FaCheckCircle
+											style={{color: "green"}}
+										/>
 									) : (
 										<FaTimesCircle style={{color: "red"}} />
 									)
@@ -256,7 +262,9 @@ function SignUpPage() {
 										"full_name",
 										user.full_name
 									) ? (
-										<FaCheckCircle />
+										<FaCheckCircle
+											style={{color: "green"}}
+										/>
 									) : (
 										<FaTimesCircle style={{color: "red"}} />
 									)
