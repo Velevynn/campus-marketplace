@@ -21,7 +21,7 @@ function ChatPage() {
 				<p>Contacting: {buyer?.fullName}</p>
 			</div>
 			<ChatComponent
-				appId="tEOH06eA" // Use your actual TalkJS App ID
+				appId={ process.env.REACT_APP_TALKJS_APP_ID }
 				user={{
 					id: buyer?.userID || "default_buyer",
 					name: buyer?.fullName,

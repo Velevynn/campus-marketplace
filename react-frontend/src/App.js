@@ -6,6 +6,7 @@ import LoginPage from "./authentication/LoginPage.js";
 import HandleTokenRedirect from "./authentication/HandleTokenRedirect.js";
 import ProfilePage from "./profile/ProfilePage.js";
 import Marketplace from "./pages/Marketplace";
+import MessagesPage from "./pages/MessagesPage.js";
 import AddListing from "./pages/AddListing";
 import PageNotFound from "./pages/PageNotFound";
 import NavBar from "./components/NavBar";
@@ -49,6 +50,15 @@ function App() {
 					<Route path="/about" element={<About />} />
 					<Route path="/" element={<Marketplace />} />
 					<Route path="/marketplace/" element={<Marketplace />} />
+					<Route
+						path="/messages"
+						element={
+							<ProtectedRoute>
+								{" "}
+								<MessagesPage />{" "}
+							</ProtectedRoute>
+						}
+					/>
 					<Route
 						path="/chat"
 						element={

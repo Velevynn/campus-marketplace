@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react";
 import {
-	Container,
+	Container2,
 	Form,
 	OfferGroup,
 	Offer,
@@ -114,7 +114,7 @@ function MakeOfferPage() {
 
 	return (
 		<>
-			<Container>
+			<Container2>
 				<HeaderLabel style={{marginTop: "0px"}}>
 					Enter Your Offer
 				</HeaderLabel>
@@ -141,7 +141,7 @@ function MakeOfferPage() {
 						Return to Listing
 					</MakeOfferButton>
 				</Form>
-			</Container>
+			</Container2>
 		</>
 	);
 }
