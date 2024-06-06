@@ -1,25 +1,28 @@
 .category-list {
-    display: flex;
-    justify-content: space-between;
-    column-gap: 1%;
-    overflow-x: scroll;
-    white-space: Nowrap;
-    background-color: rgb(238, 238, 238);
+	display: flex;
+	justify-content: space-between;
+	column-gap: 1%;
+	overflow-x: scroll;
+	white-space: Nowrap;
+	background-color: rgb(238, 238, 238);
 }
 
 /* Above must be in CSS file, overflow-x is not valid for inline styling */
 
 .category-button {
-    background-color: seagreen;
+	background-color: rgb(130, 196, 159);
+}
+
+.category-button:hover {
+	background-color: rgb(109, 177, 138);
 }
 
 /* Non-standard for common browsers, will default to normal scroll bar elsewhere. */
 ::-webkit-scrollbar {
-    display: none;
+	display: none;
 }
 
 .example {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+	-ms-overflow-style: none;
+	scrollbar-width: none;
 }
-
