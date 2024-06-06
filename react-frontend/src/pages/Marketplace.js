@@ -103,9 +103,18 @@ function Marketplace() {
 					<h1 style={{marginBottom: "40px", paddingLeft: "10px"}}>
 						{query}
 					</h1>
-					<CategoryBar />
 				</div>
 			)}
+
+			<div className="full-container">
+				<div
+					style={{
+						margin: "0 5rem"
+					}}
+				>
+					<CategoryBar />
+				</div>
+			</div>
 
 			<div className="full-container">
 				{isLoading ? ( // Render loading spinner if isLoading is true
