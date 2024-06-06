@@ -11,26 +11,25 @@
        REACT_APP_FRONTEND_LINK=http://localhost:3000
 2. Otherwise, use the deployment links. It takes some time for pushed commits to deploy to the servers
 
-**--- Style Guide ---  **
+**--- Style Guide ---**
  "Double Quotes"  
  lowerCamelCase()  
  curlyBraces(){  
  const variableNames;  
  }
 
-**-- Prettier Instructions --  **
-
- **should automatically run with every commit.  **
+**-- Prettier Instructions --  
+ should automatically run with every commit.  **
  - to manually run, use this script:  
  ./node\*modules/.bin/prettier --write "src/\*\*/\_.{js,jsx,ts,tsx,json,css,scss,md}"
  you can also download the prettier plugin, but make sure to configure the settings to the requirements above:
  - then simply save or use the command "SHIFT + ALT + F" to automatically format
 
--- ESLint Instructions --  
+**-- ESLint Instructions -- ** 
  run manually on files with this syntax:  
  npx eslint yourfile.js
 
---- Product Spec ---
+**--- Product Spec ---**
 
 https://docs.google.com/document/d/1q0nC7W3DTViva0hseFEp7Kv1w5NV9NboWGGN5qR_MrE/edit?usp=sharing
 
