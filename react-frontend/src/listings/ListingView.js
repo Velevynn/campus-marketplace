@@ -141,6 +141,7 @@ function ListingView() {
 						}
 					);
 					if (result.data === true) {
+						//If backend says the site is bookmarked by current user
 						setBookmark(true);
 					}
 				} catch (error) {
