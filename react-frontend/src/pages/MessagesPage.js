@@ -6,7 +6,7 @@ import axios from "axios";
 
 function MessagesPage() {
 	const [conversations, setConversations] = useState([]);
-	const [user, setUser] = useState(null); // State to store user profile
+	const [user, setUser] = useState(null);
 	const [otherUsers, setOtherUsers] = useState({});
 	const [isLoading, setIsLoading] = useState(true);
 	const time = Date.now();
@@ -25,29 +25,32 @@ function MessagesPage() {
 
 				const headers = {Authorization: `Bearer ${token}`};
 
-				// Fetch user profile
 				const userProfileResponse = await axios.get(
 					`${process.env.REACT_APP_BACKEND_LINK}/users/profile`,
 					{headers}
 				);
-				setUser(userProfileResponse.data);
+				const currentUser = userProfileResponse.data;
+				setUser(currentUser);
 
-				// Fetch conversations
 				const conversationsResponse = await axios.get(
-					`${process.env.REACT_APP_BACKEND_LINK}/conversations/${userProfileResponse.data.userID}`,
+					`${process.env.REACT_APP_BACKEND_LINK}/conversations/${currentUser.userID}`,
 					{headers}
 				);
 				setConversations(conversationsResponse.data);
 
-				// Fetch other users' info
 				const otherUsersInfo = {};
 				for (const conversation of conversationsResponse.data) {
-					if (!otherUsers[conversation.otherID]) {
+					const otherUserID =
+						conversation.userID === currentUser.userID
+							? conversation.otherID
+							: conversation.userID;
+
+					if (!otherUsersInfo[otherUserID]) {
 						const response = await axios.get(
-							`${process.env.REACT_APP_BACKEND_LINK}/users/${conversation.otherID}`,
+							`${process.env.REACT_APP_BACKEND_LINK}/users/${otherUserID}`,
 							{headers}
 						);
-						otherUsersInfo[conversation.otherID] = response.data;
+						otherUsersInfo[otherUserID] = response.data;
 					}
 				}
 				setOtherUsers(otherUsersInfo);
@@ -105,14 +108,14 @@ function MessagesPage() {
 				userID: conversation.otherID,
 				email: otherResponse.data[0].email,
 				photoUrl: `https://haggleimgs.s3.amazonaws.com/user/${conversation.otherID}/bruh0.jpg?${time}`
-			}; // Dummy seller object
+			};
 			const dummyBuyer = {
 				fullName: userResponse.data[0].fullName,
 				username: userResponse.data[0].username,
 				userID: conversation.userID,
 				email: userResponse.data[0].email,
 				photoUrl: `https://haggleimgs.s3.amazonaws.com/user/${conversation.userID}/bruh0.jpg?${time}`
-			}; // Dummy buyer object
+			};
 
 			let seller = null;
 			let buyer = null;
@@ -153,59 +156,65 @@ function MessagesPage() {
 						<div className="small-container drop-shadow">
 							{conversations.length > 0 ? (
 								<ul style={{listStyle: "none", padding: 0}}>
-									{conversations.map((conv, index) => (
-										<li
-											key={index}
-											style={{marginBottom: "10px"}}
-										>
-											<button
-												onClick={() =>
-													handleConversationClick(
-														conv
-													)
-												}
-												style={{
-													display: "block",
-													width: "100%",
-													padding: "10px 20px",
-													marginBottom: "10px",
-													border: "2px solid #333",
-													borderRadius: "5px",
-													backgroundColor: "#fff",
-													color: "#333",
-													fontSize: "16px",
-													textAlign: "center",
-													cursor: "pointer",
-													textDecoration: "none",
-													transition:
-														"background-color 0.3s, color 0.3s, border-color 0.3s"
-												}}
-												onMouseEnter={e => {
-													e.target.style.backgroundColor =
-														"#333";
-													e.target.style.color =
-														"#fff";
-													e.target.style.borderColor =
-														"#333";
-												}}
-												onMouseLeave={e => {
-													e.target.style.backgroundColor =
-														"#fff";
-													e.target.style.color =
-														"#333";
-													e.target.style.borderColor =
-														"#333";
-												}}
+									{conversations.map((conv, index) => {
+										const otherUserID =
+											conv.userID === user.userID
+												? conv.otherID
+												: conv.userID;
+										return (
+											<li
+												key={index}
+												style={{marginBottom: "10px"}}
 											>
-												Conversation with{" "}
-												{
-													otherUsers[
-														conv.otherID
-													]?.[0]?.username
-												}
-											</button>
-										</li>
-									))}
+												<button
+													onClick={() =>
+														handleConversationClick(
+															conv
+														)
+													}
+													style={{
+														display: "block",
+														width: "100%",
+														padding: "10px 20px",
+														marginBottom: "10px",
+														border: "2px solid #333",
+														borderRadius: "5px",
+														backgroundColor: "#fff",
+														color: "#333",
+														fontSize: "16px",
+														textAlign: "center",
+														cursor: "pointer",
+														textDecoration: "none",
+														transition:
+															"background-color 0.3s, color 0.3s, border-color 0.3s"
+													}}
+													onMouseEnter={e => {
+														e.target.style.backgroundColor =
+															"#333";
+														e.target.style.color =
+															"#fff";
+														e.target.style.borderColor =
+															"#333";
+													}}
+													onMouseLeave={e => {
+														e.target.style.backgroundColor =
+															"#fff";
+														e.target.style.color =
+															"#333";
+														e.target.style.borderColor =
+															"#333";
+													}}
+												>
+													Conversation with{" "}
+													{
+														otherUsers[
+															otherUserID
+														]?.[0]?.username
+													}
+												</button>
+											</li>
+										);
+									})}
 								</ul>
 							) : (
 								<p>No conversations found.</p>
