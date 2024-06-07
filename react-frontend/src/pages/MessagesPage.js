@@ -128,16 +128,9 @@ function MessagesPage() {
 
 	return (
 		<>
-<<<<<<< HEAD
 			<div>
 				<div style={{margin:"50px"}}>
 					<h2>Inbox:</h2>
-=======
-			<div className="vertical-center margin">
-				<div className="medium-container drop-shadow">
-					<h1>User: {user?.fullName}</h1>
-					<h2>Conversations:</h2>
->>>>>>> refs/remotes/origin/dev
 					{conversations.length > 0 ? (
 						<ul>
 							{conversations.map((conv, index) => (
