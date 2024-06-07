@@ -1,76 +1,65 @@
-import React, { useEffect, useRef, useState } from "react";
-import Talk from "talkjs";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 function MessagesPage() {
-    const [userProfile, setUserProfile] = useState(null);
-    const containerRef = useRef(null);
+    const [conversations, setConversations] = useState([]);
+    const navigate = useNavigate();
+
+    let user = null;
 
     useEffect(() => {
-        const fetchUserProfile = async () => {
+        const fetchUserProfileAndConversations = async () => {
             const token = localStorage.getItem(process.env.REACT_APP_JWT_TOKEN_NAME);
             if (!token) {
-                console.error("No authentication token found. Redirect to login.");
-                // Add redirection to login here if you're handling routing
+                navigate("/login");
                 return;
             }
 
+            const headers = { Authorization: `Bearer ${token}` };
+
             try {
-                const response = await axios.get(
-                    `${process.env.REACT_APP_BACKEND_LINK}/users/profile`, {
-                        headers: {
-                            Authorization: `Bearer ${token}`
-                        }
-                    }
-                );
-                setUserProfile(response.data);
-                initializeTalkJS(response.data);
+                const userProfileResponse = await axios.get(`${process.env.REACT_APP_BACKEND_LINK}/users/profile`, { headers });
+                user = userProfileResponse.data;
+                console.log(userProfileResponse.data);
             } catch (error) {
-                console.error("Failed to fetch user data:", error);
-                // Handle error or redirect
+                console.error("Failed to get user data:", error);
+                navigate("/login");
+            }
+
+                            
+            try {
+                const conversationsResponse = await axios.get(`${process.env.REACT_APP_BACKEND_LINK}/conversations/${user.userID}`, { headers });
+                setConversations(conversationsResponse.data);
+                console.log(conversationsResponse.data);
+            } catch (error) {
+                console.error("Failed to get conversations:", error);
             }
         };
 
-        fetchUserProfile();
-    }, []);
-
-    const initializeTalkJS = (user) => {
-        if (!user || !Talk.ready) return;
-
-        const currentUser = {
-            id: user.userID,
-            name: user.full_name || "No name provided",
-            email: user.email,
-            role: "default",
-            photoUrl: "URL to profile picture", // Add the actual URL to the user's profile picture here.
-            welcomeMessage: "Welcome to the chat!"
-        };
-        console.log(process.env.REACT_APP_TALKJS_APP_ID);
-
-        Talk.ready.then(() => {
-            const me = new Talk.User(currentUser);
-            const session = new Talk.Session({
-                appId: process.env.REACT_APP_TALKJS_APP_ID,
-                me: me
-            });
-
-            const inbox = session.createInbox();
-            inbox.mount(containerRef.current);
-        });
-    };
-
-    useEffect(() => {
-        return () => {
-            if (containerRef.current) {
-                containerRef.current.innerHTML = "";
-            }
-        };
-    }, []);
+        fetchUserProfileAndConversations();
+    }, [navigate]);
 
     return (
-        <div ref={containerRef} className="chat-inbox-container" style={{ height: "500px" }}>
-            {userProfile ? "Loading your messages..." : "Loading user profile..."}
-        </div>
+        <>
+            <div>
+                <h1>User: {user?.fullName}</h1>
+                <div>
+                    <h2>Conversations:</h2>
+                    {conversations.length > 0 ? (
+                        <ul>
+                            {conversations.map((conv, index) => (
+                                <li key={index}>
+                                    Conversation with IDs {conv.userID} and {conv.otherID}
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p>No conversations found.</p>
+                    )}
+                </div>
+            </div>
+        </>
     );
 }
 

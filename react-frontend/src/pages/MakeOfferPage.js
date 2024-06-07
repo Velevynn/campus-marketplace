@@ -87,6 +87,17 @@ function MakeOfferPage() {
 			const seller = sellerResponse.data;
 			console.log(seller);
 
+			try {
+
+				await axios.post(`${process.env.REACT_APP_BACKEND_LINK}/conversations/create`,
+					{ userID: buyer.userID, otherID: listing[0].userID }
+				);
+				
+				navigate("/chat", { state: { listing, seller, buyer, offer } });
+			} catch (error) {
+				console.error("Error adding conversation:", error);
+			}
+
 			navigate("/chat", {state: {listing, seller, buyer, offer}});
 		} catch (error) {
 			console.error("Error making offer:", error);
