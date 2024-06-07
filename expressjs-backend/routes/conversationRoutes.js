@@ -46,7 +46,7 @@ router.get("/:userID/", async (req, res) => {
 		// Retrieve user details from database if user exists.
 		const connection = createConnection();
 		const {rows} = await connection.query(
-			"SELECT * FROM conversations WHERE \"userID\" =  $1 OR \"otherID\" = $1 LIMIT 1",
+			"SELECT * FROM conversations WHERE \"userID\" =  $1 OR \"otherID\" = $1",
 			[userID]
 		);
 		res.status(200).send(rows);
