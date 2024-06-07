@@ -69,10 +69,12 @@ const ChangePasswordPage = () => {
                             required
                             onFocus={handlePasswordFocus}
                             onBlur={handlePasswordBlur}
-                            style={{ paddingRight: "2.5rem" }}
+                            style={{ paddingRight: "2.5rem",fontSize: "13px", 								
+							paddingTop: password ? "14px" : "12px",
+							paddingBottom: password ? "6px" : "12px"}}
                             className="password-input"
                         />
-                        <div className="input-icon" onClick={togglePasswordVisibility}>
+                        <div className="input-icon" style={{marginTop:"-4px"}} onClick={togglePasswordVisibility}>
                             {passwordVisible ? <FaEye /> : <FaEyeSlash />}
                         </div>
                     </div>

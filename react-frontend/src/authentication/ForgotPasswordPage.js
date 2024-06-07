@@ -74,17 +74,28 @@ const ForgotPasswordPage = () => {
 					<form onSubmit={handleSubmit}>
 						{message && <h6>{message}</h6>}
 
-						<div style={{marginTop: "20px"}}>
+						<div className="input margin" style={{marginTop: "20px"}}>
+							<p
+								className={
+									email.length > 0
+										? "input-label-full"
+										: "input-label-empty unselectable"
+								}
+							>
+								Email
+							</p>
 							<input
 								type="email"
 								name="email"
 								id="email"
 								value={email}
 								onChange={handleChange}
-								placeholder="Email"
 								required
+								style={{fontSize: "13px", 								
+								paddingTop: email ? "14px" : "12px",
+								paddingBottom: email ? "6px" : "12px"}}
 							/>
-							<div className="input-icon">
+							<div className="input-icon" style={{marginTop:"-4px"}}>
 								{email.length > 0 ? (
 									isValidEmail(email) ? (
 										<FaCheckCircle style={{color: "green"}} />

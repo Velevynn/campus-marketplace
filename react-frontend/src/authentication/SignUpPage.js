@@ -12,7 +12,7 @@ function SignUpPage() {
 	// State for form data, password visibility, input focus, and form validation
 	const [user, setUser] = useState({
 		username: "",
-		full_name: "",
+		fullName: "",
 		password: "",
 		email: "",
 		phoneNumber: ""
@@ -44,7 +44,7 @@ function SignUpPage() {
 		switch (name) {
 			case "username":
 				return value.length >= 3 && value.length <= 25;
-			case "full_name":
+			case "fullName":
 				return value.length > 0 && value.length <= 40;
 			case "password":
 				return Object.values(passwordRules).every(valid => valid);
@@ -166,7 +166,18 @@ function SignUpPage() {
 
 						{errorMessage && <div>{errorMessage}</div>}
 
+
 						<div className="input margin">
+							<p
+								className={
+									user.email.length > 0
+										? "input-label-full"
+										: "input-label-empty unselectable"
+								}
+							>
+								Email
+							</p>
+							
 							<input
 								type="email"
 								name="email"
@@ -174,11 +185,13 @@ function SignUpPage() {
 								value={user.email}
 								maxLength="50"
 								onChange={handleChange}
-								style={{paddingRight: "2.5rem"}}
-								placeholder="Email"
+								autoComplete="off"
 								required
+								style={{ paddingRight: "2.5rem", fontSize: "13px", 								
+								paddingTop: user.email ? "14px" : "12px",
+								paddingBottom: user.email ? "6px" : "12px"}}
 							/>
-							<div className="input-icon">
+							<div className="input-icon" style={{marginTop:"-4px"}}>
 								{user.email.length > 0 ? (
 									isInputValid("email", user.email) ? (
 										<FaCheckCircle
@@ -192,6 +205,16 @@ function SignUpPage() {
 						</div>
 
 						<div className="input margin">
+							<p
+								className={
+									user.phoneNumber.length > 0
+										? "input-label-full"
+										: "input-label-empty unselectable"
+								}
+							>
+								Phone Number
+							</p>
+							
 							<input
 								type="tel"
 								name="phoneNumber"
@@ -199,11 +222,14 @@ function SignUpPage() {
 								value={user.phoneNumber}
 								maxLength="10"
 								onChange={handleChange}
-								style={{paddingRight: "2.5rem"}}
-								placeholder="Mobile number"
+								style={{ paddingRight: "2.5rem", fontSize: "13px", 								
+								paddingTop: user.phoneNumber ? "14px" : "12px",
+								paddingBottom: user.phoneNumber ? "6px" : "12px"}}
+								autoComplete="off"
 								required
 							/>
-							<div className="input-icon">
+
+							<div className="input-icon" style={{marginTop:"-4px"}}>
 								{user.phoneNumber.length > 0 ? (
 									isInputValid(
 										"phoneNumber",
@@ -220,6 +246,15 @@ function SignUpPage() {
 						</div>
 
 						<div className="input margin">
+							<p
+								className={
+									user.username.length > 0
+										? "input-label-full"
+										: "input-label-empty unselectable"
+								}
+							>
+								Username
+							</p>
 							<input
 								type="text"
 								name="username"
@@ -227,11 +262,13 @@ function SignUpPage() {
 								value={user.username}
 								maxLength="25"
 								onChange={handleChange}
-								style={{paddingRight: "2.5rem"}}
-								placeholder="Username"
+								style={{ paddingRight: "2.5rem", fontSize: "13px", 								
+								paddingTop: user.username ? "14px" : "12px",
+								paddingBottom: user.username ? "6px" : "12px"}}
+								autoComplete="off"
 								required
 							/>
-							<div className="input-icon">
+							<div className="input-icon" style={{marginTop:"-4px"}}>
 								{user.username.length > 0 ? (
 									isInputValid("username", user.username) ? (
 										<FaCheckCircle
@@ -245,22 +282,33 @@ function SignUpPage() {
 						</div>
 
 						<div className="input margin">
+							<p
+								className={
+									user.fullName.length > 0
+										? "input-label-full"
+										: "input-label-empty unselectable"
+								}
+							>
+								Full Name
+							</p>
 							<input
 								type="text"
-								name="full_name"
-								id="full_name"
+								name="fullName"
+								id="fullName"
 								maxLength="40"
-								value={user.full_name}
+								value={user.fullName}
 								onChange={handleChange}
-								style={{paddingRight: "2.5rem"}}
-								placeholder="Full name"
+								style={{ paddingRight: "2.5rem", fontSize: "13px", 								
+								paddingTop: user.fullName ? "14px" : "12px",
+								paddingBottom: user.fullName ? "6px" : "12px"}}
+								autoComplete="off"
 								required
 							/>
-							<div className="input-icon">
-								{user.full_name.length > 0 ? (
+							<div className="input-icon" style={{marginTop:"-5px"}}>
+								{user.fullName.length > 0 ? (
 									isInputValid(
-										"full_name",
-										user.full_name
+										"fullName",
+										user.fullName
 									) ? (
 										<FaCheckCircle
 											style={{color: "green"}}
@@ -273,6 +321,15 @@ function SignUpPage() {
 						</div>
 
 						<div className="input margin">
+							<p
+								className={
+									user.password.length > 0
+										? "input-label-full"
+										: "input-label-empty unselectable"
+								}
+							>
+								Password
+							</p>
 							<input
 								type={passwordVisible ? "text" : "password"}
 								name="password"
@@ -282,13 +339,16 @@ function SignUpPage() {
 								onChange={handleChange}
 								onFocus={handlePasswordFocus}
 								onBlur={handlePasswordBlur}
-								style={{paddingRight: "2.5rem"}}
-								placeholder="Password"
+								style={{ paddingRight: "2.5rem", fontSize: "13px", 								
+								paddingTop: user.password ? "14px" : "12px",
+								paddingBottom: user.password ? "6px" : "12px"}}
+								autoComplete="off"
 								required
 							/>
 							<div
 								className="input-icon"
 								onClick={togglePasswordVisibility}
+								style={{marginTop:"-4px"}}
 							>
 								{passwordVisible ? <FaEye /> : <FaEyeSlash />}
 							</div>
@@ -302,7 +362,9 @@ function SignUpPage() {
 										color:
 											user.password.length >= 8
 												? "green"
-												: "red"
+												: "red",
+										fontSize:"12px",
+										marginTop:"20px"
 									}}
 								>
 									{user.password.length >= 8 ? (
@@ -319,7 +381,8 @@ function SignUpPage() {
 									style={{
 										color: /[0-9]/.test(user.password)
 											? "green"
-											: "red"
+											: "red",
+										fontSize:"12px"
 									}}
 								>
 									{/[0-9]/.test(user.password) ? (
@@ -336,7 +399,8 @@ function SignUpPage() {
 									style={{
 										color: /[\W_]/.test(user.password)
 											? "green"
-											: "red"
+											: "red",
+										fontSize:"12px"
 									}}
 								>
 									{/[\W_]/.test(user.password) ? (

@@ -125,6 +125,9 @@ function LoginPage() {
 								onChange={handleChange}
 								autoComplete="on"
 								required
+								style={{fontSize: "13px", 								
+								paddingTop: credentials.identifier ? "14px" : "12px",
+								paddingBottom: credentials.identifier ? "6px" : "12px"}}
 							/>
 						</div>
 
@@ -145,8 +148,10 @@ function LoginPage() {
 								value={credentials.password}
 								onChange={handleChange}
 								autoComplete="current-password"
-								style={{paddingRight: "2.5rem"}}
 								required
+								style={{ paddingRight: "2.5rem", fontSize: "13px", 								
+								paddingTop: credentials.password ? "14px" : "12px",
+								paddingBottom: credentials.password ? "6px" : "12px"}}
 							/>
 
 							<div

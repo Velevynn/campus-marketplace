@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { FaEye, FaEyeSlash, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
-import PropTypes from "prop-types"; // Import PropTypes
+import PropTypes from "prop-types";
 import logoImage from "../assets/haggle-horizontal.png";
-import "./LoginPage.css"; // Ensure CSS is correctly linked
+import "./LoginPage.css";
 
 const ResetPasswordPage = () => {
     const [password, setPassword] = useState("");
@@ -63,10 +63,12 @@ const ResetPasswordPage = () => {
                             required
                             onFocus={handlePasswordFocus}
                             onBlur={handlePasswordBlur}
-                            style={{ paddingRight: "2.5rem" }}
+                            style={{ paddingRight: "2.5rem",fontSize: "13px", 								
+							paddingTop: password ? "14px" : "12px",
+							paddingBottom: password ? "6px" : "12px"}}
                             className="password-input"
                         />
-                        <div className="input-icon" onClick={togglePasswordVisibility}>
+                        <div className="input-icon" style={{marginTop:"-4px"}} onClick={togglePasswordVisibility}>
                             {passwordVisible ? <FaEye /> : <FaEyeSlash />}
                         </div>
                     </div>

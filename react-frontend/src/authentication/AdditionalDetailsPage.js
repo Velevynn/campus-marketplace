@@ -81,6 +81,9 @@ function AdditionalDetailsPage() {
                             onChange={handleChange}
                             required
                             autoComplete="off"
+							style={{fontSize: "13px", 								
+							paddingTop: userData.username ? "14px" : "12px",
+							paddingBottom: userData.username ? "6px" : "12px"}}
                         />
                     </div>
 
@@ -96,6 +99,9 @@ function AdditionalDetailsPage() {
                             onChange={handleChange}
                             required
                             autoComplete="off"
+							style={{fontSize: "13px", 								
+							paddingTop: userData.phoneNumber ? "14px" : "12px",
+							paddingBottom: userData.phoneNumber ? "6px" : "12px"}}
                         />
                     </div>
 
