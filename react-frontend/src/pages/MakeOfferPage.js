@@ -7,10 +7,11 @@ import {
 	HeaderLabel,
 	MakeOfferButton
 } from "../authentication/AuthenticationStyling.js";
+import PropTypes from "prop-types";
 import {useNavigate, useParams} from "react-router-dom";
 import axios from "axios";
 
-function MakeOfferPage() {
+function MakeOfferPage(props) {
 	console.log("setup");
 	const [offer, setOffer] = useState("0");
 	const [buyer, setBuyer] = useState(null);
@@ -88,12 +89,17 @@ function MakeOfferPage() {
 			console.log(seller);
 
 			try {
-
-				await axios.post(`${process.env.REACT_APP_BACKEND_LINK}/conversations/create`,
-					{ userID: buyer.userID, otherID: listing[0].userID }
+				await axios.post(
+					`${process.env.REACT_APP_BACKEND_LINK}/conversations/create`,
+					{
+						userID: buyer.userID,
+						otherID: listing[0].userID,
+						listingID: props.listingID,
+						offer: offer
+					}
 				);
-				
-				navigate("/chat", { state: { listing, seller, buyer, offer } });
+
+				navigate("/chat", {state: {listing, seller, buyer, offer}});
 			} catch (error) {
 				console.error("Error adding conversation:", error);
 			}
@@ -156,5 +162,9 @@ function MakeOfferPage() {
 		</>
 	);
 }
+
+MakeOfferPage.propTypes = {
+	listingID: PropTypes.number.isRequired
+};
 
 export default MakeOfferPage;
