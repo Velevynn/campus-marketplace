@@ -130,7 +130,7 @@ function ListingView() {
 				try {
 					// Check if a bookmark exists.
 					console.log(process.env.REACT_APP_BACKEND_LINK);
-					const bookmarked = await axios.get(
+					const result = await axios.get(
 						process.env.REACT_APP_BACKEND_LINK +
 							`/listings/${listingID}/bookmark`,
 						{
@@ -140,8 +140,8 @@ function ListingView() {
 							}
 						}
 					);
-
-					if (bookmarked.status === 200) {
+					if (result.data === true) {
+						//If backend says the site is bookmarked by current user
 						setBookmark(true);
 					}
 				} catch (error) {
@@ -243,15 +243,7 @@ function ListingView() {
 	};
 
 	const toggleBookmark = async () => {
-		console.log("Toggle Bookmark clicked for listing: ", listing);
-		console.log("Current bookmark status: ", isBookmarked);
 		if (!isBookmarked) {
-			console.log(
-				"Posting bookmark with userID",
-				loggedID,
-				"and listingID",
-				listingID
-			);
 			try {
 				createBookmark();
 				setBookmark(true);
@@ -259,12 +251,6 @@ function ListingView() {
 				console.log("Error in toggleBookmark.");
 			}
 		} else if (isBookmarked) {
-			console.log(
-				"Deleting bookmark with userID:",
-				loggedID,
-				"and listingID:",
-				listingID
-			);
 			try {
 				deleteBookmark();
 				setBookmark(false);
@@ -276,7 +262,6 @@ function ListingView() {
 	};
 
 	const createBookmark = async () => {
-		console.log("Entered createBookmark");
 		if (!loggedID) {
 			const url = process.env.REACT_APP_FRONTEND_LINK + "/login";
 			window.history.replaceState({}, "", url);
@@ -441,8 +426,13 @@ function ListingView() {
 									Start Chat
 								</button>
 
+								<ShareButton
+									link={`${process.env.REACT_APP_FRONTEND_LINK} + "/listings/" + ${listingID}`}
+									type="Listing"
+								/>
+
 								<div
-									className="vertical-center margin-right"
+									className="vertical-center margin-left"
 									onClick={toggleBookmark}
 								>
 									{isBookmarked ? (
@@ -457,11 +447,6 @@ function ListingView() {
 										/>
 									)}
 								</div>
-
-								<ShareButton
-									link={`${process.env.REACT_APP_FRONTEND_LINK} + "/listings/" + ${listingID}`}
-									type="Listing"
-								/>
 
 								{showPopup && (
 									<div className="popup-overlay">
