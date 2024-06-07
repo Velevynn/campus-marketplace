@@ -17,22 +17,38 @@ function createConnection() {
 }
 
 router.post("/create", async (req, res) => {
-	const {userID, otherID} = req.body;
+	const {userID, otherID, listingID, offer} = req.body;
 	try {
-		if (!userID || !otherID) {
-			res.status(400).json({error: "Missing userID or otherID"});
+		if (!userID || !otherID || !listingID) {
+			res.status(400).json({
+				error: "Missing userID, otherID, and/or listingID"
+			});
 			return;
 		}
 
 		const connection = createConnection();
 
+		// Check if the conversation already exists.
+		const {rows} = await connection.query(
+			"SELECT * FROM conversations WHERE \"userID\" = $1 AND \"otherID\" = $2 AND \"listingID\" = $3",
+			[userID, otherID, listingID]
+		);
+
+		// If the conversation exists, return a 200 status.
+		if (rows.length > 0) {
+			await connection.end();
+			res.status(200).json({message: "Conversation already exists"});
+			return;
+		}
+
+		// If the conversation does not exist, create a new one.
 		await connection.query(
-			"INSERT INTO conversations (\"userID\", \"otherID\") VALUES ($1, $2)",
-			[userID, otherID]
+			"INSERT INTO conversations (\"userID\", \"otherID\", \"listingID\", offer) VALUES ($1, $2, $3, $4)",
+			[userID, otherID, listingID, offer]
 		);
 
 		await connection.end();
-		res.status(201).json({message: "Conversation added successfully"});
+		res.status(200).json({message: "Conversation added successfully"});
 	} catch (error) {
 		console.error("Database error:", error);
 		res.status(500).json({error: "Failed to add conversation"});

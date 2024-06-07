@@ -54,8 +54,10 @@ function ChatPage() {
 					<div className="small-container">
 						<img src={imageSource} alt="Listing" />
 						<h1>{listing[0]?.title}</h1>
-						<p>{seller[0]?.fullName}</p>
-						<p>Offer: {offer}</p>
+						<a href={`/profile/${seller[0].userID}`}>
+							<h5>{seller[0]?.fullName}</h5>
+						</a>
+						<p>Offer: ${offer}</p>
 						<p>Contacting: {buyer?.fullName}</p>
 					</div>
 					<ChatComponent

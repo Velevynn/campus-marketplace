@@ -83,20 +83,20 @@ function MessagesPage() {
 				{headers}
 			);
 
-			const dummyListing = {title: "Dummy Listing"}; // Dummy listing object
 			const dummySeller = {
 				fullName: otherResponse.data[0].fullName,
+				username: otherResponse.data[0].username,
 				userID: conversation.otherID,
 				email: otherResponse.data[0].email,
 				photoUrl: `https://haggleimgs.s3.amazonaws.com/user/${conversation.otherID}/bruh0.jpg?${time}`
 			}; // Dummy seller object
 			const dummyBuyer = {
 				fullName: userResponse.data[0].fullName,
+				username: userResponse.data[0].username,
 				userID: conversation.userID,
 				email: userResponse.data[0].email,
 				photoUrl: `https://haggleimgs.s3.amazonaws.com/user/${conversation.userID}/bruh0.jpg?${time}`
 			}; // Dummy buyer object
-			const dummyOffer = "Dummy Offer"; // Dummy offer
 
 			let seller = null;
 			let buyer = null;
@@ -107,12 +107,18 @@ function MessagesPage() {
 				seller = dummyBuyer;
 				buyer = dummySeller;
 			}
+
+			const listingResponse = await axios.get(
+				process.env.REACT_APP_BACKEND_LINK +
+					`/listings/${conversation.listingID}`
+			);
+
 			navigate("/chat", {
 				state: {
-					listing: [dummyListing],
+					listing: [listingResponse.data[0]],
 					seller: [seller],
 					buyer: buyer,
-					offer: dummyOffer
+					offer: conversation.offer
 				}
 			});
 		} catch (error) {
@@ -122,9 +128,16 @@ function MessagesPage() {
 
 	return (
 		<>
+<<<<<<< HEAD
 			<div>
 				<div style={{margin:"50px"}}>
 					<h2>Inbox:</h2>
+=======
+			<div className="vertical-center margin">
+				<div className="medium-container drop-shadow">
+					<h1>User: {user?.fullName}</h1>
+					<h2>Conversations:</h2>
+>>>>>>> refs/remotes/origin/dev
 					{conversations.length > 0 ? (
 						<ul>
 							{conversations.map((conv, index) => (
@@ -134,8 +147,7 @@ function MessagesPage() {
 										handleConversationClick(conv)
 									}
 								>
-									Conversation with IDs {conv.userID} and{" "}
-									{conv.otherID}
+									Conversation with {conv.userID}
 								</button>
 							))}
 						</ul>

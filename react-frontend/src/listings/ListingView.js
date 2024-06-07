@@ -452,6 +452,7 @@ function ListingView() {
 									<div className="popup-overlay">
 										<div className="popup-content">
 											<MakeOfferPage
+												listingID={listingID}
 												onClose={() => {
 													setShowPopup(false);
 												}}
