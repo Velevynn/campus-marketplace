@@ -3,9 +3,9 @@ import {useNavigate} from "react-router-dom";
 import {jwtDecode} from "jwt-decode";
 import axios from "axios";
 
+
 function MessagesPage() {
 	const [conversations, setConversations] = useState([]);
-	const [user, setUser] = useState(null); // State to store user profile
 	const time = Date.now();
 	const navigate = useNavigate();
 
@@ -26,8 +26,6 @@ function MessagesPage() {
 					`${process.env.REACT_APP_BACKEND_LINK}/users/profile`,
 					{headers}
 				);
-				setUser(userProfileResponse.data);
-				console.log(userProfileResponse.data);
 			} catch (error) {
 				console.error("Failed to get user data:", error);
 				navigate("/login");
@@ -87,12 +85,14 @@ function MessagesPage() {
 
 			const dummySeller = {
 				fullName: otherResponse.data[0].fullName,
+				username: otherResponse.data[0].username,
 				userID: conversation.otherID,
 				email: otherResponse.data[0].email,
 				photoUrl: `https://haggleimgs.s3.amazonaws.com/user/${conversation.otherID}/bruh0.jpg?${time}`
 			}; // Dummy seller object
 			const dummyBuyer = {
 				fullName: userResponse.data[0].fullName,
+				username: userResponse.data[0].username,
 				userID: conversation.userID,
 				email: userResponse.data[0].email,
 				photoUrl: `https://haggleimgs.s3.amazonaws.com/user/${conversation.userID}/bruh0.jpg?${time}`
@@ -129,9 +129,8 @@ function MessagesPage() {
 	return (
 		<>
 			<div>
-				<h1>User: {user?.fullName}</h1>
-				<div>
-					<h2>Conversations:</h2>
+				<div style={{margin:"50px"}}>
+					<h2>Inbox:</h2>
 					{conversations.length > 0 ? (
 						<ul>
 							{conversations.map((conv, index) => (
@@ -140,9 +139,9 @@ function MessagesPage() {
 									onClick={() =>
 										handleConversationClick(conv)
 									}
+									style={{marginRight:"10px"}}
 								>
-									Conversation with IDs {conv.userID} and{" "}
-									{conv.otherID}
+									Conversation with {conv.userID}
 								</button>
 							))}
 						</ul>

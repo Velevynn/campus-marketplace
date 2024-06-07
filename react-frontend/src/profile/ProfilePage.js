@@ -222,14 +222,17 @@ function ProfilePage() {
 										)
 								)}
 							</form>
-							<div>
+							<div className="margin">
 								<button
-									className="margin"
+									className="margin small-button"
 									onClick={handleChangePassword}
 								>
 									Change Password
 								</button>
-								<button onClick={handleSignOut}>
+								<button
+									className="margin small-button"
+									onClick={handleSignOut}
+								>
 									Sign Out
 								</button>
 							</div>
@@ -261,6 +264,9 @@ function ProfilePage() {
 							{!showDeleteConfirmation && (
 								<button
 									className="span-button"
+									style={{
+										backgroundColor: "red"
+									}}
 									onClick={confirmDelete}
 								>
 									Delete Profile
