@@ -5,7 +5,6 @@ import "./Chat.css";
 
 function ChatComponent({appId, user, otherUser}) {
 	const chatContainerRef = useRef();
-
 	useEffect(() => {
 		if (!Talk.ready) return;
 

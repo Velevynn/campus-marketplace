@@ -3,12 +3,13 @@ import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {useLocation} from "react-router-dom";
 import ChatComponent from "../components/Chat.js";
+import LoadingSpinner from "../components/LoadingSpinner.js";
 import missing from "../assets/missing.jpg";
 
 function ChatPage() {
-	//const isLoading = false;
 	const {state} = useLocation(); // Using location state to receive listing, seller, and buyer data
 	const [imageSource, setImageSource] = useState(missing);
+	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
 		const fetchImages = async () => {
@@ -26,6 +27,8 @@ function ChatPage() {
 				}
 			} catch (error) {
 				console.error("Error fetching images:", error);
+			} finally {
+				setIsLoading(false);
 			}
 		};
 		fetchImages();
@@ -46,45 +49,51 @@ function ChatPage() {
 
 	return (
 		<>
-			{state !== null && (
-				<div
-					className="vertical-center margin"
-					style={{marginTop: "35px"}}
-				>
-					<div
-						className="small-container"
-						style={{
-							backgroundColor: "rgba(0, 0, 0, 0.04)",
-							paddingTop: "60px",
-							marginTop: "-40px"
-						}}
-					>
-						<img src={imageSource} alt="Listing" />
-						<h1>{listing[0]?.title}</h1>
-						<a href={`/profile/${seller[0].userID}`}>
-							<h5>{seller[0]?.fullName}</h5>
-						</a>
-						<p>Offer: ${offer}</p>
-					</div>
-					<ChatComponent
-						appId={process.env.REACT_APP_TALKJS_APP_ID} // Use your actual TalkJS App ID
-						user={{
-							id: buyer?.userID || "default_buyer",
-							name: buyer?.fullName,
-							email: buyer?.email,
-							photoUrl: buyer?.photoUrl,
-							welcomeMessage:
-								"Hi there, interested in making an offer?"
-						}}
-						otherUser={{
-							id: seller[0]?.userID || "default_seller",
-							name: seller[0]?.fullName,
-							email: seller[0]?.email,
-							photoUrl: seller[0]?.photoUrl,
-							welcomeMessage:
-								"Hello! Feel free to ask any questions you might have."
-						}}
-					/>
+			{isLoading ? (
+				<LoadingSpinner />
+			) : (
+				<div>
+					{state !== null && (
+						<div
+							className="vertical-center margin"
+							style={{marginTop: "35px"}}
+						>
+							<div
+								className="small-container"
+								style={{
+									backgroundColor: "rgba(0, 0, 0, 0.04)",
+									paddingTop: "60px",
+									marginTop: "-40px"
+								}}
+							>
+								<img src={imageSource} alt="Listing" />
+								<h1>{listing[0]?.title}</h1>
+								<a href={`/profile/${seller[0].userID}`}>
+									<h5>{seller[0]?.fullName}</h5>
+								</a>
+								<p>Offer: ${offer}</p>
+							</div>
+							<ChatComponent
+								appId={process.env.REACT_APP_TALKJS_APP_ID} // Use your actual TalkJS App ID
+								user={{
+									id: buyer?.userID || "default_buyer",
+									name: buyer?.fullName,
+									email: buyer?.email,
+									photoUrl: buyer?.photoUrl,
+									welcomeMessage:
+										"Hi there, interested in making an offer?"
+								}}
+								otherUser={{
+									id: seller[0]?.userID || "default_seller",
+									name: seller[0]?.fullName,
+									email: seller[0]?.email,
+									photoUrl: seller[0]?.photoUrl,
+									welcomeMessage:
+										"Hello! Feel free to ask any questions you might have."
+								}}
+							/>
+						</div>
+					)}
 				</div>
 			)}
 		</>
