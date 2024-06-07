@@ -1,22 +1,22 @@
 .chat-container {
-    height: 500px;
-    width: 100%;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    border-radius: 8px;
-    overflow: hidden;
+	height: 750px;
+	width: 50%;
+	border-radius: 8px;
+	overflow: hidden;
 }
 
 .header {
-    background-color: #007BFF;
-    color: white;
-    padding: 10px 20px;
-    font-size: 16px;
-    text-align: left;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
+	background-color: #007bff;
+	color: white;
+	padding: 10px 20px;
+	font-size: 16px;
+	text-align: left;
+	border-top-left-radius: 8px;
+	border-top-right-radius: 8px;
 }
 
 .body {
-    height: calc(100% - 40px); /* Adjust height based on header/footer height */
-    overflow: auto;
+	margin-top: 20px;
+	height: calc(100% - 40px); /* Adjust height based on header/footer height */
+	overflow: auto;
 }
