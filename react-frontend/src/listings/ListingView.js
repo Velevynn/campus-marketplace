@@ -25,6 +25,7 @@ function ListingView() {
 	const [isLoading, setIsLoading] = useState(true);
 	const [showPopup, setShowPopup] = useState(false);
 	const navigate = useNavigate();
+	const listingIDNumber = parseInt(listingID);
 
 	// hook to retrieve logged in userID from jwt token
 	useEffect(() => {
@@ -448,11 +449,11 @@ function ListingView() {
 									)}
 								</div>
 
-								{showPopup && (
+								{listingIDNumber && showPopup && (
 									<div className="popup-overlay">
 										<div className="popup-content">
 											<MakeOfferPage
-												listingID={listingID}
+												listingID={listingIDNumber}
 												onClose={() => {
 													setShowPopup(false);
 												}}

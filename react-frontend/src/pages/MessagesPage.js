@@ -6,8 +6,12 @@ import axios from "axios";
 function MessagesPage() {
 	const [conversations, setConversations] = useState([]);
 	const [user, setUser] = useState(null); // State to store user profile
+	const [otherUsers, setOtherUsers] = useState({});
 	const time = Date.now();
 	const navigate = useNavigate();
+
+	let seller = null;
+	let buyer = null;
 
 	useEffect(() => {
 		const fetchUserProfileAndConversations = async () => {
@@ -47,6 +51,44 @@ function MessagesPage() {
 
 		fetchUserProfileAndConversations();
 	}, [navigate]);
+
+	useEffect(() => {
+		const fetchOtherUsersInfo = async () => {
+			const token = localStorage.getItem(
+				process.env.REACT_APP_JWT_TOKEN_NAME
+			);
+			if (!token) {
+				return;
+			}
+
+			const headers = {Authorization: `Bearer ${token}`};
+
+			// Iterate through conversations and fetch other users' info
+			await Promise.all(
+				conversations.map(async conversation => {
+					if (!otherUsers[conversation.otherID]) {
+						try {
+							const response = await axios.get(
+								`${process.env.REACT_APP_BACKEND_LINK}/users/${conversation.otherID}`,
+								{headers}
+							);
+							setOtherUsers(prevState => ({
+								...prevState,
+								[conversation.otherID]: response.data
+							}));
+						} catch (error) {
+							console.error(
+								"Failed to get other user data:",
+								error
+							);
+						}
+					}
+				})
+			);
+		};
+		console.log(otherUsers);
+		fetchOtherUsersInfo();
+	}, [conversations, otherUsers]);
 
 	const handleConversationClick = async conversation => {
 		try {
@@ -100,8 +142,6 @@ function MessagesPage() {
 				photoUrl: `https://haggleimgs.s3.amazonaws.com/user/${conversation.userID}/bruh0.jpg?${time}`
 			}; // Dummy buyer object
 
-			let seller = null;
-			let buyer = null;
 			if (response.data.userID === conversation.userID) {
 				seller = dummySeller;
 				buyer = dummyBuyer;
@@ -130,26 +170,65 @@ function MessagesPage() {
 
 	return (
 		<>
-			<div className="vertical-center margin">
-				<div className="medium-container drop-shadow">
-					<h1>User: {user?.fullName}</h1>
-					<h2>Conversations:</h2>
-					{conversations.length > 0 ? (
-						<ul>
-							{conversations.map((conv, index) => (
-								<button
-									key={index}
-									onClick={() =>
-										handleConversationClick(conv)
-									}
-								>
-									Conversation with {conv.userID}
-								</button>
-							))}
-						</ul>
-					) : (
-						<p>No conversations found.</p>
-					)}
+			<div className="vertical-center margin" style={{marginTop: "20px"}}>
+				<div className="small-container drop-shadow text-center">
+					<h2>{user?.fullName}&rsquo;s Conversations:</h2>
+					<div className="small-container drop-shadow">
+						{conversations.length > 0 ? (
+							<ul style={{listStyle: "none", padding: 0}}>
+								{conversations.map((conv, index) => (
+									<li
+										key={index}
+										style={{marginBottom: "10px"}}
+									>
+										<button
+											onClick={() =>
+												handleConversationClick(conv)
+											}
+											style={{
+												display: "block",
+												width: "100%",
+												padding: "10px 20px",
+												marginBottom: "10px",
+												border: "2px solid #333",
+												borderRadius: "5px",
+												backgroundColor: "#fff",
+												color: "#333",
+												fontSize: "16px",
+												textAlign: "center",
+												cursor: "pointer",
+												textDecoration: "none",
+												transition:
+													"background-color 0.3s, color 0.3s, border-color 0.3s"
+											}}
+											onMouseEnter={e => {
+												e.target.style.backgroundColor =
+													"#333";
+												e.target.style.color = "#fff";
+												e.target.style.borderColor =
+													"#333";
+											}}
+											onMouseLeave={e => {
+												e.target.style.backgroundColor =
+													"#fff";
+												e.target.style.color = "#333";
+												e.target.style.borderColor =
+													"#333";
+											}}
+										>
+											Conversation with{" "}
+											{
+												otherUsers[conv.otherID]?.[0]
+													?.username
+											}
+										</button>
+									</li>
+								))}
+							</ul>
+						) : (
+							<p>No conversations found.</p>
+						)}
+					</div>
 				</div>
 			</div>
 		</>

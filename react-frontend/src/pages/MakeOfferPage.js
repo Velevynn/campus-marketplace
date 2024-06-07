@@ -11,7 +11,7 @@ import PropTypes from "prop-types";
 import {useNavigate, useParams} from "react-router-dom";
 import axios from "axios";
 
-function MakeOfferPage(props) {
+function MakeOfferPage(props, {onClose}) {
 	console.log("setup");
 	const [offer, setOffer] = useState("0");
 	const [buyer, setBuyer] = useState(null);
@@ -125,10 +125,6 @@ function MakeOfferPage(props) {
 		}).format(number);
 	};
 
-	const handleGoBack = () => {
-		navigate(`/listings/${listingID}`);
-	};
-
 	return (
 		<>
 			<Container2>
@@ -152,7 +148,7 @@ function MakeOfferPage(props) {
 					</MakeOfferButton>
 					<MakeOfferButton
 						type="button"
-						onClick={handleGoBack}
+						onClick={onClose}
 						style={{marginTop: "-10px"}}
 					>
 						Return to Listing
