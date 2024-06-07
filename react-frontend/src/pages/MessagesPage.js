@@ -139,6 +139,7 @@ function MessagesPage() {
 									onClick={() =>
 										handleConversationClick(conv)
 									}
+									style={{marginRight:"10px"}}
 								>
 									Conversation with {conv.userID}
 								</button>
