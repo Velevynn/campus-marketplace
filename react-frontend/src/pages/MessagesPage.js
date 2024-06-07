@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from "react";
 import {useNavigate} from "react-router-dom";
+import {jwtDecode} from "jwt-decode";
 import axios from "axios";
 
 function MessagesPage() {
@@ -58,19 +59,41 @@ function MessagesPage() {
 			}
 
 			const headers = {Authorization: `Bearer ${token}`};
+			const decodedToken = jwtDecode(token);
+
+			const response = await axios.get(
+				process.env.REACT_APP_BACKEND_LINK + "/users/userID",
+				{
+					params: {
+						username: decodedToken.username
+					}
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${token}`
+					}
+				}
+			);
+
+			let myID = null;
+			let otherID = null;
+			if (response.data.userID === conversation.userID) {
+				myID = conversation.userID;
+				otherID = conversation.otherID;
+			} else {
+				myID = conversation.otherID;
+				otherID = conversation.userID;
+			}
 
 			const userResponse = await axios.get(
-				`${process.env.REACT_APP_BACKEND_LINK}/users/${conversation.userID}`,
+				`${process.env.REACT_APP_BACKEND_LINK}/users/${myID}`,
 				{headers}
 			);
 
 			const otherResponse = await axios.get(
-				`${process.env.REACT_APP_BACKEND_LINK}/users/${conversation.otherID}`,
+				`${process.env.REACT_APP_BACKEND_LINK}/users/${otherID}`,
 				{headers}
 			);
-
-			console.log("userResponse: ", userResponse.data);
-			console.log("otherResponse: ", otherResponse.data);
 
 			const dummyListing = {title: "Dummy Listing"}; // Dummy listing object
 			const dummySeller = {
