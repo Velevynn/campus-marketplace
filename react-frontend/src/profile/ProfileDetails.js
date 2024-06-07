@@ -212,6 +212,9 @@ function ProfileDetails(props) {
 						<div className="overflow-container">{`${cityByZip}`}</div>
 					)}
 				</div>
+				<Link to={"/messages"}>
+					<div className="text-link margin-top">View Messages</div>
+				</Link>
 				<Link
 					to={
 						process.env.REACT_APP_FRONTEND_LINK +
@@ -219,9 +222,7 @@ function ProfileDetails(props) {
 						props.userID
 					}
 				>
-					<div className="text-link margin-top">
-						See Public Profile
-					</div>
+					<div className="text-link">See Public Profile</div>
 				</Link>
 			</div>
 			{showNotification && (

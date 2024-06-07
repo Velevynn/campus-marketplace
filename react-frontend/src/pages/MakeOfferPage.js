@@ -125,10 +125,6 @@ function MakeOfferPage(props) {
 		}).format(number);
 	};
 
-	const handleGoBack = () => {
-		navigate(`/listings/${listingID}`);
-	};
-
 	return (
 		<>
 			<Container2>
@@ -152,7 +148,7 @@ function MakeOfferPage(props) {
 					</MakeOfferButton>
 					<MakeOfferButton
 						type="button"
-						onClick={handleGoBack}
+						onClick={props.onClose}
 						style={{marginTop: "-10px"}}
 					>
 						Return to Listing
@@ -164,7 +160,8 @@ function MakeOfferPage(props) {
 }
 
 MakeOfferPage.propTypes = {
-	listingID: PropTypes.number.isRequired
+	listingID: PropTypes.number.isRequired,
+	onClose: PropTypes.func.isRequired
 };
 
 export default MakeOfferPage;
