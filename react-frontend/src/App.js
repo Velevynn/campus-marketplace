@@ -23,7 +23,6 @@ import ResetPasswordPage from "./authentication/ResetPasswordPage";
 import ChangePasswordPage from "./authentication/ChangePasswordPage";
 import AdditionalDetailsPage from "./authentication/AdditionalDetailsPage";
 import ChatPage from "./pages/ChatPage.js";
-
 import PublicPage from "./profile/PublicPage.js";
 
 function App() {
