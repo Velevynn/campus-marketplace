@@ -3,32 +3,7 @@ import {Link, useNavigate} from "react-router-dom";
 import logo from "../assets/logo.png";
 import "./navbar.css";
 import SearchBar from "./SearchBar";
-import {jwtDecode} from "jwt-decode";
-
-function getProfileName() {
-	const token = localStorage.getItem(process.env.REACT_APP_JWT_TOKEN_NAME);
-	try {
-		if (token !== null) {
-			const decodedToken = jwtDecode(token);
-			if (decodedToken.exp && decodedToken.exp > Date.now() / 1000) {
-				const username = decodedToken.username;
-				// capitalize the first letter and convert the rest to lowercase
-				const formattedUsername =
-					username.charAt(0).toUpperCase() +
-					username.slice(1).toLowerCase();
-				// truncate usernames longer than 10 characters and pad shorter usernames with spaces
-				if (formattedUsername.length > 10) {
-					return formattedUsername.substring(0, 8) + ".."; // Truncate and add ".."
-				} else {
-					return formattedUsername; // pad with spaces
-				}
-			}
-		}
-	} catch {
-		console.log("invalid token error");
-	}
-	return "Profile"; // 10 spaces to ensure consistent length
-}
+import { FaEnvelope, FaUserCircle, FaStore, FaInfoCircle } from "react-icons/fa";
 
 function NavBar() {
 	const navigate = useNavigate();
@@ -42,6 +17,8 @@ function NavBar() {
 		window.location.reload();
 	};
 
+	const iconStyle = { fontSize: "26px"};
+
 	return (
 		<div className="flex-container nav-container">
 			<nav className="vertical-center" style={{flexWrap: "wrap"}}>
@@ -52,36 +29,30 @@ function NavBar() {
 					<img src={logo} alt="Logo" />
 				</div>
 
-				<div>
-					<SearchBar />
+				<div style = {{marginRight: "28vw"}}>
+					<SearchBar/>
 				</div>
 
-				<div className="flex-row margin" style={{marginTop: "5px"}}>
-					<li>
-						<Link to="/about">About</Link>
-					</li>
-					<li>
-						<Link to="/marketplace">Marketplace</Link>
-					</li>
-					<li>
-						<Link to="/messages">Messages</Link>
-					</li>
-					<li>
-						<Link
-							to="/profile"
-							style={{
-								width: "80px",
-								textAlign: "center",
-								whiteSpace: "pre"
-							}}
-						>
-							{getProfileName()}
-						</Link>
-					</li>
-				</div>
+                <div className="flex-row" style={{gap:"12px", marginTop:"8px"}}>
+                    <li>
+                        <Link to="/about" style={iconStyle}><FaInfoCircle /></Link>
+                    </li>
+                    <li>
+                        <Link to="/marketplace" style={iconStyle}><FaStore /></Link>
+                    </li>
+                    <li>
+                        <Link to="/messages" style={iconStyle}><FaEnvelope /></Link>
+                    </li>
+                    <li>
+                        <Link to="/profile" style={iconStyle}>
+                            <FaUserCircle/>
+                        </Link>
+                    </li>
+                </div>
 				<button
 					className="post-button"
 					onClick={handlePostListingClick}
+					style = {{padding: "0px", paddingTop: "5px", paddingBottom:"5px", marginBottom:"-1px", marginLeft:"-5px"}}
 				>
 					Post
 				</button>

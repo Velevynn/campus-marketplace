@@ -8,7 +8,7 @@ function About() {
 		{
 			name: "Alex",
 			bio: "4th Year CS Major. I like biking hiking.",
-			quip: "I like going on branch 500 commits behind then manually merging."
+			quip: "alexzaharia.net"
 		},
 		{
 			name: "Alexander",

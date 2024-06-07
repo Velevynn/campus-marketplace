@@ -4,17 +4,17 @@
 	column-gap: 1%;
 	overflow-x: scroll;
 	white-space: Nowrap;
-	background-color: rgb(238, 238, 238);
+	background-color: rgb(218, 218, 218);
 }
 
 /* Above must be in CSS file, overflow-x is not valid for inline styling */
 
 .category-button {
-	background-color: rgb(130, 196, 159);
+	background-color: rgb(41, 132, 58);
 }
 
 .category-button:hover {
-	background-color: rgb(109, 177, 138);
+	background-color: rgb(34, 96, 43);
 }
 
 /* Non-standard for common browsers, will default to normal scroll bar elsewhere. */
