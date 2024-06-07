@@ -64,6 +64,9 @@ function NavBar() {
 						<Link to="/marketplace">Marketplace</Link>
 					</li>
 					<li>
+						<Link to="/messages">Messages</Link>
+					</li>
+					<li>
 						<Link
 							to="/profile"
 							style={{

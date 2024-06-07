@@ -22,6 +22,18 @@ export const Container = styled.div`
 	border-radius: 7px;
 `;
 
+export const Container2 = styled.div`
+	display: flex;
+	flex-direction: column;
+	max-width: 500px;
+	margin: 0 auto;
+	padding: 40px;
+	font-family: "Inter";
+	align-items: center;
+	border-radius: 7px;
+`;
+
+
 // Form styled component for styling form elements collectively
 export const Form = styled.form`
 	display: flex;
