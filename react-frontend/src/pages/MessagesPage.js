@@ -3,7 +3,6 @@ import {useNavigate} from "react-router-dom";
 import {jwtDecode} from "jwt-decode";
 import axios from "axios";
 
-
 function MessagesPage() {
 	const [conversations, setConversations] = useState([]);
 	const time = Date.now();
@@ -129,7 +128,7 @@ function MessagesPage() {
 	return (
 		<>
 			<div>
-				<div style={{margin:"50px"}}>
+				<div style={{margin: "50px"}}>
 					<h2>Inbox:</h2>
 					{conversations.length > 0 ? (
 						<ul>
@@ -139,7 +138,7 @@ function MessagesPage() {
 									onClick={() =>
 										handleConversationClick(conv)
 									}
-									style={{marginRight:"10px"}}
+									style={{marginRight: "10px"}}
 								>
 									Conversation with {conv.userID}
 								</button>

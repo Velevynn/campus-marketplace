@@ -51,7 +51,14 @@ function ChatPage() {
 					className="vertical-center margin"
 					style={{marginTop: "35px"}}
 				>
-					<div className="small-container" style={{ backgroundColor: "rgba(0, 0, 0, 0.04)", paddingTop:"60px", marginTop:"-40px"}}>
+					<div
+						className="small-container"
+						style={{
+							backgroundColor: "rgba(0, 0, 0, 0.04)",
+							paddingTop: "60px",
+							marginTop: "-40px"
+						}}
+					>
 						<img src={imageSource} alt="Listing" />
 						<h1>{listing[0]?.title}</h1>
 						<a href={`/profile/${seller[0].userID}`}>

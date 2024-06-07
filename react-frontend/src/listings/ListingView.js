@@ -338,7 +338,10 @@ function ListingView() {
 				</div>
 			) : (
 				<div>
-					<div className="vertical-center margin" style = {{marginTop: "20px"}}>
+					<div
+						className="vertical-center margin"
+						style={{marginTop: "20px"}}
+					>
 						<div className="medium-container drop-shadow">
 							<div className="listing-layout">
 								<div className="margin vertical-center flex-column">
