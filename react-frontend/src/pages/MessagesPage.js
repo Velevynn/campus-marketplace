@@ -84,16 +84,17 @@ function MessagesPage() {
 				`${process.env.REACT_APP_BACKEND_LINK}/users/${conversation.otherID}`,
 				{headers}
 			);
-
 			const dummyListing = {title: "Dummy Listing"}; // Dummy listing object
 			const dummySeller = {
 				fullName: otherResponse.data[0].fullName,
+				username: otherResponse.data[0].username,
 				userID: conversation.otherID,
 				email: otherResponse.data[0].email,
 				photoUrl: `https://haggleimgs.s3.amazonaws.com/user/${conversation.otherID}/bruh0.jpg?${time}`
 			}; // Dummy seller object
 			const dummyBuyer = {
 				fullName: userResponse.data[0].fullName,
+				username: userResponse.data[0].username,
 				userID: conversation.userID,
 				email: userResponse.data[0].email,
 				photoUrl: `https://haggleimgs.s3.amazonaws.com/user/${conversation.userID}/bruh0.jpg?${time}`
@@ -124,9 +125,9 @@ function MessagesPage() {
 
 	return (
 		<>
-			<div>
-				<h1>User: {user?.fullName}</h1>
-				<div>
+			<div className="vertical-center margin">
+				<div className="medium-container drop-shadow">
+					<h1>User: {user?.fullName}</h1>
 					<h2>Conversations:</h2>
 					{conversations.length > 0 ? (
 						<ul>
@@ -137,8 +138,7 @@ function MessagesPage() {
 										handleConversationClick(conv)
 									}
 								>
-									Conversation with IDs {conv.userID} and{" "}
-									{conv.otherID}
+									Conversation with {conv.userID}
 								</button>
 							))}
 						</ul>
