@@ -11,7 +11,7 @@ import PropTypes from "prop-types";
 import {useNavigate, useParams} from "react-router-dom";
 import axios from "axios";
 
-function MakeOfferPage(props, {onClose}) {
+function MakeOfferPage(props) {
 	console.log("setup");
 	const [offer, setOffer] = useState("0");
 	const [buyer, setBuyer] = useState(null);
@@ -148,7 +148,7 @@ function MakeOfferPage(props, {onClose}) {
 					</MakeOfferButton>
 					<MakeOfferButton
 						type="button"
-						onClick={onClose}
+						onClick={props.onClose}
 						style={{marginTop: "-10px"}}
 					>
 						Return to Listing
@@ -160,7 +160,8 @@ function MakeOfferPage(props, {onClose}) {
 }
 
 MakeOfferPage.propTypes = {
-	listingID: PropTypes.number.isRequired
+	listingID: PropTypes.number.isRequired,
+	onClose: PropTypes.func.isRequired
 };
 
 export default MakeOfferPage;
