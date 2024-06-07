@@ -85,8 +85,8 @@ function AdditionalDetailsPage() {
                             required
                             autoComplete="off"
 							style={{fontSize: "13px", 								
-							paddingTop: userData.username ? "14px" : "12px",
-							paddingBottom: userData.username ? "6px" : "12px"}}
+							paddingTop: userData.username ? "16px" : "12px",
+							paddingBottom: userData.username ? "8px" : "12px"}}
                         />
                     </div>
 
@@ -103,8 +103,8 @@ function AdditionalDetailsPage() {
                             required
                             autoComplete="off"
 							style={{fontSize: "13px", 								
-							paddingTop: userData.phoneNumber ? "14px" : "12px",
-							paddingBottom: userData.phoneNumber ? "6px" : "12px"}}
+							paddingTop: userData.phoneNumber ? "16px" : "12px",
+							paddingBottom: userData.phoneNumber ? "8px" : "12px"}}
                         />
                     </div>
 

@@ -92,10 +92,10 @@ const ForgotPasswordPage = () => {
 								onChange={handleChange}
 								required
 								style={{fontSize: "13px", 								
-								paddingTop: email ? "14px" : "12px",
-								paddingBottom: email ? "6px" : "12px"}}
+								paddingTop: email ? "16px" : "12px",
+								paddingBottom: email ? "8px" : "12px"}}
 							/>
-							<div className="input-icon" style={{marginTop:"-4px"}}>
+							<div className="input-icon" style={{marginTop:"-3px"}}>
 								{email.length > 0 ? (
 									isValidEmail(email) ? (
 										<FaCheckCircle style={{color: "green"}} />

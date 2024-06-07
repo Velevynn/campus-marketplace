@@ -150,13 +150,14 @@ function LoginPage() {
 								autoComplete="current-password"
 								required
 								style={{ paddingRight: "2.5rem", fontSize: "13px", 								
-								paddingTop: credentials.password ? "14px" : "12px",
-								paddingBottom: credentials.password ? "6px" : "12px"}}
+								paddingTop: credentials.password ? "16px" : "12px",
+								paddingBottom: credentials.password ? "8px" : "12px"}}
 							/>
 
 							<div
 								className="input-icon"
 								onClick={togglePasswordVisibility}
+								style = {{marginTop:"-3px"}}
 							>
 								{passwordVisible ? <FaEye /> : <FaEyeSlash />}
 							</div>

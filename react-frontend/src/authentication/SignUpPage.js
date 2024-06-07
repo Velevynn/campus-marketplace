@@ -188,10 +188,10 @@ function SignUpPage() {
 								autoComplete="off"
 								required
 								style={{ paddingRight: "2.5rem", fontSize: "13px", 								
-								paddingTop: user.email ? "14px" : "12px",
-								paddingBottom: user.email ? "6px" : "12px"}}
+								paddingTop: user.email ? "16px" : "12px",
+								paddingBottom: user.email ? "8px" : "12px"}}
 							/>
-							<div className="input-icon" style={{marginTop:"-4px"}}>
+							<div className="input-icon" style={{marginTop:"-3px"}}>
 								{user.email.length > 0 ? (
 									isInputValid("email", user.email) ? (
 										<FaCheckCircle
@@ -223,13 +223,13 @@ function SignUpPage() {
 								maxLength="10"
 								onChange={handleChange}
 								style={{ paddingRight: "2.5rem", fontSize: "13px", 								
-								paddingTop: user.phoneNumber ? "14px" : "12px",
-								paddingBottom: user.phoneNumber ? "6px" : "12px"}}
+								paddingTop: user.phoneNumber ? "16px" : "12px",
+								paddingBottom: user.phoneNumber ? "8px" : "12px"}}
 								autoComplete="off"
 								required
 							/>
 
-							<div className="input-icon" style={{marginTop:"-4px"}}>
+							<div className="input-icon" style={{marginTop:"-3px"}}>
 								{user.phoneNumber.length > 0 ? (
 									isInputValid(
 										"phoneNumber",
@@ -263,12 +263,12 @@ function SignUpPage() {
 								maxLength="25"
 								onChange={handleChange}
 								style={{ paddingRight: "2.5rem", fontSize: "13px", 								
-								paddingTop: user.username ? "14px" : "12px",
-								paddingBottom: user.username ? "6px" : "12px"}}
+								paddingTop: user.username ? "16px" : "12px",
+								paddingBottom: user.username ? "8px" : "12px"}}
 								autoComplete="off"
 								required
 							/>
-							<div className="input-icon" style={{marginTop:"-4px"}}>
+							<div className="input-icon" style={{marginTop:"-3px"}}>
 								{user.username.length > 0 ? (
 									isInputValid("username", user.username) ? (
 										<FaCheckCircle
@@ -299,12 +299,12 @@ function SignUpPage() {
 								value={user.fullName}
 								onChange={handleChange}
 								style={{ paddingRight: "2.5rem", fontSize: "13px", 								
-								paddingTop: user.fullName ? "14px" : "12px",
-								paddingBottom: user.fullName ? "6px" : "12px"}}
+								paddingTop: user.fullName ? "16px" : "12px",
+								paddingBottom: user.fullName ? "8px" : "12px"}}
 								autoComplete="off"
 								required
 							/>
-							<div className="input-icon" style={{marginTop:"-5px"}}>
+							<div className="input-icon" style={{marginTop:"-3px"}}>
 								{user.fullName.length > 0 ? (
 									isInputValid(
 										"fullName",
@@ -340,15 +340,15 @@ function SignUpPage() {
 								onFocus={handlePasswordFocus}
 								onBlur={handlePasswordBlur}
 								style={{ paddingRight: "2.5rem", fontSize: "13px", 								
-								paddingTop: user.password ? "14px" : "12px",
-								paddingBottom: user.password ? "6px" : "12px"}}
+								paddingTop: user.password ? "16px" : "12px",
+								paddingBottom: user.password ? "8px" : "12px"}}
 								autoComplete="off"
 								required
 							/>
 							<div
 								className="input-icon"
 								onClick={togglePasswordVisibility}
-								style={{marginTop:"-4px"}}
+								style={{marginTop:"-3px"}}
 							>
 								{passwordVisible ? <FaEye /> : <FaEyeSlash />}
 							</div>
