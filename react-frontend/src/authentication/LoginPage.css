@@ -10,7 +10,7 @@
 }
 
 .input {
-	position: relative;
+    position: relative;
 }
 
 .input-label-empty {
@@ -25,8 +25,8 @@
 
 .input-label-full {
 	position: absolute;
-	left: 0.75rem;
-	top: 0.75rem;
+	left: 0.9rem;
+	top: 0.9rem;
 	color: gray;
 	font-size: 9px;
 	pointer-events: none;

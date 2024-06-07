@@ -1,5 +1,5 @@
 .chat-container {
-	height: 750px;
+	height: 650px;
 	width: 50%;
 	border-radius: 8px;
 	overflow: hidden;
@@ -16,7 +16,6 @@
 }
 
 .body {
-	margin-top: 20px;
 	height: calc(100% - 40px); /* Adjust height based on header/footer height */
 	overflow: auto;
 }
