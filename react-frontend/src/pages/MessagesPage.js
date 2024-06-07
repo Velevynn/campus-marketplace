@@ -5,6 +5,7 @@ import axios from "axios";
 function MessagesPage() {
 	const [conversations, setConversations] = useState([]);
 	const [user, setUser] = useState(null); // State to store user profile
+	const time = Date.now();
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -46,40 +47,57 @@ function MessagesPage() {
 		fetchUserProfileAndConversations();
 	}, [navigate]);
 
-	const handleConversationClick = conversation => {
-		// ADD GET CALLS
-
-		// CALL FOR SELLER (OTHER ID)
-		// RETRIEVE FULLNAME, EMAIL, PHOTOURL
-		//
-
-		// CALL FOR BUYER (USER ID)
-		// RETRIEVE FULLNAME, EMAIL, PHOTOURL
-		//
-
-		const dummyListing = {title: "Dummy Listing"}; // Dummy listing object
-		const dummySeller = {
-			fullName: "Dummy Seller",
-			userID: conversation.otherID,
-			email: "seller@example.com",
-			photoUrl: "seller-photo-url"
-		}; // Dummy seller object
-		const dummyBuyer = {
-			fullName: "Dummy Buyer",
-			userID: conversation.userID,
-			email: "buyer@example.com",
-			photoUrl: "buyer-photo-url"
-		}; // Dummy buyer object
-		const dummyOffer = "Dummy Offer"; // Dummy offer
-
-		navigate("/chat", {
-			state: {
-				listing: [dummyListing],
-				seller: [dummySeller],
-				buyer: dummyBuyer,
-				offer: dummyOffer
+	const handleConversationClick = async conversation => {
+		try {
+			const token = localStorage.getItem(
+				process.env.REACT_APP_JWT_TOKEN_NAME
+			);
+			if (!token) {
+				navigate("/login");
+				return;
 			}
-		});
+
+			const headers = {Authorization: `Bearer ${token}`};
+
+			const userResponse = await axios.get(
+				`${process.env.REACT_APP_BACKEND_LINK}/users/${conversation.userID}`,
+				{headers}
+			);
+
+			const otherResponse = await axios.get(
+				`${process.env.REACT_APP_BACKEND_LINK}/users/${conversation.otherID}`,
+				{headers}
+			);
+
+			console.log("userResponse: ", userResponse.data);
+			console.log("otherResponse: ", otherResponse.data);
+
+			const dummyListing = {title: "Dummy Listing"}; // Dummy listing object
+			const dummySeller = {
+				fullName: otherResponse.data[0].fullName,
+				userID: conversation.otherID,
+				email: otherResponse.data[0].email,
+				photoUrl: `https://haggleimgs.s3.amazonaws.com/user/${conversation.otherID}/bruh0.jpg?${time}`
+			}; // Dummy seller object
+			const dummyBuyer = {
+				fullName: userResponse.data[0].fullName,
+				userID: conversation.userID,
+				email: userResponse.data[0].email,
+				photoUrl: `https://haggleimgs.s3.amazonaws.com/user/${conversation.userID}/bruh0.jpg?${time}`
+			}; // Dummy buyer object
+			const dummyOffer = "Dummy Offer"; // Dummy offer
+
+			navigate("/chat", {
+				state: {
+					listing: [dummyListing],
+					seller: [dummySeller],
+					buyer: dummyBuyer,
+					offer: dummyOffer
+				}
+			});
+		} catch (error) {
+			console.error("error");
+		}
 	};
 
 	return (
@@ -91,7 +109,7 @@ function MessagesPage() {
 					{conversations.length > 0 ? (
 						<ul>
 							{conversations.map((conv, index) => (
-								<li
+								<button
 									key={index}
 									onClick={() =>
 										handleConversationClick(conv)
@@ -99,7 +117,7 @@ function MessagesPage() {
 								>
 									Conversation with IDs {conv.userID} and{" "}
 									{conv.otherID}
-								</li>
+								</button>
 							))}
 						</ul>
 					) : (
