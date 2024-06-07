@@ -75,23 +75,13 @@ function MessagesPage() {
 				}
 			);
 
-			let myID = null;
-			let otherID = null;
-			if (response.data.userID === conversation.userID) {
-				myID = conversation.userID;
-				otherID = conversation.otherID;
-			} else {
-				myID = conversation.otherID;
-				otherID = conversation.userID;
-			}
-
 			const userResponse = await axios.get(
-				`${process.env.REACT_APP_BACKEND_LINK}/users/${myID}`,
+				`${process.env.REACT_APP_BACKEND_LINK}/users/${conversation.userID}`,
 				{headers}
 			);
 
 			const otherResponse = await axios.get(
-				`${process.env.REACT_APP_BACKEND_LINK}/users/${otherID}`,
+				`${process.env.REACT_APP_BACKEND_LINK}/users/${conversation.otherID}`,
 				{headers}
 			);
 
@@ -110,11 +100,20 @@ function MessagesPage() {
 			}; // Dummy buyer object
 			const dummyOffer = "Dummy Offer"; // Dummy offer
 
+			let seller = null;
+			let buyer = null;
+			if (response.data.userID === conversation.userID) {
+				seller = dummySeller;
+				buyer = dummyBuyer;
+			} else {
+				seller = dummyBuyer;
+				buyer = dummySeller;
+			}
 			navigate("/chat", {
 				state: {
 					listing: [dummyListing],
-					seller: [dummySeller],
-					buyer: dummyBuyer,
+					seller: [seller],
+					buyer: buyer,
 					offer: dummyOffer
 				}
 			});
