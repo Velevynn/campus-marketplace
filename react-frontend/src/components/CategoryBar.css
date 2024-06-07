@@ -10,11 +10,11 @@
 /* Above must be in CSS file, overflow-x is not valid for inline styling */
 
 .category-button {
-	background-color: rgb(128, 190, 139);
+	background-color: rgb(63, 187, 117);
 }
 
 .category-button:hover {
-	background-color: rgb(79, 122, 85);
+	background-color: rgb(46, 136, 85);
 }
 
 /* Non-standard for common browsers, will default to normal scroll bar elsewhere. */
