@@ -31,7 +31,6 @@ function MessagesPage() {
 					{headers}
 				);
 				setUser(userProfileResponse.data);
-				console.log(userProfileResponse.data);
 			} catch (error) {
 				console.error("Failed to get user data:", error);
 				navigate("/login");

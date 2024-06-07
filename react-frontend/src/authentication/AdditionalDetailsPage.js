@@ -2,6 +2,7 @@ import React, {useState, useEffect} from "react";
 import axios from "axios";
 import {useNavigate, Link} from "react-router-dom";
 import logoImage from "../assets/haggle-horizontal.png";
+import "./LoginPage.css"; // Ensure the same CSS file is used
 
 function AdditionalDetailsPage() {
 	const navigate = useNavigate();
@@ -60,72 +61,92 @@ function AdditionalDetailsPage() {
 	};
 
 	return (
-		<>
-			<div className="vertical-center margin-top">
-				<div className="small-container drop-shadow">
-					<div className="vertical-center">
-						<img
-							className="logo-img"
-							src={logoImage}
-							alt="Haggle Logo"
+		<div className="vertical-center margin-top">
+			<div className="small-container drop-shadow">
+				<div className="vertical-center">
+					<img
+						className="logo-img"
+						src={logoImage}
+						alt="Haggle Logo"
+					/>
+				</div>
+				<form onSubmit={handleSubmit}>
+					<h5
+						className="text-center"
+						style={{fontSize: "18px", marginTop: "20px"}}
+					>
+						Complete Your Registration
+					</h5>
+					<p
+						className="text-center"
+						style={{fontSize: "14px", marginTop: "20px"}}
+					>
+						Add your username and phone number to finish
+						registering.
+					</p>
+					{errorMessage && <div>{errorMessage}</div>}
+					<div className="margin input" style={{marginTop: "20px"}}>
+						<p
+							className={
+								userData.username
+									? "input-label-full"
+									: "input-label-empty unselectable"
+							}
+						>
+							Username
+						</p>
+						<input
+							type="text"
+							name="username"
+							id="username"
+							value={userData.username}
+							onChange={handleChange}
+							required
+							autoComplete="off"
 						/>
 					</div>
-					<form onSubmit={handleSubmit}>
-						<h5
-							className="text-center"
-							style={{fontSize: "18px", marginTop: "20px"}}
-						>
-							Complete Your Registration
-						</h5>
-						{errorMessage && <div>{errorMessage}</div>}
-						<div
-							className="margin input"
-							style={{marginTop: "20px"}}
-						>
-							<input
-								type="text"
-								name="username"
-								id="username"
-								value={userData.username}
-								onChange={handleChange}
-								placeholder="Username"
-								required
-							/>
-						</div>
 
-						<div className="margin input">
-							<input
-								type="tel"
-								name="phoneNumber"
-								id="phoneNumber"
-								value={userData.phoneNumber}
-								onChange={handleChange}
-								placeholder="Phone number"
-								required
-							/>
-						</div>
-
-						<button
-							className={`span-button ${isFormValid ? "" : "disabled"}`}
-							type="submit"
-							style={{marginTop: "10px"}}
-						>
-							Complete Registration
-						</button>
-
+					<div className="margin input">
 						<p
-							className="text-center"
-							style={{fontSize: "12px", marginTop: "20px"}}
+							className={
+								userData.phoneNumber
+									? "input-label-full"
+									: "input-label-empty unselectable"
+							}
 						>
-							By registering you agree to our {}
-							<Link to="/terms-of-service">Terms of Service</Link>
-							{} and acknowledge our {}
-							<Link to="/privacy-policy">Privacy Policy</Link>
+							Phone Number
 						</p>
-					</form>
-				</div>
+						<input
+							type="tel"
+							name="phoneNumber"
+							id="phoneNumber"
+							value={userData.phoneNumber}
+							onChange={handleChange}
+							required
+							autoComplete="off"
+						/>
+					</div>
+
+					<button
+						className={`span-button ${isFormValid ? "" : "disabled"}`}
+						type="submit"
+						style={{marginTop: "20px"}}
+					>
+						Complete Registration
+					</button>
+
+					<p
+						className="text-center"
+						style={{fontSize: "12px", marginTop: "20px"}}
+					>
+						By registering you agree to our{" "}
+						<Link to="/terms-of-service">Terms of Service</Link> and
+						acknowledge our{" "}
+						<Link to="/privacy-policy">Privacy Policy</Link>
+					</p>
+				</form>
 			</div>
-		</>
+		</div>
 	);
 }
 

@@ -339,7 +339,10 @@ function ListingView() {
 				</div>
 			) : (
 				<div>
-					<div className="vertical-center margin">
+					<div
+						className="vertical-center margin"
+						style={{marginTop: "20px"}}
+					>
 						<div className="medium-container drop-shadow">
 							<div className="listing-layout">
 								<div className="margin vertical-center flex-column">
@@ -424,7 +427,7 @@ function ListingView() {
 									className="margin-right"
 									onClick={handleStartChat}
 								>
-									Start Chat
+									Ask Question
 								</button>
 
 								<ShareButton
