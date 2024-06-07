@@ -12,7 +12,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bcryptjs": "^2.4.3"
+    "bcryptjs": "^2.4.3",
+    "cypress": "^13.11.0"
   },
   "devDependencies": {
     "husky": "^8.0.0",

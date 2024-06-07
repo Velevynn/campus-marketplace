@@ -46,3 +46,29 @@ describe("Retrieve Listing Details", () => {
     );
   });
 });
+
+describe("Retrieve Listings for an Unspecified", () => {
+  it("should retrieve unfiltered listings", () => {
+
+    // GET request to create specific listing
+    cy.request("GET", `http://localhost:8000/listings`).then(
+      (response) => {
+        expect(response.status).to.equal(200);
+        expect(response.body).to.be.an("array");
+      }
+    );
+  });
+});
+
+describe("Create a Bookmark for a Listing", () => {
+  it("should create a bookmark between a listing and user", () => {
+    const listingID = "958";
+    const body = {"userID": "1180", "listingID": "958", "title": "Minecraft Shirts"};
+    // POST request to create bookmark
+    cy.request("POST", `http://localhost:8000/listings/${listingID}/bookmark`, body).then(
+      (response) => {
+        expect(response.status).to.equal(201);
+      }
+    )
+  })
+})

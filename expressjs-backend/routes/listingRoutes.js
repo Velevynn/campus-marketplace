@@ -53,10 +53,6 @@ router.post("/", upload.array("image"), async (req, res) => {
 
 // Bookmark a listing.
 router.post("/:listingID/bookmark/", async (req, res) => {
-	console.log("Received body when bookmarking listing: ", req.body);
-	console.log(".userID: ", req.body.userID);
-	console.log(".listingID", req.body.listingID);
-	console.log(".title", req.body.title);
 	try {
 		// Add new relationship to bookmark table.
 		await addBookmark(req.body.userID, req.body.listingID, req.body.title);
@@ -148,8 +144,6 @@ router.delete("/:listingID/", async (req, res) => {
 });
 
 router.delete("/:listingID/bookmark/", async (req, res) => {
-	console.log("Delete bookmark paramaters:", req.query);
-
 	try {
 		const connection = createConnection();
 		const result = await connection.query(
@@ -195,7 +189,6 @@ router.get("/images/:listingID/", async (req, res) => {
 	}
 });
 
-// TODO: Add route for checking if a bookmark exists or not.
 // Check if a bookmark exists between a user and listing.
 router.get("/:listingID/bookmark/", async (req, res) => {
 	try {
@@ -429,17 +422,15 @@ async function addBookmark(userID, listingID, title) {
 	try {
 		const connection = createConnection();
 
-		const {rows} = await connection.query(
+		await connection.query(
 			"INSERT INTO bookmarks (\"userID\", \"listingID\", title) VALUES ($1, $2, $3)",
 			[userID, listingID, title]
 		);
 
-		const {result} = await connection.query(
+		await connection.query(
 			"UPDATE listings SET \"bookmarkCount\" = \"bookmarkCount\" + 1 WHERE \"listingID\" = $1",
 			[listingID]
 		);
-		console.log(rows);
-		console.log(result);
 
 		await connection.end();
 		return;

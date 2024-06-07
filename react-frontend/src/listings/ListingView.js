@@ -243,15 +243,7 @@ function ListingView() {
 	};
 
 	const toggleBookmark = async () => {
-		console.log("Toggle Bookmark clicked for listing: ", listing);
-		console.log("Current bookmark status: ", isBookmarked);
 		if (!isBookmarked) {
-			console.log(
-				"Posting bookmark with userID",
-				loggedID,
-				"and listingID",
-				listingID
-			);
 			try {
 				createBookmark();
 				setBookmark(true);
@@ -259,12 +251,6 @@ function ListingView() {
 				console.log("Error in toggleBookmark.");
 			}
 		} else if (isBookmarked) {
-			console.log(
-				"Deleting bookmark with userID:",
-				loggedID,
-				"and listingID:",
-				listingID
-			);
 			try {
 				deleteBookmark();
 				setBookmark(false);
@@ -276,7 +262,6 @@ function ListingView() {
 	};
 
 	const createBookmark = async () => {
-		console.log("Entered createBookmark");
 		if (!loggedID) {
 			const url = process.env.REACT_APP_FRONTEND_LINK + "/login";
 			window.history.replaceState({}, "", url);
