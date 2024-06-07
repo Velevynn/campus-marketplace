@@ -84,7 +84,7 @@ function MessagesPage() {
 				`${process.env.REACT_APP_BACKEND_LINK}/users/${conversation.otherID}`,
 				{headers}
 			);
-			const dummyListing = {title: "Dummy Listing"}; // Dummy listing object
+
 			const dummySeller = {
 				fullName: otherResponse.data[0].fullName,
 				username: otherResponse.data[0].username,
@@ -99,7 +99,6 @@ function MessagesPage() {
 				email: userResponse.data[0].email,
 				photoUrl: `https://haggleimgs.s3.amazonaws.com/user/${conversation.userID}/bruh0.jpg?${time}`
 			}; // Dummy buyer object
-			const dummyOffer = "Dummy Offer"; // Dummy offer
 
 			let seller = null;
 			let buyer = null;
@@ -110,12 +109,18 @@ function MessagesPage() {
 				seller = dummyBuyer;
 				buyer = dummySeller;
 			}
+
+			const listingResponse = await axios.get(
+				process.env.REACT_APP_BACKEND_LINK +
+					`/listings/${conversation.listingID}`
+			);
+
 			navigate("/chat", {
 				state: {
-					listing: [dummyListing],
+					listing: [listingResponse.data[0]],
 					seller: [seller],
 					buyer: buyer,
-					offer: dummyOffer
+					offer: conversation.offer
 				}
 			});
 		} catch (error) {

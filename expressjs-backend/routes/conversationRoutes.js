@@ -17,18 +17,20 @@ function createConnection() {
 }
 
 router.post("/create", async (req, res) => {
-	const {userID, otherID} = req.body;
+	const {userID, otherID, listingID, offer} = req.body;
 	try {
-		if (!userID || !otherID) {
-			res.status(400).json({error: "Missing userID or otherID"});
+		if (!userID || !otherID || !listingID) {
+			res.status(400).json({
+				error: "Missing userID, otherID, and/or listingID"
+			});
 			return;
 		}
 
 		const connection = createConnection();
 
 		await connection.query(
-			"INSERT INTO conversations (\"userID\", \"otherID\") VALUES ($1, $2)",
-			[userID, otherID]
+			"INSERT INTO conversations (\"userID\", \"otherID\", \"listingID\", offer) VALUES ($1, $2, $3, $4)",
+			[userID, otherID, listingID, offer]
 		);
 
 		await connection.end();
