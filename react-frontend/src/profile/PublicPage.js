@@ -48,7 +48,7 @@ function PublicPage() {
 					`/users/is-profile-picture/${userID}`
 			);
 			setProfileImage(
-				response.data.isProfilePicture
+				response.data.isProfilePictures
 					? `https://haggleimgs.s3.amazonaws.com/user/${userID}/bruh0.jpg?${timestamp}`
 					: DefaultPfp
 			);
